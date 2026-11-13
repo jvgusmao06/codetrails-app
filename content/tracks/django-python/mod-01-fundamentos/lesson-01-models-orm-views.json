@@ -1,0 +1,40 @@
+{
+  "id": "django-models-01",
+  "title": "Django Models, ORM (objects.filter) e Migrations",
+  "description": "Mapeie tabelas com models.Model, gere migrations automáticas e consulte dados com o ORM do Django.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Batteries-Included: Models e ORM no Django",
+      "content": "O Django segue a filosofia *batteries-included* (já vem com ORM, painel Admin, autenticação e migrations). Cada tabela é uma classe Python herdando de **`models.Model`**. Após alterar um Model, rodamos `makemigrations` e `migrate` para atualizar o banco. Para consultar dados, usamos o Manager **`objects`** (`Produto.objects.filter(ativo=True)`).",
+      "codeExample": "from django.db import models\n\nclass Produto(models.Model):\n    nome = models.CharField(max_length=120)\n    preco = models.DecimalField(max_digits=10, decimal_places=2)\n    ativo = models.BooleanField(default=True)\n\n# Queries com o Django ORM:\nativos = Produto.objects.filter(ativo=True).order_by(\"nome\")",
+      "keyTakeaways": [
+        "`python manage.py makemigrations` cria o arquivo de migração; `migrate` aplica no banco.",
+        "`.get(id=1)` retorna 1 objeto (ou lança erro se não existir); `.filter(...)` retorna um `QuerySet` preguiçoso.",
+        "Use `select_related()` e `prefetch_related()` para evitar o problema de queries N+1."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual comando do Django gera os arquivos de migração após você adicionar um novo campo em `models.Model`?",
+      "options": [
+        "python manage.py runserver",
+        "python manage.py makemigrations",
+        "django-admin startproject",
+        "python manage.py collectstatic"
+      ],
+      "correctIndex": 1,
+      "explanation": "`makemigrations` detecta mudanças nos seus Models e gera o plano de migração; depois `migrate` executa o SQL."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Use o Django ORM para buscar todos os usuários ativos (`ativo=True`) da classe `Usuario` usando `.objects.filter(...)`:",
+      "starterCode": "# Busque usuários ativos com Usuario.objects.filter:\n",
+      "requiredTokens": ["Usuario.objects.filter", "ativo=True"],
+      "sampleSolution": "ativos = Usuario.objects.filter(ativo=True)",
+      "hint": "Escreva: ativos = Usuario.objects.filter(ativo=True)",
+      "explanation": "`Model.objects.filter(...)` traduz argumentos nomeados Python diretamente em cláusulas `WHERE` SQL."
+    }
+  ]
+}

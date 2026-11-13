@@ -1,0 +1,31 @@
+{
+  "id": "java-spring-01",
+  "title": "Criando um @RestController",
+  "description": "Transformando classes Java em endpoints REST.",
+  "xp": 20,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Anotações Declarativas no Spring Boot",
+      "content": "No ecossistema Java, o Spring Boot elimina configurações complexas usando anotações (@). Ao marcar uma classe com @RestController e um método com @GetMapping, o Spring expõe automaticamente aquele método como uma rota HTTP.",
+      "codeExample": "@RestController\npublic class HealthController {\n  @GetMapping(\"/ping\")\n  public String ping() {\n    return \"pong\";\n  }\n}",
+      "keyTakeaways": [
+        "@RestController combina @Controller e @ResponseBody.",
+        "@GetMapping mapeia requisições HTTP GET para o método Java."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Anote a classe Java para que o Spring Boot a reconheça como um controlador REST:",
+      "codeTemplate": "@{{blank}}\npublic class ApiController {\n  @GetMapping(\"/status\")\n  public String status() {\n    return \"OK\";\n  }\n}",
+      "blanks": [
+        {
+          "answer": "RestController",
+          "placeholder": "anotação"
+        }
+      ],
+      "options": ["RestController", "Service", "Entity", "Bean"],
+      "explanation": "A anotação @RestController informa ao Spring que os métodos da classe retornam dados diretamente na resposta HTTP."
+    }
+  ]
+}

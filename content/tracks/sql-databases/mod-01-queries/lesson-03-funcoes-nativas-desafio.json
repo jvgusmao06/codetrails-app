@@ -1,0 +1,40 @@
+{
+  "id": "sql-nativas-03",
+  "title": "Funções Nativas SQL (COALESCE, COUNT, SUM, CASE WHEN) e Desafio",
+  "description": "Domine as funções nativas e palavras reservadas mais importantes do SQL: agregações, COALESCE, UPPER/LOWER, DISTINCT e CASE WHEN.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Funções Nativas e Expressões Condicionais no SQL",
+      "content": "O SQL possui funções nativas essenciais em qualquer banco relacional: 'COUNT(*)', 'SUM()', 'AVG()', 'MIN()' e 'MAX()' agregam linhas; 'COALESCE(coluna, padrao)' substitui valores NULL pelo primeiro valor não-nulo; 'UPPER()' e 'LOWER()' normalizam textos; 'DISTINCT' remove linhas duplicadas; e a estrutura 'CASE WHEN condicao THEN valor ELSE outro END' funciona como o if/else dentro das queries.",
+      "codeExample": "SELECT\n  DISTINCT UPPER(nome) AS cliente,\n  COALESCE(telefone, 'Sem telefone') AS contato,\n  CASE\n    WHEN saldo >= 1000 THEN 'VIP'\n    ELSE 'Padrao'\n  END AS categoria\nFROM clientes;",
+      "keyTakeaways": [
+        "COALESCE(col, 'valor_padrao') é a forma padrão de trocar NULL por um valor legível ou zero.",
+        "CASE WHEN ... THEN ... ELSE ... END sempre deve ser fechado com a palavra reservada END.",
+        "COUNT(*) conta todas as linhas, enquanto COUNT(coluna) ignora linhas onde aquela coluna é NULL."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a consulta SQL usando COALESCE para substituir nulos por 0 e CASE WHEN ... END para classificar o estoque:",
+      "codeTemplate": "SELECT nome,\n  {{blank}}(desconto, 0) AS desc_final,\n  {{blank}} WHEN estoque > 0 THEN 'Disponivel' ELSE 'Esgotado' {{blank}} AS status\nFROM produtos;",
+      "blanks": [
+        { "answer": "COALESCE", "placeholder": "função nulo" },
+        { "answer": "CASE", "placeholder": "condicional" },
+        { "answer": "END", "placeholder": "fechamento" }
+      ],
+      "options": ["COALESCE", "CASE", "END", "IFNULL", "IF", "DONE"],
+      "explanation": "COALESCE retorna o primeiro argumento não-nulo e blocos condicionais em SQL começam com CASE e terminam com END."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva do zero uma query SQL que selecione 'nome' e 'preco' da tabela 'produtos' onde 'preco > 50':",
+      "starterCode": "-- Escreva sua consulta SELECT abaixo:\n",
+      "requiredTokens": ["SELECT", "nome", "preco", "FROM", "produtos", "WHERE", "50"],
+      "sampleSolution": "SELECT nome, preco FROM produtos WHERE preco > 50;",
+      "hint": "Use: SELECT nome, preco FROM produtos WHERE preco > 50;",
+      "explanation": "A estrutura fundamental de uma consulta SQL filtra colunas no SELECT, indica a tabela no FROM e aplica a condição lógica no WHERE."
+    }
+  ]
+}

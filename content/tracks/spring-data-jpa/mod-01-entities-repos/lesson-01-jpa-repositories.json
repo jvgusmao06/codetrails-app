@@ -1,0 +1,43 @@
+{
+  "id": "jpa-01",
+  "title": "Entidades @Entity, JpaRepository e Query Methods",
+  "description": "Mapeie tabelas em classes Java e gere consultas SQL automaticamente a partir do nome dos métodos.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Persistência Declarativa com Spring Data JPA",
+      "content": "No Spring Data JPA, anotamos uma classe com '@Entity' e sua chave primária com '@Id @GeneratedValue'. Para acessar o banco, basta criar uma interface que estende 'JpaRepository<Entidade, TipoId>': o Spring gera automaticamente save(), findById(), findAll() e até queries personalizadas apenas lendo o nome do método (ex: findByEmailAndAtivoTrue)!",
+      "codeExample": "@Entity\npublic class Cliente {\n    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)\n    private Long id;\n    private String email;\n    private boolean ativo;\n}\n\npublic interface ClienteRepository extends JpaRepository<Cliente, Long> {\n    Optional<Cliente> findByEmail(String email);\n    List<Cliente> findByAtivoTrue();\n}",
+      "keyTakeaways": [
+        "Toda classe @Entity precisa de um campo anotado com @Id e um construtor padrão sem argumentos.",
+        "Estender JpaRepository<T, ID> entrega paginação, ordenação e CRUD completo sem escrever uma linha de implementação.",
+        "Use @Transactional em métodos de serviço que alteram múltiplas tabelas para garantir rollback automático em caso de RuntimeException."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a entidade JPA e a interface de repositório para a classe Produto com ID do tipo Long:",
+      "codeTemplate": "{{blank}}\npublic class Produto {\n    {{blank}}\n    private Long id;\n}\n\npublic interface ProdutoRepo extends {{blank}}<Produto, Long> {}",
+      "blanks": [
+        { "answer": "@Entity", "placeholder": "anotação classe" },
+        { "answer": "@Id", "placeholder": "chave primária" },
+        { "answer": "JpaRepository", "placeholder": "interface base" }
+      ],
+      "options": ["@Entity", "@Id", "JpaRepository", "@Table", "@PrimaryKey", "CrudClass"],
+      "explanation": "@Entity mapeia a classe para uma tabela, @Id define a chave primária e JpaRepository<Produto, Long> fornece todas as operações de banco."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual assinatura de método em uma interface JpaRepository faz o Spring Data JPA gerar automaticamente uma busca por 'categoria' ordenada pelo 'preco' crescente?",
+      "options": [
+        "List<Produto> selectWhereCategoriaOrderPreco(String categoria);",
+        "List<Produto> findByCategoriaOrderByPrecoAsc(String categoria);",
+        "List<Produto> queryCategoriaSortPreco(String categoria);",
+        "List<Produto> getCategoria_PrecoAsc(String categoria);"
+      ],
+      "correctIndex": 1,
+      "explanation": "As Derived Queries do Spring Data JPA seguem a convenção findBy<Propriedade>OrderBy<Propriedade>Asc/Desc."
+    }
+  ]
+}

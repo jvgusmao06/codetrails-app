@@ -1,0 +1,46 @@
+{
+  "id": "py-nativas-02",
+  "title": "08. Funções Nativas (len, sum, map)",
+  "description": "Domine as funções nativas mais importantes do Python: len, enumerate, zip, sum, min, max, sorted e isinstance.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "As Funções Nativas (Built-in) Essenciais do Python",
+      "content": "O Python já traz dezenas de funções nativas prontas sem precisar de 'import': 'len(seq)' retorna o tamanho, 'sum(nums)' soma todos os itens, 'min()' e 'max()' encontram extremos, 'sorted(seq)' devolve uma nova lista ordenada, 'enumerate(seq)' entrega pares (índice, valor) no loop for, e 'zip(a, b)' combina duas listas elemento a elemento.",
+      "codeExample": "precos = [40, 10, 30]\nprint(len(precos))      # 3\nprint(sum(precos))      # 80\nprint(sorted(precos))   # [10, 30, 40]\n\n# enumerate evita criar contadores manuais\nfor indice, valor in enumerate(precos):\n    print(f\"Posição {indice}: R$ {valor}\")",
+      "keyTakeaways": [
+        "Prefira 'for i, item in enumerate(lista):' em vez de 'for i in range(len(lista)):'.",
+        "'sorted(lista)' cria uma nova lista ordenada sem alterar a original (diferente de 'lista.sort()').",
+        "'sum()', 'min()' e 'max()' operam em tempo linear O(n) implementados em C."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual função nativa do Python permite iterar sobre uma lista obtendo simultaneamente o índice e o valor em cada volta do loop for?",
+      "options": [
+        "zip(lista)",
+        "enumerate(lista)",
+        "range(lista)",
+        "len(lista)"
+      ],
+      "correctIndex": 1,
+      "explanation": "enumerate(lista) gera tuplas (indice, valor), tornando o loop limpo e pythônico."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva uma função 'media(notas)' em Python que retorne a soma das notas dividida pela quantidade de notas usando as funções nativas 'sum' e 'len':",
+      "starterCode": "# Escreva a função media(notas) do zero:\n",
+      "requiredTokens": [
+        "def",
+        "media",
+        "return",
+        "sum(",
+        "len("
+      ],
+      "sampleSolution": "def media(notas):\n    return sum(notas) / len(notas)",
+      "hint": "Defina 'def media(notas):' e na linha seguinte retorne 'sum(notas) / len(notas)'.",
+      "explanation": "Combinar as funções nativas sum() e len() permite calcular a média aritmética em uma única expressão clara."
+    }
+  ]
+}

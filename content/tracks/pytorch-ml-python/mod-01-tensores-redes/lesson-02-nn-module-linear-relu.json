@@ -1,0 +1,40 @@
+{
+  "id": "pytorch-nn-module-02",
+  "title": "Construindo Redes Neurais com nn.Module, nn.Linear e nn.ReLU",
+  "description": "Estruture camadas neurais herdando de nn.Module e implementando o método forward(self, x).",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Anatomia de uma Rede Neural em PyTorch (nn.Module)",
+      "content": "Toda arquitetura em PyTorch (de um MLP simples até um Transformer/LLM) herda de **`nn.Module`**. No `__init__`, declaramos as camadas (ex: `nn.Linear(entrada, saida)` e ativações como `nn.ReLU()`). No método **`forward(self, x)`**, conectamos o fluxo dos dados. **Dica:** para inferência, chamamos `modelo(x)` (nunca `modelo.forward(x)` direto), pois `__call__` aciona hooks internos do PyTorch!",
+      "codeExample": "import torch.nn as nn\n\nclass RedeSimples(nn.Module):\n    def __init__(self):\n        super().__init__()\n        self.camada1 = nn.Linear(10, 64)\n        self.relu = nn.ReLU()\n        self.saida = nn.Linear(64, 2)\n\n    def forward(self, x):\n        return self.saida(self.relu(self.camada1(x)))",
+      "keyTakeaways": [
+        "Sempre chame `super().__init__()` dentro do `__init__` de um `nn.Module`.",
+        "Sem funções de ativação não-lineares (`nn.ReLU`, `nn.GELU`), empilhar várias `nn.Linear` equivale a uma única transformação linear!",
+        "`model.parameters()` lista automaticamente todos os pesos treináveis registrados no `nn.Module`."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a definição da rede neural PyTorch herdando de `nn.Module`, inicializando a classe pai e definindo o passo `forward`:",
+      "codeTemplate": "class MLP(nn.{{blank}}):\n    def __init__(self):\n        {{blank}}().__init__()\n        self.fc = nn.Linear(4, 1)\n\n    def {{blank}}(self, x):\n        return self.fc(x)",
+      "blanks": [
+        { "answer": "Module", "placeholder": "classe base" },
+        { "answer": "super", "placeholder": "pai" },
+        { "answer": "forward", "placeholder": "método" }
+      ],
+      "options": ["Module", "super", "forward", "Model", "self", "predict"],
+      "explanation": "Herdamos de `nn.Module`, chamamos `super().__init__()` e implementamos `forward(self, x)`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie uma rede sequencial usando `nn.Sequential(nn.Linear(8, 16), nn.ReLU(), nn.Linear(16, 1))` e salve em `modelo`:",
+      "starterCode": "import torch.nn as nn\n# Crie modelo com nn.Sequential:\n",
+      "requiredTokens": ["modelo", "nn.Sequential(", "nn.Linear(8, 16)", "nn.ReLU()", "nn.Linear(16, 1)"],
+      "sampleSolution": "modelo = nn.Sequential(\n    nn.Linear(8, 16),\n    nn.ReLU(),\n    nn.Linear(16, 1)\n)",
+      "hint": "Passe as 3 camadas em ordem dentro de `nn.Sequential(...)`.",
+      "explanation": "`nn.Sequential` é perfeito para empilhar camadas lineares sem precisar escrever uma classe completa."
+    }
+  ]
+}

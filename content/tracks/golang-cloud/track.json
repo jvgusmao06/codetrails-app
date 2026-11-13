@@ -1,0 +1,42 @@
+{
+  "id": "golang-cloud",
+  "title": "Go (Golang)",
+  "description": "Aprenda Go do zero às funções nativas: variáveis (var/:=), condicionais, for, slices, maps, make/len/cap, structs, ponteiros e goroutines.",
+  "category": "language",
+  "color": "#00ADD8",
+  "icon": "🐹",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-00-sintaxe",
+      "title": "Módulo 1: Do Zero a Slices, Maps, Loops e Funções Nativas",
+      "description": "Variáveis (var vs :=), tipos, if/switch, for, slices, maps, defer e funções built-in (make, len, cap, delete).",
+      "lessons": [
+        "lesson-00-variaveis-tipos-if",
+        "lesson-01-sintaxe-slices",
+        "lesson-02-funcoes-nativas-desafio",
+        "lesson-03-funcoes-multiplo-retorno"
+      ]
+    },
+    {
+      "id": "mod-01-concorrencia",
+      "title": "Módulo 2: Concorrência com Goroutines e Channels",
+      "description": "Execute tarefas em paralelo com a palavra reservada go e sincronize via channels.",
+      "lessons": [
+        "lesson-01-go-basico",
+        "lesson-02-select-waitgroup-mutex",
+        "lesson-03-context-timeouts"
+      ]
+    },
+    {
+      "id": "mod-02-interfaces-erros",
+      "title": "Módulo 3: Structs, Interfaces, Ponteiros e Erros",
+      "description": "Métodos receptores, interfaces implícitas, ponteiros seguros e visibilidade por maiúsculas.",
+      "lessons": [
+        "lesson-01-interfaces-err",
+        "lesson-02-ponteiros-pacotes-go",
+        "lesson-03-generics-json-testing"
+      ]
+    }
+  ]
+}

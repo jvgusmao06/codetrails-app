@@ -1,0 +1,40 @@
+{
+  "id": "go-ponteiros-02",
+  "title": "Ponteiros Seguros (* e &), Exportação e Desafio Go",
+  "description": "Entenda como Go usa ponteiros sem aritmética perigosa e como letras maiúsculas controlam a visibilidade pública/privada.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Ponteiros sem Aritmética e Visibilidade por Maiúsculas",
+      "content": "Go possui ponteiros para compartilhar memória sem copiar structs grandes: '&x' obtém o endereço de memória de 'x', e '*p' acessa ou altera o valor guardado naquele endereço. Porém, diferente de C, o Go proíbe aritmética de ponteiros (como p++), eliminando invasões de memória! Além disso, Go não tem as palavras 'public' ou 'private': qualquer função, struct ou variável que começa com Letra Maiúscula é pública (exportada), e com letra minúscula é privada ao pacote.",
+      "codeExample": "package conta\n\n// Público (Exportado): começa com letra maiúscula\ntype Cliente struct {\n    Nome  string // Público\n    saldo int    // Privado ao pacote\n}\n\nfunc Zerar(valor *int) {\n    *valor = 0 // Modifica a variável original via ponteiro\n}",
+      "keyTakeaways": [
+        "Inicial Maiúscula = Público (Exportado para outros pacotes); inicial minúscula = Privado ao pacote atual.",
+        "'&variavel' gera um ponteiro (*Tipo); '*ponteiro' lê ou escreve no endereço apontado.",
+        "O valor zero de qualquer ponteiro não inicializado em Go é 'nil'."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Como você torna uma função ou campo de struct público (exportado para outros pacotes) em Go?",
+      "options": [
+        "Adicionando a palavra reservada 'public' antes de func",
+        "Começando o nome do identificador com Letra Maiúscula (ex: CalcularImposto)",
+        "Usando o decorator @Export acima da função",
+        "Colocando a função no arquivo exports.go"
+      ],
+      "correctIndex": 1,
+      "explanation": "Go substitui modificadores public/private pela convenção da primeira letra: Maiúscula exporta, minúscula mantém privado ao pacote."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva um struct em Go chamado 'Servidor' com os campos 'Host string' e 'Porta int':",
+      "starterCode": "// Defina o type Servidor struct abaixo:\n",
+      "requiredTokens": ["type", "Servidor", "struct", "Host", "string", "Porta", "int"],
+      "sampleSolution": "type Servidor struct {\n    Host  string\n    Porta int\n}",
+      "hint": "Use: type Servidor struct { Host string; Porta int }",
+      "explanation": "Em Go combinamos as palavras reservadas 'type' e 'struct' para definir novos tipos estruturados."
+    }
+  ]
+}

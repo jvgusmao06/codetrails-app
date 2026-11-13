@@ -1,0 +1,38 @@
+{
+  "id": "typescript-javascript",
+  "title": "TypeScript & JavaScript",
+  "description": "Aprenda do zero às funções nativas: const/let, loops, classes, objetos, métodos de array, interfaces, async/await, Generics e APIs globais.",
+  "category": "language",
+  "color": "#6366F1",
+  "icon": "📘",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-00-sintaxe-js",
+      "title": "Módulo 1: Variáveis, Loops, Classes e Objetos",
+      "description": "Domine const/let, arrow functions, for...of, while, classes (constructor/this) e palavras reservadas.",
+      "lessons": [
+        "lesson-01-let-const-arrow",
+        "lesson-02-loops-classes-objetos",
+        "lesson-03-operadores-condicionais-switch"
+      ]
+    },
+    {
+      "id": "mod-01-ts-moderno",
+      "title": "Módulo 2: Métodos de Array & Contratos TypeScript",
+      "description": "Manipule arrays com map/filter e defina interfaces e types estáticos.",
+      "lessons": ["lesson-01-es6-arrays", "lesson-02-interfaces-types", "lesson-03-desestruturacao-spread-rest"]
+    },
+    {
+      "id": "mod-02-async-generics",
+      "title": "Módulo 3: Async/Await, Generics e Funções Nativas",
+      "description": "Programe com Promises, Generics <T>, Object/JSON/Set/Math e desafios de escrita de código.",
+      "lessons": [
+        "lesson-01-promises-generics",
+        "lesson-02-funcoes-nativas-desafio",
+        "lesson-03-try-catch-fetch-json",
+        "lesson-04-enums-narrowing-utility-types"
+      ]
+    }
+  ]
+}

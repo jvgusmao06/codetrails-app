@@ -1,0 +1,30 @@
+{
+  "id": "sql-joins-02",
+  "title": "INNER JOIN e Caça a Bugs em SQL",
+  "description": "Cruzando tabelas por chave estrangeira e evitando erros clássicos.",
+  "xp": 20,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Relacionando Tabelas com INNER JOIN e Cuidado com NULL",
+      "content": "Para combinar dados de duas tabelas (ex: pedidos e clientes), usamos INNER JOIN ... ON indicando quais colunas se conectam. Além disso, em SQL o valor NULL representa ausência de valor: nunca comparamos NULL usando '=', e sim 'IS NULL'.",
+      "codeExample": "SELECT u.nome, p.total\nFROM pedidos p\nINNER JOIN usuarios u ON p.usuario_id = u.id\nWHERE p.cancelado_em IS NULL;",
+      "keyTakeaways": [
+        "INNER JOIN conecta duas tabelas usando a condição definida em ON.",
+        "Em SQL, comparações com NULL devem usar IS NULL ou IS NOT NULL (nunca '= NULL')."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Toque na linha que contém um BUG lógico ao filtrar registros sem data de exclusão em SQL:",
+      "lines": [
+        "SELECT id, email",
+        "FROM usuarios",
+        "WHERE deletado_em = NULL",
+        "ORDER BY id ASC;"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Na linha 3, 'deletado_em = NULL' nunca retorna verdadeiro em SQL padrão (retorna UNKNOWN). O correto é 'WHERE deletado_em IS NULL'."
+    }
+  ]
+}

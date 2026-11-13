@@ -1,0 +1,65 @@
+{
+  "id": "py-loops-03",
+  "title": "05. Loops (for e while)",
+  "description": "Domine repetições em Python com for/in, range(), while e as palavras reservadas break, continue e pass.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Laços de Repetição e Controle de Loop em Python",
+      "content": "Em Python, o loop 'for' itera diretamente sobre qualquer sequência (listas, strings, dicionários) ou sobre intervalos numéricos gerados pela função nativa 'range(inicio, fim, passo)'. Já o 'while' repete enquanto uma condição booleana for True. Para controlar o fluxo interno, usamos três palavras reservadas fundamentais: 'break' (interrompe o loop imediatamente), 'continue' (pula para a próxima iteração) e 'pass' (bloco vazio temporário).",
+      "codeExample": "# range(0, 10, 2) gera: 0, 2, 4, 6, 8 (o limite final 10 não entra)\nfor n in range(5):\n    if n == 2:\n        continue  # Pula o número 2\n    if n == 4:\n        break     # Encerra o loop ao chegar no 4\n    print(n)\n\ncontador = 3\nwhile contador > 0:\n    contador -= 1",
+      "keyTakeaways": [
+        "range(n) começa em 0 e para em n - 1 (ex: range(3) produz 0, 1, 2).",
+        "'break' sai do laço inteiro; 'continue' ignora apenas o restante da volta atual.",
+        "'pass' é uma instrução nula usada quando a sintaxe exige um bloco indentado que você ainda vai implementar."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o loop Python para percorrer os números de 0 a 9, pular os números negativos com continue e parar tudo se encontrar 99:",
+      "codeTemplate": "for x {{blank}} {{blank}}(10):\n    if x < 0:\n        {{blank}}\n    if x == 99:\n        {{blank}}",
+      "blanks": [
+        {
+          "answer": "in",
+          "placeholder": "operador"
+        },
+        {
+          "answer": "range",
+          "placeholder": "gerador"
+        },
+        {
+          "answer": "continue",
+          "placeholder": "pular volta"
+        },
+        {
+          "answer": "break",
+          "placeholder": "encerrar"
+        }
+      ],
+      "options": [
+        "in",
+        "range",
+        "continue",
+        "break",
+        "of",
+        "stop"
+      ],
+      "explanation": "Em Python usamos 'for x in range(10):', 'continue' para pular a iteração atual e 'break' para encerrar o laço."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva do zero um loop 'for' em Python que percorra 'range(5)' e imprima cada número usando 'print':",
+      "starterCode": "# Escreva seu loop for abaixo:\n",
+      "requiredTokens": [
+        "for",
+        "in",
+        "range(5)",
+        "print"
+      ],
+      "sampleSolution": "for i in range(5):\n    print(i)",
+      "hint": "Use: for i in range(5): na primeira linha e print(i) indentado na segunda.",
+      "explanation": "O laço 'for i in range(5):' percorre os valores de 0 a 4 e executa 'print(i)' em cada repetição."
+    }
+  ]
+}

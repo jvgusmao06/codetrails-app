@@ -1,0 +1,35 @@
+{
+  "id": "java-basics",
+  "title": "Java & POO",
+  "description": "Domine Java do zero até as APIs nativas: tipos, loops, palavras reservadas (static/final), classes, records, Streams e java.lang.",
+  "category": "language",
+  "color": "#F97316",
+  "icon": "☕",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: Variáveis, Classes, Loops e Palavras Reservadas",
+      "description": "Entenda o método main, tipos primitivos, classes, objetos, loops e modificadores static/final.",
+      "lessons": [
+        "lesson-01-main-tipos",
+        "lesson-02-classes-objetos",
+        "lesson-03-loops-palavras-reservadas",
+        "lesson-04-condicionais-switch-scanner",
+        "lesson-05-heranca-interfaces-extends"
+      ]
+    },
+    {
+      "id": "mod-02-colecoes-records",
+      "title": "Módulo 2: Records, Streams e Funções Nativas do JDK",
+      "description": "Escreva Java moderno com records, lambdas, String/Math/Arrays nativos e desafios práticos.",
+      "lessons": [
+        "lesson-01-streams-records",
+        "lesson-02-funcoes-nativas-desafio",
+        "lesson-03-arraylist-hashmap-generics",
+        "lesson-04-excecoes-try-with-resources",
+        "lesson-05-optional-enums-threads"
+      ]
+    }
+  ]
+}

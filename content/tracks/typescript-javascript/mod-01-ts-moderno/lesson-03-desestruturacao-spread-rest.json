@@ -1,0 +1,40 @@
+{
+  "id": "ts-destructuring-spread-03",
+  "title": "Desestruturação (Destructuring), Spread (...) e Rest (...args)",
+  "description": "Extraia campos de objetos e arrays em uma linha, clone dados de forma imutável com ... e crie funções com argumentos variáveis.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Sintaxe Moderna: Destructuring e Operador ...",
+      "content": "Em JS/TS moderno, raramente acessamos `user.nome` e `user.email` linha por linha. Com **Destructuring**, extraímos propriedades direto na declaração (`const { nome, email } = user;`). Já os três pontinhos **`...`** têm dois papéis: **Spread** espalha elementos para clonar/mesclar arrays e objetos sem mutar os originais (`{ ...user, ativo: true }`), e **Rest** agrupa argumentos restantes em um array (`function somar(...nums: number[])`).",
+      "codeExample": "const produto = { id: 1, nome: \"Teclado\", preco: 250 };\nconst { nome, preco } = produto;\n\n// Spread: cria um NOVO objeto atualizado sem alterar 'produto'\nconst emPromocao = { ...produto, preco: 199 };\n\n// Rest parameter\nconst somar = (...valores: number[]) => valores.reduce((a, b) => a + b, 0);",
+      "keyTakeaways": [
+        "Destructuring em objetos usa `{}` pelo nome da chave; em arrays usa `[]` pela posição.",
+        "Spread (`{ ...obj, campo: novo }`) cria cópia rasa (shallow copy), essencial em React/Redux para imutabilidade.",
+        "Rest (`(...args)`) deve ser sempre o último parâmetro da função."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código para desestruturar `nome` de `perfil` e criar `perfilAtualizado` usando Spread:",
+      "codeTemplate": "const {{blank}} nome {{blank}} = perfil;\nconst perfilAtualizado = { {{blank}}perfil, ativo: true };",
+      "blanks": [
+        { "answer": "{", "placeholder": "abre" },
+        { "answer": "}", "placeholder": "fecha" },
+        { "answer": "...", "placeholder": "spread" }
+      ],
+      "options": ["{", "}", "...", "[", "]", "*"],
+      "explanation": "Chaves `{ nome } = perfil` desestruturam o objeto e `...perfil` espalha todas as suas propriedades no novo objeto."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie um novo array `todos` combinando os arrays `a` e `b` com Spread (`...a`, `...b`) e o número `99` ao final:",
+      "starterCode": "const a = [1, 2];\nconst b = [3, 4];\n// Crie const todos abaixo:\n",
+      "requiredTokens": ["const", "todos", "...a", "...b", "99"],
+      "sampleSolution": "const todos = [...a, ...b, 99];",
+      "hint": "Use: const todos = [...a, ...b, 99];",
+      "explanation": "O operador spread `[...a, ...b, 99]` concatena arrays de forma legível e imutável."
+    }
+  ]
+}

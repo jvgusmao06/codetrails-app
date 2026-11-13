@@ -1,0 +1,40 @@
+{
+  "id": "algo-arvores-bst-04",
+  "title": "Árvores Binárias de Busca (BST), DFS (Profundidade) e BFS (Largura)",
+  "description": "Modele dados hierárquicos com Árvores Binárias e domine os dois algoritmos universais de travessia: DFS e BFS.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Árvores Binárias, BST e Travessias DFS vs BFS",
+      "content": "Uma **Árvore Binária** é composta por nós onde cada nó tem no máximo dois filhos: `left` (esquerda) e `right` (direita). Em uma **Árvore Binária de Busca (BST)**, tudo à esquerda é **menor** que o nó atual e tudo à direita é **maior** — permitindo buscas em **$O(\\log n)$** quando balanceada! Para percorrer árvores usamos:\n- **DFS (Busca em Profundidade)**: mergulha até o fundo de um ramo antes de voltar (usa **Pilha / Recursão**).\n- **BFS (Busca em Largura)**: visita nível por nível de cima para baixo (usa **Fila / Queue**).",
+      "codeExample": "class TreeNode:\n    def __init__(self, val, left=None, right=None):\n        self.val = val\n        self.left = left\n        self.right = right\n\n# DFS Pre-Order (Recursão / Pilha)\ndef dfs(no):\n    if not no: return\n    print(no.val)\n    dfs(no.left)\n    dfs(no.right)",
+      "keyTakeaways": [
+        "Em uma BST, o percurso *In-Order* (`left` -> `raiz` -> `right`) visita os números em ordem crescente!",
+        "DFS usa Pilha (ou recursão); BFS usa Fila (`collections.deque`).",
+        "Bancos de dados usam árvores balanceadas (B-Trees) para manter buscas em $O(\\log n)$."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual estrutura de dados é usada para implementar uma Busca em Largura (**BFS** — nível por nível) em uma árvore ou grafo?",
+      "options": [
+        "Pilha (Stack / LIFO)",
+        "Fila (Queue / FIFO)",
+        "Bubble Sort",
+        "Tabela ASCII"
+      ],
+      "correctIndex": 1,
+      "explanation": "A Fila (FIFO) garante que todos os nós do nível atual sejam processados antes de avançar para os filhos do próximo nível."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva a função recursiva DFS `def dfs(no):` que retorne se `if not no: return`, imprima `print(no.val)` e chame `dfs(no.left)` e `dfs(no.right)`:",
+      "starterCode": "# Implemente DFS em árvore binária:\n",
+      "requiredTokens": ["def", "dfs(no)", "if not no:", "no.val", "dfs(no.left)", "dfs(no.right)"],
+      "sampleSolution": "def dfs(no):\n    if not no:\n        return\n    print(no.val)\n    dfs(no.left)\n    dfs(no.right)",
+      "hint": "Verifique `if not no: return`, imprima `no.val` e chame `dfs(no.left)` e `dfs(no.right)`.",
+      "explanation": "Em apenas 6 linhas, a recursão implementa a busca em profundidade completa em qualquer árvore binária."
+    }
+  ]
+}

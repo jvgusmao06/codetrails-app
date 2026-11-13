@@ -1,0 +1,19 @@
+{
+  "id": "prisma-drizzle-orm",
+  "title": "Prisma & Drizzle ORM",
+  "description": "Consulte bancos SQL a partir do TypeScript com autocompletar total, migrações seguras e prevenção de N+1 queries.",
+  "category": "library",
+  "languageId": "typescript-javascript",
+  "prerequisites": ["typescript-javascript", "sql-databases"],
+  "color": "#818CF8",
+  "icon": "🔺",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-queries-orm",
+      "title": "Módulo 1: Schemas Tipados, Relações e N+1",
+      "description": "Domine consultas type-safe em TypeScript integradas ao SQL.",
+      "lessons": ["lesson-01-orm-queries"]
+    }
+  ]
+}

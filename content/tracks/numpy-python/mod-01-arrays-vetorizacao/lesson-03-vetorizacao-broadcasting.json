@@ -1,0 +1,40 @@
+{
+  "id": "numpy-vetorizacao-broadcast-03",
+  "title": "Vetorização e Broadcasting (Operações Sem Loop for)",
+  "description": "Entenda como o Broadcasting permite somar escalares ou vetores a matrizes de tamanhos compatíveis em velocidade C.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "A Mágica do Broadcasting no NumPy",
+      "content": "No Python puro, somar 10 a cada elemento de uma lista exige um loop `for` lento. No NumPy, escrevemos apenas **`precos * 1.1`** ou **`matriz + vetor`**! O mecanismo de **Broadcasting** estica virtualmente (sem copiar na memória!) o escalar ou vetor menor para combinar com o formato da matriz maior — usando instruções SIMD do processador.",
+      "codeExample": "import numpy as np\n\nprecos = np.array([100.0, 200.0, 300.0])\ncom_desconto = precos * 0.9  # [90., 180., 270.]\n\n# Broadcasting: soma vetor (3,) em cada linha da matriz (2, 3)\nmatriz = np.array([[1, 2, 3], [4, 5, 6]])\nbias = np.array([10, 20, 30])\nresultado = matriz + bias  # [[11, 22, 33], [14, 25, 36]]",
+      "keyTakeaways": [
+        "Regra do Broadcasting: comparando os `.shape` da direita para a esquerda, dimensões são compatíveis se forem iguais ou se uma delas for `1`.",
+        "Nunca escreva `for i in range(len(arr)):` para matemática em arrays NumPy — use operações vetorizadas!",
+        "Funções universais (`ufuncs`) como `np.sqrt(arr)`, `np.exp(arr)` e `np.log(arr)` rodam elemento a elemento em C."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Se `A` tem shape `(3, 4)` e `B` tem shape `(4,)`, o que acontece ao executar `A + B` no NumPy?",
+      "options": [
+        "Lança ValueError imediatamente",
+        "O NumPy usa Broadcasting e soma `B` em cada uma das 3 linhas de `A`, resultando em shape `(3, 4)`",
+        "Trunca `A` para `(1, 4)`",
+        "Concatena `B` ao final gerando `(4, 4)`"
+      ],
+      "correctIndex": 1,
+      "explanation": "A última dimensão coincide (`4 == 4`), então o NumPy estica `B` ao longo das 3 linhas via Broadcasting."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Dado um array `salarios`, calcule `reajustados` aplicando 15% de aumento (`salarios * 1.15`) e depois aplique `np.round(reajustados, 2)`:",
+      "starterCode": "import numpy as np\n# Aplique 15% de aumento vetorizado e arredonde:\n",
+      "requiredTokens": ["reajustados", "salarios * 1.15", "np.round("],
+      "sampleSolution": "reajustados = np.round(salarios * 1.15, 2)",
+      "hint": "Escreva: reajustados = np.round(salarios * 1.15, 2)",
+      "explanation": "Multiplicar por `1.15` usa broadcasting escalar e `np.round(..., 2)` arredonda todo o array em C."
+    }
+  ]
+}

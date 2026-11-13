@@ -1,0 +1,43 @@
+{
+  "id": "cmake-01",
+  "title": "Estrutura do CMakeLists.txt, Executáveis e Linkagem",
+  "description": "Defina a versão do C++20, crie targets com add_executable e conecte bibliotecas com target_link_libraries.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Modern CMake Baseado em Targets",
+      "content": "O CMake é o padrão da indústria para gerenciar builds de C e C++. Todo projeto tem um arquivo 'CMakeLists.txt' na raiz que declara a versão mínima (cmake_minimum_required), o nome do projeto (project), os alvos de compilação (add_executable ou add_library) e suas dependências (target_link_libraries).",
+      "codeExample": "cmake_minimum_required(VERSION 3.20)\nproject(MotorFisica LANGUAGES CXX)\n\nset(CMAKE_CXX_STANDARD 20)\nset(CMAKE_CXX_STANDARD_REQUIRED ON)\n\nadd_library(matematica src/vetor.cpp)\nadd_executable(app src/main.cpp)\n\ntarget_link_libraries(app PRIVATE matematica)",
+      "keyTakeaways": [
+        "cmake_minimum_required() deve ser sempre a primeira linha do CMakeLists.txt.",
+        "add_executable(nome_binario arquivos.cpp...) define o executável que será gerado.",
+        "target_link_libraries(alvo PRIVATE lib) vincula bibliotecas externas ou internas ao seu executável."
+      ]
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os comandos de um CMakeLists.txt válido do início até a criação do executável:",
+      "blocks": [
+        "cmake_minimum_required(VERSION 3.20)",
+        "project(MeuJogo CXX)",
+        "set(CMAKE_CXX_STANDARD 20)",
+        "add_executable(jogo main.cpp)"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "Um CMakeLists.txt começa sempre com cmake_minimum_required, seguido por project(), configurações de padrão C++ e finalmente add_executable()."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o CMakeLists.txt para criar o executável 'servidor' e vincular a biblioteca 'rede' a ele:",
+      "codeTemplate": "{{blank}}(servidor main.cpp)\n{{blank}}(servidor PRIVATE {{blank}})",
+      "blanks": [
+        { "answer": "add_executable", "placeholder": "criar binário" },
+        { "answer": "target_link_libraries", "placeholder": "linkar" },
+        { "answer": "rede", "placeholder": "biblioteca" }
+      ],
+      "options": ["add_executable", "target_link_libraries", "rede", "build_bin", "link_lib", "main.cpp"],
+      "explanation": "add_executable cria o target binário e target_link_libraries conecta a biblioteca 'rede' ao target 'servidor'."
+    }
+  ]
+}

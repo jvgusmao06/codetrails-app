@@ -1,0 +1,41 @@
+{
+  "id": "ts-loops-classes-02",
+  "title": "Loops (for..of, while), Classes, Objetos e Palavras Reservadas",
+  "description": "Domine for...of, while, break, continue, classes (class, constructor, this, new) e typeof em JS/TS.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Loops, Classes e Palavras Reservadas no JS/TS",
+      "content": "Para percorrer valores de um array ou string em JS/TS moderno, usamos 'for (const item of lista)' (enquanto 'for...in' percorre apenas chaves). Na orientação a objetos, a palavra reservada 'class' define um molde com o método especial 'constructor()', 'this' aponta para a instância criada com 'new', e 'typeof' inspeciona o tipo primitivo em tempo de execução.",
+      "codeExample": "class Carrinho {\n  itens: string[] = [];\n\n  constructor( itemInicial: string) {\n    this.itens.push(itemInicial);\n  }\n\n  listar(): void {\n    for (const item of this.itens) {\n      if (typeof item === \"string\") console.log(item);\n    }\n  }\n}\nconst meu = new Carrinho(\"Notebook\");",
+      "keyTakeaways": [
+        "Use 'for (const valor of array)' para iterar sobre elementos; permite usar 'break' e 'continue' normalmente.",
+        "O método construtor em JS/TS chama-se sempre 'constructor' (e não o nome da classe).",
+        "Diferencie 'undefined' (variável declarada mas sem valor) de 'null' (ausência intencional atribuída)."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a classe TypeScript com constructor, this e um loop for...of sobre a lista:",
+      "codeTemplate": "{{blank}} Equipe {\n  membros: string[];\n  {{blank}}(nomes: string[]) {\n    {{blank}}.membros = nomes;\n  }\n}\nfor (const m {{blank}} equipe.membros) {\n  console.log(m);\n}",
+      "blanks": [
+        { "answer": "class", "placeholder": "molde" },
+        { "answer": "constructor", "placeholder": "inicializador" },
+        { "answer": "this", "placeholder": "instância" },
+        { "answer": "of", "placeholder": "iterador" }
+      ],
+      "options": ["class", "constructor", "this", "of", "in", "self"],
+      "explanation": "Em JS/TS usamos 'class', 'constructor', 'this' para acessar propriedades do objeto e 'for...of' para valores de um iterável."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva do zero uma classe chamada 'Produto' com um 'constructor(nome: string)' que salve 'this.nome = nome':",
+      "starterCode": "class Produto {\n  nome: string;\n  // Escreva o constructor abaixo:\n\n}",
+      "requiredTokens": ["class", "Produto", "constructor", "this.nome"],
+      "sampleSolution": "class Produto {\n  nome: string;\n  constructor(nome: string) {\n    this.nome = nome;\n  }\n}",
+      "hint": "Dentro da classe, escreva: constructor(nome: string) { this.nome = nome; }",
+      "explanation": "O constructor inicializa as propriedades da instância através da palavra reservada 'this'."
+    }
+  ]
+}

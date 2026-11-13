@@ -1,0 +1,40 @@
+{
+  "id": "go-basico-00",
+  "title": "Primeiros Passos: Variáveis (var vs :=), Tipos, Const e If/Switch",
+  "description": "Comece do zero em Go: estrutura package main, declaração de variáveis, valores zero (zero values), constantes e condicionais.",
+  "xp": 25,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Criando Variáveis, Constantes e Condicionais em Go",
+      "content": "Todo programa executável em Go começa com 'package main' e a função 'func main()'. Para criar variáveis, existem duas formas: 'var nome string = \"Go\"' (explícita, válida dentro e fora de funções) ou o operador curto 'nome := \"Go\"' (inferência de tipo, válido apenas dentro de funções). Se você declarar 'var idade int' sem valor, o Go atribui automaticamente o 'Zero Value' seguro (0 para números, \"\" para string, false para bool). Em condicionais 'if' e 'switch', não usamos parênteses ao redor da condição, e o 'switch' do Go não precisa de 'break' em cada case!",
+      "codeExample": "package main\nimport \"fmt\"\n\nconst Versao = \"1.22\"\n\nfunc main() {\n    var saldo int          // Zero value = 0\n    ativo := true          // Inferência curta (bool)\n\n    if ativo && saldo == 0 {\n        fmt.Println(\"Conta nova na versão\", Versao)\n    }\n}",
+      "keyTakeaways": [
+        "Use ':=' para criar e inicializar variáveis rapidamente dentro de funções; use '=' para alterar uma variável que já existe.",
+        "Go não possui variáveis 'não inicializadas' com lixo de memória: toda variável recebe seu Zero Value (0, \"\", false ou nil).",
+        "O 'switch' em Go para automaticamente ao final de cada 'case' (sem cair para o próximo case por acidente)."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código Go para declarar uma constante, uma variável explícita com 'var' e uma variável com inferência curta ':=':",
+      "codeTemplate": "{{blank}} Limite = 100\n{{blank}} contador int = 0\nnome {{blank}} \"Gopher\"",
+      "blanks": [
+        { "answer": "const", "placeholder": "constante" },
+        { "answer": "var", "placeholder": "variável" },
+        { "answer": ":=", "placeholder": "inferência" }
+      ],
+      "options": ["const", "var", ":=", "let", "final", "=="],
+      "explanation": "'const' define constantes em tempo de compilação, 'var' declara variáveis explicitamente e ':=' declara e infere o tipo."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva do zero em Go a criação de uma variável 'pontos' com valor 10 usando ':=' e um 'if pontos >= 10' que chame 'fmt.Println(pontos)':",
+      "starterCode": "// Crie a variável pontos e o bloco if abaixo:\n",
+      "requiredTokens": ["pontos", ":=", "10", "if", "fmt.Println"],
+      "sampleSolution": "pontos := 10\nif pontos >= 10 {\n    fmt.Println(pontos)\n}",
+      "hint": "Escreva: pontos := 10 na primeira linha e if pontos >= 10 { fmt.Println(pontos) } abaixo.",
+      "explanation": "Em Go não colocamos parênteses na condição do if, mas as chaves '{ }' são sempre obrigatórias."
+    }
+  ]
+}

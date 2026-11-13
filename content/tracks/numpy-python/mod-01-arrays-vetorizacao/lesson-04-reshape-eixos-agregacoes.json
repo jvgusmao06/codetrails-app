@@ -1,0 +1,40 @@
+{
+  "id": "numpy-reshape-axis-04",
+  "title": "Reshape, Transposição (.T) e Agregações por Eixo (axis=0 vs axis=1)",
+  "description": "Reorganize dimensões com .reshape() e domine o conceito mais cobrado em NumPy/Pandas: axis=0 (colunas) vs axis=1 (linhas).",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Entendendo axis=0 vs axis=1 de Uma Vez por Todas",
+      "content": "No NumPy, **`axis=0`** colapsa o eixo das linhas (calcula **por coluna**, de cima para baixo), enquanto **`axis=1`** colapsa o eixo das colunas (calcula **por linha**, da esquerda para a direita)! Além disso, **`.reshape(linhas, colunas)`** muda o formato do array mantendo os mesmos dados (use `-1` para o NumPy calcular uma dimensão sozinho!), e **`.T`** faz a transposição.",
+      "codeExample": "import numpy as np\n\nm = np.arange(1, 7).reshape(2, 3)  # [[1, 2, 3], [4, 5, 6]]\n\nprint(m.sum(axis=0))  # [5, 7, 9]  -> soma de cada COLUNA\nprint(m.sum(axis=1))  # [6, 15]    -> soma de cada LINHA\nprint(m.T.shape)      # (3, 2)     -> matriz transposta",
+      "keyTakeaways": [
+        "`axis=0` = agrega verticalmente (resultado tem tamanho = nº de colunas); `axis=1` = agrega horizontalmente (resultado tem tamanho = nº de linhas).",
+        "`arr.reshape(-1, 1)` transforma um vetor 1D `(n,)` em coluna 2D `(n, 1)` — muito exigido pelo Scikit-Learn!",
+        "`.mean()`, `.std()`, `.min()`, `.max()` e `.argmax()` (índice do maior valor) aceitam o parâmetro `axis`."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Em uma matriz `vendas` de shape `(12, 4)` (12 meses × 4 lojas), qual chamada calcula a **média mensal** (uma média para cada um dos 12 meses)?",
+      "options": [
+        "vendas.mean(axis=0)",
+        "vendas.mean(axis=1)",
+        "vendas.mean()",
+        "vendas.reshape(12)"
+      ],
+      "correctIndex": 1,
+      "explanation": "`axis=1` colapsa as 4 colunas (lojas) ao longo de cada linha, retornando um array de 12 médias (uma por mês)."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Transforme `v = np.arange(6)` em uma matriz 2x3 usando `.reshape(2, 3)` e calcule a soma por coluna com `.sum(axis=0)`:",
+      "starterCode": "import numpy as np\nv = np.arange(6)\n# Faça reshape(2, 3) e sum(axis=0):\n",
+      "requiredTokens": [".reshape(2, 3)", ".sum(axis=0)"],
+      "sampleSolution": "m = v.reshape(2, 3)\nsoma_cols = m.sum(axis=0)",
+      "hint": "Escreva `m = v.reshape(2, 3)` e `soma_cols = m.sum(axis=0)`.",
+      "explanation": "`.reshape(2, 3)` reorganiza os 6 números sem copiar dados, e `.sum(axis=0)` soma cada uma das 3 colunas."
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "go-funcoes-variadicas-03",
+  "title": "Funções em Go: Múltiplos Retornos, Variádicas (...T) e Closures",
+  "description": "Aprenda a assinatura idiomática de funções em Go retornando (valor, error), funções variádicas e funções anônimas.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Múltiplos Retornos e Funções Variádicas em Go",
+      "content": "Uma marca registrada do Go é que funções podem retornar **múltiplos valores** — quase sempre `(resultado, error)` em vez de usar exceções `try/catch`! Se quiser ignorar um dos retornos, use o identificador vazio **`_`** (blank identifier). Além disso, funções podem aceitar um número variável de argumentos usando **`...Tipo`** (como `fmt.Println(a, b, c)`), e funções são cidadãs de primeira classe (podem ser guardadas em variáveis como closures).",
+      "codeExample": "func dividir(a, b float64) (float64, error) {\n    if b == 0 {\n        return 0, fmt.Errorf(\"divisão por zero\")\n    }\n    return a / b, nil\n}\n\nfunc somarTudo(nums ...int) int {\n    total := 0\n    for _, n := range nums { total += n }\n    return total\n}",
+      "keyTakeaways": [
+        "Em Go, o padrão idiomático é retornar `(valor, err)` e checar `if err != nil { return err }`.",
+        "Use `_` para descartar valores retornados que você não precisa (ex: `for _, v := range slice`).",
+        "`nums ...int` transforma os argumentos recebidos em um slice `[]int` dentro da função."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a função Go que retorna um `int` e um `error`, e descarte o índice no loop `for range` usando `_`:",
+      "codeTemplate": "func somar(nums {{blank}}int) (int, {{blank}}) {\n    total := 0\n    for {{blank}}, n := range nums { total += n }\n    return total, nil\n}",
+      "blanks": [
+        { "answer": "...", "placeholder": "variádico" },
+        { "answer": "error", "placeholder": "erro" },
+        { "answer": "_", "placeholder": "ignorar" }
+      ],
+      "options": ["...", "error", "_", "*", "err", "void"],
+      "explanation": "`...int` define parâmetro variádico, `error` é o tipo nativo de erro e `_` ignora o índice."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva uma função Go `dobrar(x int) int` que retorne `x * 2`:",
+      "starterCode": "// Escreva a função dobrar em Go:\n",
+      "requiredTokens": ["func", "dobrar", "int", "return", "x * 2"],
+      "sampleSolution": "func dobrar(x int) int {\n    return x * 2\n}",
+      "hint": "Use: func dobrar(x int) int { return x * 2 }",
+      "explanation": "Em Go, o tipo do parâmetro e o tipo de retorno vêm depois do nome."
+    }
+  ]
+}

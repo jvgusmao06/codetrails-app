@@ -1,0 +1,48 @@
+{
+  "id": "java-main-01",
+  "title": "Ponto de Entrada e Tipagem Forte",
+  "description": "Escrevendo seu primeiro código na JVM e declarando variáveis estáticas.",
+  "xp": 15,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Tipagem Estática e Saída Padrão na JVM",
+      "content": "Java é uma linguagem fortemente tipada e compilada para bytecode da JVM. Toda variável precisa ter seu tipo declarado explicitamente antes do nome (como int para inteiros ou String para texto). Para exibir uma linha no terminal, usamos System.out.println().",
+      "codeExample": "public class Main {\n  public static void main(String[] args) {\n    int idade = 25;\n    String nome = \"Duke\";\n    System.out.println(nome);\n  }\n}",
+      "keyTakeaways": [
+        "System.out.println() imprime texto no console e pula uma linha.",
+        "Tipos primitivos como 'int' começam com letra minúscula.",
+        "'String' é uma classe em Java, por isso começa com letra maiúscula."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual comando exibe uma linha de texto no console padrão em Java?",
+      "options": [
+        "Console.WriteLine(\"Olá\");",
+        "System.out.println(\"Olá\");",
+        "print(\"Olá\");",
+        "std::cout << \"Olá\";"
+      ],
+      "correctIndex": 1,
+      "explanation": "Em Java, utilizamos o fluxo de saída padrão dentro da classe System: System.out.println()."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a declaração de uma variável inteira e um texto em Java:",
+      "codeTemplate": "{{blank}} idade = 25;\n{{blank}} nome = \"Duke\";",
+      "blanks": [
+        {
+          "answer": "int",
+          "placeholder": "tipo inteiro"
+        },
+        {
+          "answer": "String",
+          "placeholder": "tipo texto"
+        }
+      ],
+      "options": ["int", "String", "var", "str"],
+      "explanation": "Em Java, tipos primitivos como 'int' começam com minúscula, enquanto 'String' é uma classe e começa com letra maiúscula."
+    }
+  ]
+}

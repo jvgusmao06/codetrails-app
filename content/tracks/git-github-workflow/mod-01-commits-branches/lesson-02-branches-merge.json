@@ -1,0 +1,42 @@
+{
+  "id": "git-branches-02",
+  "title": "Branches Isoladas, git switch, merge e Conflitos",
+  "description": "Crie ramificações seguras com git switch -c, integre código com git merge e entenda como resolver conflitos.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Trabalhando em Paralelo com Branches e Merge",
+      "content": "No Git, uma 'branch' é apenas um ponteiro leve para um commit. Nunca desenvolvemos direto na branch 'main': criamos uma branch isolada com 'git switch -c minha-feature' (ou 'git checkout -b'). Quando terminamos, voltamos para a 'main' e rodamos 'git merge minha-feature'. Se duas pessoas editaram a mesma linha do mesmo arquivo, o Git marca o conflito com '<<<<<<< HEAD', '=======' e '>>>>>>>' para você escolher o código final.",
+      "codeExample": "git switch -c feat/login\n# ... faz commits na branch ...\ngit switch main\ngit merge feat/login\ngit branch -d feat/login  # Remove a branch já mesclada",
+      "keyTakeaways": [
+        "'git switch -c nome' (Git 2.23+) cria e já muda para a nova branch em um único comando claro.",
+        "Para resolver um conflito de merge: edite o arquivo removendo os marcadores '<<<<<<<', rode 'git add' no arquivo e finalize com 'git commit'.",
+        "'git branch -d nome' apaga com segurança uma branch local que já foi integrada."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Após editar um arquivo para resolver manualmente os marcadores `<<<<<<< HEAD` de um conflito de merge, quais comandos finalizam a resolução?",
+      "options": [
+        "git conflict --resolve e git push",
+        "git add <arquivo> seguido de git commit",
+        "git init seguido de git rebase",
+        "git reset --hard"
+      ],
+      "correctIndex": 1,
+      "explanation": "No Git, marcar um conflito como resolvido é simplesmente executar 'git add <arquivo>' após limpar os marcadores e concluir com 'git commit'."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os comandos para voltar para a branch main, mesclar a branch 'fix-bug' e deletar a branch 'fix-bug' local:",
+      "blocks": [
+        "git switch main",
+        "git merge fix-bug",
+        "git branch -d fix-bug"
+      ],
+      "correctOrder": [0, 1, 2],
+      "explanation": "Primeiro mudamos para a branch de destino (main), trazemos as alterações com merge e por fim limpamos a branch antiga com branch -d."
+    }
+  ]
+}

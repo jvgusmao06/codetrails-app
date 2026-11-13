@@ -1,0 +1,39 @@
+{
+  "id": "django-urls-views-02",
+  "title": "URLs (path), Views e Respostas HTTP (render vs JsonResponse)",
+  "description": "Roteie requisições em urls.py com path(), crie views seguras e retorne HTML ou JSON.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Roteamento MVT: urls.py -> views.py",
+      "content": "No Django (arquitetura MVT: Model-View-Template), toda requisição HTTP passa primeiro pelo arquivo **`urls.py`**, onde mapeamos rotas com **`path('rota/', minha_view, name='nome')`**. A função View recebe o objeto `request` e retorna um `HttpResponse`, `render(request, 'template.html', contexto)` ou **`JsonResponse({...})`** para APIs rápidas.",
+      "codeExample": "from django.urls import path\nfrom django.http import JsonResponse\n\ndef health_check(request):\n    return JsonResponse({\"status\": \"ok\"})\n\nurlpatterns = [\n    path(\"health/\", health_check, name=\"health\"),\n]",
+      "keyTakeaways": [
+        "`path('produtos/<int:id>/', ...)` captura parâmetros tipados da URL e passa `id` para a view.",
+        "Sempre dê um `name='...'` nas rotas para usar `reverse()` ou `{% url %}` sem hardcode de URLs.",
+        "`JsonResponse` serializa dicionários Python direto para JSON com `Content-Type: application/json`."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o mapeamento de rota em `urls.py` e o retorno JSON na view Django:",
+      "codeTemplate": "def status_view(request):\n    return {{blank}}({\"online\": True})\n\nurlpatterns = [\n    {{blank}}(\"status/\", status_view, name=\"status\"),\n]",
+      "blanks": [
+        { "answer": "JsonResponse", "placeholder": "resposta JSON" },
+        { "answer": "path", "placeholder": "rota" }
+      ],
+      "options": ["JsonResponse", "path", "render", "route", "HttpResponse"],
+      "explanation": "`JsonResponse` retorna JSON e `path()` registra a rota dentro da lista `urlpatterns`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva uma view Django `def api_info(request):` que retorne `JsonResponse({\"app\": \"CodeTrilhas\"})`:",
+      "starterCode": "from django.http import JsonResponse\n# Escreva def api_info(request):\n",
+      "requiredTokens": ["def", "api_info(request)", "return", "JsonResponse", "\"app\""],
+      "sampleSolution": "def api_info(request):\n    return JsonResponse({\"app\": \"CodeTrilhas\"})",
+      "hint": "Defina `def api_info(request): return JsonResponse({\"app\": \"CodeTrilhas\"})`.",
+      "explanation": "Toda view baseada em função no Django recebe `request` como primeiro argumento e retorna uma resposta HTTP."
+    }
+  ]
+}

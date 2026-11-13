@@ -1,0 +1,40 @@
+{
+  "id": "go-sync-select-waitgroup-02",
+  "title": "Sincronização: select, sync.WaitGroup e sync.Mutex",
+  "description": "Coordene múltiplas goroutines com segurança usando WaitGroup, escolha entre múltiplos channels com select e evite Race Conditions com Mutex.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Esperando Goroutines e Evitando Race Conditions",
+      "content": "Se `main()` terminar antes das suas goroutines, o programa encerra na hora! Para esperar várias goroutines terminarem, usamos **`sync.WaitGroup`**: `wg.Add(1)` antes de lançar, `defer wg.Done()` dentro da goroutine e `wg.Wait()` no final. Quando duas goroutines precisam alterar a mesma variável compartilhada, usamos **`sync.Mutex`** (`mu.Lock()` e `defer mu.Unlock()`). E o comando **`select`** funciona como um `switch` para múltiplos channels, executando o primeiro que ficar pronto!",
+      "codeExample": "var wg sync.WaitGroup\nwg.Add(1)\ngo func() {\n    defer wg.Done()\n    fmt.Println(\"Tarefa concluída\")\n}()\nwg.Wait() // Aguarda todas as goroutines terminarem\n\nselect {\ncase msg := <-canal1:\n    fmt.Println(msg)\ncase <-time.After(time.Second):\n    fmt.Println(\"Timeout!\")\n}",
+      "keyTakeaways": [
+        "`wg.Add(n)`, `defer wg.Done()` e `wg.Wait()` garantem que nenhuma goroutine seja abandonada.",
+        "`select` bloqueia até que um dos `case <-canal` esteja pronto (excelente para timeouts com `time.After`).",
+        "Rode `go test -race` para detectar automaticamente condições de corrida (data races) na memória."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual estrutura da biblioteca padrão `sync` do Go serve para bloquear a função principal até que um grupo de goroutines finalize sua execução?",
+      "options": [
+        "sync.Pool",
+        "sync.WaitGroup",
+        "sync.Once",
+        "fmt.Wait"
+      ],
+      "correctIndex": 1,
+      "explanation": "`sync.WaitGroup` mantém um contador atômico de tarefas pendentes (`Add`, `Done`, `Wait`)."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva um bloco `select` em Go com dois `case`: um recebendo `msg := <-ch` e outro com `default:` imprimindo `fmt.Println(\"vazio\")`:",
+      "starterCode": "// Escreva o select não-bloqueante:\n",
+      "requiredTokens": ["select", "case", "<-ch", "default:", "fmt.Println"],
+      "sampleSolution": "select {\ncase msg := <-ch:\n    fmt.Println(msg)\ndefault:\n    fmt.Println(\"vazio\")\n}",
+      "hint": "Use `select { case msg := <-ch: fmt.Println(msg); default: fmt.Println(\"vazio\") }`.",
+      "explanation": "Adicionar `default:` em um `select` torna a leitura do channel não-bloqueante."
+    }
+  ]
+}

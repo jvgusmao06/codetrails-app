@@ -1,0 +1,40 @@
+{
+  "id": "algo-ordenacao-twopointers-02",
+  "title": "Ordenação O(n log n) e Técnica de Dois Ponteiros (Two Pointers)",
+  "description": "Compare algoritmos quadráticos O(n²) com ordenações eficientes O(n log n) e domine o padrão de Dois Ponteiros para resolver desafios em O(n).",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Ordenação Eficiente e o Padrão Two Pointers",
+      "content": "Algoritmos simples de ordenação como Bubble Sort comparam todos contra todos e custam **$O(n^2)$** — inviável para listas grandes. Já algoritmos baseados em Dividir para Conquistar (como **Merge Sort**, **Quick Sort** e o **Timsort** nativo de Python/Java/JS) ordenam em **$O(n \\log n)$**! Além disso, em arrays ou strings, a técnica de **Dois Ponteiros (Two Pointers)** — colocar um índice `esq = 0` no início e `dir = len(s) - 1` no fim, movendo-os para o centro — resolve problemas como inverter listas, checar palíndromos ou encontrar pares de soma em tempo linear **$O(n)$** e memória constante **$O(1)$**!",
+      "codeExample": "def eh_palindromo(texto):\n    esq = 0\n    dir = len(texto) - 1\n    while esq < dir:\n        if texto[esq] != texto[dir]:\n            return False\n        esq += 1\n        dir -= 1\n    return True\n\nprint(eh_palindromo('radar'))  # True",
+      "keyTakeaways": [
+        "Para 1 milhão de itens, $O(n^2)$ faz ~1 trilhão de operações, enquanto $O(n \\log n)$ faz apenas ~20 milhões!",
+        "Use sempre o `.sort()` / `sorted()` nativo da linguagem (que implementa Timsort/PDQSort em $O(n \\log n)$).",
+        "O padrão Two Pointers (`esq` e `dir` caminhando um em direção ao outro) evita criar cópias na memória e roda em $O(n)$."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é a complexidade de tempo dos algoritmos de ordenação nativos das linguagens modernas (como Timsort em Python/Java ou Merge Sort) no caso médio e pior caso?",
+      "options": [
+        "O(n²)",
+        "O(n log n)",
+        "O(2ⁿ)",
+        "O(1)"
+      ],
+      "correctIndex": 1,
+      "explanation": "Algoritmos eficientes de ordenação por comparação como Merge Sort e Timsort dividem o problema ao meio recursivamente (log n níveis) fazendo trabalho linear (n) por nível: O(n log n)."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Complete um loop de Dois Ponteiros que inicialize `esq = 0` e `dir = len(arr) - 1` e, enquanto `while esq < dir:`, avance `esq += 1` e recue `dir -= 1`:",
+      "starterCode": "def dois_ponteiros(arr):\n    # Inicialize esq, dir e o loop while esq < dir:\n",
+      "requiredTokens": ["esq", "0", "dir", "len(arr) - 1", "while", "esq < dir", "esq += 1", "dir -= 1"],
+      "sampleSolution": "def dois_ponteiros(arr):\n    esq = 0\n    dir = len(arr) - 1\n    while esq < dir:\n        esq += 1\n        dir -= 1",
+      "hint": "Defina 'esq = 0', 'dir = len(arr) - 1', abra 'while esq < dir:' e dentro coloque 'esq += 1' e 'dir -= 1'.",
+      "explanation": "Mover dois índices das extremidades até se encontrarem no meio visita cada elemento uma única vez: O(n) de tempo e O(1) de espaço extra!"
+    }
+  ]
+}

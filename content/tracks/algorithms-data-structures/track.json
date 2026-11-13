@@ -1,0 +1,35 @@
+{
+  "id": "algorithms-data-structures",
+  "title": "Algoritmos & Estruturas (Big O)",
+  "description": "Compreenda desde o zero como Arrays funcionam na memória, complexidade O(1) vs O(n), Busca Binária, Pilhas (LIFO), Filas (FIFO), Hash Maps, Recursão e Ordenação O(n log n).",
+  "category": "concept",
+  "color": "#EC4899",
+  "icon": "🧠",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-complexidade",
+      "title": "Módulo 1: Memória, Notação Big O e Estruturas Clássicas",
+      "description": "Entenda arrays na RAM, busca linear vs binária, pilhas, filas e tabelas hash O(1).",
+      "lessons": [
+        "lesson-00-arrays-memoria",
+        "lesson-01-big-o-busca",
+        "lesson-02-pilhas-filas",
+        "lesson-03-listas-ligadas"
+      ]
+    },
+    {
+      "id": "mod-02-recursao-ordenacao",
+      "title": "Módulo 2: Recursão, Call Stack, Ordenação e Two Pointers",
+      "description": "Divida problemas com recursão segura, compare O(n²) vs O(n log n) e aplique a técnica de Dois Ponteiros.",
+      "lessons": [
+        "lesson-01-recursao-callstack",
+        "lesson-02-ordenacao-two-pointers",
+        "lesson-03-sliding-window",
+        "lesson-04-arvores-bst-dfs-bfs",
+        "lesson-05-grafos-bfs-dijkstra",
+        "lesson-06-programacao-dinamica-memo"
+      ]
+    }
+  ]
+}

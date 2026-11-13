@@ -1,0 +1,43 @@
+{
+  "id": "pandas-df-01",
+  "title": "DataFrames, Filtros Booleanos e GroupBy",
+  "description": "Carregue dados em um DataFrame do Pandas, aplique máscaras booleanas e calcule métricas agrupadas.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Operações Vetorizadas com Pandas DataFrame",
+      "content": "O Pandas é a biblioteca padrão de Ciência de Dados em Python. Em vez de iterar linha por linha com loops 'for' lentos, operamos sobre colunas inteiras de um DataFrame de forma vetorizada em C: filtramos linhas com máscaras booleanas (df[df['vendas'] > 100]) e agregamos dados com .groupby().",
+      "codeExample": "import pandas as pd\n\ndf = pd.read_csv(\"vendas.csv\")\n\n# Remover nulos na coluna 'valor'\ndf = df.dropna(subset=[\"valor\"])\n\n# Filtrar vendas altas e somar por categoria\naltas = df[df[\"valor\"] > 500]\ntotal_por_cat = altas.groupby(\"categoria\")[\"valor\"].sum()",
+      "keyTakeaways": [
+        "df[df['coluna'] > valor] filtra todas as linhas onde a condição é verdadeira de uma só vez.",
+        "df.groupby('coluna')['metrica'].mean() agrupa e calcula a média sem precisar de laços.",
+        "Evite usar 'for' ou '.iterrows()' em DataFrames grandes: operações vetorizadas são até 100x mais rápidas."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código Pandas para ler um CSV, filtrar usuários ativos e calcular a média de idade por cidade:",
+      "codeTemplate": "df = pd.{{blank}}(\"usuarios.csv\")\nativos = df[df[\"ativo\"] == True]\nmedia = ativos.{{blank}}(\"cidade\")[\"idade\"].{{blank}}()",
+      "blanks": [
+        { "answer": "read_csv", "placeholder": "leitor" },
+        { "answer": "groupby", "placeholder": "agrupador" },
+        { "answer": "mean", "placeholder": "agregação" }
+      ],
+      "options": ["read_csv", "groupby", "mean", "open_csv", "group_by", "avg"],
+      "explanation": "Em Pandas usamos pd.read_csv(), .groupby() (tudo junto) e .mean() para calcular a média aritmética."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Ao combinar duas condições em um filtro de DataFrame do Pandas, o operador 'and' do Python gera ValueError (ambiguous truth value). Clique na linha com o erro:",
+      "lines": [
+        "import pandas as pd",
+        "df = pd.DataFrame({\"idade\": [20, 35], \"vip\": [True, False]})",
+        "filtro = df[df[\"idade\"] > 18 and df[\"vip\"] == True]",
+        "print(filtro)"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Em filtros vetorizados do Pandas, não se pode usar 'and'/'or' do Python. Deve-se usar '&' (E comercial) ou '|' com cada condição entre parênteses: df[(df['idade'] > 18) & (df['vip'] == True)]."
+    }
+  ]
+}

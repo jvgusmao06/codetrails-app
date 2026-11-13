@@ -1,0 +1,40 @@
+{
+  "id": "pytorch-tensors-01",
+  "title": "Tensores PyTorch, GPU (.to(device)) e Autograd (.backward())",
+  "description": "Crie tensores acelerados por GPU e entenda como o Autograd calcula gradientes automaticamente.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Tensores + Autograd = Motor do Deep Learning",
+      "content": "Um **`torch.Tensor`** é quase idêntico a um array NumPy, mas com dois superpoderes: pode rodar em **GPU (CUDA/MPS)** com `.to(device)` e rastreia operações matemáticas quando **`requires_grad=True`**. Ao chamar **`loss.backward()`**, o motor **Autograd** calcula automaticamente todas as derivadas (`.grad`) pela Regra da Cadeia!",
+      "codeExample": "import torch\n\ndevice = \"cuda\" if torch.cuda.is_available() else \"cpu\"\nx = torch.tensor([3.0], requires_grad=True)\ny = x ** 2 + 2 * x  # y = x² + 2x\ny.backward()         # Calcula dy/dx = 2x + 2 = 8!\nprint(x.grad)        # tensor([8.])",
+      "keyTakeaways": [
+        "Escreva código agnóstico de hardware: `device = \"cuda\" if torch.cuda.is_available() else \"cpu\"` e mova modelo + tensores com `.to(device)`.",
+        "`requires_grad=True` ativa o grafo computacional para calcular gradientes.",
+        "`.backward()` acumula gradientes em `.grad` (por isso zeramos no loop de treino!)."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "O que acontece quando executamos `y.backward()` após calcular `y` a partir de um tensor `x` com `requires_grad=True`?",
+      "options": [
+        "Zera os valores de x",
+        "Calcula os gradientes (derivadas) de y em relação a x e armazena em `x.grad`",
+        "Salva o tensor no disco",
+        "Converte o tensor para lista Python"
+      ],
+      "correctIndex": 1,
+      "explanation": "O Autograd percorre o grafo computacional de trás para frente (backpropagation) preenchendo `x.grad`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie `x = torch.tensor([2.0], requires_grad=True)`, calcule `y = x * 5` e execute `y.backward()`:",
+      "starterCode": "import torch\n# Crie x com requires_grad=True, calcule y e chame backward():\n",
+      "requiredTokens": ["torch.tensor", "requires_grad=True", "y = x * 5", "y.backward()"],
+      "sampleSolution": "x = torch.tensor([2.0], requires_grad=True)\ny = x * 5\ny.backward()",
+      "hint": "Use `x = torch.tensor([2.0], requires_grad=True)`, `y = x * 5` e `y.backward()`.",
+      "explanation": "Em seguida, `x.grad` conterá `tensor([5.])`."
+    }
+  ]
+}

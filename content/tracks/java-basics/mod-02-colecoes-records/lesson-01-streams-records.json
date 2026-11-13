@@ -1,0 +1,45 @@
+{
+  "id": "java-streams-01",
+  "title": "Coleções, Records, Lambdas e Streams API",
+  "description": "Escreva Java moderno (17/21+): List, Map, classes imutáveis com record, expressões lambda e pipelines de Streams.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Java Moderno: Records, Lambdas (->) e Streams",
+      "content": "O Java evoluiu muito além do código verboso clássico. Com 'record', você cria uma classe de dados imutável completa (construtor, getters, equals, hashCode e toString) em 1 linha! E com a API de Streams combinada a expressões Lambda (->), você filtra, transforma e agrega coleções de forma declarativa.",
+      "codeExample": "import java.util.List;\n\n// Record imutável em 1 linha (Java 16+)\npublic record Produto(String nome, double preco) {}\n\npublic class Loja {\n    public static void main(String[] args) {\n        var itens = List.of(new Produto(\"Mouse\", 80), new Produto(\"Monitor\", 900));\n        var caros = itens.stream()\n            .filter(p -> p.preco() > 100)\n            .map(Produto::nome)\n            .toList();\n    }\n}",
+      "keyTakeaways": [
+        "'public record Nome(Tipo campo) {}' elimina dezenas de linhas de getters e construtores repetitivos.",
+        "Em Java, lambdas usam a seta simples '->' (ex: x -> x * 2), diferente do '=>' do JavaScript.",
+        "Sempre compare objetos e Strings em Java usando '.equals()' em vez de '=='."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código Java tenta verificar se a senha digitada é igual a 'admin123', mas falha mesmo quando o texto é idêntico. Clique na linha com o bug:",
+      "lines": [
+        "public boolean autenticar(String senhaDigitada) {",
+        "    if (senhaDigitada == \"admin123\") {",
+        "        return true;",
+        "    }",
+        "    return false;",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Em Java, '==' em objetos (como String) compara referências de memória, não o conteúdo do texto! Deve-se usar '\"admin123\".equals(senhaDigitada)'."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a definição de um record Java e o pipeline de Stream para filtrar números pares:",
+      "codeTemplate": "public {{blank}} Usuario(String nome, int idade) {}\n\nvar pares = numeros.{{blank}}()\n    .filter(n {{blank}} n % 2 == 0)\n    .toList();",
+      "blanks": [
+        { "answer": "record", "placeholder": "tipo classe" },
+        { "answer": "stream", "placeholder": "método" },
+        { "answer": "->", "placeholder": "lambda" }
+      ],
+      "options": ["record", "stream", "->", "=>", "struct", "map"],
+      "explanation": "Records criam portadores de dados imutáveis, .stream() abre o fluxo funcional e '->' define a expressão lambda em Java."
+    }
+  ]
+}

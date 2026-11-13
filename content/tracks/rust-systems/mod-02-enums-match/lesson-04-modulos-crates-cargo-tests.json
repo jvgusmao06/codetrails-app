@@ -1,0 +1,40 @@
+{
+  "id": "rust-modulos-cargo-tests-04",
+  "title": "Módulos (mod, pub, use), Cargo e Testes Nativos (#[test])",
+  "description": "Organize projetos Rust em módulos com visibilidade pub, gerencie pacotes com Cargo e escreva testes unitários com #[test] e assert_eq!.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Organizando Código com mod/pub/use e Testando com cargo test",
+      "content": "Em Rust, **tudo é privado por padrão** dentro de um módulo (`mod`). Para expor uma função ou struct para fora do módulo, marcamos explicitamente com **`pub`** (`pub fn`, `pub struct`), e importamos caminhos com **`use`**. O gerenciador oficial **Cargo** (`Cargo.toml`) compila, baixa bibliotecas (*crates*) e roda testes nativos: basta anotar funções com **`#[test]`** e usar macros como `assert_eq!(a, b)`!",
+      "codeExample": "mod matematica {\n    pub fn somar(a: i32, b: i32) -> i32 { a + b }\n}\n\nuse matematica::somar;\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n    #[test]\n    fn testa_soma() {\n        assert_eq!(somar(2, 3), 5);\n    }\n}",
+      "keyTakeaways": [
+        "Em Rust, funções e campos de struct são privados por padrão; adicione `pub` para torná-los públicos.",
+        "`cargo test` compila e executa todas as funções marcadas com `#[test]`.",
+        "`assert_eq!(esperado, obtido)` falha o teste com mensagem detalhada se os valores diferirem."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o módulo e o teste unitário em Rust expondo a função com `pub`, importando com `use` e anotando o teste:",
+      "codeTemplate": "mod util {\n    {{blank}} fn dobro(x: i32) -> i32 { x * 2 }\n}\n{{blank}} util::dobro;\n\n{{blank}}\nfn testa_dobro() { assert_eq!(dobro(4), 8); }",
+      "blanks": [
+        { "answer": "pub", "placeholder": "público" },
+        { "answer": "use", "placeholder": "importar" },
+        { "answer": "#[test]", "placeholder": "atributo" }
+      ],
+      "options": ["pub", "use", "#[test]", "export", "import", "@Test"],
+      "explanation": "`pub` torna visível, `use` importa para o escopo e `#[test]` registra a função no runner do `cargo test`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva um teste unitário em Rust anotado com `#[test]` chamado `fn testa_ok()` usando `assert_eq!(2 + 2, 4);`:",
+      "starterCode": "// Escreva o teste unitário com #[test]:\n",
+      "requiredTokens": ["#[test]", "fn", "testa_ok()", "assert_eq!", "2 + 2", "4"],
+      "sampleSolution": "#[test]\nfn testa_ok() {\n    assert_eq!(2 + 2, 4);\n}",
+      "hint": "Coloque `#[test]` na linha acima de `fn testa_ok() { assert_eq!(2 + 2, 4); }`.",
+      "explanation": "O suporte nativo a testes no próprio compilador e no `cargo test` incentiva testar cada módulo desde o início."
+    }
+  ]
+}

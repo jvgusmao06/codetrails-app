@@ -1,0 +1,39 @@
+{
+  "id": "fastapi-pydantic-post-02",
+  "title": "FastAPI + Pydantic v2: POST, Request Body e Validação Automática",
+  "description": "Receba e valide JSON automaticamente em rotas @app.post usando BaseModel e Field() do Pydantic.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Validando Payloads JSON com Pydantic BaseModel",
+      "content": "No **FastAPI**, você não escreve `if 'email' not in body:` manualmente. Basta declarar uma classe herdando de **`BaseModel`** (do Pydantic) e colocá-la como parâmetro da função da rota `@app.post(...)`! O FastAPI lê o JSON, valida os tipos e regras (como `Field(gt=0)`), retorna erro **422 Unprocessable Entity** detalhado se vier inválido e ainda gera a documentação interativa Swagger (`/docs`)!",
+      "codeExample": "from fastapi import FastAPI\nfrom pydantic import BaseModel, Field\n\napp = FastAPI()\n\nclass ProdutoIn(BaseModel):\n    nome: str = Field(min_length=2)\n    preco: float = Field(gt=0)\n\n@app.post(\"/produtos\", status_code=201)\nasync def criar_produto(produto: ProdutoIn):\n    return {\"criado\": produto.nome, \"preco\": produto.preco}",
+      "keyTakeaways": [
+        "`BaseModel` valida tipos e converte entradas compatíveis automaticamente.",
+        "`Field(gt=0, max_length=100)` adiciona restrições numéricas e de tamanho.",
+        "Use `status_code=201` em rotas `POST` de criação (padrão REST)."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o schema Pydantic e a rota POST do FastAPI para criar um usuário retornando status 201:",
+      "codeTemplate": "class UsuarioIn({{blank}}):\n    nome: str\n    idade: int = Field(ge=18)\n\n@app.{{blank}}(\"/usuarios\", status_code=201)\nasync def criar(dados: UsuarioIn):\n    return dados",
+      "blanks": [
+        { "answer": "BaseModel", "placeholder": "classe base" },
+        { "answer": "post", "placeholder": "método HTTP" }
+      ],
+      "options": ["BaseModel", "post", "get", "Model", "Schema"],
+      "explanation": "Schemas Pydantic herdam de `BaseModel` e rotas de criação usam `@app.post(..., status_code=201)`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie uma classe `class Item(BaseModel):` com `titulo: str` e `preco: float = Field(gt=0)`:",
+      "starterCode": "from pydantic import BaseModel, Field\n# Crie o schema Item:\n",
+      "requiredTokens": ["class", "Item(BaseModel):", "titulo: str", "preco: float", "Field(gt=0)"],
+      "sampleSolution": "class Item(BaseModel):\n    titulo: str\n    preco: float = Field(gt=0)",
+      "hint": "Defina `class Item(BaseModel):` com `titulo: str` e `preco: float = Field(gt=0)`.",
+      "explanation": "O FastAPI usa esse modelo para validar o corpo da requisição e gerar o OpenAPI Schema."
+    }
+  ]
+}

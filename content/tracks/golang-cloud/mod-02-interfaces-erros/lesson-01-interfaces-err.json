@@ -1,0 +1,47 @@
+{
+  "id": "go-interfaces-01",
+  "title": "Structs, Interfaces Implícitas e Erros",
+  "description": "Aprenda composição com structs, métodos receptores, interfaces sem 'implements' e o padrão if err != nil.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Structs, Receivers e Interfaces Implícitas",
+      "content": "Go não possui classes nem herança (extends). Em vez disso, definimos dados com 'struct' e associamos métodos usando um receptor (receiver). As interfaces em Go são satisfeitas implicitamente: se o seu struct implementa os métodos exigidos por uma interface, ele já a implementa automaticamente — sem precisar declarar 'implements'.",
+      "codeExample": "type Notificador interface {\n    Enviar(msg string) error\n}\n\ntype Email struct { Destino string }\n\n// Método associado ao struct Email\nfunc (e Email) Enviar(msg string) error {\n    if e.Destino == \"\" {\n        return fmt.Errorf(\"destino vazio\")\n    }\n    return nil\n}",
+      "keyTakeaways": [
+        "Métodos em Go declaram o receptor entre 'func' e o nome do método: func (u *Usuario) Salvar().",
+        "Use receptor ponteiro (*T) quando o método precisar modificar os campos do struct.",
+        "Funções que podem falhar retornam (Resultado, error) e devem ter o erro checado antes de usar o valor."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O método Depositar deveria somar o valor ao Saldo da Conta, mas o saldo continua 0 após a chamada. Clique na linha com o bug:",
+      "lines": [
+        "type Conta struct { Saldo int }",
+        "func (c Conta) Depositar(valor int) {",
+        "    c.Saldo += valor",
+        "}",
+        "func main() {",
+        "    minha := Conta{Saldo: 0}",
+        "    minha.Depositar(100)",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Na linha 2, o receptor '(c Conta)' recebe uma cópia por valor do struct. Para alterar o struct original, o receptor deve ser um ponteiro: 'func (c *Conta) Depositar(valor int)'."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Como fazemos um struct 'PostgresRepo' implementar a interface 'Repositorio' em Go?",
+      "options": [
+        "Usando 'type PostgresRepo struct implements Repositorio'",
+        "Apenas implementando em PostgresRepo todos os métodos com a mesma assinatura da interface Repositorio",
+        "Herdando a classe base Repositorio com 'extends'",
+        "Registrando o struct no arquivo go.mod"
+      ],
+      "correctIndex": 1,
+      "explanation": "Em Go, interfaces são implícitas (structural typing): basta implementar os métodos exigidos pela interface e o compilador reconhece a compatibilidade."
+    }
+  ]
+}

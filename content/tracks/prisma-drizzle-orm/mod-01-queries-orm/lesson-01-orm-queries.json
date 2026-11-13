@@ -1,0 +1,44 @@
+{
+  "id": "orm-queries-01",
+  "title": "Consultas Type-Safe, Include/With e o Problema N+1",
+  "description": "Busque registros filtrados com Prisma/Drizzle e evite disparar centenas de queries repetidas no banco.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "ORMs Type-Safe e Prevenção do Problema N+1",
+      "content": "ORMs modernos para TypeScript (como Prisma e Drizzle) inferem os tipos das colunas diretamente do schema do banco. Um dos erros mais graves em produção é o 'Problema de Query N+1': buscar uma lista de N usuários e, dentro de um loop 'for', fazer uma nova query para buscar os posts de cada usuário. A solução é carregar a relação de uma vez usando 'include' (Prisma) ou 'with' (Drizzle).",
+      "codeExample": "// Bom: Carrega usuários + seus posts em uma única operação (Eager Loading)\nconst usuarios = await prisma.user.findMany({\n  where: { ativo: true },\n  include: { posts: true },\n  take: 20,\n});",
+      "keyTakeaways": [
+        "findMany({ where, include, take }) filtra, carrega relações e limita o número de registros.",
+        "Nunca execute queries de banco ('await prisma...') dentro de um loop for sobre resultados anteriores (N+1).",
+        "Use 'select' quando precisar apenas de 2 ou 3 colunas para economizar tráfego de rede."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código sofre do clássico problema de performance N+1 (executa 1 query para buscar autores e +N queries dentro do loop). Clique na linha que dispara as queries repetidas dentro do laço:",
+      "lines": [
+        "const autores = await db.author.findMany();",
+        "for (const autor of autores) {",
+        "  const livros = await db.book.findMany({ where: { authorId: autor.id } });",
+        "  console.log(autor.nome, livros.length);",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Na linha 3, executar 'await db.book.findMany' dentro do loop dispara uma viagem ao banco para cada autor. Deve-se usar 'include: { books: true }' na primeira query!"
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a consulta Prisma para buscar usuários ativos incluindo seus pedidos (orders) em uma só chamada:",
+      "codeTemplate": "const lista = await prisma.user.{{blank}}({\n  {{blank}}: { ativo: true },\n  {{blank}}: { orders: true }\n});",
+      "blanks": [
+        { "answer": "findMany", "placeholder": "método" },
+        { "answer": "where", "placeholder": "filtro" },
+        { "answer": "include", "placeholder": "relação" }
+      ],
+      "options": ["findMany", "where", "include", "selectAll", "filter", "join"],
+      "explanation": "No Prisma Client usamos findMany(), 'where' para condições de filtro e 'include' para trazer tabelas relacionadas."
+    }
+  ]
+}

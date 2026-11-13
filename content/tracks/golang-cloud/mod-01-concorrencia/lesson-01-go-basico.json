@@ -1,0 +1,42 @@
+{
+  "id": "go-core-01",
+  "title": "Inferência := e Concorrência com go",
+  "description": "Criando funções concorrentes leves e variáveis tipadas.",
+  "xp": 20,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Simplicidade e Goroutines em Go",
+      "content": "Criada no Google para escalar sistemas distribuídos, a linguagem Go usa o operador ':=' dentro de funções para declarar e inicializar variáveis com inferência de tipo estático. Para rodar qualquer função em segundo plano (concorrência leve), basta anteceder a chamada com a palavra-chave 'go'.",
+      "codeExample": "package main\nimport \"fmt\"\n\nfunc main() {\n    porta := 8080\n    go processarFila()\n    fmt.Println(porta)\n}",
+      "keyTakeaways": [
+        "O operador ':=' declara e atribui variáveis dentro de funções.",
+        "A palavra-chave 'go' inicia uma Goroutine leve gerenciada pelo runtime."
+      ]
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene a estrutura de um programa básico em Go na ordem correta:",
+      "blocks": [
+        "func main() {",
+        "package main",
+        "    fmt.Println(\"Servidor Go Ativo\")\n}",
+        "import \"fmt\""
+      ],
+      "correctOrder": [1, 3, 0, 2],
+      "explanation": "Todo arquivo Go começa com a declaração do pacote (package main), seguida pelos imports e pela função main()."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Encontre a linha com erro ao tentar redeclarar uma variável já existente usando ':=' em Go:",
+      "lines": [
+        "func configurar() {",
+        "    tentativas := 3",
+        "    tentativas := 5",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Em Go, ':=' cria uma NOVA variável. Para atualizar o valor de uma variável já declarada no mesmo escopo, usa-se apenas '=' (tentativas = 5)."
+    }
+  ]
+}

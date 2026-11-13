@@ -1,0 +1,42 @@
+{
+  "id": "tw-flex-01",
+  "title": "Layouts com Flexbox",
+  "description": "Alinhando elementos horizontalmente e verticalmente.",
+  "xp": 15,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Classes Utilitárias de Layout e Espaçamento",
+      "content": "Em vez de criar arquivos CSS separados para cada componente, o Tailwind oferece classes atômicas previsíveis. Cada unidade numérica equivale a 0.25rem (4px): portanto, p-4 aplica 16px de padding. Para alinhar elementos lado a lado, combinamos 'flex', 'items-center' e 'justify-between'.",
+      "codeExample": "<header className=\"flex items-center justify-between p-4\">\n  <span>Logo</span>\n  <nav>Menu</nav>\n</header>",
+      "keyTakeaways": [
+        "'flex' ativa o Flexbox e 'items-center' centraliza verticalmente.",
+        "'p-4' adiciona padding em todos os lados (1rem / 16px)."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Ative o Flexbox e centralize os itens no eixo vertical com Tailwind:",
+      "codeTemplate": "<div className=\"{{blank}} {{blank}} justify-between\">",
+      "blanks": [
+        {
+          "answer": "flex",
+          "placeholder": "display"
+        },
+        {
+          "answer": "items-center",
+          "placeholder": "alinhamento"
+        }
+      ],
+      "options": ["flex", "items-center", "block", "text-center"],
+      "explanation": "A classe 'flex' define display: flex e 'items-center' aplica align-items: center."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual classe do Tailwind adiciona espaçamento interno (padding) de 1rem (16px) em todos os lados?",
+      "options": ["m-4", "p-4", "gap-4", "space-x-4"],
+      "correctIndex": 1,
+      "explanation": "Na escala padrão do Tailwind (1 unidade = 0.25rem), 'p-4' equivale a padding: 1rem (16px)."
+    }
+  ]
+}

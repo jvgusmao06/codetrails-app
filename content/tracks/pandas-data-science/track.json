@@ -1,0 +1,25 @@
+{
+  "id": "pandas-data-science",
+  "title": "Pandas & Data Science",
+  "description": "Analise, filtre e agregue grandes volumes de dados tabulares em Python com DataFrames, filtros booleanos e groupby.",
+  "category": "library",
+  "languageId": "python-basics",
+  "prerequisites": ["python-basics"],
+  "color": "#14B8A6",
+  "icon": "🐼",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-dataframes",
+      "title": "Módulo 1: DataFrames, Filtros e GroupBy",
+      "description": "Manipule tabelas de dados vetorizadas sem loops lentos.",
+      "lessons": [
+        "lesson-01-df-groupby",
+        "lesson-02-leitura-inspecao-csv",
+        "lesson-03-loc-iloc-selecao",
+        "lesson-04-limpeza-nulos-duplicatas",
+        "lesson-05-merge-concat-apply"
+      ]
+    }
+  ]
+}

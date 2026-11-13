@@ -1,0 +1,39 @@
+{
+  "id": "cpp-vector-map-auto-04",
+  "title": "STL Moderna: std::vector, std::unordered_map, auto e Range-For",
+  "description": "Use os containers mais importantes do C++ moderno com inferência auto e loops range-based for.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Containers Nativos da STL (Standard Template Library)",
+      "content": "A biblioteca padrão do C++ (STL) oferece estruturas ultrarrápidas que gerenciam memória sozinhas:\n- **`std::vector<T>`**: array dinâmico contíguo na memória (substitui arrays C e `new[]`). Use `.push_back()` e `.size()`.\n- **`std::unordered_map<K, V>`**: tabela hash com busca média $O(1)$.\n- **`auto`** e **Range-based `for`**: `for (const auto& item : lista)` percorre qualquer container sem índices manuais e sem copiar elementos!",
+      "codeExample": "#include <vector>\n#include <unordered_map>\n\nstd::vector<int> nums = {10, 20, 30};\nnums.push_back(40);\n\nfor (const auto& n : nums) {\n    std::cout << n << \" \";\n}\n\nstd::unordered_map<std::string, int> notas;\nnotas[\"Ana\"] = 10;",
+      "keyTakeaways": [
+        "`std::vector` armazena itens lado a lado na RAM (cache-friendly), sendo quase sempre a estrutura mais rápida em C++.",
+        "`for (const auto& x : colecao)` evita cópias desnecessárias durante a iteração.",
+        "`std::unordered_map` é uma Hash Table $O(1)$, enquanto `std::map` é uma árvore ordenada $O(\\log n)$."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código C++ para adicionar um item ao `std::vector` e percorrê-lo sem cópia usando `const auto&`:",
+      "codeTemplate": "std::vector<int> ids = {1, 2};\nids.{{blank}}(3);\nfor ({{blank}} x : ids) {\n    std::cout << x;\n}",
+      "blanks": [
+        { "answer": "push_back", "placeholder": "adicionar" },
+        { "answer": "const auto&", "placeholder": "referência" }
+      ],
+      "options": ["push_back", "const auto&", "append", "let", "add"],
+      "explanation": "`push_back()` insere no final do `std::vector` e `const auto&` evita copiar elementos no loop."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie um `std::vector<int> v = {1, 2, 3};` e adicione o número `4` usando `.push_back(4);`:",
+      "starterCode": "// Crie o std::vector v e adicione 4:\n",
+      "requiredTokens": ["std::vector<int>", "v", "1, 2, 3", ".push_back(4)"],
+      "sampleSolution": "std::vector<int> v = {1, 2, 3};\nv.push_back(4);",
+      "hint": "Use `std::vector<int> v = {1, 2, 3};` e `v.push_back(4);`.",
+      "explanation": "`std::vector` redimensiona sua capacidade interna automaticamente quando você chama `push_back`."
+    }
+  ]
+}

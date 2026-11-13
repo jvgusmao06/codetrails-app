@@ -1,0 +1,47 @@
+{
+  "id": "tw-resp-02",
+  "title": "Design Mobile-First",
+  "description": "Adaptando layouts para telas maiores usando prefixos de breakpoint.",
+  "xp": 15,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Sistema Responsivo Mobile-First",
+      "content": "No Tailwind, classes sem prefixo (como hidden ou flex-col) são aplicadas imediatamente em todas as telas a partir do celular. Quando adicionamos um prefixo de breakpoint como 'md:' (768px+), aquela regra passa a valer de telas médias para cima.",
+      "codeExample": "<!-- Oculto no celular, visível como flex no desktop -->\n<aside className=\"hidden md:flex\">\n  Sidebar Desktop\n</aside>",
+      "keyTakeaways": [
+        "Classes base estilizam o mobile primeiro (Mobile-First).",
+        "Prefixos como sm:, md: e lg: sobrescrevem estilos em telas maiores."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Como funciona o sistema de breakpoints (como sm:, md:, lg:) no Tailwind CSS?",
+      "options": [
+        "É Desktop-First: classes sem prefixo só valem para monitores grandes",
+        "É Mobile-First: classes sem prefixo valem para todas as telas, e md: aplica a partir de 768px para cima",
+        "md: aplica o estilo exclusivamente em tablets e remove no desktop",
+        "Precisa de JavaScript para detectar o tamanho da tela"
+      ],
+      "correctIndex": 1,
+      "explanation": "O Tailwind usa media queries min-width (mobile-first): você estiliza o celular por padrão e adiciona md: ou lg: para telas maiores."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Faça o menu ficar oculto no celular e aparecer como flex em telas médias (md) ou maiores:",
+      "codeTemplate": "<aside className=\"{{blank}} {{blank}}:flex\">",
+      "blanks": [
+        {
+          "answer": "hidden",
+          "placeholder": "oculto"
+        },
+        {
+          "answer": "md",
+          "placeholder": "breakpoint"
+        }
+      ],
+      "options": ["hidden", "md", "none", "mobile"],
+      "explanation": "'hidden' aplica display: none no mobile, e 'md:flex' altera para display: flex a partir de 768px."
+    }
+  ]
+}

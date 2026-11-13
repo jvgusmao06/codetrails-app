@@ -1,0 +1,40 @@
+{
+  "id": "numpy-ndarray-01",
+  "title": "Arrays NumPy (ndarray): Criação, .shape, .dtype e Funções Geradoras",
+  "description": "Entenda por que ndarrays são até 50x mais rápidos que listas Python e crie arrays com zeros, ones, arange e linspace.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Por que NumPy é a Base de Pandas, PyTorch e Scikit-Learn?",
+      "content": "Uma lista Python guarda ponteiros espalhados na RAM para objetos variados. Já um **`np.ndarray`** armazena todos os elementos do **mesmo tipo (`dtype`, ex: `float64`, `int32`)** lado a lado em blocos contíguos em C! Além de `np.array([1, 2, 3])`, usamos geradores nativos como `np.zeros((2, 3))`, `np.ones(5)`, `np.arange(0, 10, 2)` e `np.linspace(0, 1, 5)`.",
+      "codeExample": "import numpy as np\n\nmatriz = np.array([[1, 2, 3], [4, 5, 6]])\nprint(matriz.shape)  # (2, 3) -> 2 linhas, 3 colunas\nprint(matriz.dtype)  # int64\n\nzeros = np.zeros((3, 3))\nfaixa = np.arange(0, 10, 2)  # [0, 2, 4, 6, 8]",
+      "keyTakeaways": [
+        "`.shape` mostra as dimensões `(linhas, colunas)`; `.ndim` mostra o número de dimensões.",
+        "`np.zeros((l, c))` cria matriz de zeros; `np.linspace(inicio, fim, qtd)` gera `qtd` pontos igualmente espaçados.",
+        "Todos os elementos de um `ndarray` compartilham o mesmo `dtype` para máxima velocidade de cache da CPU."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é o valor de `arr.shape` para `arr = np.array([[10, 20, 30], [40, 50, 60]])`?",
+      "options": [
+        "(3, 2)",
+        "(2, 3)",
+        "(6,)",
+        "2"
+      ],
+      "correctIndex": 1,
+      "explanation": "A matriz tem 2 linhas (eixo 0) e 3 colunas (eixo 1), portanto `.shape` é `(2, 3)`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie uma matriz `m` de zeros com 2 linhas e 4 colunas usando `np.zeros((2, 4))` e imprima `m.shape`:",
+      "starterCode": "import numpy as np\n# Crie m com np.zeros((2, 4)) e imprima m.shape:\n",
+      "requiredTokens": ["np.zeros((2, 4))", "print(", "m.shape"],
+      "sampleSolution": "m = np.zeros((2, 4))\nprint(m.shape)",
+      "hint": "Escreva: m = np.zeros((2, 4)) e print(m.shape)",
+      "explanation": "Passar a tupla `(2, 4)` para `np.zeros` aloca instantaneamente uma matriz 2x4 preenchida com `0.0`."
+    }
+  ]
+}

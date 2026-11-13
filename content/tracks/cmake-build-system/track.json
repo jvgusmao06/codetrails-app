@@ -1,0 +1,19 @@
+{
+  "id": "cmake-build-system",
+  "title": "CMake & Build C/C++",
+  "description": "Configure projetos C e C++ multiplataforma modernos com CMakeLists.txt, targets executáveis, bibliotecas e flags de compilação.",
+  "category": "tool",
+  "languageId": "c-cpp-systems",
+  "prerequisites": ["c-cpp-systems"],
+  "color": "#06B6D4",
+  "icon": "🛠️",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-cmakelists",
+      "title": "Módulo 1: CMakeLists.txt, Targets e Linkagem",
+      "description": "Automatize a compilação de projetos C/C++ em qualquer sistema operacional.",
+      "lessons": ["lesson-01-cmake-targets"]
+    }
+  ]
+}

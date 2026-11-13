@@ -1,0 +1,40 @@
+{
+  "id": "go-sqlc-01",
+  "title": "Banco de Dados em Go: sqlc (SQL Type-Safe) vs GORM",
+  "description": "Entenda por que a comunidade Go ama o sqlc para gerar funções Go tipadas direto de arquivos .sql.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "sqlc: Escreva SQL Puro e Ganhe Código Go Tipado",
+      "content": "No ecossistema Go, existem duas abordagens principais para PostgreSQL:\n1. **GORM**: ORM clássico (`db.Where(\"ativo = ?\", true).Find(&users)`), ótimo para CRUDs rápidos.\n2. **sqlc**: você escreve **SQL puro** anotado com `-- name: GetUser :one` em um arquivo `.sql`, e o `sqlc generate` cria funções Go **100% tipadas em tempo de compilação** usando `pgx` — sem reflection e com performance máxima!",
+      "codeExample": "-- query.sql (lido pelo sqlc generate)\n-- name: BuscarUsuario :one\nSELECT id, nome, email FROM usuarios WHERE id = $1;\n\n// Código Go gerado automaticamente:\nuser, err := queries.BuscarUsuario(ctx, 42)",
+      "keyTakeaways": [
+        "`sqlc` valida suas queries SQL contra o `schema.sql` antes mesmo de compilar o Go.",
+        "Anotações `:one` retornam 1 struct, `:many` retornam um slice `[]T`, e `:exec` retornam apenas `error`.",
+        "Em Go, sempre passe `ctx` para queries de banco para respeitar timeouts HTTP."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Em um arquivo `query.sql` do `sqlc`, qual anotação indica que a consulta retorna uma lista (slice) de vários registros?",
+      "options": [
+        ":one",
+        ":many",
+        ":exec",
+        ":slice"
+      ],
+      "correctIndex": 1,
+      "explanation": "`:many` instrui o `sqlc` a gerar uma função Go retornando `([]Modelo, error)`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva a anotação `sqlc` `-- name: ListarAtivos :many` seguida da query `SELECT id, nome FROM usuarios WHERE ativo = true;`:",
+      "starterCode": "-- Escreva a query anotada para sqlc:\n",
+      "requiredTokens": ["-- name:", "ListarAtivos", ":many", "SELECT", "FROM usuarios"],
+      "sampleSolution": "-- name: ListarAtivos :many\nSELECT id, nome FROM usuarios WHERE ativo = true;",
+      "hint": "Coloque `-- name: ListarAtivos :many` na primeira linha e o `SELECT` na segunda.",
+      "explanation": "O comentário `-- name: NomeFuncao :many` é tudo o que o `sqlc` precisa para gerar a função Go tipada."
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "id": "py-flow-02",
+  "title": "04. Listas e Fatiamento",
+  "description": "Criando coleções e adicionando elementos.",
+  "xp": 20,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Coleções Ordenadas com Listas",
+      "content": "Listas em Python armazenam múltiplos itens em uma única variável usando colchetes [ ]. A contagem de posições (índices) começa sempre no zero (0). Para inserir um novo elemento no final da lista, usamos o método .append().",
+      "codeExample": "linguagens = [\"Python\", \"JS\"]\nlinguagens.append(\"Rust\")\n\nprint(linguagens[0])  # Exibe \"Python\"",
+      "keyTakeaways": [
+        "Listas são criadas com colchetes: [item1, item2].",
+        "O primeiro elemento está sempre no índice [0].",
+        "Use lista.append(valor) para adicionar ao final."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Adicione o item \" Rust\" ao final da lista 'linguagens':",
+      "codeTemplate": "linguagens = [\"Python\", \"JS\"]\nlinguagens.{{blank}}(\"Rust\")",
+      "blanks": [
+        {
+          "answer": "append",
+          "placeholder": "método"
+        }
+      ],
+      "options": [
+        "append",
+        "push",
+        "add",
+        "insert"
+      ],
+      "explanation": "O método .append() insere um novo elemento ao final de uma lista em Python."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual índice acessa o PRIMEIRO elemento de uma lista em Python?",
+      "codeSnippet": "frutas = [\"Maçã\", \"Banana\", \"Uva\"]",
+      "options": [
+        "frutas[1]",
+        "frutas[0]",
+        "frutas[-1]",
+        "frutas.first()"
+      ],
+      "correctIndex": 1,
+      "explanation": "Listas em Python têm indexação baseada em zero (0-indexed). O índice 0 retorna 'Maçã'."
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "pw-locators-01",
+  "title": "Playwright: Locators Acessíveis (getByRole) e Auto-Waiting",
+  "description": "Teste fluxos completos de usuário sem `sleep()` usando locators semânticos e web-first assertions.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Testes E2E Confiáveis com Playwright",
+      "content": "Diferente de ferramentas antigas que exigiam `sleep(3000)` e quebravam aleatoriamente, o **Playwright** possui **auto-waiting**: ele espera o botão aparecer e ficar clicável antes de clicar! A melhor prática é selecionar elementos pelo papel acessível (**`page.getByRole('button', { name: 'Entrar' })`**) em vez de classes CSS frágeis, e validar com asserções assíncronas (`await expect(locator).toBeVisible()`).",
+      "codeExample": "import { test, expect } from \"@playwright/test\";\n\ntest(\"usuário faz login\", async ({ page }) => {\n  await page.goto(\"/login\");\n  await page.getByLabel(\"Email\").fill(\"ana@dev.com\");\n  await page.getByRole(\"button\", { name: \"Entrar\" }).click();\n  await expect(page.getByText(\"Bem-vinda\")).toBeVisible();\n});",
+      "keyTakeaways": [
+        "Prefira `getByRole`, `getByLabel` e `getByText` — além de estáveis, testam a acessibilidade da UI.",
+        "Nunca use `waitForTimeout(2000)`: use `await expect(locator).toBeVisible()` que faz retry automático.",
+        "Cada `test(...)` roda em um `BrowserContext` isolado (cookies e localStorage zerados)."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o teste Playwright para navegar até `/`, clicar no botão `Começar` e verificar que o título está visível:",
+      "codeTemplate": "await page.{{blank}}(\"/\");\nawait page.{{blank}}(\"button\", { name: \"Começar\" }).click();\nawait expect(page.getByText(\"Módulo 1\")).{{blank}}();",
+      "blanks": [
+        { "answer": "goto", "placeholder": "navegar" },
+        { "answer": "getByRole", "placeholder": "locator" },
+        { "answer": "toBeVisible", "placeholder": "asserção" }
+      ],
+      "options": ["goto", "getByRole", "toBeVisible", "visit", "querySelector", "exists"],
+      "explanation": "`page.goto` abre a URL, `getByRole` localiza pelo papel ARIA e `toBeVisible()` aguarda o elemento aparecer."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva um teste `test(\"abre home\", async ({ page }) => { ... })` que abra `\"/\"` com `await page.goto(\"/\")` e verifique `await expect(page.getByRole(\"heading\")).toBeVisible();`:",
+      "starterCode": "// Escreva o teste Playwright abaixo:\n",
+      "requiredTokens": ["test(", "async ({ page })", "page.goto", "expect(", "getByRole", "toBeVisible()"],
+      "sampleSolution": "test(\"abre home\", async ({ page }) => {\n  await page.goto(\"/\");\n  await expect(page.getByRole(\"heading\")).toBeVisible();\n});",
+      "hint": "Use `test(\"abre home\", async ({ page }) => { await page.goto(\"/\"); await expect(page.getByRole(\"heading\")).toBeVisible(); });`.",
+      "explanation": "Asserções `await expect(locator)...` são a chave para testes E2E rápidos e sem falsos negativos."
+    }
+  ]
+}

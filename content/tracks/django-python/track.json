@@ -1,0 +1,25 @@
+{
+  "id": "django-python",
+  "title": "Django & DRF",
+  "description": "Construa aplicações web completas em Python com Django ORM, Models, Views, Migrations e Django REST Framework.",
+  "category": "framework",
+  "languageId": "python-basics",
+  "prerequisites": ["python-basics"],
+  "color": "#092E20",
+  "icon": "🎸",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: Models, ORM e Django REST Framework",
+      "description": "Defina modelos de banco em Python, faça queries com objects.filter e crie APIs com DRF.",
+      "lessons": [
+        "lesson-01-models-orm-views",
+        "lesson-02-urls-views-templates",
+        "lesson-03-admin-forms-validacao",
+        "lesson-04-drf-serializers-viewsets",
+        "lesson-05-querysets-n1-select-related"
+      ]
+    }
+  ]
+}

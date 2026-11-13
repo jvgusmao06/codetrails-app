@@ -1,0 +1,45 @@
+{
+  "id": "go-gin-01",
+  "title": "Endpoints Gin, Struct Tags JSON e ShouldBindJSON",
+  "description": "Configure rotas HTTP no Gin, mapeie campos JSON com tags e valide requisições.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "APIs Web em Go: Struct Tags e Gin Framework",
+      "content": "Em Go, apenas campos de struct que começam com Letra Maiúscula são exportados (públicos) para o pacote JSON! Para usar nomes em minúsculas no JSON, adicionamos Struct Tags como `json:\"nome\"`. No framework Gin, 'c.ShouldBindJSON(&input)' lê e valida o corpo da requisição, e 'c.JSON(status, dados)' envia a resposta.",
+      "codeExample": "type CriarItemDTO struct {\n    Titulo string  `json:\"titulo\" binding:\"required\"`\n    Preco  float64 `json:\"preco\"`\n}\n\nfunc criar(c *gin.Context) {\n    var body CriarItemDTO\n    if err := c.ShouldBindJSON(&body); err != nil {\n        c.JSON(400, gin.H{\"erro\": err.Error()})\n        return\n    }\n    c.JSON(201, body)\n}",
+      "keyTakeaways": [
+        "Campos de struct com inicial minúscula (ex: 'senha string') são privados e ignorados pelo serializador JSON do Go!",
+        "c.ShouldBindJSON(&variavel) precisa receber o ponteiro (&) do struct para preencher seus campos.",
+        "gin.H{\"chave\": valor} é um atalho prático para criar respostas JSON rápidas (map[string]any)."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Esta API em Go retorna um objeto JSON vazio '{}' porque os campos do struct não são exportados para o pacote encoding/json! Clique na linha com o campo privado:",
+      "lines": [
+        "type RespostaStatus struct {",
+        "    mensagem string `json:\"mensagem\"`",
+        "}",
+        "func health(c *gin.Context) {",
+        "    c.JSON(200, RespostaStatus{mensagem: \"ok\"})",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Em Go, campos iniciados com letra minúscula ('mensagem') são privados ao pacote e não podem ser lidos pelo serializador JSON! Deve ser 'Mensagem string `json:\"mensagem\"`'."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o handler Gin para fazer o bind do JSON no ponteiro '&req' e retornar status 200:",
+      "codeTemplate": "var req LoginDTO\nif err := c.{{blank}}({{blank}}req); err != nil {\n    return\n}\nc.{{blank}}(200, req)",
+      "blanks": [
+        { "answer": "ShouldBindJSON", "placeholder": "método bind" },
+        { "answer": "&", "placeholder": "ponteiro" },
+        { "answer": "JSON", "placeholder": "resposta" }
+      ],
+      "options": ["ShouldBindJSON", "&", "JSON", "ParseJSON", "*", "Send"],
+      "explanation": "Passamos o endereço '&req' para c.ShouldBindJSON() preencher a estrutura e respondemos com c.JSON(200, req)."
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "cpp-funcoes-referencia-05",
+  "title": "Funções: Passagem por Valor, Ponteiro (*) e Referência (const T&)",
+  "description": "Aprenda a evitar cópias pesadas na memória passando argumentos por referência (&) e proteja dados com const T&.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Valor vs Ponteiro (*) vs Referência (&) em C++",
+      "content": "Por padrão, C e C++ passam argumentos **por valor** (fazendo uma cópia na Stack): alterar o parâmetro dentro da função não altera a variável original. Para modificar o original ou evitar copiar uma `std::string` ou `std::vector` gigante:\n1. **Ponteiro (`int* p`)**: recebe o endereço (`&x`) e pode ser `nullptr`.\n2. **Referência (`int& r`)**: um apelido direto para a variável original (nunca nulo!).\n3. **Referência Constante (`const std::string& s`)**: evita a cópia (zero overhead) e garante que a função não alterará o dado!",
+      "codeExample": "void dobrar(int& n) {\n    n *= 2; // Altera a variável original sem copiar!\n}\n\n// Leitura rápida sem cópia e sem risco de modificação:\nvoid imprimir(const std::string& texto) {\n    std::cout << texto << \"\\n\";\n}",
+      "keyTakeaways": [
+        "Para tipos pequenos (`int`, `double`, `bool`), passe por valor; para objetos grandes (`std::string`, `std::vector`), passe por `const T&`.",
+        "Use `T&` quando a função precisa modificar a variável do chamador.",
+        "Diferente de ponteiros (`*`), referências (`&`) em C++ não podem ser `nullptr` e dispensam dereferência com `*`."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a assinatura da função C++ para ler uma `std::string` grande sem copiá-la e sem permitir que seja modificada:",
+      "codeTemplate": "void logar({{blank}} std::string{{blank}} msg) {\n    std::cout << msg;\n}",
+      "blanks": [
+        { "answer": "const", "placeholder": "imutável" },
+        { "answer": "&", "placeholder": "referência" }
+      ],
+      "options": ["const", "&", "*", "mut", "var"],
+      "explanation": "`const std::string&` é o padrão idiomático de C++ para passagem eficiente somente-leitura."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva uma função `void incrementar(int& x)` que some `1` diretamente na variável passada por referência (`x += 1;`):",
+      "starterCode": "// Implemente void incrementar(int& x):\n",
+      "requiredTokens": ["void", "incrementar", "int&", "x += 1"],
+      "sampleSolution": "void incrementar(int& x) {\n    x += 1;\n}",
+      "hint": "Defina `void incrementar(int& x) { x += 1; }`.",
+      "explanation": "Como `x` é uma referência (`int&`), `x += 1;` modifica diretamente a variável original do chamador."
+    }
+  ]
+}

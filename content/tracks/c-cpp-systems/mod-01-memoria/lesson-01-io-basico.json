@@ -1,0 +1,39 @@
+{
+  "id": "cpp-io-01",
+  "title": "Entrada e Saída em C e C++",
+  "description": "Usando printf da stdio.h e std::cout da iostream.",
+  "xp": 15,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Fluxos de Saída em C (printf) e C++ (std::cout)",
+      "content": "Na linguagem C clássica, incluímos <stdio.h> e usamos a função printf() com especificadores de formato como %d (inteiro) ou %s (string). Já em C++, incluímos <iostream> e enviamos dados diretamente para o fluxo std::cout usando o operador <<.",
+      "codeExample": "// Em C:\nint porta = 8080;\nprintf(\"Porta: %d\\n\", porta);\n\n// Em C++:\nstd::cout << \"Sistema Online!\" << std::endl;",
+      "keyTakeaways": [
+        "Em C++, std::cout << envia dados para a saída padrão.",
+        "Em C, printf usa %d para números inteiros (int) e %f para decimais."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Em C++, envie a string para a saída padrão usando o operador de fluxo:",
+      "codeTemplate": "#include <iostream>\n\nint main() {\n  std::{{blank}} << \"Sistema Online!\" << std::endl;\n  return 0;\n}",
+      "blanks": [
+        {
+          "answer": "cout",
+          "placeholder": "stream"
+        }
+      ],
+      "options": ["cout", "cin", "printf", "out"],
+      "explanation": "std::cout (character output) combinado com o operador << envia dados para a saída padrão em C++."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Na linguagem C, qual especificador de formato usamos dentro de printf() para imprimir um número inteiro (int)?",
+      "codeSnippet": "int porta = 8080;\nprintf(\"Porta: %d\\n\", porta);",
+      "options": ["%s", "%d", "%f", "%c"],
+      "correctIndex": 1,
+      "explanation": "O especificador %d (ou %i) formata um valor inteiro decimal com sinal na função printf."
+    }
+  ]
+}

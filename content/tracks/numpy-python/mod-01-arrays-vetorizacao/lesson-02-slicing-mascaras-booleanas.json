@@ -1,0 +1,39 @@
+{
+  "id": "numpy-slicing-masks-02",
+  "title": "Slicing 2D, Máscaras Booleanas e np.where()",
+  "description": "Recorte colunas inteiras de matrizes com `[:, col]`, filtre valores com máscaras booleanas e aplique condicionais vetorizados com np.where.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Filtrando Matrizes em Uma Linha Sem Loops",
+      "content": "Em matrizes 2D no NumPy, usamos vírgula para separar linhas e colunas: **`matriz[linhas, colunas]`**. Assim, `matriz[:, 1]` pega **todas as linhas** da coluna `1`! Além disso, comparações como `arr > 10` geram um array booleano (`[False, True, ...]`) que pode filtrar diretamente (`arr[arr > 10]`). E **`np.where(condicao, valor_true, valor_false)`** funciona como um `if/else` vetorizado!",
+      "codeExample": "import numpy as np\n\nnotas = np.array([4.5, 8.0, 9.5, 5.0])\naprovadas = notas[notas >= 7.0]  # [8.0, 9.5]\nstatus = np.where(notas >= 7.0, \"Aprovado\", \"Reprovado\")\n\nmat = np.array([[1, 2], [3, 4]])\nsegunda_col = mat[:, 1]  # [2, 4]",
+      "keyTakeaways": [
+        "No NumPy, um slice básico (`a[1:3]`) retorna uma **view** (compartilha memória!), não uma cópia; use `.copy()` se quiser isolar.",
+        "Para combinar condições booleanas no NumPy/Pandas, use `&` (AND), `|` (OR) e parênteses: `(a > 5) & (a < 10)`.",
+        "`np.where(cond, x, y)` substitui loops `for` com `if/else`."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código NumPy para pegar toda a segunda coluna da matriz `m` e filtrar elementos positivos de `v`:",
+      "codeTemplate": "col = m[{{blank}}, 1]\npositivos = v[v {{blank}} 0]",
+      "blanks": [
+        { "answer": ":", "placeholder": "todas linhas" },
+        { "answer": ">", "placeholder": "maior que" }
+      ],
+      "options": [":", ">", "*", "all", "=="],
+      "explanation": "`:` significa todas as linhas no eixo 0, e `v > 0` cria a máscara booleana de filtragem."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Usando `np.where`, crie `rotulos = np.where(idades >= 18, \"Maior\", \"Menor\")`:",
+      "starterCode": "import numpy as np\n# Classifique idades >= 18 com np.where:\n",
+      "requiredTokens": ["rotulos", "np.where(", "idades >= 18", "\"Maior\"", "\"Menor\""],
+      "sampleSolution": "rotulos = np.where(idades >= 18, \"Maior\", \"Menor\")",
+      "hint": "Escreva: rotulos = np.where(idades >= 18, \"Maior\", \"Menor\")",
+      "explanation": "`np.where` avalia a condição vetorizada em C para todos os elementos de uma vez."
+    }
+  ]
+}

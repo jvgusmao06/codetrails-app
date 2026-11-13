@@ -1,0 +1,40 @@
+{
+  "id": "cpp-templates-constexpr-05",
+  "title": "Templates <typename T>, enum class e constexpr vs #define",
+  "description": "Escreva código genérico com zero custo em execução usando templates, enums tipados com enum class e constantes constexpr.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Programação Genérica e Segurança de Tipos em C++ Moderno",
+      "content": "Em C antigo, macros `#define MAX 100` apenas substituem texto antes da compilação, sem checagem de tipo. Em C++ moderno, substituímos `#define` por **`constexpr`** (constantes avaliadas em tempo de compilação com tipo seguro!) e `enum` comum por **`enum class`** (que evita colisões de nomes). Já **`template <typename T>`** permite escrever uma única função ou classe genérica que o compilador especializa para `int`, `double` ou `std::string` com velocidade máxima.",
+      "codeExample": "constexpr int MAX_USUARIOS = 100;\n\nenum class Estado { Conectado, Offline };\n\ntemplate <typename T>\nT maximo(T a, T b) {\n    return (a > b) ? a : b;\n}\n\nint m = maximo(10, 25); // Compilador gera versão int!",
+      "keyTakeaways": [
+        "`constexpr` substitui `#define` para constantes: tem tipo, respeita escopo e roda em tempo de compilação.",
+        "`enum class` exige o prefixo (`Estado::Conectado`), evitando conflitos de nomes no código.",
+        "`template <typename T>` gera código especializado para cada tipo sem perda de performance."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Por que C++ moderno recomenda `constexpr int LIMITE = 50;` em vez de `#define LIMITE 50`?",
+      "options": [
+        "Porque #define só funciona em arquivos .py",
+        "Porque constexpr possui checagem de tipo e escopo, enquanto #define é apenas substituição cega de texto pelo pré-processador",
+        "Porque constexpr aloca a variável na Heap",
+        "Porque #define não aceita números inteiros"
+      ],
+      "correctIndex": 1,
+      "explanation": "`constexpr` é validado pelo compilador C++ com tipo e escopo bem definidos, evitando bugs sutis de macros."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva uma função genérica usando `template <typename T>` chamada `menor(T a, T b)` que retorne `(a < b) ? a : b`:",
+      "starterCode": "// Escreva a função template menor(T a, T b):\n",
+      "requiredTokens": ["template", "typename T", "menor", "T a", "T b", "return"],
+      "sampleSolution": "template <typename T>\nT menor(T a, T b) {\n    return (a < b) ? a : b;\n}",
+      "hint": "Comece com `template <typename T>` na linha acima de `T menor(T a, T b) { return (a < b) ? a : b; }`.",
+      "explanation": "Templates permitem reutilizar a mesma lógica para qualquer tipo `T` que suporte o operador `<`."
+    }
+  ]
+}

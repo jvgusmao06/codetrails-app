@@ -1,0 +1,42 @@
+{
+  "id": "rust-systems",
+  "title": "Rust & Memory Safety",
+  "description": "Aprenda Rust do zero às funções nativas: variáveis (let/mut/const), tipos, loops, structs, iteradores, ownership, Option/Result e traits.",
+  "category": "language",
+  "color": "#F74C00",
+  "icon": "🦀",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-00-sintaxe",
+      "title": "Módulo 1: Do Zero a Funções, Loops, Structs e Iteradores",
+      "description": "Variáveis let/mut/const, tipos primitivos, if como expressão, funções, structs, loops e iteradores (.iter/.collect).",
+      "lessons": [
+        "lesson-00-variaveis-tipos-primitivos",
+        "lesson-01-sintaxe-structs",
+        "lesson-02-loops-iteradores-nativos"
+      ]
+    },
+    {
+      "id": "mod-01-ownership",
+      "title": "Módulo 2: Imutabilidade, Ownership e Borrowing",
+      "description": "Entenda move semantics, referências (& e &mut) e como o Borrow Checker evita bugs.",
+      "lessons": [
+        "lesson-01-mut-ownership",
+        "lesson-02-slices-lifetimes",
+        "lesson-03-smart-pointers-box-rc"
+      ]
+    },
+    {
+      "id": "mod-02-enums-match",
+      "title": "Módulo 3: Pattern Matching, Option, Result e Traits",
+      "description": "Domine enums algébricos, match exaustivo, String vs &str e polimorfismo com traits.",
+      "lessons": [
+        "lesson-01-option-result",
+        "lesson-02-traits-generics-rust",
+        "lesson-03-hashmap-closures-if-let",
+        "lesson-04-modulos-crates-cargo-tests"
+      ]
+    }
+  ]
+}

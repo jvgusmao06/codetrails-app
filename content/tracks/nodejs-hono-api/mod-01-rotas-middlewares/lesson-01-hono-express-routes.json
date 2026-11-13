@@ -1,0 +1,44 @@
+{
+  "id": "hono-routes-01",
+  "title": "Rotas REST, Parâmetros, JSON e Middlewares",
+  "description": "Crie endpoints GET e POST usando padrões Web Standard (Request/Response) com Hono e Node.js.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "APIs Backend em TypeScript com Hono / Express",
+      "content": "Frameworks backend em TypeScript como Hono e Express mapeiam verbos HTTP (app.get, app.post) para funções handler. No Hono, o objeto de contexto 'c' centraliza tudo: 'c.req.param()' lê parâmetros da URL, 'await c.req.json()' lê o corpo da requisição, e 'c.json(dados, status)' retorna a resposta JSON com tipagem automática.",
+      "codeExample": "import { Hono } from \"hono\";\n\nconst app = new Hono();\n\napp.get(\"/users/:id\", (c) => {\n  const id = c.req.param(\"id\");\n  return c.json({ id, ativo: true }, 200);\n});\n\napp.post(\"/users\", async (c) => {\n  const body = await c.req.json();\n  return c.json({ criado: body.nome }, 201);\n});",
+      "keyTakeaways": [
+        "Rotas dinâmicas usam ':nome' na URL (ex: '/produtos/:id') e são lidas via c.req.param('id').",
+        "Ler o corpo JSON de um POST é uma operação assíncrona: 'const body = await c.req.json()'.",
+        "Status HTTP 201 (Created) é o padrão semântico ao criar um recurso com sucesso via POST."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o endpoint POST no Hono para ler o JSON do corpo da requisição e retornar status 201:",
+      "codeTemplate": "app.{{blank}}(\"/tarefas\", async (c) => {\n  const dados = await c.req.{{blank}}();\n  return c.json({ ok: true, dados }, {{blank}});\n});",
+      "blanks": [
+        { "answer": "post", "placeholder": "verbo" },
+        { "answer": "json", "placeholder": "parser" },
+        { "answer": "201", "placeholder": "status" }
+      ],
+      "options": ["post", "json", "201", "get", "body", "404"],
+      "explanation": "Usamos app.post() para criação, await c.req.json() para extrair o payload e c.json(..., 201) para retornar Created."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene as linhas de um middleware de medição de tempo (logger) em Hono/Koa:",
+      "blocks": [
+        "app.use(\"*\", async (c, next) => {",
+        "  const inicio = Date.now();",
+        "  await next();",
+        "  console.log(`Tempo: ${Date.now() - inicio}ms`);",
+        "});"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "explanation": "O middleware registra o horário inicial, aguarda 'await next()' processar a rota e calcula a diferença de tempo na volta."
+    }
+  ]
+}

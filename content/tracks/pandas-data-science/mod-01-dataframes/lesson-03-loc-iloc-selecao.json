@@ -1,0 +1,40 @@
+{
+  "id": "pandas-loc-iloc-03",
+  "title": "Seleção Precisa: .loc[] (Rótulos) vs .iloc[] (Posições) e Colunas Vetorizadas",
+  "description": "Selecione linhas e colunas sem ambiguidade usando .loc e .iloc e crie novas colunas em velocidade C.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Dominando .loc[] e .iloc[] no Pandas",
+      "content": "No Pandas, existem dois indexadores explícitos que evitam avisos de cópia (`SettingWithCopyWarning`):\n- **`.loc[linhas, colunas]`**: seleciona pelo **nome/rótulo** do índice ou condição booleana (`df.loc[df[\"preco\"] > 50, [\"nome\", \"preco\"]]`).\n- **`.iloc[i, j]`**: seleciona pela **posição numérica** (0, 1, 2...), igual a um array Python (`df.iloc[0:5, 0:2]`).\nE para criar uma coluna calculada, nunca use `for`: faça operação vetorizada direto (`df[\"total\"] = df[\"qtd\"] * df[\"preco\"]`)!",
+      "codeExample": "# Seleção por condição e nomes de colunas (.loc)\ncaros = df.loc[df[\"preco\"] > 100, [\"produto\", \"preco\"]]\n\n# Seleção por índice numérico: 3 primeiras linhas, 2 primeiras colunas (.iloc)\namostra = df.iloc[:3, :2]\n\n# Nova coluna vetorizada (sem loop for!)\ndf[\"total\"] = df[\"qtd\"] * df[\"preco\"]",
+      "keyTakeaways": [
+        "`.loc` usa rótulos/condições; `.iloc` usa índices inteiros (pense em **i** de integer).",
+        "No `.loc[\"a\":\"c\"]`, o final `'c'` é inclusivo; no `.iloc[0:3]`, o final `3` é exclusivo (padrão Python).",
+        "Operações vetorizadas (`df[\"a\"] + df[\"b\"]`) são 100x mais rápidas que iterar linha por linha."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual indexador do Pandas seleciona exclusivamente por **posições inteiras** (ex: primeiras 10 linhas e primeiras 3 colunas)?",
+      "options": [
+        "df.loc[:10, :3]",
+        "df.iloc[:10, :3]",
+        "df.pos[:10, :3]",
+        "df.select(10, 3)"
+      ],
+      "correctIndex": 1,
+      "explanation": "`.iloc` (integer location) sempre indexa por posição numérica 0-based."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Usando `.loc`, selecione apenas a coluna `\"nome\"` das linhas onde `df[\"idade\"] >= 18` e guarde em `adultos`:",
+      "starterCode": "# Filtre com df.loc[condicao, coluna]:\n",
+      "requiredTokens": ["adultos", "df.loc[", "df[\"idade\"] >= 18", "\"nome\""],
+      "sampleSolution": "adultos = df.loc[df[\"idade\"] >= 18, \"nome\"]",
+      "hint": "Use `adultos = df.loc[df[\"idade\"] >= 18, \"nome\"]`.",
+      "explanation": "Passar filtro e coluna juntos no `.loc` é a forma mais segura e idiomática no Pandas."
+    }
+  ]
+}

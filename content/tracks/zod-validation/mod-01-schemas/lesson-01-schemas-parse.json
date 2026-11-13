@@ -1,0 +1,48 @@
+{
+  "id": "zod-schema-01",
+  "title": "Criando Schemas com Zod",
+  "description": "Validando objetos e inferindo tipos TypeScript.",
+  "xp": 20,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Validação Runtime + Inferência Estática com Zod",
+      "content": "O TypeScript valida tipos apenas durante a compilação — quando lemos um arquivo JSON ou uma API externa em tempo de execução, precisamos garantir que os dados realmente seguem o formato esperado. O Zod resolve isso permitindo criar um schema com z.object() e extrair o tipo TypeScript automaticamente com z.infer.",
+      "codeExample": "import { z } from \"zod\";\n\nconst LicaoSchema = z.object({\n  titulo: z.string(),\n  xp: z.number(),\n});\n\ntype Licao = z.infer<typeof LicaoSchema>;",
+      "keyTakeaways": [
+        "z.object() define a estrutura esperada de um objeto JSON.",
+        "z.infer<typeof Schema> extrai o tipo estático sem duplicar código."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Defina um schema Zod para validar um objeto com título em texto e XP numérico:",
+      "codeTemplate": "import { z } from \"zod\";\n\nconst LicaoSchema = z.{{blank}}({\n  titulo: z.string(),\n  xp: z.{{blank}}(),\n});",
+      "blanks": [
+        {
+          "answer": "object",
+          "placeholder": "estrutura"
+        },
+        {
+          "answer": "number",
+          "placeholder": "tipo"
+        }
+      ],
+      "options": ["object", "number", "interface", "int"],
+      "explanation": "z.object() cria um validador de objeto e z.number() valida valores numéricos em tempo de execução."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Como extraímos automaticamente o tipo TypeScript a partir de um schema Zod?",
+      "codeSnippet": "type Licao = z.infer<typeof LicaoSchema>;",
+      "options": [
+        "Reescrevendo a interface manualmente em outro arquivo",
+        "Usando o utilitário z.infer<typeof MeuSchema>",
+        "Chamando MeuSchema.toType()",
+        "O Zod não suporta TypeScript"
+      ],
+      "correctIndex": 1,
+      "explanation": "Com z.infer<typeof Schema>, o Zod gera o tipo estático automaticamente sem que você precise duplicar definições."
+    }
+  ]
+}

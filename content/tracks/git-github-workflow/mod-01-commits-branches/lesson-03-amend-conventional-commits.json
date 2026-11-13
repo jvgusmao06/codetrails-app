@@ -1,0 +1,40 @@
+{
+  "id": "git-conventional-amend-03",
+  "title": "Conventional Commits, git commit --amend e git restore",
+  "description": "Padronize mensagens com feat:/fix:, corrija o último commit com --amend e descarte alterações locais com git restore.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Boas Mensagens de Commit e Correções Rápidas",
+      "content": "Em projetos reais e open-source, seguimos o padrão **Conventional Commits**: prefixos como `feat:` (nova funcionalidade), `fix:` (correção de bug), `docs:` (documentação) e `refactor:` tornam o histórico legível e permitem gerar changelogs automáticos. Se você esqueceu um arquivo ou errou a mensagem do **último commit local** (antes do push), use **`git commit --amend`**. E se editou um arquivo por acidente e quer descartar as mudanças antes do commit, use **`git restore arquivo`**!",
+      "codeExample": "# Padrão Conventional Commits\ngit commit -m \"feat: adiciona login com Google\"\ngit commit -m \"fix: corrige calculo de frete\"\n\n# Adicionar arquivo esquecido ao último commit local\ngit add esquecido.ts\ngit commit --amend --no-edit\n\n# Descartar alterações não-commitadas em um arquivo\ngit restore src/app.ts",
+      "keyTakeaways": [
+        "Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`) ajudam equipes e ferramentas de versionamento semântico.",
+        "Só use `git commit --amend` em commits que ainda NÃO foram enviados (`push`) para uma branch compartilhada.",
+        "`git restore --staged arquivo` tira um arquivo da Staging Area sem apagar suas edições."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Você acabou de fazer um commit local e percebeu que esqueceu de incluir o arquivo `README.md`. Qual sequência corrige o último commit sem criar um segundo commit?",
+      "options": [
+        "git add README.md && git commit --amend --no-edit",
+        "git revert HEAD && git add README.md",
+        "git push --force README.md",
+        "git restore README.md"
+      ],
+      "correctIndex": 0,
+      "explanation": "`git add README.md` coloca o arquivo na Staging Area e `git commit --amend --no-edit` o incorpora ao último commit mantendo a mensagem."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva um comando `git restore` para descartar alterações no arquivo `index.ts` e na linha seguinte um `git commit -m` usando Conventional Commits (`fix: ...`):",
+      "starterCode": "# 1. Descarte mudanças em index.ts\n# 2. Faça um commit fix:\n",
+      "requiredTokens": ["git restore", "index.ts", "git commit", "-m", "fix:"],
+      "sampleSolution": "git restore index.ts\ngit commit -m \"fix: corrige validacao\"",
+      "hint": "Escreva `git restore index.ts` e `git commit -m \"fix: corrige validacao\"`.",
+      "explanation": "O comando `git restore` substituiu o antigo `git checkout -- arquivo` para restaurar arquivos com mais clareza."
+    }
+  ]
+}

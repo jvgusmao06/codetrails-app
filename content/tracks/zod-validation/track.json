@@ -1,0 +1,19 @@
+{
+  "id": "zod-validation",
+  "title": "Zod & Validação",
+  "description": "Garanta segurança em tempo de execução e inferência TypeScript automática (usado para validar as trilhas deste app).",
+  "category": "library",
+  "languageId": "typescript-javascript",
+  "prerequisites": ["typescript-javascript"],
+  "color": "#A855F7",
+  "icon": "🛡️",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-schemas",
+      "title": "Módulo 1: Schemas, Parse e Inferência",
+      "description": "Valide JSONs externos e extraia tipos estáticos sem duplicação.",
+      "lessons": ["lesson-01-schemas-parse"]
+    }
+  ]
+}

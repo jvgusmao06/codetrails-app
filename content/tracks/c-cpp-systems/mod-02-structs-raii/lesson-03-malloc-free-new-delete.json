@@ -1,0 +1,40 @@
+{
+  "id": "cpp-stack-heap-memoria-03",
+  "title": "Stack vs Heap: malloc/free (C) vs new/delete e RAII (C++)",
+  "description": "Entenda a diferença entre memória Stack e Heap, como evitar memory leaks e por que C++ moderno prefere unique_ptr.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Memória Dinâmica na Heap sem Memory Leaks",
+      "content": "Variáveis locais comuns ficam na **Stack** (rápida e limpa automaticamente ao sair da função). Quando precisamos de memória cujo tamanho só sabemos em execução ou que sobrevive à função, alocamos na **Heap**: em C com `malloc` / `free`, e em C++ clássico com `new` / `delete`. O perigo? Esquecer o `free`/`delete` causa **Memory Leak** (vazamento de memória)! Por isso, em C++ moderno nunca escrevemos `new`/`delete` na mão: usamos **RAII** com `std::make_unique<T>()`, que libera a memória automaticamente.",
+      "codeExample": "// C clássico:\nint* p = (int*) malloc(sizeof(int));\n*p = 42;\nfree(p); // Obrigatório para não vazar memória!\n\n// C++ moderno (RAII - zero memory leak):\n#include <memory>\nauto ptr = std::make_unique<int>(42); // Liberado automaticamente!",
+      "keyTakeaways": [
+        "Stack = automática e muito rápida, mas tamanho limitado; Heap = flexível e grande, mas exige liberação.",
+        "Nunca misture `malloc` com `delete` ou `new` com `free`.",
+        "Em C++ moderno, prefira `std::vector` e `std::make_unique` em vez de `new`/`delete` manuais."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código C/C++ aloca memória dinâmica na Heap e causa um Memory Leak toda vez que a função é chamada. Clique na linha onde falta a liberação:",
+      "lines": [
+        "void processar() {",
+        "    int* dados = new int[100];",
+        "    dados[0] = 10;",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Ao chegar na chave de fechamento `}`, o ponteiro local `dados` some da Stack, mas os 100 inteiros alocados com `new int[100]` continuam presos na Heap sem `delete[] dados;`!"
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Em C++ moderno, aloque um inteiro com valor `99` na Heap de forma segura usando `std::make_unique<int>(99)` na variável `auto numero`:",
+      "starterCode": "// Aloque na Heap com std::make_unique:\n",
+      "requiredTokens": ["auto", "numero", "std::make_unique<int>", "99"],
+      "sampleSolution": "auto numero = std::make_unique<int>(99);",
+      "hint": "Escreva: auto numero = std::make_unique<int>(99);",
+      "explanation": "`std::make_unique` cria um `std::unique_ptr<int>` que libera a memória automaticamente quando `numero` sai de escopo."
+    }
+  ]
+}

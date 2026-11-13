@@ -1,0 +1,39 @@
+{
+  "id": "git-reset-revert-04",
+  "title": "Histórico e Desfazendo Erros (git log, revert, reset e .gitignore)",
+  "description": "Inspecione o histórico com git log, proteja arquivos sensíveis com .gitignore e saiba a diferença vital entre git revert e git reset.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Inspecionando e Desfazendo Commits com Segurança",
+      "content": "Errar faz parte! O arquivo '.gitignore' impede que pastas pesadas ('node_modules/') ou senhas ('.env') sejam rastreadas pelo Git. Para ver o histórico compacto, usamos 'git log --oneline'. E se um commit com bug já foi enviado ao GitHub (branch compartilhada)? Usamos 'git revert <hash>', que cria um NOVO commit desfazendo as alterações sem apagar a história. Já 'git reset --soft HEAD~1' volta o último commit mantendo os arquivos prontos no Stage (ideal apenas para commits locais que ainda não foram enviados com push)!",
+      "codeExample": "# Exemplo de arquivo .gitignore\nnode_modules/\n.env\ndist/\n\n# Ver histórico resumido em uma linha por commit\ngit log --oneline --graph\n\n# Desfazer um commit público com segurança (cria novo commit inverso)\ngit revert a1b2c3d\n\n# Desfazer último commit local mantendo alterações nos arquivos\ngit reset --soft HEAD~1",
+      "keyTakeaways": [
+        "NUNCA commite arquivos '.env' com senhas ou chaves de API — adicione '.env' ao arquivo '.gitignore'!",
+        "'git revert <hash>' é seguro para branches compartilhadas (main) porque não reescreve o histórico.",
+        "'git reset --hard' apaga permanentemente alterações não-commitadas — use com extremo cuidado!"
+      ]
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os comandos para inspecionar o histórico compacto e reverter com segurança o commit 'f4e5d6c' que já está em produção:",
+      "blocks": [
+        "git revert f4e5d6c",
+        "git log --oneline",
+        "git push origin main"
+      ],
+      "correctOrder": [1, 0, 2],
+      "explanation": "Primeiro consultamos o hash no 'git log --oneline', depois criamos o commit reverso com 'git revert' e enviamos a correção com 'git push'."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva o comando para visualizar o histórico resumido em uma linha ('git log --oneline') e na linha seguinte o comando para reverter com segurança o commit 'abc1234' ('git revert abc1234'):",
+      "starterCode": "# 1. Veja o histórico resumido em uma linha\n# 2. Reverta o commit abc1234\n",
+      "requiredTokens": ["git log", "--oneline", "git revert", "abc1234"],
+      "sampleSolution": "git log --oneline\ngit revert abc1234",
+      "hint": "Digite 'git log --oneline' na primeira linha e 'git revert abc1234' na segunda.",
+      "explanation": "A dupla 'git log --oneline' e 'git revert <hash>' permite auditar e reverter regressões em produção em segundos."
+    }
+  ]
+}

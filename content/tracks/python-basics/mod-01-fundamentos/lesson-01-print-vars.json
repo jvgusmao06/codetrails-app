@@ -1,0 +1,83 @@
+{
+  "id": "py-vars-01",
+  "title": "01. Variáveis e print()",
+  "description": "Exibindo mensagens no terminal e criando variáveis.",
+  "xp": 15,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Como o Python Exibe Dados e Cria Variáveis",
+      "content": "Diferente de linguagens verbosas, o Python foi desenhado para ser lido quase como inglês ou português estruturado. Para mostrar qualquer informação no terminal, chamamos a função nativa print(). Já para guardar um valor na memória (uma variável), basta escolher um nome e usar o sinal de atribuição '=' — sem precisar declarar o tipo antes.",
+      "codeExample": "# Exibindo uma mensagem na tela\nprint(\"Olá, Dev!\")\n\n# Criando variáveis (tipagem dinâmica)\nlinguagem = \"Python\"\nnivel = 5",
+      "keyTakeaways": [
+        "print() envia textos ou números para a saída padrão (console).",
+        "Textos (strings) ficam sempre entre aspas simples ou duplas.",
+        "Variáveis são criadas diretamente com nome = valor, sem usar var, let ou int."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual função nativa usamos em Python para exibir uma mensagem na tela?",
+      "options": [
+        "console.log()",
+        "print()",
+        "echo()",
+        "System.out.println()"
+      ],
+      "correctIndex": 1,
+      "explanation": "Em Python, a função nativa print() envia texto ou valores diretamente para a saída padrão."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código para imprimir 'Olá, Dev!' no console:",
+      "codeTemplate": "{{blank}}(\"Olá, Dev!\")",
+      "blanks": [
+        {
+          "answer": "print",
+          "placeholder": "função"
+        }
+      ],
+      "options": [
+        "print",
+        "log",
+        "write",
+        "show"
+      ],
+      "explanation": "Basta chamar print() passando a string entre parênteses."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Como declaramos uma variável chamada 'nivel' com valor 5 em Python?",
+      "options": [
+        "let nivel = 5",
+        "int nivel = 5;",
+        "nivel = 5",
+        "var nivel := 5"
+      ],
+      "correctIndex": 2,
+      "explanation": "Python possui tipagem dinâmica: você atribui diretamente com '=' sem precisar de palavras-chave como let, var ou int."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Crie a variável 'linguagem' atribuindo o texto \"Python\":",
+      "codeTemplate": "{{blank}} = \"{{blank}}\"",
+      "blanks": [
+        {
+          "answer": "linguagem",
+          "placeholder": "variável"
+        },
+        {
+          "answer": "Python",
+          "placeholder": "valor"
+        }
+      ],
+      "options": [
+        "linguagem",
+        "Python",
+        "const",
+        "var"
+      ],
+      "explanation": "O identificador fica à esquerda do sinal '=' e o valor entre aspas fica à direita."
+    }
+  ]
+}

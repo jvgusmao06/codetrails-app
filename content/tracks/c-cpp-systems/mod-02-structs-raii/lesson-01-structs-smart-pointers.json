@@ -1,0 +1,44 @@
+{
+  "id": "cpp-raii-01",
+  "title": "Structs, Referências (&) e Smart Pointers (RAII)",
+  "description": "Domine passagem por referência em C++, structs e gerenciamento automático de memória com std::unique_ptr.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Referências (T&) e RAII com Smart Pointers",
+      "content": "Em C++, além de ponteiros brutos (T*), temos referências (T&), que funcionam como um apelido seguro e não-nulo para uma variável existente (evitando cópias caras). E para memória no Heap, o C++ moderno usa o idioma RAII (Resource Acquisition Is Initialization) com std::unique_ptr: a memória é liberada automaticamente assim que o ponteiro sai de escopo, sem precisar de 'delete'!",
+      "codeExample": "#include <memory>\n#include <string>\n\nstruct Sensor {\n    int id;\n};\n\n// Passagem por referência constante: zero cópia e seguro\nvoid lerSensor(const Sensor& s) {\n    // std::unique_ptr libera a memória automaticamente no fim do bloco\n    auto ptr = std::make_unique<Sensor>(Sensor{s.id});\n}",
+      "keyTakeaways": [
+        "Use 'const Tipo&' em parâmetros de funções para evitar copiar objetos grandes sem permitir alterações.",
+        "Evite 'new' e 'delete' manuais em C++ moderno; prefira 'std::make_unique<T>()'.",
+        "Vazar memória (memory leak) acontece quando alocamos com 'new' e esquecemos o 'delete' antes da função terminar."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "A função abaixo aloca um buffer na Heap em C++, mas causa um vazamento de memória (Memory Leak) quando ocorre um retorno antecipado. Clique na linha que inicia essa alocação insegura:",
+      "lines": [
+        "void processarDados(int tamanho) {",
+        "    int* buffer = new int[tamanho];",
+        "    if (tamanho < 10) return;",
+        "    delete[] buffer;",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Alocar manualmente com 'new int[tamanho]' na linha 2 faz com que o 'return' da linha 3 pule o 'delete[]', vazando memória. Usar std::vector<int> ou std::unique_ptr resolve isso via RAII."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o parâmetro em C++ para receber a std::string por referência constante (sem copiar) e criar um unique_ptr:",
+      "codeTemplate": "void registrar({{blank}} std::string{{blank}} msg) {\n    auto p = std::{{blank}}<int>(42);\n}",
+      "blanks": [
+        { "answer": "const", "placeholder": "modificador" },
+        { "answer": "&", "placeholder": "referência" },
+        { "answer": "make_unique", "placeholder": "factory" }
+      ],
+      "options": ["const", "&", "make_unique", "*", "new", "shared"],
+      "explanation": "'const std::string&' passa por referência constante sem cópia, e 'std::make_unique<T>()' aloca um unique_ptr com segurança."
+    }
+  ]
+}

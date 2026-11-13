@@ -1,0 +1,25 @@
+{
+  "id": "pytorch-ml-python",
+  "title": "PyTorch & Machine Learning",
+  "description": "Construa e treine redes neurais em Python com PyTorch: Tensores, Autograd, nn.Module, Training Loop, DataLoader e boas práticas de ML.",
+  "category": "framework",
+  "languageId": "python-basics",
+  "prerequisites": ["python-basics"],
+  "color": "#EE4C2C",
+  "icon": "🔥",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-tensores-redes",
+      "title": "Módulo 1: Tensores, Autograd, nn.Module e Loop de Treino",
+      "description": "Entenda como redes neurais aprendem do zero com PyTorch.",
+      "lessons": [
+        "lesson-01-tensors-gpu-autograd",
+        "lesson-02-nn-module-linear-relu",
+        "lesson-03-loss-optimizer-training-loop",
+        "lesson-04-dataset-dataloader-batches",
+        "lesson-05-save-load-scikit-learn"
+      ]
+    }
+  ]
+}

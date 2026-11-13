@@ -1,0 +1,43 @@
+{
+  "id": "vitest-01",
+  "title": "Suítes de Teste com describe, it, expect e vi.fn()",
+  "description": "Estruture testes expressivos no Vitest, compare objetos com toEqual e simule funções com spies.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Anatomia de um Teste no Vitest",
+      "content": "O Vitest é o test runner moderno nativo para projetos TypeScript/Vite. Agrupamos cenários com 'describe()', definimos cada caso com 'it()' (ou 'test()') e validamos resultados com 'expect()'. Para comparar valores primitivos usamos '.toBe()', para objetos/arrays usamos '.toEqual()', e para espionar chamadas usamos 'vi.fn()'.",
+      "codeExample": "import { describe, it, expect, vi } from \"vitest\";\n\ndescribe(\"Carrinho\", () => {\n  it(\"calcula o total e notifica o callback\", () => {\n    const onCheckout = vi.fn();\n    const item = { id: 1, preco: 50 };\n\n    onCheckout(item.preco);\n    expect(item).toEqual({ id: 1, preco: 50 });\n    expect(onCheckout).toHaveBeenCalledWith(50);\n  });\n});",
+      "keyTakeaways": [
+        "Use .toBe() para igualdade estrita (===) de números/strings e .toEqual() para comparar conteúdo de objetos/arrays.",
+        "vi.fn() cria uma função mock/spy que registra quantas vezes e com quais argumentos foi chamada.",
+        "Em testes assíncronos, nunca esqueça de colocar 'async () =>' e 'await' nas chamadas."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este teste falha ao comparar dois objetos com as mesmas propriedades no Vitest/Jest. Clique na linha que usa o matcher incorreto para objetos:",
+      "lines": [
+        "it(\"retorna os dados do usuário\", () => {",
+        "  const res = criarUsuario(\"Ana\");",
+        "  expect(res).toBe({ nome: \"Ana\", ativo: true });",
+        "});"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Na linha 3, '.toBe()' usa Object.is (comparação de referência na memória), que sempre dá falso para duas instâncias distintas de objeto. Para comparar o conteúdo de objetos, use '.toEqual()'."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o teste Vitest para criar uma função spy com vi.fn() e verificar se ela foi chamada:",
+      "codeTemplate": "const notificar = {{blank}}.fn();\nnotificar(\"sucesso\");\n{{blank}}(notificar).{{blank}}(\"sucesso\");",
+      "blanks": [
+        { "answer": "vi", "placeholder": "utilitário" },
+        { "answer": "expect", "placeholder": "asserção" },
+        { "answer": "toHaveBeenCalledWith", "placeholder": "matcher" }
+      ],
+      "options": ["vi", "expect", "toHaveBeenCalledWith", "jest", "assert", "toBe"],
+      "explanation": "No Vitest usamos 'vi.fn()' para criar spies e 'expect(fn).toHaveBeenCalledWith(arg)' para verificar o argumento recebido."
+    }
+  ]
+}

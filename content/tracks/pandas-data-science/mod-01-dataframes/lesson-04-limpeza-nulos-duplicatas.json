@@ -1,0 +1,39 @@
+{
+  "id": "pandas-limpeza-nulos-04",
+  "title": "Limpeza de Dados: isna(), fillna(), dropna() e drop_duplicates()",
+  "description": "Trate valores ausentes (NaN), remova linhas duplicadas e corrija tipos com astype() antes de modelar.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Faxina de Datasets Reais no Pandas",
+      "content": "Dados do mundo real sempre vêm sujos (`NaN`, linhas repetidas, colunas numéricas como string). No Pandas:\n- **`df.isna().sum()`**: conta quantos `NaN` existem em cada coluna.\n- **`df.dropna(subset=[\"email\"])`**: remove linhas onde `email` é nulo.\n- **`df[\"desconto\"].fillna(0)`**: preenche `NaN` com `0` (ou com a `.mean()` / `.median()`).\n- **`df.drop_duplicates(subset=[\"id\"])`**: elimina registros duplicados.",
+      "codeExample": "# Contar nulos por coluna\nprint(df.isna().sum())\n\n# Preencher notas vazias com 0 e remover emails nulos\ndf[\"nota\"] = df[\"nota\"].fillna(0)\ndf = df.dropna(subset=[\"email\"]).drop_duplicates(subset=[\"email\"])",
+      "keyTakeaways": [
+        "Prefira `df = df.dropna(...)` em vez de `inplace=True` (o Pandas moderno recomenda atribuição ou encadeamento limpo).",
+        "Sempre cheque `df.isna().sum()` antes de treinar modelos de Machine Learning (a maioria não aceita `NaN`).",
+        "Use `df[\"preco\"] = df[\"preco\"].astype(float)` para converter tipos após limpar textos."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a limpeza do DataFrame substituindo nulos na coluna `idade` pela mediana e removendo linhas duplicadas:",
+      "codeTemplate": "df[\"idade\"] = df[\"idade\"].{{blank}}(df[\"idade\"].median())\ndf = df.{{blank}}()",
+      "blanks": [
+        { "answer": "fillna", "placeholder": "preencher" },
+        { "answer": "drop_duplicates", "placeholder": "duplicatas" }
+      ],
+      "options": ["fillna", "drop_duplicates", "dropna", "isna", "unique"],
+      "explanation": "`.fillna(valor)` preenche células `NaN` e `.drop_duplicates()` remove linhas repetidas."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Preencha valores nulos da coluna `df[\"bonus\"]` com `0` usando `.fillna(0)` e remova linhas com `email` nulo usando `.dropna(subset=[\"email\"])`:",
+      "starterCode": "# Limpe bonus e email no DataFrame df:\n",
+      "requiredTokens": ["df[\"bonus\"]", ".fillna(0)", "df.dropna(", "subset=[\"email\"]"],
+      "sampleSolution": "df[\"bonus\"] = df[\"bonus\"].fillna(0)\ndf = df.dropna(subset=[\"email\"])",
+      "hint": "Use `df[\"bonus\"] = df[\"bonus\"].fillna(0)` e `df = df.dropna(subset=[\"email\"])`.",
+      "explanation": "Combinar `fillna` para valores numéricos opcionais e `dropna(subset=...)` para chaves obrigatórias é rotina padrão de ETL."
+    }
+  ]
+}

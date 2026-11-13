@@ -1,0 +1,19 @@
+{
+  "id": "tailwind-css",
+  "title": "Tailwind CSS",
+  "description": "Estilize interfaces responsivas mobile-first diretamente no HTML/JSX com classes utilitárias modernas.",
+  "category": "framework",
+  "languageId": "typescript-javascript",
+  "prerequisites": ["typescript-javascript"],
+  "color": "#06B6D4",
+  "icon": "🎨",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-utilitarios",
+      "title": "Módulo 1: Flexbox e Responsividade",
+      "description": "Construa layouts adaptáveis para celular e desktop sem sair do componente.",
+      "lessons": ["lesson-01-flexbox-espaco", "lesson-02-responsivo"]
+    }
+  ]
+}

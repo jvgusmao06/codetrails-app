@@ -1,0 +1,43 @@
+{
+  "id": "ts-es6-01",
+  "title": "JavaScript Moderno (ES6+)",
+  "description": "Const/let, arrow functions e transformação de listas com map.",
+  "xp": 15,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Imutabilidade com const e Transformação com .map()",
+      "content": "No JavaScript moderno (ES6+), preferimos 'const' para declarar variáveis cuja referência não será reatribuída, e 'let' apenas quando o valor precisar mudar. Para transformar listas sem mutar o array original, usamos o método .map() combinado com arrow functions (=>).",
+      "codeExample": "const nums = [1, 2, 3];\nconst dobro = nums.map(n => n * 2); // [2, 4, 6]",
+      "keyTakeaways": [
+        "const impede reatribuição da variável; let permite reatribuição.",
+        ".map() aplica uma função a cada item e retorna um novo array."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Use o método de array que transforma cada item em um novo array com os valores dobrados:",
+      "codeTemplate": "const nums = [1, 2, 3];\nconst dobro = nums.{{blank}}(n => n * 2);",
+      "blanks": [
+        {
+          "answer": "map",
+          "placeholder": "método"
+        }
+      ],
+      "options": ["map", "filter", "forEach", "reduce"],
+      "explanation": "O método .map() aplica uma função a cada elemento e retorna um novo array do mesmo tamanho."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual a diferença entre declarar uma variável com 'const' ou 'let' em JavaScript?",
+      "options": [
+        "'const' tem escopo global e 'let' tem escopo de função",
+        "'const' impede que a referência da variável seja reatribuída, enquanto 'let' permite reatribuição",
+        "'const' só aceita números e strings",
+        "Não há diferença em tempo de execução"
+      ],
+      "correctIndex": 1,
+      "explanation": "Variáveis declaradas com 'const' não podem sofrer nova atribuição com '=', garantindo maior previsibilidade."
+    }
+  ]
+}

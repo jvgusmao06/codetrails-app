@@ -1,0 +1,39 @@
+{
+  "id": "git-rebase-squash-03",
+  "title": "git rebase, Rebase Interativo (-i) e Squash de Commits",
+  "description": "Mantenha um histórico linear e limpo combinando vários commits de rascunho (WIP) em um único commit com git rebase -i.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Merge vs Rebase e a Regra de Ouro",
+      "content": "Enquanto `git merge` cria um novo \"commit de junção\" preservando os dois caminhos, **`git rebase main`** pega os commits da sua branch e os **reaplica no topo** da `main` atualizada, deixando o histórico 100% linear! Além disso, **`git rebase -i HEAD~3`** (modo interativo) permite usar `squash` (ou `s`) para juntar 3 commits de rascunho (`wip`, `ajustando`, `agora vai`) em um único commit limpo antes do Pull Request. **Regra de Ouro:** nunca faça `rebase` em commits que já estão em uma branch pública compartilhada!",
+      "codeExample": "# Atualizar sua feature branch colocando seus commits no topo da main\ngit switch feat/busca\ngit rebase main\n\n# Juntar (squash) os últimos 3 commits locais em 1 commit limpo\ngit rebase -i HEAD~3",
+      "keyTakeaways": [
+        "`git rebase` reescreve os hashes dos commits da sua branch — ótimo para sua branch pessoal antes do merge, proibido na `main` compartilhada.",
+        "`squash` no rebase interativo combina vários commits pequenos em um só commit organizado.",
+        "Se der conflito durante o rebase: resolva o arquivo, rode `git add .` e depois `git rebase --continue`."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete os comandos para atualizar a branch atual no topo da `main` com rebase e continuar após resolver um conflito:",
+      "codeTemplate": "git {{blank}} main\n# Após resolver conflito e rodar git add .:\ngit rebase {{blank}}",
+      "blanks": [
+        { "answer": "rebase", "placeholder": "reaplicar" },
+        { "answer": "--continue", "placeholder": "continuar" }
+      ],
+      "options": ["rebase", "--continue", "merge", "--amend", "--abort"],
+      "explanation": "`git rebase main` reaplica seus commits sobre a `main`, e `git rebase --continue` prossegue após `git add`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva os comandos para mudar para a branch `feat/ui` (`git switch feat/ui`) e fazer rebase interativo dos últimos 2 commits (`git rebase -i HEAD~2`):",
+      "starterCode": "# 1. Mude para feat/ui\n# 2. Inicie o rebase interativo dos últimos 2 commits\n",
+      "requiredTokens": ["git switch", "feat/ui", "git rebase", "-i", "HEAD~2"],
+      "sampleSolution": "git switch feat/ui\ngit rebase -i HEAD~2",
+      "hint": "Use `git switch feat/ui` e `git rebase -i HEAD~2`.",
+      "explanation": "`HEAD~2` aponta para 2 commits atrás do topo atual da branch."
+    }
+  ]
+}

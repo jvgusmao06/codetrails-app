@@ -1,0 +1,35 @@
+{
+  "id": "sql-databases",
+  "title": "SQL & PostgreSQL",
+  "description": "Domine SQL do zero às funções nativas: tipos, SELECT, WHERE, JOINs, GROUP BY, HAVING, COALESCE, CASE WHEN, CREATE TABLE e Transações ACID.",
+  "category": "language",
+  "color": "#38BDF8",
+  "icon": "🐬",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-queries",
+      "title": "Módulo 1: Do Zero a SELECT, JOINs, GROUP BY e Funções Nativas",
+      "description": "Tabelas, tipos, operadores (IN/BETWEEN/LIKE), JOINs, COALESCE, CASE WHEN e agrupamentos com GROUP BY / HAVING.",
+      "lessons": [
+        "lesson-00-tabelas-tipos-basico",
+        "lesson-01-select-where",
+        "lesson-02-joins-bugs",
+        "lesson-03-funcoes-nativas-desafio",
+        "lesson-04-groupby-having-subqueries",
+        "lesson-05-subqueries-cte-with",
+        "lesson-06-window-functions-row-number"
+      ]
+    },
+    {
+      "id": "mod-02-ddl-transacoes",
+      "title": "Módulo 2: Modelagem DDL, DML e Transações ACID",
+      "description": "Crie tabelas, insira dados com segurança e use transações e índices.",
+      "lessons": [
+        "lesson-01-create-transactions",
+        "lesson-02-foreign-key-constraints",
+        "lesson-03-views-explain-otimizacao"
+      ]
+    }
+  ]
+}

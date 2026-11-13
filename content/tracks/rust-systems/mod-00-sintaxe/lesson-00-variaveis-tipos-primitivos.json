@@ -1,0 +1,40 @@
+{
+  "id": "rust-basico-00",
+  "title": "Primeiros Passos: Variáveis (let, mut, const), Tipos e If",
+  "description": "Comece do zero em Rust: fn main, variáveis imutáveis vs mutáveis, tipos escalares (i32, f64, bool, char), tuplas e if como expressão.",
+  "xp": 25,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Criando Variáveis e Tipos Primitivos no Rust",
+      "content": "Todo programa Rust começa em 'fn main()'. Criamos variáveis com 'let', que são imutáveis por padrão para evitar bugs acidentais! Para permitir que o valor mude, adicionamos 'mut' ('let mut contador = 0;'). Já constantes globais usam 'const' e exigem tipo explícito ('const MAX: u32 = 100;'). Os tipos primitivos principais são inteiros com sinal (i8, i32, i64), inteiros sem sinal (u8, u32, usize), decimais (f64), booleanos (bool) e caracteres Unicode (char). Além disso, 'if/else' em Rust retorna valor e pode ser atribuído direto a uma variável!",
+      "codeExample": "const LIMITE: i32 = 100;\n\nfn main() {\n    let nome: &str = \"Ferris\";\n    let mut nivel: i32 = 1;\n    nivel += 1;\n\n    // if/else funcionando como expressão que retorna valor\n    let status = if nivel >= 2 { \"Pronto\" } else { \"Iniciante\" };\n    println!(\"{} ({}) -> {}\", nome, LIMITE, status);\n}",
+      "keyTakeaways": [
+        "'let x = 5;' cria uma variável imutável; 'let mut x = 5;' cria uma variável mutável.",
+        "'const' exige anotação de tipo explícita (ex: const TAXA: f64 = 0.05;) e valor conhecido em compilação.",
+        "Em Rust, 'if condicao { valor1 } else { valor2 }' pode ser usado no lado direito de um 'let'!"
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código Rust declarando uma constante tipada, uma variável mutável e atribuindo o resultado de um if/else:",
+      "codeTemplate": "{{blank}} MAX_VIDAS: u8 = 5;\nlet {{blank}} pontos = 10;\nlet msg = {{blank}} pontos > 5 { \"Alto\" } else { \"Baixo\" };",
+      "blanks": [
+        { "answer": "const", "placeholder": "constante" },
+        { "answer": "mut", "placeholder": "mutável" },
+        { "answer": "if", "placeholder": "condicional" }
+      ],
+      "options": ["const", "mut", "if", "var", "let", "when"],
+      "explanation": "Usamos 'const' para constantes tipadas, 'let mut' para variáveis mutáveis e 'if ... else' como expressão."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva do zero em Rust a declaração de uma variável mutável 'let mut idade: i32 = 20;' e imprima seu valor com 'println!(\"{}\", idade);':",
+      "starterCode": "// Declare let mut idade e imprima com println!:\n",
+      "requiredTokens": ["let", "mut", "idade", "20", "println!"],
+      "sampleSolution": "let mut idade: i32 = 20;\nprintln!(\"{}\", idade);",
+      "hint": "Use: let mut idade: i32 = 20; na primeira linha e println!(\"{}\", idade); na segunda.",
+      "explanation": "A combinação 'let mut' informa ao compilador Rust que a variável terá seu valor alterado ao longo do escopo."
+    }
+  ]
+}

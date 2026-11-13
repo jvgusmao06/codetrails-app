@@ -1,0 +1,19 @@
+{
+  "id": "spring-data-jpa",
+  "title": "Spring Data JPA & Hibernate",
+  "description": "Mapeie entidades relacionais com @Entity, crie repositórios sem escrever boilerplate SQL com JpaRepository e controle transações com @Transactional.",
+  "category": "framework",
+  "languageId": "java-basics",
+  "prerequisites": ["java-basics", "spring-boot-java"],
+  "color": "#10B981",
+  "icon": "🗄️",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-entities-repos",
+      "title": "Módulo 1: @Entity, JpaRepository e @Transactional",
+      "description": "Domine persistência de dados no ecossistema Spring Boot.",
+      "lessons": ["lesson-01-jpa-repositories"]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "id": "cpp-ptr-02",
+  "title": "Ponteiros e Endereços de Memória",
+  "description": "Referenciando e desreferenciando variáveis na memória.",
+  "xp": 20,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Acesso Direto à Memória com Ponteiros",
+      "content": "Um ponteiro é uma variável que guarda o endereço de memória de outra variável. Usamos o operador '&' (address-of) para descobrir onde uma variável mora na RAM, e o operador '*' (dereference) para ler ou alterar o valor guardado naquele endereço.",
+      "codeExample": "int x = 10;\nint *ptr = &x; // ptr guarda o endereço de x\n*ptr = 99;     // altera o valor de x para 99!",
+      "keyTakeaways": [
+        "&variavel retorna o endereço de memória onde ela está alocada.",
+        "*ponteiro acessa ou modifica diretamente o valor guardado no endereço."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual operador retorna o ENDEREÇO de memória de uma variável em C/C++?",
+      "codeSnippet": "int valor = 42;\nint *ptr = &valor;",
+      "options": [
+        "O operador asterisco (*)",
+        "O operador e-comercial (&)",
+        "O operador seta (->)",
+        "O operador sizeof"
+      ],
+      "correctIndex": 1,
+      "explanation": "O operador unário '&' (address-of) obtém o endereço de memória onde a variável está armazenada."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Desreferencie o ponteiro 'ptr' para alterar o valor guardado no endereço apontado para 99:",
+      "codeTemplate": "int x = 10;\nint *ptr = &x;\n{{blank}}ptr = 99;",
+      "blanks": [
+        {
+          "answer": "*",
+          "placeholder": "operador"
+        }
+      ],
+      "options": ["*", "&", "->", "$"],
+      "explanation": "O operador '*' antes de um ponteiro (dereference) acessa ou modifica diretamente o valor contido no endereço."
+    }
+  ]
+}

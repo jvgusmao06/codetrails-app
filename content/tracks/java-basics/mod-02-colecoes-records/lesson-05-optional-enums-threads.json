@@ -1,0 +1,40 @@
+{
+  "id": "java-excecoes-try-resources-04",
+  "title": "Exceções (try/catch/throw) e Try-with-Resources",
+  "description": "Entenda Checked vs Unchecked Exceptions, lance erros com throw e feche conexões automaticamente com try-with-resources.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Tratamento de Exceções e AutoCloseable em Java",
+      "content": "Em Java existem dois grupos de exceções: **Unchecked** (`RuntimeException`, como `IllegalArgumentException` ou `NullPointerException`, que não obrigam `try/catch`) e **Checked** (`IOException`, `SQLException`, que o compilador obriga você a capturar com `try/catch` ou declarar na assinatura com `throws`). Para fechar arquivos ou conexões automaticamente sem precisar de `finally { close(); }`, usamos **try-with-resources**: `try (var sc = new Scanner(System.in)) { ... }`.",
+      "codeExample": "public static void sacar(double valor) {\n    if (valor <= 0) {\n        throw new IllegalArgumentException(\"Valor deve ser positivo\");\n    }\n}\n\n// Try-with-resources: fecha 'sc' automaticamente ao sair do bloco\ntry (var sc = new java.util.Scanner(System.in)) {\n    sacar(-10);\n} catch (IllegalArgumentException e) {\n    System.out.println(\"Erro: \" + e.getMessage());\n}",
+      "keyTakeaways": [
+        "`throw new ...` dispara uma exceção; `throws` na assinatura do método avisa quem chama que aquele método pode falhar.",
+        "Try-with-resources funciona com qualquer classe que implemente `AutoCloseable` (arquivos, sockets, JDBC).",
+        "Use `IllegalArgumentException` para validar parâmetros inválidos logo no início do método."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o método Java para lançar uma exceção quando a quantidade for inválida e capturá-la no bloco try/catch:",
+      "codeTemplate": "if (qtd < 0) {{blank}} new IllegalArgumentException(\"Negativo\");\n\n{{blank}} {\n    processar(-1);\n} {{blank}} (IllegalArgumentException ex) {\n    System.out.println(ex.getMessage());\n}",
+      "blanks": [
+        { "answer": "throw", "placeholder": "lançar" },
+        { "answer": "try", "placeholder": "tentar" },
+        { "answer": "catch", "placeholder": "capturar" }
+      ],
+      "options": ["throw", "throws", "try", "catch", "except", "raise"],
+      "explanation": "`throw` dispara a instância da exceção, enquanto `try / catch` captura e trata o erro."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva um bloco `try { ... } catch (Exception e) { System.out.println(e.getMessage()); }` chamando `Integer.parseInt(\"abc\")` dentro do `try`:",
+      "starterCode": "// Trate Integer.parseInt(\"abc\") com try/catch:\n",
+      "requiredTokens": ["try", "Integer.parseInt", "catch", "Exception", "getMessage()"],
+      "sampleSolution": "try {\n    int n = Integer.parseInt(\"abc\");\n} catch (Exception e) {\n    System.out.println(e.getMessage());\n}",
+      "hint": "Coloque `int n = Integer.parseInt(\"abc\");` no `try` e `System.out.println(e.getMessage());` no `catch (Exception e)`.",
+      "explanation": "`Integer.parseInt` lança `NumberFormatException` (subclasse de `Exception`) quando o texto não é um número válido."
+    }
+  ]
+}

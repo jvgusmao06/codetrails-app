@@ -1,0 +1,25 @@
+{
+  "id": "numpy-python",
+  "title": "NumPy & Computação Numérica",
+  "description": "Domine o coração científico do Python: ndarrays em C, slicing 2D, vetorização, broadcasting, eixos (axis) e álgebra linear.",
+  "category": "library",
+  "languageId": "python-basics",
+  "prerequisites": ["python-basics"],
+  "color": "#4DABCF",
+  "icon": "🔢",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-arrays-vetorizacao",
+      "title": "Módulo 1: Arrays N-Dimensionais, Vetorização e Álgebra Linear",
+      "description": "Substitua loops lentos por operações vetorizadas em C com NumPy.",
+      "lessons": [
+        "lesson-01-ndarray-shape-dtype",
+        "lesson-02-slicing-mascaras-booleanas",
+        "lesson-03-vetorizacao-broadcasting",
+        "lesson-04-reshape-eixos-agregacoes",
+        "lesson-05-algebra-linear-random"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "ts-narrowing-utility-types-04",
+  "title": "Type Narrowing (typeof/in) e Utility Types (Partial, Pick, Omit, Record)",
+  "description": "Escreva TypeScript profissional estreitando tipos union com typeof/in e transformando interfaces com Utility Types nativos.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Type Narrowing e Utility Types Nativos do TypeScript",
+      "content": "Quando uma variável tem tipo `string | number`, o TypeScript exige **Type Narrowing** (`typeof x === 'string'`) antes de permitir métodos como `.toUpperCase()`. Além disso, em vez de duplicar interfaces para formulários de criação ou atualização, o TS oferece **Utility Types** embutidos:\n- **`Partial<T>`**: torna todas as propriedades opcionais (`?`).\n- **`Pick<T, 'a' | 'b'>`**: seleciona apenas algumas chaves.\n- **`Omit<T, 'id'>`**: remove chaves específicas.\n- **`Record<K, V>`**: cria um dicionário tipado.",
+      "codeExample": "interface User { id: number; nome: string; senha: string; }\n\ntype CriarUser = Omit<User, \"id\">;        // { nome, senha }\ntype AtualizarUser = Partial<CriarUser>;   // { nome?: string; senha?: string }\ntype PublicUser = Pick<User, \"id\" | \"nome\">;\n\nfunction formatar(v: string | number) {\n  return typeof v === \"string\" ? v.toUpperCase() : v.toFixed(2);\n}",
+      "keyTakeaways": [
+        "`typeof`, `instanceof` e `'chave' in obj` fazem o compilador estreitar (narrow) tipos union com segurança.",
+        "`Omit<T, 'id'>` e `Pick<T, 'a'>` evitam duplicação de tipos em DTOs de API.",
+        "`Partial<T>` é o padrão para funções de `update(id, dados: Partial<User>)`."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete os Utility Types para tornar todos os campos de `Produto` opcionais e criar uma versão sem o campo `'id'`:",
+      "codeTemplate": "type ProdutoPatch = {{blank}}<Produto>;\ntype NovoProduto = {{blank}}<Produto, \"id\">;",
+      "blanks": [
+        { "answer": "Partial", "placeholder": "opcional" },
+        { "answer": "Omit", "placeholder": "remover" }
+      ],
+      "options": ["Partial", "Omit", "Pick", "Record", "Readonly"],
+      "explanation": "`Partial<T>` torna todas as propriedades opcionais e `Omit<T, K>` remove a propriedade K do tipo."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie um `type UsuarioPublico = Omit<Usuario, \"senha\">;` e um `type UsuarioUpdate = Partial<UsuarioPublico>;`:",
+      "starterCode": "interface Usuario { id: string; nome: string; senha: string; }\n// Crie UsuarioPublico e UsuarioUpdate:\n",
+      "requiredTokens": ["type", "UsuarioPublico", "Omit", "\"senha\"", "UsuarioUpdate", "Partial"],
+      "sampleSolution": "type UsuarioPublico = Omit<Usuario, \"senha\">;\ntype UsuarioUpdate = Partial<UsuarioPublico>;",
+      "hint": "Use `type UsuarioPublico = Omit<Usuario, \"senha\">;` e `type UsuarioUpdate = Partial<UsuarioPublico>;`.",
+      "explanation": "Combinar `Omit` e `Partial` garante que dados sensíveis como `senha` nunca vazem e que atualizações parciais sejam seguras."
+    }
+  ]
+}

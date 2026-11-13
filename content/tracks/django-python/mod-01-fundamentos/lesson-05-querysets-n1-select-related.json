@@ -1,0 +1,40 @@
+{
+  "id": "django-orm-otimizacao-05",
+  "title": "ORM Avançado: get_object_or_404, Q Objects e select_related (N+1)",
+  "description": "Elimine queries N+1 lentas com select_related/prefetch_related, faça filtros OR com Q e trate 404 com get_object_or_404.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Evitando o Problema N+1 e Tratando 404 no Django",
+      "content": "Em views reais, nunca deixe `.get(id=pk)` estourar um erro 500 se o ID não existir: use **`get_object_or_404(Produto, pk=pk)`**, que retorna HTTP 404 limpo! E atenção à performance: ao iterar sobre `pedidos` e acessar `pedido.cliente.nome`, o Django faz 1 query extra por pedido (**Problema N+1**). Use **`select_related('cliente')`** (para `ForeignKey`/`OneToOne`, faz SQL JOIN) ou **`prefetch_related('itens')`** (para `ManyToMany`/reverso)!",
+      "codeExample": "from django.shortcuts import get_object_or_404\nfrom django.db.models import Q\n\n# 404 seguro se não existir\nproduto = get_object_or_404(Produto, id=produto_id)\n\n# Resolve N+1 com JOIN SQL em uma única query!\npedidos = Pedido.objects.select_related(\"cliente\").filter(\n    Q(status=\"PAGO\") | Q(urgente=True)\n)",
+      "keyTakeaways": [
+        "`select_related('fk')` usa `INNER/LEFT JOIN` no SQL (1 query); `prefetch_related('m2m')` faz 2 queries e junta em Python.",
+        "`Q(a=1) | Q(b=2)` permite filtros `OR` e negação `~Q(...)` no Django ORM.",
+        "`get_object_or_404(Modelo, pk=id)` substitui `try / except Modelo.DoesNotExist`."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Esta view causa o problema de **N+1 Queries** ao exibir 500 livros e o nome do autor de cada um. Clique na linha da consulta que deveria usar `.select_related(\"autor\")`:",
+      "lines": [
+        "def listar_livros(request):",
+        "    livros = Livro.objects.all()[:500]",
+        "    dados = [{\"titulo\": l.titulo, \"autor\": l.autor.nome} for l in livros]",
+        "    return JsonResponse(dados, safe=False)"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Na linha 2, `Livro.objects.all()` não carrega `autor`; ao acessar `l.autor.nome` 500 vezes, dispara 500 queries extras! Use `Livro.objects.select_related(\"autor\")[:500]`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Busque `pedidos` usando `Pedido.objects.select_related(\"usuario\").filter(ativo=True)`:",
+      "starterCode": "# Otimize a consulta com select_related:\n",
+      "requiredTokens": ["Pedido.objects.select_related", "\"usuario\"", ".filter(", "ativo=True"],
+      "sampleSolution": "pedidos = Pedido.objects.select_related(\"usuario\").filter(ativo=True)",
+      "hint": "Escreva: pedidos = Pedido.objects.select_related(\"usuario\").filter(ativo=True)",
+      "explanation": "`select_related` traz a tabela relacionada via JOIN na mesma ida ao banco de dados."
+    }
+  ]
+}

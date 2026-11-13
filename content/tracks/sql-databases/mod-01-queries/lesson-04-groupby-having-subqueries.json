@@ -1,0 +1,40 @@
+{
+  "id": "sql-groupby-04",
+  "title": "Agrupamentos (GROUP BY), Filtro HAVING, ORDER BY e LIMIT",
+  "description": "Aprenda a diferença entre WHERE e HAVING, agrupe relatórios com GROUP BY e pagine resultados com ORDER BY e LIMIT/OFFSET.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "GROUP BY, HAVING e Paginação em SQL",
+      "content": "Quando usamos funções de agregação como COUNT(*) ou SUM(valor) junto com outras colunas (ex: total vendido por categoria), precisamos agrupar as linhas com 'GROUP BY categoria'. E atenção à pegadinha clássica de entrevistas: 'WHERE' filtra linhas individuais ANTES do agrupamento, enquanto 'HAVING' filtra os grupos DEPOIS da agregação (ex: mostrar apenas categorias com soma > 1000)!",
+      "codeExample": "SELECT categoria, COUNT(*) AS qtd, SUM(valor) AS receita\nFROM vendas\nWHERE cancelada = false\nGROUP BY categoria\nHAVING SUM(valor) > 1000\nORDER BY receita DESC\nLIMIT 10 OFFSET 0;",
+      "keyTakeaways": [
+        "WHERE não aceita funções agregadas (como WHERE COUNT(*) > 5); para filtrar agregações, use HAVING!",
+        "ORDER BY coluna DESC ordena do maior para o menor (decrescente); ASC ordena do menor para o maior.",
+        "LIMIT define quantas linhas retornar e OFFSET define quantas linhas pular (paginação)."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Esta query SQL tenta filtrar apenas os departamentos com mais de 5 funcionários, mas falha com erro de sintaxe porque usou agregação no lugar errado. Clique na linha com o bug:",
+      "lines": [
+        "SELECT departamento, COUNT(*) AS total",
+        "FROM colaboradores",
+        "WHERE COUNT(*) > 5",
+        "GROUP BY departamento;"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Na linha 3, não é permitido usar COUNT(*) dentro do WHERE! Filtros sobre funções de agregação devem ficar em uma cláusula 'HAVING COUNT(*) > 5' após o GROUP BY."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva uma query SQL que selecione 'cidade' e 'COUNT(*)' da tabela 'usuarios' agrupando por 'GROUP BY cidade':",
+      "starterCode": "-- Escreva a consulta com GROUP BY abaixo:\n",
+      "requiredTokens": ["SELECT", "cidade", "COUNT", "FROM", "usuarios", "GROUP BY"],
+      "sampleSolution": "SELECT cidade, COUNT(*) FROM usuarios GROUP BY cidade;",
+      "hint": "Use: SELECT cidade, COUNT(*) FROM usuarios GROUP BY cidade;",
+      "explanation": "Toda coluna não-agregada listada no SELECT ('cidade') deve aparecer na cláusula GROUP BY."
+    }
+  ]
+}

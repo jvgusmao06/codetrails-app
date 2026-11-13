@@ -1,0 +1,40 @@
+{
+  "id": "cpp-arrays-strings-04",
+  "title": "Arrays Fixos, Strings em C (\\0) vs std::string em C++",
+  "description": "Entenda como strings funcionam na memória em C com o terminador nulo '\\0' e por que std::string em C++ evita buffer overflows.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "C-Strings com '\\0' vs std::string Segura",
+      "content": "Em C puro, não existe um tipo `string` nativo! Uma string é um array de `char` terminado obrigatoriamente pelo caractere nulo **`'\\0'`** (por isso `\"Oi\"` ocupa 3 bytes: `'O'`, `'i'`, `'\\0'`). Além disso, arrays em C não sabem seu próprio tamanho e não checam limites — escrever além do fim causa **Buffer Overflow**. Já em **C++ moderno**, usamos **`std::string`**, que gerencia memória automaticamente, sabe seu `.size()` e permite concatenação segura com `+`.",
+      "codeExample": "// C puro: precisa de espaço extra para o '\\0'\nchar saudacao[4] = \"Ola\"; // 'O', 'l', 'a', '\\0'\n\n// C++ moderno: seguro e dinâmico\n#include <string>\nstd::string nome = \"Ada\";\nnome += \" Lovelace\";\nstd::cout << nome.size() << \"\\n\"; // 12",
+      "keyTakeaways": [
+        "Toda C-string termina em `'\\0'` (byte zero); se esquecer espaço para ele, funções como `printf(\"%s\")` leem lixo de memória.",
+        "Em C++, prefira sempre `std::string` em vez de `char*` ou `char[]`.",
+        "Arrays em C decaem para ponteiros ao serem passados para funções, perdendo seu tamanho — por isso passamos `(int arr[], int tamanho)` ou usamos `std::vector`."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Quantos bytes (posições de `char`) no mínimo um array em C precisa ter para armazenar a string `\"C++\"`?",
+      "options": [
+        "3 bytes ('C', '+', '+')",
+        "4 bytes ('C', '+', '+', '\\0')",
+        "2 bytes",
+        "8 bytes"
+      ],
+      "correctIndex": 1,
+      "explanation": "Em C, toda string literal precisa de 1 byte extra ao final para o caractere terminador nulo `'\\0'`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Em C++, crie uma `std::string linguagem = \"C++\";` e imprima seu tamanho usando `.size()` com `std::cout`:",
+      "starterCode": "// Crie std::string linguagem e imprima linguagem.size():\n",
+      "requiredTokens": ["std::string", "linguagem", "\"C++\"", "std::cout", ".size()"],
+      "sampleSolution": "std::string linguagem = \"C++\";\nstd::cout << linguagem.size() << \"\\n\";",
+      "hint": "Escreva: std::string linguagem = \"C++\"; e std::cout << linguagem.size() << \"\\n\";",
+      "explanation": "`std::string` armazena o tamanho internamente, tornando `.size()` uma operação $O(1)$ e livre de buffer overflow."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "nodejs-hono-api",
+  "title": "Node.js & Hono / Express APIs",
+  "description": "Construa servidores HTTP, rotas REST, middlewares e tratamento de JSON no backend com TypeScript e Hono/Node.js.",
+  "category": "framework",
+  "languageId": "typescript-javascript",
+  "prerequisites": ["typescript-javascript"],
+  "color": "#22C55E",
+  "icon": "🟢",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-rotas-middlewares",
+      "title": "Módulo 1: Rotas HTTP, Contexto JSON e Middlewares",
+      "description": "Crie endpoints REST ultrarrápidos e tipados em TypeScript.",
+      "lessons": ["lesson-01-hono-express-routes"]
+    }
+  ]
+}

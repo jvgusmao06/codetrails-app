@@ -1,0 +1,19 @@
+{
+  "id": "googletest-cpp",
+  "title": "GoogleTest (GTest) C++",
+  "description": "Escreva testes unitários rápidos e confiáveis em C++ com TEST(), EXPECT_EQ, ASSERT_NE e Fixtures.",
+  "category": "tool",
+  "languageId": "c-cpp-systems",
+  "prerequisites": ["c-cpp-systems"],
+  "color": "#00599C",
+  "icon": "🧪",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: Macros TEST(), EXPECT_EQ vs ASSERT_EQ",
+      "description": "Crie suítes de teste em C++ e entenda quando continuar ou abortar um teste.",
+      "lessons": ["lesson-01-test-expect-assert"]
+    }
+  ]
+}

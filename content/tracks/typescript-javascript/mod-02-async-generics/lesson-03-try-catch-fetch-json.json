@@ -1,0 +1,40 @@
+{
+  "id": "ts-try-fetch-json-03",
+  "title": "Erros (try/catch/throw), fetch() HTTP e JSON.parse/stringify",
+  "description": "Consuma APIs reais com fetch + async/await, converta dados com JSON e trate falhas de rede com try/catch.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Consumindo APIs com fetch(), JSON e try/catch",
+      "content": "Na web e no Node.js, requisições HTTP usam a função nativa **`fetch(url)`**, que retorna uma `Promise<Response>`. Como `fetch` não lança erro para status HTTP 404 ou 500, verificamos `if (!res.ok) throw new Error(...)`. Para converter objetos em texto JSON usamos `JSON.stringify(obj)` e para o caminho inverso `JSON.parse(texto)` — sempre protegidos por um bloco **`try / catch`**.",
+      "codeExample": "async function buscarUsuario(id: number) {\n  try {\n    const res = await fetch(`/api/users/${id}`);\n    if (!res.ok) throw new Error(`HTTP ${res.status}`);\n    return await res.json();\n  } catch (err) {\n    console.error(\"Falha na requisição:\", err);\n    return null;\n  }\n}",
+      "keyTakeaways": [
+        "`await fetch(url)` só rejeita em falha de rede/DNS; cheque `res.ok` para erros 4xx/5xx.",
+        "`JSON.stringify(dado)` serializa para string; `JSON.parse(str)` converte string JSON em objeto.",
+        "`try / catch / finally` captura qualquer `throw` síncrono ou rejeição de `await`."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Ao usar `const res = await fetch(url)`, o que acontece se o servidor responder com status `404 Not Found`?",
+      "options": [
+        "O fetch lança uma exceção automaticamente para o bloco catch",
+        "A Promise resolve normalmente com `res.ok === false` e `res.status === 404`",
+        "O navegador reinicia a página",
+        "res.json() retorna true"
+      ],
+      "correctIndex": 1,
+      "explanation": "Por especificação, `fetch()` só rejeita a Promise em erros de rede. Status 404 ou 500 resolvem com `res.ok === false`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva um bloco `try / catch (err)` que chame `JSON.parse(texto)` dentro do `try` e `console.error(err)` dentro do `catch`:",
+      "starterCode": "// Trate JSON.parse com try / catch:\n",
+      "requiredTokens": ["try", "JSON.parse", "catch", "console.error"],
+      "sampleSolution": "try {\n  const dados = JSON.parse(texto);\n} catch (err) {\n  console.error(err);\n}",
+      "hint": "Envolva `JSON.parse(texto)` em `try { ... } catch (err) { console.error(err); }`.",
+      "explanation": "`JSON.parse` lança `SyntaxError` se a string for inválida; envolvê-lo em `try/catch` evita crash na aplicação."
+    }
+  ]
+}

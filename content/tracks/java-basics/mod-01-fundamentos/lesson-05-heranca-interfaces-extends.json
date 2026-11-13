@@ -1,0 +1,40 @@
+{
+  "id": "java-optional-enums-05",
+  "title": "Optional<T>, Enums Poderosos e Inferência com var",
+  "description": "Elimine NullPointerException usando Optional<T>, modele estados fixos com enum e simplifique variáveis locais com var.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Optional<T>, Enum e var no Java Moderno",
+      "content": "Para evitar o temido `NullPointerException`, métodos de busca em Java moderno retornam **`Optional<T>`** em vez de `null` — permitindo encadear `.orElse(...)` ou `.orElseThrow()`. Já o **`enum`** em Java é muito mais poderoso que constantes simples: pode ter campos, construtores e métodos! E desde o Java 10, **`var`** infere o tipo de variáveis locais mantendo a tipagem estática forte.",
+      "codeExample": "import java.util.Optional;\n\nenum StatusPedido { PAGO, PENDENTE, CANCELADO }\n\nOptional<String> email = Optional.ofNullable(buscarEmail());\nString destino = email.orElse(\"sem-email@dominio.com\");\n\nvar status = StatusPedido.PAGO; // Tipo inferido: StatusPedido",
+      "keyTakeaways": [
+        "Use `Optional.ofNullable(valor).orElse(padrao)` em vez de `if (x != null)` espalhados pelo código.",
+        "`enum` garante em tempo de compilação que apenas valores válidos existam (ex: `StatusPedido.PAGO`).",
+        "`var` só funciona em variáveis locais inicializadas (nunca em parâmetros de método ou campos de classe)."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual método de `Optional<String>` retorna o valor presente ou um valor padrão alternativo caso esteja vazio, sem lançar exceção?",
+      "options": [
+        ".get()",
+        ".orElse(\"padrao\")",
+        ".isNull()",
+        ".unwrap()"
+      ],
+      "correctIndex": 1,
+      "explanation": "`.get()` lança `NoSuchElementException` se estiver vazio; já `.orElse(\"padrao\")` devolve com segurança o valor alternativo."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie um `enum Nivel { INICIANTE, INTERMEDIARIO, AVANCADO }` e use `Optional.ofNullable(nome).orElse(\"Visitante\")` atribuído a `var exibicao`:",
+      "starterCode": "// Defina enum Nivel e use Optional.ofNullable:\n",
+      "requiredTokens": ["enum", "Nivel", "var", "Optional.ofNullable", ".orElse("],
+      "sampleSolution": "enum Nivel { INICIANTE, INTERMEDIARIO, AVANCADO }\nvar exibicao = Optional.ofNullable(nome).orElse(\"Visitante\");",
+      "hint": "Declare `enum Nivel { INICIANTE, INTERMEDIARIO, AVANCADO }` e `var exibicao = Optional.ofNullable(nome).orElse(\"Visitante\");`.",
+      "explanation": "`enum` e `Optional` tornam suas regras de negócio explícitas e à prova de valores nulos."
+    }
+  ]
+}

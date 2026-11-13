@@ -1,0 +1,35 @@
+{
+  "id": "git-github-workflow",
+  "title": "Git & Controle de Versão",
+  "description": "Domine o fluxo de trabalho essencial de todo dev desde o zero: git init, status, diff, staging, commits, branches, merges, stash e revert.",
+  "category": "concept",
+  "color": "#F43F5E",
+  "icon": "🔀",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-commits-branches",
+      "title": "Módulo 1: Primeiros Passos, Ciclo de Commit e Branches",
+      "description": "Inicialize repositórios, inspecione diffs, faça commits atômicos e trabalhe com branches isoladas.",
+      "lessons": [
+        "lesson-00-init-status-diff",
+        "lesson-01-fluxo-git",
+        "lesson-02-branches-merge",
+        "lesson-03-amend-conventional-commits"
+      ]
+    },
+    {
+      "id": "mod-02-remoto-avancado",
+      "title": "Módulo 2: GitHub Remoto, Stash e Desfazendo Erros",
+      "description": "Sincronize com repositórios remotos (pull/push), guarde rascunhos com stash e reverta commits com segurança.",
+      "lessons": [
+        "lesson-01-pull-push-stash",
+        "lesson-02-reset-revert-log",
+        "lesson-03-rebase-interativo-squash",
+        "lesson-04-cherry-pick-tags-releases",
+        "lesson-05-reflog-bisect-resgate",
+        "lesson-06-pull-requests-forks-ssh"
+      ]
+    }
+  ]
+}

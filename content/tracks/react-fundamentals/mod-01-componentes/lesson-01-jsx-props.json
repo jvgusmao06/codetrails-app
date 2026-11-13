@@ -1,0 +1,47 @@
+{
+  "id": "react-jsx-01",
+  "title": "Componentes e JSX",
+  "description": "Criando funções que retornam marcação de interface.",
+  "xp": 15,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Componentes Funcionais e Interpolação JSX",
+      "content": "No React, interfaces são divididas em componentes reutilizáveis — funções JavaScript que retornam marcação JSX. Todo componente React deve começar com letra Maiúscula (PascalCase) para não ser confundido com tags HTML comuns. Para exibir variáveis ou props dentro do JSX, usamos chaves { }.",
+      "codeExample": "function Header({ titulo }) {\n  return <h1>{titulo}</h1>;\n}",
+      "keyTakeaways": [
+        "Componentes React usam PascalCase (ex: <Header /> vs <header>).",
+        "Chaves { } avaliam expressões JavaScript dentro do JSX."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Por que os nomes de componentes em React devem sempre começar com letra MAIÚSCULA?",
+      "options": [
+        "Apenas por convenção estética",
+        "Para o React diferenciar elementos HTML nativos (como <div>) de componentes customizados (como <Botao />)",
+        "Porque o JavaScript não permite funções com letra minúscula",
+        "Para aumentar a performance do CSS"
+      ],
+      "correctIndex": 1,
+      "explanation": "Tags em minúsculo são tratadas pelo JSX como tags HTML nativas do DOM, enquanto PascalCase indica um componente React."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Exiba a prop 'titulo' dinamicamente dentro da tag <h1>:",
+      "codeTemplate": "function Header({ titulo }) {\n  return <h1>{{blank}}titulo{{blank}}</h1>;\n}",
+      "blanks": [
+        {
+          "answer": "{",
+          "placeholder": "abre"
+        },
+        {
+          "answer": "}",
+          "placeholder": "fecha"
+        }
+      ],
+      "options": ["{", "}", "(", ")"],
+      "explanation": "No JSX, usamos chaves { } para interpolar expressões JavaScript dentro da marcação."
+    }
+  ]
+}

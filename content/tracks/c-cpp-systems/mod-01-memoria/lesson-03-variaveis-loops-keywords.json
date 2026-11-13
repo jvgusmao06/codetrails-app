@@ -1,0 +1,40 @@
+{
+  "id": "cpp-loops-keywords-03",
+  "title": "Variáveis, Loops (for, while) e Palavras Reservadas C/C++",
+  "description": "Domine tipos primitivos, const, auto, sizeof, nullptr e laços de repetição (for clássico e range-based for).",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Palavras Reservadas e Loops em C e C++ Moderno",
+      "content": "Em C e C++, toda variável tem um tamanho exato na memória que pode ser consultado em tempo de compilação com o operador nativo 'sizeof()'. A palavra reservada 'const' impede alterações, 'auto' (C++11+) deduz o tipo automaticamente na inicialização, e 'nullptr' representa um ponteiro nulo seguro. Para laços, além do 'for' e 'while' clássicos, o C++ moderno oferece o range-based for: 'for (const auto& item : colecao)'.",
+      "codeExample": "#include <iostream>\n#include <vector>\n\nint main() {\n    const int limite = 100;\n    int* ptr = nullptr;\n    std::cout << sizeof(limite) << \" bytes\\n\"; // 4 bytes\n\n    std::vector<int> nums = {10, 20, 30};\n    for (const auto& n : nums) {\n        if (n == 20) continue;\n        std::cout << n << \"\\n\";\n    }\n    return 0;\n}",
+      "keyTakeaways": [
+        "'sizeof(tipo)' é uma palavra reservada/operador avaliado em tempo de compilação.",
+        "Em C++ moderno, use sempre 'nullptr' em vez da macro antiga 'NULL' ou '0'.",
+        "'for (const auto& x : container)' percorre elementos sem fazer cópias desnecessárias."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código C++ com nullptr, sizeof e um loop range-based for com inferência auto:",
+      "codeTemplate": "int* p = {{blank}};\nsize_t bytes = {{blank}}(int);\nfor (const {{blank}}& val : dados) {\n    std::cout << val;\n}",
+      "blanks": [
+        { "answer": "nullptr", "placeholder": "ponteiro nulo" },
+        { "answer": "sizeof", "placeholder": "tamanho" },
+        { "answer": "auto", "placeholder": "inferência" }
+      ],
+      "options": ["nullptr", "sizeof", "auto", "None", "len", "var"],
+      "explanation": "nullptr é o literal de ponteiro nulo em C++, sizeof retorna o tamanho em bytes e auto deduz o tipo do elemento no for."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva do zero uma função em C/C++ 'int quadrado(int n)' que retorne 'n * n' usando 'return':",
+      "starterCode": "// Escreva a função int quadrado(int n) abaixo:\n",
+      "requiredTokens": ["int", "quadrado", "return", "*"],
+      "sampleSolution": "int quadrado(int n) {\n    return n * n;\n}",
+      "hint": "Use: int quadrado(int n) { return n * n; }",
+      "explanation": "Funções em C/C++ declaram o tipo de retorno antes do nome da função e encerram as instruções com ponto-e-vírgula (;)."
+    }
+  ]
+}

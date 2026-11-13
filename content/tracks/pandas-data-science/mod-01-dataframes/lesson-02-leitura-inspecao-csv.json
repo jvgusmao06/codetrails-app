@@ -1,0 +1,40 @@
+{
+  "id": "pandas-leitura-inspecao-02",
+  "title": "Lendo Dados (read_csv) e Inspecionando com head(), info() e describe()",
+  "description": "Carregue arquivos CSV/JSON em DataFrames e faça uma análise exploratória inicial em 4 comandos.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Os Primeiros 4 Comandos ao Abrir Qualquer Dataset",
+      "content": "Todo projeto de Data Science começa carregando uma tabela com **`pd.read_csv(\"dados.csv\")`** (ou `read_parquet`, `read_excel`). Antes de qualquer gráfico ou modelo, todo analista roda 4 inspeções:\n- **`df.head(5)`**: mostra as 5 primeiras linhas.\n- **`df.shape`**: tupla `(linhas, colunas)`.\n- **`df.info()`**: mostra tipos (`int64`, `float64`, `object`) e quantos valores **não-nulos** existem.\n- **`df.describe()`**: estatísticas resumidas (média, desvio padrão, mínimo, máximo, quartis) das colunas numéricas.",
+      "codeExample": "import pandas as pd\n\ndf = pd.read_csv(\"vendas.csv\")\nprint(df.shape)      # ex: (10000, 6)\nprint(df.head(3))    # 3 primeiras linhas\ndf.info()            # Tipos e valores ausentes\nprint(df.describe()) # Média, min, max, quartis",
+      "keyTakeaways": [
+        "Use `df.info()` logo no início para descobrir colunas com tipos errados (ex: preço salvo como texto `object`) ou muitos nulos.",
+        "`df.shape` é um atributo (sem parênteses), enquanto `df.head()` e `df.describe()` são métodos.",
+        "Para colunas de texto/categóricas, use `df[\"categoria\"].value_counts()` para contar frequências."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código Pandas para ler `clientes.csv`, ver as 5 primeiras linhas e exibir o resumo estatístico:",
+      "codeTemplate": "df = pd.{{blank}}(\"clientes.csv\")\nprint(df.{{blank}}())\nprint(df.{{blank}}())",
+      "blanks": [
+        { "answer": "read_csv", "placeholder": "ler csv" },
+        { "answer": "head", "placeholder": "topo" },
+        { "answer": "describe", "placeholder": "estatísticas" }
+      ],
+      "options": ["read_csv", "head", "describe", "open_csv", "top", "stats"],
+      "explanation": "`pd.read_csv()` carrega o CSV, `.head()` mostra as primeiras linhas e `.describe()` calcula estatísticas descritivas."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Carregue `\"pedidos.csv\"` em `df` com `pd.read_csv` e imprima `df.info()`:",
+      "starterCode": "import pandas as pd\n# Leia pedidos.csv e chame df.info():\n",
+      "requiredTokens": ["pd.read_csv", "\"pedidos.csv\"", "df.info()"],
+      "sampleSolution": "df = pd.read_csv(\"pedidos.csv\")\ndf.info()",
+      "hint": "Escreva: df = pd.read_csv(\"pedidos.csv\") e df.info()",
+      "explanation": "`df.info()` é a maneira mais rápida de auditar schema e nulos em um DataFrame."
+    }
+  ]
+}

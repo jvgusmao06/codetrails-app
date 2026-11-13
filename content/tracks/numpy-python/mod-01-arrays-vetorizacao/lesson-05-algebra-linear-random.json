@@ -1,0 +1,40 @@
+{
+  "id": "numpy-linalg-random-05",
+  "title": "Álgebra Linear (@ / np.dot), Aleatoriedade (default_rng) e Z-Score",
+  "description": "Multiplique matrizes com o operador @, gere números aleatórios reprodutíveis com seed e normalize features.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Multiplicação Matricial (@) e Seed Reprodutível",
+      "content": "Atenção à diferença crucial: `A * B` multiplica **elemento a elemento**, enquanto **`A @ B`** (ou `np.dot(A, B)`) faz a **multiplicação matricial** real da álgebra linear (a base das redes neurais!). Para gerar números aleatórios reprodutíveis em experimentos de IA, usamos **`rng = np.random.default_rng(42)`**. E para padronizar dados (Z-score), fazemos `(x - x.mean()) / x.std()` em uma linha!",
+      "codeExample": "import numpy as np\n\nrng = np.random.default_rng(42)  # Seed fixa = reprodutível!\nX = rng.normal(loc=0, scale=1, size=(3, 2))\nW = np.ones((2, 1))\n\nsaida = X @ W  # Multiplicação matricial (3,2) @ (2,1) -> (3,1)\n\n# Padronização Z-score vetorizada\nz = (X - X.mean()) / X.std()",
+      "keyTakeaways": [
+        "`@` é o operador nativo do Python 3.5+ para produto matricial (`np.matmul`).",
+        "`np.random.default_rng(seed)` é a API moderna recomendada do NumPy (substitui o antigo `np.random.seed`).",
+        "Normalizar com `(x - x.mean()) / x.std()` acelera a convergência de modelos de Machine Learning."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código tenta multiplicar duas matrizes `A (2x3)` e `B (3x2)` pela regra da Álgebra Linear, mas usa o operador errado e gera `ValueError` de shape incompatível. Clique na linha com o erro:",
+      "lines": [
+        "A = np.ones((2, 3))",
+        "B = np.ones((3, 2))",
+        "C = A * B",
+        "print(C.shape)"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Na linha 3, `*` tenta multiplicação elemento-a-elemento (exigindo shapes iguais); o produto matricial exige `C = A @ B`!"
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie um gerador aleatório `rng = np.random.default_rng(42)`, gere uma matriz `X` com `rng.random((3, 2))` e multiplique matricialmente por `W` usando `X @ W`:",
+      "starterCode": "import numpy as np\n# Use default_rng(42), rng.random((3, 2)) e X @ W:\n",
+      "requiredTokens": ["np.random.default_rng(42)", "rng.random((3, 2))", "X @ W"],
+      "sampleSolution": "rng = np.random.default_rng(42)\nX = rng.random((3, 2))\nsaida = X @ W",
+      "hint": "Use `rng = np.random.default_rng(42)`, `X = rng.random((3, 2))` e `saida = X @ W`.",
+      "explanation": "Com `default_rng(42)`, toda vez que você rodar o experimento, `X` terá exatamente os mesmos valores."
+    }
+  ]
+}

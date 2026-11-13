@@ -1,0 +1,40 @@
+{
+  "id": "java-nativas-02",
+  "title": "Métodos Nativos da Biblioteca Padrão (String, Math, Arrays)",
+  "description": "Use os métodos nativos mais importantes do JDK (java.lang e java.util) e resolva um desafio de código em Java.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "APIs Nativas Essenciais do Java (String, Math, Arrays, Integer)",
+      "content": "O pacote 'java.lang' é importado automaticamente em todo arquivo Java: 'String' traz métodos nativos como '.length()', '.toUpperCase()', '.trim()', '.contains()' e '.substring()'; 'Math' oferece 'Math.max(a, b)', 'Math.min()' e 'Math.abs()'; 'Integer.parseInt(\"42\")' converte texto em int; e 'java.util.Arrays.sort(arr)' ordena arrays in-place em O(n log n).",
+      "codeExample": "import java.util.Arrays;\n\nString texto = \"  java 21  \".trim().toUpperCase(); // \"JAVA 21\"\nint numero = Integer.parseInt(\"150\");\nint maior = Math.max(numero, 100); // 150\n\nint[] notas = {9, 4, 7};\nArrays.sort(notas); // [4, 7, 9]",
+      "keyTakeaways": [
+        "Para saber o tamanho em Java: arrays usam '.length' (propriedade), Strings usam '.length()' (método) e Listas usam '.size()'.",
+        "Strings em Java são imutáveis: métodos como .toUpperCase() sempre retornam uma nova String.",
+        "Integer.parseInt(str) converte uma String numérica para o tipo primitivo int."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é a diferença correta para obter a quantidade de elementos de um Array (`int[]`), uma `String` e uma `List<T>` em Java?",
+      "options": [
+        "Todos usam .size()",
+        "Array usa .length, String usa .length() e List usa .size()",
+        "Todos usam len(x)",
+        "Array usa .count(), String usa .size() e List usa .length"
+      ],
+      "correctIndex": 1,
+      "explanation": "Em Java, arrays têm o atributo '.length', objetos String têm o método '.length()' e coleções (List, Map, Set) usam '.size()'."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva um método Java 'public static int maiorValor(int a, int b)' que retorne o maior dos dois números usando 'return' e 'Math.max':",
+      "starterCode": "// Escreva o método maiorValor do zero:\n",
+      "requiredTokens": ["int", "maiorValor", "return", "Math.max"],
+      "sampleSolution": "public static int maiorValor(int a, int b) {\n    return Math.max(a, b);\n}",
+      "hint": "Assinatura: public static int maiorValor(int a, int b) { return Math.max(a, b); }",
+      "explanation": "Math.max(a, b) faz parte de java.lang e retorna imediatamente o maior entre dois valores numéricos."
+    }
+  ]
+}

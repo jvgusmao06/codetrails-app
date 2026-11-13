@@ -1,0 +1,37 @@
+1:"$Sreact.fragment"
+2:"/_next/static/chunks/2kuu4al5rslrj.js"
+3:"/_next/static/chunks/31v_tahin4toi.js"
+4:I[49830,["$2","$3"],"AppShell"]
+5:I[39756,["$2","$3"],"default"]
+6:I[37457,["$2","$3"],"default"]
+11:"$Sreact.suspense"
+12:"/_next/static/chunks/1-8twzewv240e.js"
+13:I[68608,["$2","$3","$12"],"LessonPlayer"]
+17:"ViewportBoundary"
+18:I[97367,["$2","$3"],"$17"]
+19:"MetadataBoundary"
+1a:I[97367,["$2","$3"],"$19"]
+1b:I[27201,["$2","$3"],"IconMark"]
+:HL["/_next/static/chunks/36e6-i-49u6yp.css","style"]
+8:X
+b:X
+b:C
+10:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$1","c",{"children":[["$","$11",null,{"fallback":["$","div",null,{"className":"min-h-dvh bg-zinc-950 text-zinc-400 flex items-center justify-center font-mono text-xs","children":"Carregando módulo..."}],"children":["$","$L13",null,{"trackId":"golang-cloud","trackTitle":"Go (Golang)","moduleTitle":"Módulo 3: Structs, Interfaces, Ponteiros e Erros","lesson":{"id":"go-interfaces-01","title":"Structs, Interfaces Implícitas e Erros","description":"Aprenda composição com structs, métodos receptores, interfaces sem 'implements' e o padrão if err != nil.","xp":30,"steps":[{"type":"theory","title":"Structs, Receivers e Interfaces Implícitas","content":"Go não possui classes nem herança (extends). Em vez disso, definimos dados com 'struct' e associamos métodos usando um receptor (receiver). As interfaces em Go são satisfeitas implicitamente: se o seu struct implementa os métodos exigidos por uma interface, ele já a implementa automaticamente — sem precisar declarar 'implements'.","codeExample":"type Notificador interface {\n    Enviar(msg string) error\n}\n\ntype Email struct { Destino string }\n\n// Método associado ao struct Email\nfunc (e Email) Enviar(msg string) error {\n    if e.Destino == \"\" {\n        return fmt.Errorf(\"destino vazio\")\n    }\n    return nil\n}","keyTakeaways":["Métodos em Go declaram o receptor entre 'func' e o nome do método: func (u *Usuario) Salvar().","Use receptor ponteiro (*T) quando o método precisar modificar os campos do struct.","Funções que podem falhar retornam (Resultado, error) e devem ter o erro checado antes de usar o valor."]},{"type":"spot_the_bug","prompt":"O método Depositar deveria somar o valor ao Saldo da Conta, mas o saldo continua 0 após a chamada. Clique na linha com o bug:","lines":["type Conta struct { Saldo int }","func (c Conta) Depositar(valor int) {","    c.Saldo += valor","}","func main() {","    minha := Conta{Saldo: 0}","    minha.Depositar(100)","}"],"buggyLineIndex":1,"explanation":"Na linha 2, o receptor '(c Conta)' recebe uma cópia por valor do struct. Para alterar o struct original, o receptor deve ser um ponteiro: 'func (c *Conta) Depositar(valor int)'."},{"type":"multiple_choice","prompt":"Como fazemos um struct 'PostgresRepo' implementar a interface 'Repositorio' em Go?","options":["Usando 'type PostgresRepo struct implements Repositorio'","Apenas implementando em PostgresRepo todos os métodos com a mesma assinatura da interface Repositorio","Herdando a classe base Repositorio com 'extends'","Registrando o struct no arquivo go.mod"],"correctIndex":1,"explanation":"Em Go, interfaces são implícitas (structural typing): basta implementar os métodos exigidos pela interface e o compilador reconhece a compatibilidade."}]}}]}],["$L14"],"$L15"]}],"p":"$@16","v":null,"s":"$8"}}]]
+e:[["children",{"s":{"n":"lessonId","t":"d","k":"go-interfaces-01","s":[]},"h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$L5",null,{"parallelRouterKey":"children","template":["$","$L6",null,{}]}]]}],"p":"$@f","v":"$b","s":"$8"},"c":"$Q10"}]]
+c:[["children",{"s":{"n":"trackId","t":"d","k":"golang-cloud","s":[]},"h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$L5",null,{"parallelRouterKey":"children","template":["$","$L6",null,{}]}]]}],"p":"$@d","v":"$b","s":"$8"},"c":"$Qe"}]]
+9:[["children",{"s":"lesson","h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$L5",null,{"parallelRouterKey":"children","template":["$","$L6",null,{}]}]]}],"p":"$@a","v":"$b","s":"$8"},"c":"$Qc"}]]
+0:{"t":{"t":{"s":"","h":80,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/36e6-i-49u6yp.css","precedence":"next"}],["$","script","script-0",{"src":"/_next/static/chunks/2kuu4al5rslrj.js","async":true}],["$","script","script-1",{"src":"/_next/static/chunks/31v_tahin4toi.js","async":true}]],["$","html",null,{"lang":"pt-BR","className":"T19VSG_variable _8Li5zG_variable h-full antialiased dark","children":["$","body",null,{"className":"min-h-full flex flex-col bg-zinc-950 text-zinc-100","children":["$","$L4",null,{"children":["$","$L5",null,{"parallelRouterKey":"children","template":["$","$L6",null,{}],"notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]]}]}]}]}]]}],"p":"$@7","v":null,"s":"$8"},"c":"$Q9"},"h":{"r":["$","$1","h",{"children":[null,["$","$L18",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#09090b"}]]}],["$","$L1a",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$11",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"CodeTrilhas — Aprendizado Modular de Programação Open Source"}],["$","meta","1",{"name":"description","content":"Plataforma open-source de roadmaps e trilhas interativas para linguagens, bibliotecas e frameworks."}],["$","link","2",{"rel":"manifest","href":"/manifest.webmanifest"}],["$","meta","3",{"name":"mobile-web-app-capable","content":"yes"}],["$","meta","4",{"name":"apple-mobile-web-app-title","content":"CodeTrilhas"}],["$","meta","5",{"name":"apple-mobile-web-app-status-bar-style","content":"black-translucent"}],["$","link","6",{"rel":"icon","href":"/favicon.ico?favicon.117ezoe8m31dk.ico","sizes":"48x48","type":"image/x-icon"}],["$","$L1b","7",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@1c","v":null,"s":"$8"}},"a":"$@1d","u":"$@1e","b":"3y4ozE7bHNCjDOleh5lo2"}
+1f:I[97367,["$2","$3"],"OutletBoundary"]
+14:["$","script","script-0",{"src":"/_next/static/chunks/1-8twzewv240e.js","async":true}]
+15:["$","$L1f",null,{"children":["$","$11",null,{"name":"Next.MetadataOutlet","children":"$@20"}]}]
+8:300
+20:null
+1e:true
+8:C
+1d:0
+f:"$undefined"
+d:"$undefined"
+a:"$undefined"
+7:"$undefined"
+1c:"$undefined"
+16:"$undefined"

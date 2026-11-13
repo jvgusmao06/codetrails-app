@@ -1,0 +1,40 @@
+{
+  "id": "algo-arrays-memoria-00",
+  "title": "Do Zero: Algoritmos, Arrays na Memória e Acesso O(1) vs O(n)",
+  "description": "Entenda como arrays ficam guardados em blocos contíguos na memória RAM, por que ler pelo índice é instantâneo O(1) e por que buscar um item sem saber a posição custa O(n).",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "O que é um Algoritmo e Como um Array Funciona na RAM",
+      "content": "Um algoritmo é uma sequência finita de passos bem definidos para transformar uma entrada em uma saída. A estrutura de dados mais fundamental é o Array (Vetor/Lista): uma sequência de elementos armazenados lado a lado na memória RAM. Como cada posição tem um endereço previsível a partir do índice 0, acessar `notas[3]` é instantâneo — tempo constante $O(1)$, não importa se o array tem 10 ou 10 milhões de itens! Já procurar se o número `42` existe em um array desordenado exige olhar elemento por elemento até achar (Busca Linear, tempo proporcional ao tamanho $O(n)$).",
+      "codeExample": "notas = [85, 92, 78, 99, 64]\n\n# Acesso direto por índice -> O(1) (Instantâneo!)\nquarto_elemento = notas[3]  # 99\n\n# Busca Linear -> O(n) (No pior caso, olha todos os n itens)\ndef contem(lista, alvo):\n    for item in lista:\n        if item == alvo:\n            return True\n    return False",
+      "keyTakeaways": [
+        "Todo array começa no índice 0: o primeiro elemento está em `arr[0]` e o último em `arr[len(arr) - 1]`.",
+        "Acesso por índice `arr[i]` custa $O(1)$ (tempo constante) porque o computador calcula o endereço de memória direto.",
+        "Inserir ou remover no INÍCIO de um array (`arr[0]`) custa $O(n)$ porque todos os outros elementos precisam ser deslocados na memória."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Em um array com 1.000.000 de números armazenados na memória, qual é a complexidade de tempo para ler diretamente o valor na posição `numeros[500000]`?",
+      "options": [
+        "O(1) — Tempo constante, pois o endereço é calculado diretamente pelo índice",
+        "O(n) — Precisa percorrer 500.000 elementos antes de chegar lá",
+        "O(log n) — Faz uma busca binária até o índice",
+        "O(n²) — Multiplica o índice pelo tamanho do array"
+      ],
+      "correctIndex": 0,
+      "explanation": "Em um array contíguo na memória, acessar qualquer posição pelo seu índice numérico é uma operação aritmética direta de endereço, levando tempo constante O(1)."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva uma função `busca_linear(lista, alvo)` que percorra `for x in lista:` e, se `x == alvo`, retorne `True`; ao final do loop, retorne `False`:",
+      "starterCode": "# Implemente a função busca_linear(lista, alvo):\n",
+      "requiredTokens": ["def", "busca_linear", "for", "in", "lista", "if", "==", "alvo", "return", "True", "False"],
+      "sampleSolution": "def busca_linear(lista, alvo):\n    for x in lista:\n        if x == alvo:\n            return True\n    return False",
+      "hint": "Defina 'def busca_linear(lista, alvo):', faça 'for x in lista:', teste 'if x == alvo: return True' e fora do for coloque 'return False'.",
+      "explanation": "A busca linear visita até N elementos no pior caso (quando o item está no final ou não existe), caracterizando complexidade O(n)."
+    }
+  ]
+}

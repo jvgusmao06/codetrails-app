@@ -1,0 +1,40 @@
+{
+  "id": "spring-sec-01",
+  "title": "Spring Security 6: SecurityFilterChain, Stateless e BCrypt",
+  "description": "Configure segurança moderna baseada em lambdas no Spring Boot 3+ sem WebSecurityConfigurerAdapter.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Protegendo APIs REST com SecurityFilterChain",
+      "content": "No Spring Boot 3+, configuramos a segurança declarando um `@Bean` de **`SecurityFilterChain`**. Para APIs REST com **JWT**, desabilitamos sessões em memória usando **`SessionCreationPolicy.STATELESS`**, liberamos rotas públicas (como `/auth/login`) com `requestMatchers(...).permitAll()` e exigimos autenticação no resto (`anyRequest().authenticated()`). E senhas no banco são sempre salvas com **`BCryptPasswordEncoder`** (nunca em texto puro!).",
+      "codeExample": "@Bean\npublic SecurityFilterChain filterChain(HttpSecurity http) throws Exception {\n    return http\n        .csrf(csrf -> csrf.disable())\n        .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))\n        .authorizeHttpRequests(auth -> auth\n            .requestMatchers(\"/auth/**\").permitAll()\n            .anyRequest().authenticated()\n        )\n        .build();\n}",
+      "keyTakeaways": [
+        "APIs REST com JWT no header `Authorization: Bearer <token>` usam `SessionCreationPolicy.STATELESS`.",
+        "`BCryptPasswordEncoder` aplica salt automático contra ataques de Rainbow Table.",
+        "`@PreAuthorize(\"hasRole('ADMIN')\")` protege métodos específicos por perfil."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual política de sessão deve ser configurada no `SecurityFilterChain` para uma API REST autenticada via JWT?",
+      "options": [
+        "SessionCreationPolicy.ALWAYS",
+        "SessionCreationPolicy.STATELESS",
+        "SessionCreationPolicy.IF_REQUIRED",
+        "SessionCreationPolicy.COOKIE"
+      ],
+      "correctIndex": 1,
+      "explanation": "Com JWT, cada requisição carrega seu próprio token; o servidor não guarda sessão em memória (`STATELESS`)."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Declare um `@Bean` em Java que retorne `new BCryptPasswordEncoder()` no método `public PasswordEncoder passwordEncoder()`:",
+      "starterCode": "// Declare o Bean PasswordEncoder:\n",
+      "requiredTokens": ["@Bean", "PasswordEncoder", "passwordEncoder()", "return new BCryptPasswordEncoder()"],
+      "sampleSolution": "@Bean\npublic PasswordEncoder passwordEncoder() {\n    return new BCryptPasswordEncoder();\n}",
+      "hint": "Anote com `@Bean` e retorne `new BCryptPasswordEncoder();`.",
+      "explanation": "Registrar `PasswordEncoder` como `@Bean` permite injetá-lo no seu serviço de cadastro e login."
+    }
+  ]
+}

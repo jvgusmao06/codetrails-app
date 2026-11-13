@@ -1,0 +1,43 @@
+{
+  "id": "sql-ddl-01",
+  "title": "CREATE TABLE, INSERT, Transações ACID e Índices",
+  "description": "Modele tabelas relacionais com chaves primárias/estrangeiras, proteja transferências com BEGIN/COMMIT e acelere buscas com CREATE INDEX.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "DDL, DML e Transações ACID no PostgreSQL",
+      "content": "Além de consultar com SELECT, usamos DDL (CREATE TABLE, CREATE INDEX) para estruturar o banco e DML (INSERT, UPDATE, DELETE) para alterar dados. Quando duas operações precisam acontecer juntas (como debitar de uma conta e creditar em outra), envolvemos tudo em uma Transação (BEGIN ... COMMIT / ROLLBACK) para garantir Atomicidade.",
+      "codeExample": "CREATE TABLE contas (\n  id SERIAL PRIMARY KEY,\n  titular TEXT NOT NULL,\n  saldo NUMERIC(10, 2) DEFAULT 0\n);\n\nBEGIN;\nUPDATE contas SET saldo = saldo - 100 WHERE id = 1;\nUPDATE contas SET saldo = saldo + 100 WHERE id = 2;\nCOMMIT;",
+      "keyTakeaways": [
+        "PRIMARY KEY identifica unicamente cada linha e já cria automaticamente um índice B-Tree.",
+        "BEGIN inicia uma transação; COMMIT grava tudo permanentemente e ROLLBACK desfaz tudo em caso de falha.",
+        "CREATE INDEX idx_email ON usuarios(email) evita Full Table Scans lentos em buscas frequentes."
+      ]
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os comandos SQL para executar uma transferência bancária segura dentro de uma transação atômica:",
+      "blocks": [
+        "BEGIN;",
+        "UPDATE contas SET saldo = saldo - 50 WHERE id = 10;",
+        "UPDATE contas SET saldo = saldo + 50 WHERE id = 20;",
+        "COMMIT;"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "A transação começa com BEGIN, executa o débito e o crédito com UPDATE e confirma atomicamente ambos com COMMIT."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o comando SQL para inserir um novo usuário na tabela 'usuarios' e criar um índice na coluna 'email':",
+      "codeTemplate": "{{blank}} INTO usuarios (nome, email) {{blank}} ('Ana', 'ana@dev.io');\nCREATE {{blank}} idx_usuarios_email ON usuarios (email);",
+      "blanks": [
+        { "answer": "INSERT", "placeholder": "comando" },
+        { "answer": "VALUES", "placeholder": "valores" },
+        { "answer": "INDEX", "placeholder": "estrutura" }
+      ],
+      "options": ["INSERT", "VALUES", "INDEX", "INTO", "SET", "TABLE"],
+      "explanation": "INSERT INTO ... VALUES adiciona novos registros e CREATE INDEX cria um índice para acelerar filtros WHERE na coluna."
+    }
+  ]
+}

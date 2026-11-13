@@ -1,0 +1,40 @@
+{
+  "id": "sql-basico-00",
+  "title": "Primeiros Passos: Tabelas, Tipos de Dados e Operadores SQL",
+  "description": "Comece do zero no SQL: entenda tabelas, colunas, linhas, tipos (INT, TEXT, NUMERIC, BOOLEAN, DATE) e operadores (AND, OR, IN, BETWEEN, LIKE).",
+  "xp": 25,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Como Dados São Organizados e Filtrados em SQL",
+      "content": "Em um banco relacional (como PostgreSQL), os dados vivem em Tabelas formadas por Colunas (com tipos fixos: INTEGER para inteiros, TEXT/VARCHAR para textos, NUMERIC para dinheiro exato, BOOLEAN para true/false e TIMESTAMP para datas) e Linhas (registros). Para filtrar linhas no WHERE, usamos palavras reservadas super expressivas: 'AND', 'OR', 'NOT', 'IN (lista)', 'BETWEEN min AND max' e 'LIKE' (busca textual com coringa '%').",
+      "codeExample": "SELECT nome, cargo, salario\nFROM funcionarios\nWHERE cargo IN ('Dev', 'QA')\n  AND salario BETWEEN 4000 AND 12000\n  AND nome LIKE 'Ana%';",
+      "keyTakeaways": [
+        "Strings em SQL usam sempre aspas simples ('texto'), nunca aspas duplas!",
+        "BETWEEN 10 AND 20 é inclusivo nas duas pontas (equivale a >= 10 AND <= 20).",
+        "No operador LIKE, o símbolo '%' representa qualquer sequência de caracteres (ex: '%@gmail.com')."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a query SQL para buscar produtos cujo status esteja na lista ('ativo', 'promo') e cujo preço fique entre 50 e 200:",
+      "codeTemplate": "SELECT * FROM produtos\nWHERE status {{blank}} ('ativo', 'promo')\n  {{blank}} preco {{blank}} 50 AND 200;",
+      "blanks": [
+        { "answer": "IN", "placeholder": "lista" },
+        { "answer": "AND", "placeholder": "e lógico" },
+        { "answer": "BETWEEN", "placeholder": "intervalo" }
+      ],
+      "options": ["IN", "AND", "BETWEEN", "HAS", "&&", "RANGE"],
+      "explanation": "IN verifica se o valor pertence a um conjunto, AND combina condições e BETWEEN filtra um intervalo fechado."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva do zero uma query SQL que selecione todas as colunas ('*') da tabela 'clientes' onde 'ativo = true':",
+      "starterCode": "-- Escreva sua primeira query SELECT abaixo:\n",
+      "requiredTokens": ["SELECT", "*", "FROM", "clientes", "WHERE", "ativo"],
+      "sampleSolution": "SELECT * FROM clientes WHERE ativo = true;",
+      "hint": "Use: SELECT * FROM clientes WHERE ativo = true;",
+      "explanation": "SELECT * retorna todas as colunas da tabela especificada após FROM que atendem à condição do WHERE."
+    }
+  ]
+}

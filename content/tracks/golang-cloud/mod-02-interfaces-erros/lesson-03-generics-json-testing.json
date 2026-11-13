@@ -1,0 +1,40 @@
+{
+  "id": "go-generics-json-testing-03",
+  "title": "Generics [T any], Struct Tags (JSON) e Testes Nativos (*testing.T)",
+  "description": "Escreva funções genéricas em Go 1.18+, serialize structs para JSON com tags e crie testes unitários nativos sem frameworks.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Generics, encoding/json e testing sem Dependências Externas",
+      "content": "Desde o Go 1.18, podemos escrever funções e tipos genéricos com colchetes **`[T any]`** ou **`[T comparable]`**. Para APIs REST, a biblioteca padrão **`encoding/json`** usa **Struct Tags** (`json:\"nome\"`) para mapear campos em Maiúscula para chaves JSON em minúscula. E para testes, o Go já vem com o pacote **`testing`**: qualquer função `func TestXxx(t *testing.T)` em arquivos `*_test.go` roda direto com `go test ./...`!",
+      "codeExample": "type Produto struct {\n    ID    int    `json:\"id\"`\n    Preco float64 `json:\"preco\"`\n}\n\nfunc Primeiro[T any](itens []T) (T, bool) {\n    var zero T\n    if len(itens) == 0 { return zero, false }\n    return itens[0], true\n}",
+      "keyTakeaways": [
+        "Generics em Go usam colchetes: `func Nome[T comparable](a, b T) bool`.",
+        "Struct tags (`json:\"campo,omitempty\"`) controlam o nome e omissão de campos ao serializar com `json.Marshal`.",
+        "`go test ./...` executa todos os testes unitários nativos sem precisar instalar Jest ou JUnit."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual sufixo de nome de arquivo e assinatura de função o comando `go test` reconhece nativamente em Go?",
+      "options": [
+        "arquivo.spec.go com func SpecSoma()",
+        "arquivo_test.go com func TestSoma(t *testing.T)",
+        "test_arquivo.go com func SomaTest()",
+        "arquivo.test.go com @Test func Soma()"
+      ],
+      "correctIndex": 1,
+      "explanation": "Por convenção da ferramenta `go test`, arquivos devem terminar em `_test.go` e funções de teste devem começar com `Test` recebendo `(t *testing.T)`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva uma função genérica em Go `func Igual[T comparable](a, b T) bool` que retorne `a == b`:",
+      "starterCode": "// Implemente a função genérica Igual:\n",
+      "requiredTokens": ["func", "Igual", "[T comparable]", "bool", "return", "a == b"],
+      "sampleSolution": "func Igual[T comparable](a, b T) bool {\n    return a == b\n}",
+      "hint": "Use `func Igual[T comparable](a, b T) bool { return a == b }`.",
+      "explanation": "A constraint `comparable` garante em compilação que o tipo `T` suporta os operadores `==` e `!=`."
+    }
+  ]
+}

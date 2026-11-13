@@ -1,0 +1,19 @@
+{
+  "id": "rust-axum-serde",
+  "title": "Axum, Tokio & Serde (Rust Web)",
+  "description": "Construa APIs web assíncronas ultrarrápidas em Rust com Tokio, roteamento type-safe no Axum e serialização zero-copy com Serde.",
+  "category": "framework",
+  "languageId": "rust-systems",
+  "prerequisites": ["rust-systems"],
+  "color": "#FB923C",
+  "icon": "🚀",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-axum-serde",
+      "title": "Módulo 1: Serde Derive, Tokio Async e Axum Extractors",
+      "description": "Domine o stack web mais moderno e seguro do ecossistema Rust.",
+      "lessons": ["lesson-01-axum-handlers"]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "nextjs-app-router",
+  "title": "Next.js App Router",
+  "description": "Aprenda o framework full-stack usado neste app: Server Components, rotas em pastas, layouts aninhados e PWA.",
+  "category": "framework",
+  "languageId": "typescript-javascript",
+  "prerequisites": ["typescript-javascript", "react-fundamentals"],
+  "color": "#10B981",
+  "icon": "▲",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-roteamento",
+      "title": "Módulo 1: Rotas e Server Components",
+      "description": "Como o Next.js organiza páginas no servidor e componentes interativos no cliente.",
+      "lessons": ["lesson-01-rotas-arquivos", "lesson-02-use-client"]
+    }
+  ]
+}

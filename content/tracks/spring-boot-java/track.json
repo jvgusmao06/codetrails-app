@@ -1,0 +1,19 @@
+{
+  "id": "spring-boot-java",
+  "title": "Spring Boot",
+  "description": "Crie microsserviços e APIs corporativas em Java com injeção de dependência e anotações @RestController.",
+  "category": "framework",
+  "languageId": "java-basics",
+  "prerequisites": ["java-basics"],
+  "color": "#22C55E",
+  "icon": "🍃",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-controllers",
+      "title": "Módulo 1: REST Controllers e Anotações",
+      "description": "Expondo rotas HTTP na JVM com Spring Web.",
+      "lessons": ["lesson-01-rest-controller"]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "id": "rust-mut-01",
+  "title": "Imutabilidade por Padrão (let vs let mut)",
+  "description": "Prevenindo mutações acidentais em tempo de compilação.",
+  "xp": 20,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Segurança em Primeiro Lugar: let e let mut",
+      "content": "Em Rust, toda variável declarada com 'let' é IMUTÁVEL por padrão. Se você quiser permitir que o valor mude ao longo do programa, precisa explicitar essa intenção usando 'let mut'. Além disso, println!() leva ponto de exclamação por ser uma macro.",
+      "codeExample": "fn main() {\n    let mut energia = 100;\n    energia = 95;\n    println!(\"Energia: {}\", energia);\n}",
+      "keyTakeaways": [
+        "Variáveis criadas apenas com 'let' não podem ser alteradas.",
+        "Use 'let mut' para declarar variáveis mutáveis.",
+        "Macros em Rust terminam com '!' (como println!)."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Clique na linha que fará o compilador do Rust (rustc) emitir o erro 'cannot assign twice to immutable variable':",
+      "lines": [
+        "fn main() {",
+        "    let pontuacao = 10;",
+        "    pontuacao = 20;",
+        "    println!(\"{}\", pontuacao);\n}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Como 'pontuacao' foi declarada sem 'mut' na linha 2 (let pontuacao = 10;), tentar reatribuí-la na linha 3 causa erro de compilação."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Torne a variável 'contador' mutável em Rust para que ela possa ser incrementada:",
+      "codeTemplate": "let {{blank}} contador = 0;\ncontador += 1;",
+      "blanks": [
+        {
+          "answer": "mut",
+          "placeholder": "modificador"
+        }
+      ],
+      "options": ["mut", "var", "ref", "pub"],
+      "explanation": "A palavra-chave 'mut' autoriza a mutação explícita da variável em Rust."
+    }
+  ]
+}

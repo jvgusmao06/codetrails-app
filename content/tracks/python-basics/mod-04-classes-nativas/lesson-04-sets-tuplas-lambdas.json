@@ -1,0 +1,44 @@
+{
+  "id": "py-sets-tuplas-lambda-04",
+  "title": "10. Tuplas, Sets e Lambda",
+  "description": "Domine coleções imutáveis (tuple), conjuntos sem duplicatas (set), funções anônimas (lambda) e funções nativas como zip() e sorted().",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Tuplas, Sets e Funções Nativas de Alta Produtividade",
+      "content": "Além de listas e dicionários, Python tem duas estruturas essenciais: **Tuplas `(10, 20)`** são sequências *imutáveis* (ótimas para coordenadas ou retornos múltiplos) e **Sets `{1, 2, 3}`** armazenam apenas elementos *únicos* com busca em $O(1)$ (`in` instantâneo!). Além disso, `lambda x: x * 2` cria funções rápidas em uma linha para passar em `sorted(lista, key=lambda ...)` e `zip(nomes, notas)` emparelha duas listas elemento a elemento.",
+      "codeExample": "coordenada = (-23.5, -46.6)       # Tupla imutável\ntags = set([\"py\", \"web\", \"py\"])   # {'py', 'web'} (sem duplicatas!)\n\nusuarios = [(\"Ana\", 30), (\"Bia\", 22)]\nordenado = sorted(usuarios, key=lambda u: u[1])  # [('Bia', 22), ('Ana', 30)]\n\nfor nome, nota in zip([\"Ana\", \"Bia\"], [9, 10]):\n    print(nome, nota)",
+      "keyTakeaways": [
+        "Tupla `(...)` é imutável; Set `{...}` elimina duplicatas automaticamente e cria `set()` quando vazio (`{}` vazio é dict!).",
+        "`sorted(lista, key=lambda item: ...)` retorna uma nova lista ordenada sem modificar a original.",
+        "`zip(lista_a, lista_b)` combina duas listas em pares para percorrer juntas no `for`."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual expressão cria um conjunto (Set) vazio em Python para armazenar itens únicos?",
+      "options": [
+        "{}",
+        "set()",
+        "[]",
+        "()"
+      ],
+      "correctIndex": 1,
+      "explanation": "Em Python, `{}` vazio cria um dicionário (`dict`). Para criar um conjunto vazio, é obrigatório usar `set()`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Dada a lista `nums = [1, 2, 2, 3, 3]`, crie uma variável `unicos = set(nums)` e retorne ou imprima `sorted(unicos)`:",
+      "starterCode": "nums = [1, 2, 2, 3, 3]\n# Crie unicos com set() e ordene com sorted():\n",
+      "requiredTokens": [
+        "unicos",
+        "set(",
+        "sorted("
+      ],
+      "sampleSolution": "nums = [1, 2, 2, 3, 3]\nunicos = set(nums)\nprint(sorted(unicos))",
+      "hint": "Escreva: unicos = set(nums) e print(sorted(unicos)).",
+      "explanation": "Combinar `set()` e `sorted()` é o idioma clássico em Python para remover duplicatas e ordenar em duas chamadas nativas."
+    }
+  ]
+}

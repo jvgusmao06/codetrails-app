@@ -1,0 +1,43 @@
+{
+  "id": "next-client-02",
+  "title": "Server vs Client Components",
+  "description": "Quando usar a diretiva 'use client' no Next.js.",
+  "xp": 20,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Arquitetura Híbrida: Server vs Client Components",
+      "content": "Por padrão, todo componente no Next.js App Router roda no servidor (Server Component), permitindo ler arquivos ou bancos de dados sem enviar JavaScript pesado ao navegador. Quando precisamos de interatividade no browser (como useState, onClick ou localStorage), colocamos a diretiva \"use client\" na primeira linha do arquivo.",
+      "codeExample": "\"use client\";\n\nimport { useState } from \"react\";\n\nexport function BotaoInterativo() {\n  const [ativo, setAtivo] = useState(false);\n  return <button onClick={() => setAtivo(!ativo)}> Alternar </button>;\n}",
+      "keyTakeaways": [
+        "Server Components são o padrão e reduzem o JavaScript enviado ao cliente.",
+        "Adicione \"use client\" no topo para habilitar hooks e eventos do navegador."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Adicione a diretiva no topo do arquivo para permitir o uso de useState e eventos onClick:",
+      "codeTemplate": "\"{{blank}}\";\n\nimport { useState } from \"react\";",
+      "blanks": [
+        {
+          "answer": "use client",
+          "placeholder": "diretiva"
+        }
+      ],
+      "options": ["use client", "use server", "use browser", "client only"],
+      "explanation": "Por padrão, componentes no App Router são Server Components. Para usar hooks de estado ou APIs do browser, declaramos 'use client'."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é a principal vantagem dos React Server Components (padrão no Next.js)?",
+      "options": [
+        "Eles rodam no servidor, podem ler arquivos/bancos diretamente e não enviam JavaScript desnecessário para o navegador",
+        "Eles permitem usar window.localStorage diretamente no servidor",
+        "Eles substituem o CSS pelo HTML puro",
+        "Eles só funcionam em computadores desktop"
+      ],
+      "correctIndex": 0,
+      "explanation": "Server Components reduzem o pacote JS enviado ao cliente e permitem buscar dados diretamente no servidor."
+    }
+  ]
+}

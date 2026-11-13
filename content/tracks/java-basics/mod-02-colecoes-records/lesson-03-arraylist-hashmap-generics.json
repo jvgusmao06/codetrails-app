@@ -1,0 +1,40 @@
+{
+  "id": "java-heranca-interfaces-05",
+  "title": "Herança (extends), Interfaces (implements) e @Override",
+  "description": "Modele contratos com interface, compartilhe comportamento com extends/super e garanta segurança com a anotação @Override.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Polimorfismo com interface, implements e extends",
+      "content": "Em Java, uma classe pode herdar de apenas **uma** classe pai usando **`extends`** (e chamar o construtor/método do pai com `super`), mas pode implementar **várias** interfaces usando **`implements`**. Na arquitetura moderna, preferimos `interface` (contratos de comportamento) em vez de heranças profundas. Sempre que sobrescrever um método da interface ou classe pai, anote com **`@Override`** para o compilador validar a assinatura.",
+      "codeExample": "interface Notificavel {\n    void enviar(String msg);\n}\n\nclass EmailService implements Notificavel {\n    @Override\n    public void enviar(String msg) {\n        System.out.println(\"Email: \" + msg);\n    }\n}",
+      "keyTakeaways": [
+        "`extends` herda de uma classe; `implements` cumpre o contrato de uma ou mais `interface`s.",
+        "`@Override` faz o compilador dar erro se você digitar o nome ou parâmetros do método errado.",
+        "`abstract class` não pode ser instanciada diretamente com `new` — serve apenas de base para subclasses."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código Java para que `PixPagamento` cumpra o contrato da interface `Pagamento` e sobrescreva o método `pagar`:",
+      "codeTemplate": "{{blank}} Pagamento { void pagar(double valor); }\n\nclass PixPagamento {{blank}} Pagamento {\n    {{blank}}\n    public void pagar(double valor) {}\n}",
+      "blanks": [
+        { "answer": "interface", "placeholder": "contrato" },
+        { "answer": "implements", "placeholder": "implementa" },
+        { "answer": "@Override", "placeholder": "anotação" }
+      ],
+      "options": ["interface", "implements", "@Override", "extends", "trait", "super"],
+      "explanation": "Interfaces são definidas com `interface`, adotadas com `implements` e seus métodos implementados levam `@Override`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Defina uma `interface Autenticavel` com o método `boolean login(String senha);`:",
+      "starterCode": "// Crie a interface Autenticavel abaixo:\n",
+      "requiredTokens": ["interface", "Autenticavel", "boolean", "login", "String"],
+      "sampleSolution": "interface Autenticavel {\n    boolean login(String senha);\n}",
+      "hint": "Use: interface Autenticavel { boolean login(String senha); }",
+      "explanation": "Métodos declarados em uma `interface` são implicitamente públicos e abstratos, definindo apenas a assinatura."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "redis-caching",
+  "title": "Redis & Caching",
+  "description": "Acelere APIs e bancos SQL com Redis: chaves com TTL, Cache-Aside, Rate Limiting e filas em memória.",
+  "category": "tool",
+  "languageId": "sql-databases",
+  "prerequisites": ["sql-databases"],
+  "color": "#DC382D",
+  "icon": "⚡",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: Cache-Aside, SET/GET com TTL e INCR",
+      "description": "Reduza a carga no PostgreSQL usando cache em memória com expiração automática.",
+      "lessons": ["lesson-01-cache-ttl-incr"]
+    }
+  ]
+}

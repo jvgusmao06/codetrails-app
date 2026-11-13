@@ -1,0 +1,40 @@
+{
+  "id": "django-admin-forms-03",
+  "title": "Django Admin (@admin.register) e ModelForm para Validação",
+  "description": "Gere um painel administrativo completo em 4 linhas com Django Admin e valide formulários com ModelForm.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Produtividade Extrema com Django Admin e ModelForm",
+      "content": "Um dos maiores diferenciais do Django é o **Django Admin** (`/admin`): basta registrar seu Model no `admin.py` com **`@admin.register(Produto)`** e definir `list_display` e `search_fields` para ganhar busca, filtros e CRUD completos sem escrever HTML! Além disso, **`ModelForm`** gera e valida formulários automaticamente a partir dos campos e regras do seu `models.Model`.",
+      "codeExample": "from django.contrib import admin\nfrom .models import Produto\n\n@admin.register(Produto)\nclass ProdutoAdmin(admin.ModelAdmin):\n    list_display = (\"nome\", \"preco\", \"ativo\")\n    search_fields = (\"nome\",)\n    list_filter = (\"ativo\",)",
+      "keyTakeaways": [
+        "`list_display` define quais colunas aparecem na tabela do painel Admin.",
+        "`search_fields` adiciona uma barra de pesquisa SQL automática.",
+        "`ModelForm` evita duplicar regras de validação entre o Model e o formulário."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "No `admin.py` do Django, qual atributo de `admin.ModelAdmin` controla quais colunas são exibidas na listagem da tabela?",
+      "options": [
+        "fields_list",
+        "list_display",
+        "show_columns",
+        "admin_columns"
+      ],
+      "correctIndex": 1,
+      "explanation": "`list_display = (\"campo1\", \"campo2\")` configura as colunas exibidas na lista de registros do Django Admin."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Registre o modelo `Pedido` no Django Admin usando `@admin.register(Pedido)` e uma classe `PedidoAdmin(admin.ModelAdmin)` com `list_display = (\"id\", \"total\")`:",
+      "starterCode": "# Registre Pedido no Django Admin:\n",
+      "requiredTokens": ["@admin.register(Pedido)", "class", "PedidoAdmin", "admin.ModelAdmin", "list_display"],
+      "sampleSolution": "@admin.register(Pedido)\nclass PedidoAdmin(admin.ModelAdmin):\n    list_display = (\"id\", \"total\")",
+      "hint": "Use `@admin.register(Pedido)` acima de `class PedidoAdmin(admin.ModelAdmin): list_display = (\"id\", \"total\")`.",
+      "explanation": "O decorator `@admin.register` é a forma moderna e limpa de registrar modelos no painel administrativo."
+    }
+  ]
+}

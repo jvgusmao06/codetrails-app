@@ -1,0 +1,19 @@
+{
+  "id": "go-web-gin",
+  "title": "Go Web APIs (net/http & Gin)",
+  "description": "Construa microsserviços e APIs REST de altíssima performance em Go usando roteamento Gin, struct tags JSON e middlewares.",
+  "category": "framework",
+  "languageId": "golang-cloud",
+  "prerequisites": ["golang-cloud"],
+  "color": "#38BDF8",
+  "icon": "🌐",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-gin-handlers",
+      "title": "Módulo 1: Rotas Gin, Struct Tags JSON e Binding",
+      "description": "Crie endpoints REST rápidos com serialização JSON nativa em Go.",
+      "lessons": ["lesson-01-gin-rest-json"]
+    }
+  ]
+}

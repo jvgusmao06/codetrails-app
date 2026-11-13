@@ -1,0 +1,63 @@
+{
+  "id": "py-classes-01",
+  "title": "07. Classes e Objetos (POO)",
+  "description": "Aprenda orientação a objetos em Python: class, __init__, self, herança e palavras reservadas como None, is, in, and, or, not.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Objetos em Python: class, __init__ e self",
+      "content": "Em Python, criamos classes com a palavra reservada 'class'. O método construtor chama-se '__init__' e seu primeiro parâmetro é sempre 'self', que representa a instância atual do objeto (equivalente ao 'this' de outras linguagens). Para verificar ausência de valor (None), a regra de ouro do Python é usar os operadores de identidade 'is None' ou 'is not None'.",
+      "codeExample": "class ContaBancaria:\n    def __init__(self, titular: str, saldo: float = 0.0):\n        self.titular = titular\n        self.saldo = saldo\n\n    def depositar(self, valor: float) -> None:\n        if valor is not None and valor > 0:\n            self.saldo += valor\n\nconta = ContaBancaria(\"Ana\", 100.0)\nconta.depositar(50.0)",
+      "keyTakeaways": [
+        "Todo método de instância em uma classe Python deve receber 'self' como primeiro parâmetro.",
+        "Não usamos a palavra 'new' em Python: basta chamar 'ContaBancaria(\"Ana\")' como uma função.",
+        "Use sempre 'x is None' (e nunca 'x == None') para testar o objeto singleton None."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a classe Python com seu construtor __init__ e atribuição de atributo via self:",
+      "codeTemplate": "{{blank}} Robo:\n    def {{blank}}({{blank}}, modelo: str):\n        self.modelo = modelo",
+      "blanks": [
+        {
+          "answer": "class",
+          "placeholder": "palavra-chave"
+        },
+        {
+          "answer": "__init__",
+          "placeholder": "construtor"
+        },
+        {
+          "answer": "self",
+          "placeholder": "instância"
+        }
+      ],
+      "options": [
+        "class",
+        "__init__",
+        "self",
+        "struct",
+        "constructor",
+        "this"
+      ],
+      "explanation": "Em Python definimos classes com 'class', inicializamos atributos em '__init__' e referenciamos a própria instância com 'self'."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva do zero uma classe chamada 'Usuario' com o método '__init__(self, nome)' que salve 'self.nome = nome':",
+      "starterCode": "# Defina a classe Usuario abaixo:\n",
+      "requiredTokens": [
+        "class",
+        "Usuario",
+        "def",
+        "__init__",
+        "self",
+        "self.nome"
+      ],
+      "sampleSolution": "class Usuario:\n    def __init__(self, nome):\n        self.nome = nome",
+      "hint": "Comece com 'class Usuario:', depois 'def __init__(self, nome):' e atribua 'self.nome = nome'.",
+      "explanation": "O método __init__ inicializa os atributos do objeto recém-criado no namespace 'self'."
+    }
+  ]
+}

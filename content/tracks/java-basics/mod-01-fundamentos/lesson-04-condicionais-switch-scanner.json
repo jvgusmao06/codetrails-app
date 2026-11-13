@@ -1,0 +1,40 @@
+{
+  "id": "java-condicionais-strings-04",
+  "title": "Condicionais, Switch Expressions e Comparação de Strings (.equals)",
+  "description": "Evite o erro clássico de usar == em Strings Java, domine if/else e o switch moderno com seta (->).",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Nunca Use == Para Comparar Conteúdo de Strings em Java!",
+      "content": "Em Java, `==` compara se duas variáveis apontam para o **mesmo endereço de memória** (funciona para `int`, `double`, `boolean`), mas falha para objetos como `String`! Para comparar o texto dentro de duas Strings, usamos sempre **`.equals()`**. Além disso, desde o Java 14+, temos o **Switch Expression** com seta `->`, que não precisa de `break` e já retorna um valor diretamente!",
+      "codeExample": "String entrada = new String(\"admin\");\n\n// ERRADO: compara endereços na memória (false!)\n// if (entrada == \"admin\")\n\n// CERTO: compara o conteúdo do texto (true!)\nif (\"admin\".equals(entrada)) {\n    System.out.println(\"Acesso liberado\");\n}\n\nint codigo = 200;\nString msg = switch (codigo) {\n    case 200 -> \"OK\";\n    case 404 -> \"Não encontrado\";\n    default -> \"Outro\";\n};",
+      "keyTakeaways": [
+        "Use `\"texto\".equals(var)` (colocando o literal primeiro para evitar `NullPointerException` se `var` for `null`!).",
+        "Switch Expressions (`case 1 -> ...;`) dispensam `break` e podem ser atribuídos a uma variável.",
+        "`==` só deve ser usado para tipos primitivos (`int`, `long`, `double`, `boolean`, `char`) ou checagem de `null`."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código Java falha ao comparar a String recebida do usuário com \"SIM\". Clique na linha com o bug:",
+      "lines": [
+        "String resposta = scanner.nextLine();",
+        "if (resposta == \"SIM\") {",
+        "    System.out.println(\"Confirmado!\");",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Na linha 2, `resposta == \"SIM\"` compara referências de memória, não o texto! O correto é `\"SIM\".equals(resposta)`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva um `if` em Java que compare se a variável `role` é igual a `\"ADMIN\"` usando `.equals()` e imprima `System.out.println(\"OK\");`:",
+      "starterCode": "// Compare role com \"ADMIN\" usando .equals():\n",
+      "requiredTokens": ["if", ".equals(", "\"ADMIN\"", "System.out.println"],
+      "sampleSolution": "if (\"ADMIN\".equals(role)) {\n    System.out.println(\"OK\");\n}",
+      "hint": "Escreva: if (\"ADMIN\".equals(role)) { System.out.println(\"OK\"); }",
+      "explanation": "Colocar `\"ADMIN\".equals(role)` é seguro contra `NullPointerException` mesmo se `role` vier `null`."
+    }
+  ]
+}

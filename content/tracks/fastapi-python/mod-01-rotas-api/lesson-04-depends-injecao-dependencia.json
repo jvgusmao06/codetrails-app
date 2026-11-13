@@ -1,0 +1,40 @@
+{
+  "id": "fastapi-depends-di-04",
+  "title": "Injeção de Dependência com Depends() para Banco e Autenticação",
+  "description": "Reaproveite sessões de banco, validação de tokens JWT e paginação em qualquer rota usando Depends().",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "O Sistema Poderoso de Depends() no FastAPI",
+      "content": "Em vez de repetir código de conexão com banco ou leitura de token JWT dentro de todas as rotas, o FastAPI usa **`Depends(funcao)`**. Basta declarar `db: Session = Depends(get_db)` ou `user = Depends(get_current_user)` nos parâmetros da rota! Se a função usar `yield`, o código após o `yield` roda automaticamente ao final da requisição (fechando a sessão do banco com segurança).",
+      "codeExample": "from fastapi import Depends, FastAPI\n\ndef get_db():\n    db = \"SessaoBanco\"  # Simula abertura de conexão\n    try:\n        yield db\n    finally:\n        pass  # Fecha a conexão após a resposta!\n\n@app.get(\"/perfil\")\nasync def perfil(db = Depends(get_db)):\n    return {\"conexao\": db}",
+      "keyTakeaways": [
+        "`Depends()` resolve dependências em árvore (uma dependência pode depender de outra) e aparece no Swagger `/docs`.",
+        "Dependências com `yield` funcionam como Context Managers por requisição HTTP.",
+        "Em testes automatizados (`pytest`), `app.dependency_overrides[get_db] = mock_db` troca o banco real por um fake em 1 linha!"
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é a grande vantagem de usar `yield db` dentro de uma dependência `get_db()` passada via `Depends(get_db)`?",
+      "options": [
+        "Executa a rota duas vezes",
+        "Permite rodar código de limpeza (como `db.close()`) no `finally` automaticamente após a resposta HTTP ser enviada",
+        "Converte a resposta em XML",
+        "Desabilita validação Pydantic"
+      ],
+      "correctIndex": 1,
+      "explanation": "O bloco `finally` após o `yield` sempre executa ao término da requisição, mesmo se ocorrer uma exceção na rota."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie uma rota `@app.get(\"/me\")` que receba `usuario = Depends(get_current_user)` e retorne `{\"user\": usuario}`:",
+      "starterCode": "# Injete get_current_user com Depends():\n",
+      "requiredTokens": ["@app.get(\"/me\")", "Depends(get_current_user)", "return"],
+      "sampleSolution": "@app.get(\"/me\")\nasync def me(usuario = Depends(get_current_user)):\n    return {\"user\": usuario}",
+      "hint": "Escreva `@app.get(\"/me\")` e `async def me(usuario = Depends(get_current_user)): return {\"user\": usuario}`.",
+      "explanation": "Esse padrão protege qualquer rota apenas adicionando `Depends(get_current_user)` na assinatura."
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "id": "rust-sintaxe-01",
+  "title": "Sintaxe Base: Funções, Expressões, Structs e Macros",
+  "description": "Aprenda a sintaxe expressiva do Rust: retorno sem ponto-e-vírgula, macros com '!', structs e blocos impl.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Rust é uma Linguagem Orientada a Expressões",
+      "content": "Em Rust, quase tudo é uma expressão que retorna um valor. Em uma função 'fn', a última linha sem ponto-e-vírgula (;) é retornada automaticamente! Além disso, chamadas que terminam com '!' (como println! ou vec!) são macros expandidas em tempo de compilação, e métodos são definidos dentro de blocos 'impl'.",
+      "codeExample": "struct Retangulo {\n    largura: u32,\n    altura: u32,\n}\n\nimpl Retangulo {\n    // Retorno implícito (sem ';' na última linha)\n    fn area(&self) -> u32 {\n        self.largura * self.altura\n    }\n}\n\nfn main() {\n    let r = Retangulo { largura: 10, altura: 5 };\n    println!(\"Área = {}\", r.area());\n}",
+      "keyTakeaways": [
+        "O tipo de retorno de uma função é declarado após '->' (ex: fn dobrar(x: i32) -> i32).",
+        "Omitir o ';' na última expressão de um bloco faz com que ela seja o valor de retorno.",
+        "Colocar ';' transforma a expressão em statement, retornando o tipo vazio '()' (unit)."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Esta função Rust deveria retornar i32, mas não compila dizendo 'expected i32, found ()'. Clique na linha com o erro:",
+      "lines": [
+        "fn calcular_bonus(salario: i32) -> i32 {",
+        "    let taxa = 2;",
+        "    salario * taxa;",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Na linha 3, o ponto-e-vírgula ao final de 'salario * taxa;' descarta o valor da expressão e faz a função retornar '()' (unit) em vez de i32."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código Rust para definir um método associado em 'impl' e imprimir com a macro println!:",
+      "codeTemplate": "{{blank}} Player {\n    {{blank}} nivel(&self) -> u8 {\n        10\n    }\n}\n{{blank}}(\"Nível: {}\", p.nivel());",
+      "blanks": [
+        { "answer": "impl", "placeholder": "bloco" },
+        { "answer": "fn", "placeholder": "função" },
+        { "answer": "println!", "placeholder": "macro" }
+      ],
+      "options": ["impl", "fn", "println!", "class", "def", "println"],
+      "explanation": "Em Rust usamos 'impl NomeStruct' para métodos, 'fn' para funções e 'println!' (com ponto de exclamação) por ser uma macro."
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "java-loops-keywords-03",
+  "title": "Loops (for, while) e Palavras Reservadas do Java",
+  "description": "Domine laços for, enhanced for-each, while, break, continue e palavras reservadas como final, static, extends e implements.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Loops e Modificadores Essenciais da Linguagem Java",
+      "content": "Em Java, além do 'for (int i = 0; i < n; i++)' tradicional e do 'while', usamos o 'for-each' ('for (String item : lista)') para percorrer coleções com segurança. Já as palavras reservadas definem contratos rigorosos: 'final' torna uma variável constante (ou impede herança), 'static' associa um método/atributo à classe em vez da instância, 'extends' herda uma classe e 'implements' assina uma interface.",
+      "codeExample": "public class Config {\n    public static final int MAX_TENTATIVAS = 3;\n\n    public static void processar(int[] codigos) {\n        for (int c : codigos) {\n            if (c < 0) continue;\n            if (c == 999) break;\n            System.out.println(c);\n        }\n    }\n}",
+      "keyTakeaways": [
+        "'final' em Java equivale ao 'const': uma variável 'final' não pode ser reatribuída.",
+        "'static' permite chamar 'Classe.metodo()' sem precisar instanciar um objeto com 'new'.",
+        "No for-each do Java usa-se dois-pontos ':' -> 'for (Tipo item : colecao)'."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a constante estática em Java e o loop for-each que percorre um array de nomes:",
+      "codeTemplate": "public {{blank}} {{blank}} double PI = 3.14159;\n\nfor (String nome {{blank}} nomes) {\n    System.out.println(nome);\n}",
+      "blanks": [
+        { "answer": "static", "placeholder": "da classe" },
+        { "answer": "final", "placeholder": "constante" },
+        { "answer": ":", "placeholder": "separador" }
+      ],
+      "options": ["static", "final", ":", "const", "in", "of"],
+      "explanation": "Em Java constantes de classe usam 'static final' e o loop for-each separa a variável e a coleção com ':'."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva do zero um loop 'for' em Java que percorra os números de 0 até 4 ('int i = 0; i < 5; i++') e imprima 'i' com 'System.out.println':",
+      "starterCode": "// Escreva seu loop for em Java abaixo:\n",
+      "requiredTokens": ["for", "int", "System.out.println"],
+      "sampleSolution": "for (int i = 0; i < 5; i++) {\n    System.out.println(i);\n}",
+      "hint": "Use: for (int i = 0; i < 5; i++) { System.out.println(i); }",
+      "explanation": "O loop for clássico em Java declara o contador tipado 'int i = 0', verifica a condição 'i < 5' e incrementa com 'i++'."
+    }
+  ]
+}

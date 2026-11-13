@@ -1,0 +1,31 @@
+{
+  "id": "git-flow-01",
+  "title": "Do Working Directory ao Push",
+  "description": "A sequência exata de comandos para salvar e enviar alterações.",
+  "xp": 20,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Os 3 Estágios do Git",
+      "content": "No Git, editar um arquivo não o salva imediatamente no histórico. Primeiro criamos ou isolamos uma branch (git checkout -b), depois adicionamos os arquivos modificados à área de preparação/Staging (git add), gravamos um snapshot com mensagem (git commit -m) e enviamos ao repositório remoto (git push).",
+      "codeExample": "git checkout -b feat/nova-trilha\ngit add .\ngit commit -m \"feat: adiciona trilha de SQL\"\ngit push origin feat/nova-trilha",
+      "keyTakeaways": [
+        "git add prepara os arquivos (Staging Area).",
+        "git commit grava o ponto na história local.",
+        "git push envia os commits locais para o servidor remoto (GitHub)."
+      ]
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os comandos Git na ordem lógica para criar uma branch, preparar os arquivos, commitar e enviar ao GitHub:",
+      "blocks": [
+        "git commit -m \"feat: login\"",
+        "git checkout -b feat/login",
+        "git push origin feat/login",
+        "git add ."
+      ],
+      "correctOrder": [1, 3, 0, 2],
+      "explanation": "Primeiro criamos a branch (checkout -b), preparamos os arquivos (add), criamos o commit (commit -m) e enviamos ao remoto (push)."
+    }
+  ]
+}

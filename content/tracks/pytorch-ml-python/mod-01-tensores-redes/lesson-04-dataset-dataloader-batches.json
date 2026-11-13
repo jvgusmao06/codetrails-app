@@ -1,0 +1,40 @@
+{
+  "id": "pytorch-dataloader-eval-04",
+  "title": "Dataset, DataLoader (Mini-Batches) e Modo Avaliação (eval / no_grad)",
+  "description": "Carregue dados em mini-batches paralelos com DataLoader e faça inferência rápida sem gastar VRAM com model.eval() e torch.no_grad().",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Treino em Mini-Batches e Inferência Correta",
+      "content": "Não passamos 1 milhão de exemplos de uma vez para a GPU! Usamos **`DataLoader(dataset, batch_size=32, shuffle=True)`** para fatiar os dados em lotes embaralhados. E na hora de **avaliar ou rodar em produção**, duas chamadas são obrigatórias:\n1. **`model.eval()`**: desativa `Dropout` e congela estatísticas de `BatchNorm` (o contrário de `model.train()`).\n2. **`with torch.no_grad():`**: desliga o Autograd, economizando muita memória RAM/VRAM e acelerando a inferência!",
+      "codeExample": "from torch.utils.data import DataLoader\n\ntrain_loader = DataLoader(dataset, batch_size=32, shuffle=True)\n\n# Na avaliação / produção:\nmodel.eval()\nwith torch.no_grad():\n    previsoes = model(X_teste)",
+      "keyTakeaways": [
+        "Use `shuffle=True` no `DataLoader` de treino para o modelo não decorar a ordem dos dados, e `shuffle=False` na validação.",
+        "Esquecer `model.eval()` deixa camadas como `Dropout` desligando neurônios aleatoriamente na produção!",
+        "`with torch.no_grad():` evita construir o grafo de gradientes durante a inferência."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código de validação/inferência em produção está gastando o dobro de VRAM e gerando previsões instáveis porque esqueceu `model.eval()` e `torch.no_grad()`. Clique na linha onde a previsão está sendo executada sem proteção:",
+      "lines": [
+        "def prever(model, X_teste):",
+        "    # Falta model.eval() e with torch.no_grad():",
+        "    saida = model(X_teste)",
+        "    return saida.argmax(dim=1)"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Na linha 3, `model(X_teste)` roda em modo treino e rastreando gradientes na memória! Sempre envolva com `model.eval()` e `with torch.no_grad():`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Coloque `model` em modo avaliação com `model.eval()` e execute `pred = model(x)` dentro de `with torch.no_grad():`:",
+      "starterCode": "# Configure modo avaliação e torch.no_grad():\n",
+      "requiredTokens": ["model.eval()", "with torch.no_grad():", "pred = model(x)"],
+      "sampleSolution": "model.eval()\nwith torch.no_grad():\n    pred = model(x)",
+      "hint": "Escreva `model.eval()` e depois `with torch.no_grad(): pred = model(x)`.",
+      "explanation": "Essa dupla é obrigatória em qualquer endpoint de inferência com PyTorch."
+    }
+  ]
+}

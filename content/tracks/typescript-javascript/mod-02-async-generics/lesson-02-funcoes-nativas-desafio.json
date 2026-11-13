@@ -1,0 +1,40 @@
+{
+  "id": "ts-nativas-02",
+  "title": "Funções e Objetos Nativos (Object, JSON, Math, Set, Array)",
+  "description": "Domine as APIs nativas essenciais do JavaScript/TypeScript e resolva problemas escrevendo código do zero.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "As Funções e Globais Nativas do JS/TS",
+      "content": "O runtime JavaScript/TypeScript fornece objetos globais poderosos sem precisar instalar bibliotecas: 'Object.keys(obj)' e 'Object.entries(obj)' extraem chaves e pares de um objeto; 'JSON.stringify()' e 'JSON.parse()' convertem entre objetos e texto JSON; 'new Set(array)' remove duplicatas em O(1); e '.reduce()' acumula valores de um array em um único resultado.",
+      "codeExample": "const vendas = [10, 20, 10, 50];\n\n// Remover duplicatas com Set nativo\nconst unicos = [...new Set(vendas)]; // [10, 20, 50]\n\n// Somar valores com reduce\nconst total = unicos.reduce((acc, val) => acc + val, 0); // 80\n\n// Converter objeto para JSON\nconst payload = JSON.stringify({ total, max: Math.max(...unicos) });",
+      "keyTakeaways": [
+        "Object.keys(obj) retorna um array com os nomes das propriedades próprias do objeto.",
+        "[...new Set(lista)] é a forma nativa mais rápida de remover itens duplicados de um array.",
+        "array.reduce((acumulador, atual) => novoAcumulador, valorInicial) reduz qualquer lista a um único valor."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual expressão nativa do JavaScript converte uma string de texto JSON recebida de uma API de volta para um objeto manipulável?",
+      "options": [
+        "JSON.stringify(texto)",
+        "JSON.parse(texto)",
+        "Object.fromJSON(texto)",
+        "Array.from(texto)"
+      ],
+      "correctIndex": 1,
+      "explanation": "JSON.parse() analisa uma string no formato JSON e reconstrói o objeto ou array JavaScript correspondente."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva uma função 'somarLista(numeros: number[])' que use '.reduce()' (ou um loop 'for') e 'return' para retornar a soma dos números:",
+      "starterCode": "// Escreva sua função somarLista do zero:\n",
+      "requiredTokens": ["function", "somarLista", "return"],
+      "sampleSolution": "function somarLista(numeros: number[]): number {\n  return numeros.reduce((acc, n) => acc + n, 0);\n}",
+      "hint": "Use: function somarLista(numeros: number[]) { return numeros.reduce((a, b) => a + b, 0); }",
+      "explanation": "O método nativo .reduce() acumula cada elemento da lista a partir do valor inicial 0 e retorna a soma total."
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "gtest-01",
+  "title": "GoogleTest: TEST(Suite, Nome), EXPECT_EQ vs ASSERT_EQ",
+  "description": "Valide funções C++ com a biblioteca padrão de testes da Google integrada ao CMake.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Testes Unitários em C++ com GoogleTest",
+      "content": "O **GoogleTest (GTest)** é o framework de testes mais adotado em projetos C++ profissionais. Criamos testes com a macro **`TEST(NomeDaSuite, NomeDoTeste)`** e verificamos resultados com duas famílias de macros:\n- **`EXPECT_EQ(a, b)`**: falha não-fatal (marca o erro, mas continua testando as linhas seguintes).\n- **`ASSERT_EQ(a, b)`**: falha fatal (aborta o teste imediatamente — ideal para checar se um ponteiro não é `nullptr` antes de usá-lo!).",
+      "codeExample": "#include <gtest/gtest.h>\n\nint somar(int a, int b) { return a + b; }\n\nTEST(MatematicaTest, SomaPositivos) {\n    EXPECT_EQ(somar(2, 3), 5);\n    EXPECT_NE(somar(2, 3), 0);\n}",
+      "keyTakeaways": [
+        "Use `EXPECT_*` na maioria dos casos para ver todas as falhas de uma vez.",
+        "Use `ASSERT_NE(ptr, nullptr)` antes de dereferenciar um ponteiro no teste.",
+        "Integra nativamente com CMake via `enable_testing()` e `ctest`."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é a diferença entre `EXPECT_EQ(a, b)` e `ASSERT_EQ(a, b)` no GoogleTest?",
+      "options": [
+        "EXPECT_EQ só funciona para strings",
+        "EXPECT_EQ continua executando o resto do teste se falhar; ASSERT_EQ aborta a função de teste imediatamente",
+        "ASSERT_EQ é ignorado em modo Debug",
+        "Não há diferença"
+      ],
+      "correctIndex": 1,
+      "explanation": "`ASSERT_*` gera falha fatal (retorna da função de teste); `EXPECT_*` gera falha não-fatal."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva um teste GTest `TEST(CalcTest, Dobro)` que valide `EXPECT_EQ(dobro(4), 8);`:",
+      "starterCode": "// Escreva o teste GoogleTest abaixo:\n",
+      "requiredTokens": ["TEST(", "CalcTest", "Dobro", "EXPECT_EQ", "dobro(4)", "8"],
+      "sampleSolution": "TEST(CalcTest, Dobro) {\n    EXPECT_EQ(dobro(4), 8);\n}",
+      "hint": "Use `TEST(CalcTest, Dobro) { EXPECT_EQ(dobro(4), 8); }`.",
+      "explanation": "A macro `TEST(Suite, Caso)` registra automaticamente o teste para o runner do GoogleTest."
+    }
+  ]
+}

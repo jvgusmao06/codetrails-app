@@ -1,0 +1,65 @@
+{
+  "id": "py-erros-with-03",
+  "title": "09. Erros (try/except) e with",
+  "description": "Evite que seu programa quebre com exceções usando try/except, lance erros com raise e feche arquivos automaticamente com with.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Capturando Exceções e Gerenciando Recursos com 'with'",
+      "content": "Em Python, erros em tempo de execução geram **exceções** (como `ValueError`, `ZeroDivisionError`, `KeyError`). Usamos `try:` para tentar um bloco arriscado, `except TipoErro:` para tratar a falha sem travar o programa, `finally:` para código que sempre roda, e `raise` para disparar um erro intencional. Para abrir arquivos ou conexões com segurança, usamos `with open(...) as f:`, que fecha o arquivo automaticamente ao sair do bloco!",
+      "codeExample": "def dividir(a: float, b: float) -> float:\n    if b == 0:\n        raise ValueError(\"Divisor não pode ser zero\")\n    return a / b\n\ntry:\n    resultado = dividir(10, 0)\nexcept ValueError as erro:\n    print(\"Erro capturado:\", erro)\nfinally:\n    print(\"Operação finalizada\")",
+      "keyTakeaways": [
+        "Sempre capture exceções específicas (`except ValueError:`) em vez de `except:` genérico.",
+        "`raise ValueError('msg')` interrompe a função imediatamente sinalizando um erro de validação.",
+        "`with open('dados.txt', 'r') as f:` garante que `f.close()` será chamado mesmo se ocorrer um erro dentro do bloco."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o bloco de tratamento de erros em Python para tentar converter um texto, capturar ValueError e sempre executar a limpeza final:",
+      "codeTemplate": "{{blank}}:\n    idade = int(\"abc\")\n{{blank}} ValueError:\n    print(\"Número inválido\")\n{{blank}}:\n    print(\"Fim\")",
+      "blanks": [
+        {
+          "answer": "try",
+          "placeholder": "tentar"
+        },
+        {
+          "answer": "except",
+          "placeholder": "capturar"
+        },
+        {
+          "answer": "finally",
+          "placeholder": "sempre"
+        }
+      ],
+      "options": [
+        "try",
+        "except",
+        "finally",
+        "catch",
+        "throw",
+        "else"
+      ],
+      "explanation": "Python usa try / except / finally (diferente de Java/JS que usam try / catch / finally)."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva uma função `validar_idade(idade)` que dispare `raise ValueError(\"Invalida\")` se `idade < 0` e retorne `idade` caso contrário:",
+      "starterCode": "# Valide idade negativa com raise ValueError:\n",
+      "requiredTokens": [
+        "def",
+        "validar_idade",
+        "if",
+        "<",
+        "0",
+        "raise",
+        "ValueError",
+        "return"
+      ],
+      "sampleSolution": "def validar_idade(idade):\n    if idade < 0:\n        raise ValueError(\"Invalida\")\n    return idade",
+      "hint": "Use 'if idade < 0: raise ValueError(\"Invalida\")' e depois 'return idade'.",
+      "explanation": "Usar 'raise' para falhar cedo (fail-fast) protege suas funções contra entradas inválidas."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "vitest-testing",
+  "title": "Vitest & Testes em TS/JS",
+  "description": "Escreva testes unitários e de integração ultrarrápidos para TypeScript e React com describe, it, expect e vi.fn().",
+  "category": "tool",
+  "languageId": "typescript-javascript",
+  "prerequisites": ["typescript-javascript"],
+  "color": "#FACC15",
+  "icon": "⚡",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-vitest-mocks",
+      "title": "Módulo 1: Assertions, Mocks e Testes Async",
+      "description": "Garanta qualidade no ecossistema TypeScript com Vitest.",
+      "lessons": ["lesson-01-vitest-expect"]
+    }
+  ]
+}

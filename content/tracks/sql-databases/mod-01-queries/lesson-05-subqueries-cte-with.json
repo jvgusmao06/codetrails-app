@@ -1,0 +1,40 @@
+{
+  "id": "sql-cte-subqueries-05",
+  "title": "Subqueries e CTEs (WITH ... AS) para Consultas Limpas",
+  "description": "Divida queries SQL complexas em blocos legíveis e reutilizáveis usando Common Table Expressions (WITH).",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Organizando Queries Complexas com CTE (WITH)",
+      "content": "Aninhar vários `SELECT` dentro de `SELECT` (subqueries) rapidamente deixa o SQL ilegível. A solução profissional é usar **CTEs (Common Table Expressions)** com a cláusula **`WITH nome_cte AS (...)`**. Uma CTE funciona como uma tabela temporária nomeada que existe apenas durante aquela consulta, permitindo que você leia a query de cima para baixo como passos claros!",
+      "codeExample": "WITH vendas_aprovadas AS (\n    SELECT cliente_id, SUM(valor) AS total\n    FROM pedidos\n    WHERE status = 'PAGO'\n    GROUP BY cliente_id\n)\nSELECT c.nome, v.total\nFROM clientes c\nJOIN vendas_aprovadas v ON v.cliente_id = c.id\nWHERE v.total > 500;",
+      "keyTakeaways": [
+        "`WITH nome AS (SELECT ...)` torna queries analíticas muito mais fáceis de ler e manter do que subqueries aninhadas.",
+        "Você pode encadear várias CTEs separadas por vírgula antes do `SELECT` principal.",
+        "`EXISTS (SELECT 1 FROM ...)` costuma ser mais rápido que `IN (SELECT ...)` em tabelas grandes com NULLs."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a CTE em SQL que agrupa pedidos pagos e depois consulta apenas os totais acima de 1000:",
+      "codeTemplate": "{{blank}} resumo {{blank}} (\n    SELECT user_id, SUM(valor) AS total FROM pedidos GROUP BY user_id\n)\n{{blank}} * FROM resumo WHERE total > 1000;",
+      "blanks": [
+        { "answer": "WITH", "placeholder": "cte" },
+        { "answer": "AS", "placeholder": "como" },
+        { "answer": "SELECT", "placeholder": "consultar" }
+      ],
+      "options": ["WITH", "AS", "SELECT", "FROM", "LET", "VIEW"],
+      "explanation": "A sintaxe padrão de CTE em SQL é `WITH nome AS (...) SELECT ... FROM nome`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva uma CTE chamada `ativos` (`WITH ativos AS (SELECT id, nome FROM usuarios WHERE ativo = true)`) e selecione tudo dela (`SELECT * FROM ativos;`):",
+      "starterCode": "-- Escreva a CTE ativos e o SELECT final:\n",
+      "requiredTokens": ["WITH", "ativos", "AS", "SELECT", "FROM usuarios", "SELECT * FROM ativos"],
+      "sampleSolution": "WITH ativos AS (\n    SELECT id, nome FROM usuarios WHERE ativo = true\n)\nSELECT * FROM ativos;",
+      "hint": "Use `WITH ativos AS (SELECT id, nome FROM usuarios WHERE ativo = true) SELECT * FROM ativos;`.",
+      "explanation": "CTEs permitem nomear filtros e agregações intermediárias antes da seleção final."
+    }
+  ]
+}

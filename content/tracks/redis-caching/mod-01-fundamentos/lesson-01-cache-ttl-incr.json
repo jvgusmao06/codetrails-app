@@ -1,0 +1,40 @@
+{
+  "id": "redis-cache-01",
+  "title": "Redis na Prática: SET, GET, TTL (EX) e Rate Limiting com INCR",
+  "description": "Implemente o padrão Cache-Aside e contadores atômicos com expiração automática em microssegundos.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Por que Usar Redis Junto com PostgreSQL?",
+      "content": "O **Redis** é um banco chave-valor em **memória RAM** com latência sub-milissegundo ($O(1)$). No padrão **Cache-Aside**, antes de fazer um `SELECT` pesado no PostgreSQL, a API consulta o Redis (`GET user:42`). Se não existir (*Cache Miss*), busca no SQL e salva no Redis com **TTL** (*Time To Live*): **`SET user:42 '{...}' EX 300`** (expira sozinho em 300s!). Além disso, `INCR` + `EXPIRE` criam **Rate Limiters** atômicos em 2 comandos.",
+      "codeExample": "# Salvar chave com expiração (TTL) de 60 segundos\nSET sessao:abc \"user_10\" EX 60\n\n# Ler valor em O(1)\nGET sessao:abc\n\n# Contador atômico (Rate Limiting)\nINCR rate:ip:127.0.0.1\nEXPIRE rate:ip:127.0.0.1 60",
+      "keyTakeaways": [
+        "Sempre defina um TTL (`EX segundos`) em chaves de cache para não lotar a RAM e evitar dados obsoletos.",
+        "`INCR` é atômico no Redis (single-threaded): duas requisições simultâneas nunca perdem uma contagem.",
+        "Prefixe chaves com dois-pontos por convenção: `app:entidade:id` (ex: `user:42:perfil`)."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "No padrão **Cache-Aside**, o que sua API deve fazer quando ocorre um *Cache Miss* (a chave não está no Redis)?",
+      "options": [
+        "Retornar erro 500 imediatamente",
+        "Consultar o banco principal (PostgreSQL), salvar o resultado no Redis com TTL (`EX`) e retornar ao cliente",
+        "Reiniciar o servidor Redis",
+        "Apagar todas as chaves do Redis"
+      ],
+      "correctIndex": 1,
+      "explanation": "No Cache-Aside, a aplicação lê do banco em caso de *miss* e popula o cache com TTL para as próximas requisições."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva o comando Redis para salvar a chave `config:tema` com valor `\"dark\"` e expiração (`EX`) de `300` segundos:",
+      "starterCode": "# Salve config:tema com TTL de 300 segundos:\n",
+      "requiredTokens": ["SET", "config:tema", "\"dark\"", "EX", "300"],
+      "sampleSolution": "SET config:tema \"dark\" EX 300",
+      "hint": "Use: SET config:tema \"dark\" EX 300",
+      "explanation": "A flag `EX 300` garante que a chave será removida automaticamente da memória após 5 minutos."
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "id": "ts-async-01",
+  "title": "Async/Await, Promises e Generics <T>",
+  "description": "Domine operações assíncronas sem travar a thread principal e crie funções reutilizáveis com Generics.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Promises, Async/Await e Generics <T>",
+      "content": "Operações de rede ou leitura de banco em JS/TS retornam uma 'Promise<T>'. A sintaxe 'async/await' permite aguardar a resolução da Promise como se fosse código síncrono. Já os Generics (<T>) no TypeScript permitem criar funções e componentes que funcionam com qualquer tipo sem perder a segurança estática (sem usar 'any').",
+      "codeExample": "// Função genérica que preserva o tipo passado\nfunction primeiroItem<T>(lista: T[]): T | undefined {\n  return lista[0];\n}\n\n// Função assíncrona tipada\nasync function buscarPerfil(id: string): Promise<{ nome: string }> {\n  const res = await fetch(`/api/users/${id}`);\n  return await res.json();\n}",
+      "keyTakeaways": [
+        "Toda função marcada com 'async' retorna automaticamente uma Promise<T>.",
+        "Esquecer o 'await' antes de uma função assíncrona retorna a Promise pendente em vez do dado real.",
+        "Generics <T> capturam o tipo enviado pelo chamador, evitando o uso inseguro de 'any'."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "A função abaixo tenta exibir o nome do usuário vindo da API, mas imprime 'undefined' porque não aguardou a Promise. Clique na linha com o bug:",
+      "lines": [
+        "async function carregarUsuario() {",
+        "  const resposta = await fetch(\"/api/user\");",
+        "  const dados = resposta.json();",
+        "  console.log(dados.nome);",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Na linha 3, 'resposta.json()' também retorna uma Promise! Faltou o 'await' antes de 'resposta.json()'."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a assinatura da função genérica em TypeScript que recebe um valor de tipo T e retorna um array desse mesmo tipo T[]:",
+      "codeTemplate": "function embrulhar{{blank}}(item: {{blank}}): {{blank}} {\n  return [item];\n}",
+      "blanks": [
+        { "answer": "<T>", "placeholder": "generic" },
+        { "answer": "T", "placeholder": "tipo param" },
+        { "answer": "T[]", "placeholder": "retorno" }
+      ],
+      "options": ["<T>", "T", "T[]", "any", "<any>", "Array"],
+      "explanation": "Declaramos o parâmetro de tipo com <T> após o nome da função, usamos T no argumento e T[] no tipo de retorno."
+    }
+  ]
+}

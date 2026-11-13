@@ -1,0 +1,44 @@
+{
+  "id": "sql-select-01",
+  "title": "Consultas SELECT, WHERE e ORDER BY",
+  "description": "Buscando colunas específicas e ordenando resultados.",
+  "xp": 20,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Anatomia de uma Query SQL",
+      "content": "O SQL (Structured Query Language) é a linguagem universal para bancos de dados relacionais. Uma consulta segue uma ordem estrita de cláusulas: primeiro SELECT (quais colunas), depois FROM (qual tabela), WHERE (filtro de linhas) e ORDER BY (ordenação).",
+      "codeExample": "SELECT nome, xp\nFROM usuarios\nWHERE ativo = true\nORDER BY xp DESC;",
+      "keyTakeaways": [
+        "SELECT escolhe as colunas; FROM define a tabela de origem.",
+        "WHERE filtra as linhas antes de retornar os dados.",
+        "ORDER BY ... DESC ordena do maior para o menor."
+      ]
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos SQL na sequência sintática correta para buscar os usuários ativos com maior XP:",
+      "blocks": [
+        "WHERE ativo = true",
+        "SELECT nome, xp",
+        "ORDER BY xp DESC;",
+        "FROM usuarios"
+      ],
+      "correctOrder": [1, 3, 0, 2],
+      "explanation": "Em SQL, a ordem obrigatória das cláusulas é: SELECT -> FROM -> WHERE -> ORDER BY."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a consulta para retornar apenas os produtos com preço maior que 100:",
+      "codeTemplate": "SELECT nome, preco FROM produtos {{blank}} preco > 100;",
+      "blanks": [
+        {
+          "answer": "WHERE",
+          "placeholder": "filtro"
+        }
+      ],
+      "options": ["WHERE", "FILTER", "HAVING", "WHEN"],
+      "explanation": "A cláusula WHERE filtra registros individuais diretamente na tabela."
+    }
+  ]
+}

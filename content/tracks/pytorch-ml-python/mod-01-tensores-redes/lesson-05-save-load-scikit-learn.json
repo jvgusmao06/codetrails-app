@@ -1,0 +1,40 @@
+{
+  "id": "pytorch-save-sklearn-05",
+  "title": "Salvando Modelos (state_dict) e ML Clássico com Scikit-Learn",
+  "description": "Salve apenas os pesos com state_dict() com segurança e saiba quando usar Scikit-Learn (fit/predict) em dados tabulares.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Persistência Segura no PyTorch e Quando Usar Scikit-Learn",
+      "content": "Para salvar um modelo PyTorch após horas de treino, a prática recomendada é salvar apenas os **pesos (`model.state_dict()`)** com `torch.save(model.state_dict(), \"pesos.pt\")` (evita quebrar se você renomear arquivos). E uma dica de ouro de engenheiro sênior: para **dados tabulares** (CSVs de clientes, vendas, crédito), bibliotecas como **Scikit-Learn** (`train_test_split`, `RandomForestClassifier`, `model.fit(X_train, y_train)`) e **XGBoost** costumam vencer redes neurais com muito menos código!",
+      "codeExample": "# Salvando e carregando pesos no PyTorch\ntorch.save(model.state_dict(), \"modelo.pt\")\nmodel.load_state_dict(torch.load(\"modelo.pt\", weights_only=True))\n\n# Pipeline clássico no Scikit-Learn:\nfrom sklearn.model_selection import train_test_split\nX_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42)",
+      "keyTakeaways": [
+        "Salve `model.state_dict()` em vez do objeto inteiro (`torch.save(model)`), e carregue com `weights_only=True`.",
+        "Sempre separe dados em Treino e Teste (`train_test_split`) ANTES de normalizar, evitando *Data Leakage*!",
+        "Scikit-Learn tem API uniforme: `.fit(X, y)` para treinar e `.predict(X_teste)` para prever."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é a forma recomendada pela documentação do PyTorch para salvar e carregar um modelo treinado?",
+      "options": [
+        "Converter os pesos para arquivo .txt manualmente",
+        "Salvar e carregar apenas o `model.state_dict()` (dicionário de pesos)",
+        "Usar `print(model)` e copiar do terminal",
+        "Salvar em variável global"
+      ],
+      "correctIndex": 1,
+      "explanation": "Salvar apenas `state_dict()` é mais portável, seguro (`weights_only=True`) e não depende da estrutura exata de pastas do pickle."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Salve os pesos de `model` no arquivo `\"pesos.pt\"` usando `torch.save(model.state_dict(), \"pesos.pt\")`:",
+      "starterCode": "import torch\n# Salve o state_dict de model:\n",
+      "requiredTokens": ["torch.save(", "model.state_dict()", "\"pesos.pt\""],
+      "sampleSolution": "torch.save(model.state_dict(), \"pesos.pt\")",
+      "hint": "Use `torch.save(model.state_dict(), \"pesos.pt\")`.",
+      "explanation": "Depois, basta instanciar a arquitetura e chamar `model.load_state_dict(torch.load(\"pesos.pt\", weights_only=True))`."
+    }
+  ]
+}

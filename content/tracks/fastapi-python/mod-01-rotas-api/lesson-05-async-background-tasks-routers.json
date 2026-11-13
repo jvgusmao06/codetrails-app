@@ -1,0 +1,40 @@
+{
+  "id": "fastapi-routers-background-05",
+  "title": "APIRouter Modular, async def vs def e BackgroundTasks",
+  "description": "Organize APIs grandes com APIRouter, entenda o event loop (async vs sync) e dispare tarefas em segundo plano sem travar o cliente.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Escalando Projetos FastAPI com APIRouter e BackgroundTasks",
+      "content": "Em APIs reais, não deixamos 50 rotas no mesmo `main.py`! Separamos por domínio usando **`APIRouter(prefix=\"/usuarios\", tags=[\"Usuários\"])`** e plugamos no app principal com `app.include_router(router)`. Além disso:\n- Use `async def` quando chamar bibliotecas assíncronas (`await httpx`, `await asyncpg`), e `def` normal quando chamar código bloqueante (o FastAPI roda `def` em uma ThreadPool para não travar o Event Loop!).\n- Use **`BackgroundTasks`** para enviar e-mails ou logs após responder `202/200` rápido ao usuário.",
+      "codeExample": "from fastapi import APIRouter, BackgroundTasks\n\nrouter = APIRouter(prefix=\"/emails\", tags=[\"Emails\"])\n\ndef enviar_email(destino: str):\n    print(f\"Enviando para {destino}\")\n\n@router.post(\"/boas-vindas\")\nasync def boas_vindas(email: str, bg: BackgroundTasks):\n    bg.add_task(enviar_email, email)\n    return {\"status\": \"agendado\"}",
+      "keyTakeaways": [
+        "NUNCA chame `time.sleep()` ou `requests.get()` dentro de `async def` — isso trava todo o servidor! Use `def` ou `await` assíncrono.",
+        "`APIRouter` + `app.include_router()` mantém o projeto modular e organizado.",
+        "`bg.add_task(fn, arg)` executa após a resposta HTTP ser enviada ao cliente."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Esta rota FastAPI congela o Event Loop inteiro do servidor para TODOS os usuários durante 5 segundos por misturar `async def` com chamada síncrona bloqueante. Clique na linha problemática:",
+      "lines": [
+        "@app.get(\"/relatorio\")",
+        "async def gerar_relatorio():",
+        "    time.sleep(5)  # Chamada síncrona bloqueante!",
+        "    return {\"ok\": True}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Na linha 3, `time.sleep(5)` bloqueia a thread única do Event Loop dentro de `async def`. O correto é usar `await asyncio.sleep(5)` ou declarar a rota como `def` normal."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie um `router = APIRouter(prefix=\"/pedidos\")` e conecte-o com `app.include_router(router)`:",
+      "starterCode": "from fastapi import APIRouter\n# Crie router e conecte em app:\n",
+      "requiredTokens": ["APIRouter(", "prefix=\"/pedidos\"", "app.include_router(router)"],
+      "sampleSolution": "router = APIRouter(prefix=\"/pedidos\")\napp.include_router(router)",
+      "hint": "Use `router = APIRouter(prefix=\"/pedidos\")` e `app.include_router(router)`.",
+      "explanation": "`APIRouter` permite dividir rotas em arquivos como `routers/pedidos.py` e `routers/usuarios.py`."
+    }
+  ]
+}

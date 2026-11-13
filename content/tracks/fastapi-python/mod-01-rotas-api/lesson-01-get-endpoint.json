@@ -1,0 +1,32 @@
+{
+  "id": "py-fastapi-01",
+  "title": "Criando seu Primeiro Endpoint GET",
+  "description": "Usando decorators @app.get para responder JSON automaticamente.",
+  "xp": 20,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "APIs Modernas em Python com FastAPI",
+      "content": "Após dominar os fundamentos do Python, você pode criar servidores web com o FastAPI. Ele usa decoradores (@app.get, @app.post) acima de funções Python comuns e converte dicionários retornados diretamente em respostas JSON.",
+      "codeExample": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get(\"/status\")\ndef ler_status():\n    return {\"online\": True}",
+      "keyTakeaways": [
+        "FastAPI() inicializa a aplicação web.",
+        "@app.get('/rota') associa uma URL HTTP GET à função logo abaixo.",
+        "Dicionários Python retornados são serializados para JSON automaticamente."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Defina um endpoint HTTP GET na rota '/usuarios' usando o decorator do FastAPI:",
+      "codeTemplate": "from fastapi import FastAPI\napp = FastAPI()\n\n@app.{{blank}}(\"/usuarios\")\ndef listar_usuarios():\n    return [\"Ada\", \"Alan\"]",
+      "blanks": [
+        {
+          "answer": "get",
+          "placeholder": "método http"
+        }
+      ],
+      "options": ["get", "route", "fetch", "select"],
+      "explanation": "O decorator @app.get() registra uma rota que responde a requisições HTTP GET."
+    }
+  ]
+}

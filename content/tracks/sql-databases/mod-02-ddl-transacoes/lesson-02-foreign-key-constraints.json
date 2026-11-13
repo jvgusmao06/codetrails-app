@@ -1,0 +1,40 @@
+{
+  "id": "sql-constraints-fk-02",
+  "title": "Integridade de Dados: PRIMARY KEY, FOREIGN KEY, UNIQUE e CHECK",
+  "description": "Proteja seu banco contra dados inválidos ou órfãos usando chaves estrangeiras, ON DELETE CASCADE e restrições CHECK.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Garantindo Consistência no Próprio Banco de Dados",
+      "content": "Nunca confie apenas na validação do frontend! O PostgreSQL/SQL garante integridade diretamente na estrutura da tabela com **Constraints**:\n- **`PRIMARY KEY`**: identifica unicamente cada linha (`NOT NULL` + `UNIQUE`).\n- **`FOREIGN KEY ... REFERENCES outra_tabela(id)`**: impede criar um pedido para um `cliente_id` que não existe.\n- **`UNIQUE`**: garante que dois usuários não cadastrem o mesmo `email`.\n- **`CHECK (preco > 0)`**: rejeita valores inválidos automaticamente.",
+      "codeExample": "CREATE TABLE pedidos (\n    id SERIAL PRIMARY KEY,\n    cliente_id INT NOT NULL REFERENCES clientes(id) ON DELETE CASCADE,\n    total NUMERIC(10,2) NOT NULL CHECK (total >= 0),\n    codigo VARCHAR(20) UNIQUE\n);",
+      "keyTakeaways": [
+        "`REFERENCES tabela(id)` cria uma chave estrangeira impedindo registros órfãos.",
+        "`ON DELETE CASCADE` apaga os pedidos filhos automaticamente se o cliente pai for excluído (use com cautela!).",
+        "`UNIQUE` cria automaticamente um índice único no PostgreSQL, acelerando buscas por aquela coluna."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a definição da tabela `matriculas` garantindo chave primária, email único e idade mínima de 18 anos:",
+      "codeTemplate": "CREATE TABLE alunos (\n    id SERIAL {{blank}} KEY,\n    email VARCHAR(120) {{blank}} NOT NULL,\n    idade INT {{blank}} (idade >= 18)\n);",
+      "blanks": [
+        { "answer": "PRIMARY", "placeholder": "primária" },
+        { "answer": "UNIQUE", "placeholder": "único" },
+        { "answer": "CHECK", "placeholder": "validação" }
+      ],
+      "options": ["PRIMARY", "UNIQUE", "CHECK", "FOREIGN", "DEFAULT"],
+      "explanation": "`PRIMARY KEY` identifica a linha, `UNIQUE` impede e-mails duplicados e `CHECK` valida regras numéricas/lógicas."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva um `CREATE TABLE itens` com `id SERIAL PRIMARY KEY`, `produto_id INT REFERENCES produtos(id)` e `qtd INT CHECK (qtd > 0)`: ",
+      "starterCode": "-- Crie a tabela itens com FOREIGN KEY e CHECK:\n",
+      "requiredTokens": ["CREATE TABLE", "itens", "PRIMARY KEY", "REFERENCES", "produtos(id)", "CHECK"],
+      "sampleSolution": "CREATE TABLE itens (\n    id SERIAL PRIMARY KEY,\n    produto_id INT REFERENCES produtos(id),\n    qtd INT CHECK (qtd > 0)\n);",
+      "hint": "Defina `CREATE TABLE itens (id SERIAL PRIMARY KEY, produto_id INT REFERENCES produtos(id), qtd INT CHECK (qtd > 0));`.",
+      "explanation": "Modelar constraints no DDL evita dados corrompidos mesmo que múltiplos serviços escrevam no mesmo banco."
+    }
+  ]
+}

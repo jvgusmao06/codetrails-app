@@ -1,0 +1,40 @@
+{
+  "id": "rust-hashmap-closures-iflet-03",
+  "title": "HashMap, Closures (|x|), if let e Operador ? (Propagação de Erros)",
+  "description": "Use std::collections::HashMap, escreva closures concisas, simplifique matches com if let e propague Result com ?.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Idiomas Essenciais do Rust: Closures, if let e '?'",
+      "content": "Para escrever Rust limpo sem `match` gigante o tempo todo, usamos:\n1. **`if let Some(x) = opt { ... }`**: trata apenas o caso de sucesso de `Option` ou `Result`.\n2. **Operador `?`**: dentro de uma função que retorna `Result`, colocar `?` ao final de uma chamada (`ler_arquivo()?`) retorna o `Err` automaticamente para quem chamou, ou extrai o valor `Ok`!\n3. **Closures (`|x| x + 1`)**: funções anônimas usadas em `.map(|x| x * 2)` e `.filter(...)`.\n4. **`HashMap::new()`**: dicionário $O(1)$ com `.insert(k, v)` e `.entry(k).or_insert(0)`.",
+      "codeExample": "use std::collections::HashMap;\n\nlet mut pontos = HashMap::new();\npontos.insert(\"Ana\", 50);\n\nif let Some(p) = pontos.get(\"Ana\") {\n    println!(\"Pontos: {}\", p);\n}\n\nlet dobro = |x: i32| x * 2;",
+      "keyTakeaways": [
+        "`if let` é um atalho legível quando você só se importa com uma variante de um `enum`/`Option`.",
+        "O operador `?` elimina blocos `match` repetitivos ao encadear funções que retornam `Result` ou `Option`.",
+        "Closures em Rust usam barras verticais `|param| corpo` em vez de parênteses e seta."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Em uma função Rust que retorna `Result<String, io::Error>`, o que faz o operador `?` em `let texto = fs::read_to_string(\"a.txt\")?;`?",
+      "options": [
+        "Ignora qualquer erro e retorna uma string vazia",
+        "Se for Ok(s), guarda s em texto; se for Err(e), retorna imediatamente Err(e) da função atual",
+        "Converte Result em Option",
+        "Encerra o programa com panic!"
+      ],
+      "correctIndex": 1,
+      "explanation": "O operador `?` desempacota `Ok` ou faz retorno antecipado (`early return`) do `Err`, deixando o código limpo e seguro."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie uma closure `let triplo = |n: i32| n * 3;` e use `if let Some(v) = talvez { println!(\"{}\", triplo(v)); }`:",
+      "starterCode": "// Crie a closure triplo e o bloco if let Some(v):\n",
+      "requiredTokens": ["let", "triplo", "|n: i32|", "n * 3", "if let Some(v)", "println!"],
+      "sampleSolution": "let triplo = |n: i32| n * 3;\nif let Some(v) = talvez {\n    println!(\"{}\", triplo(v));\n}",
+      "hint": "Defina `let triplo = |n: i32| n * 3;` e depois `if let Some(v) = talvez { println!(\"{}\", triplo(v)); }`.",
+      "explanation": "Closures combinadas com `if let` tornam o código Rust conciso sem perder segurança de tipos."
+    }
+  ]
+}

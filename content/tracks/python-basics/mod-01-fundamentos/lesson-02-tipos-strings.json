@@ -1,0 +1,66 @@
+{
+  "id": "py-vars-02",
+  "title": "02. Tipos Primitivos e F-Strings",
+  "description": "Interpolando variáveis dentro de textos com elegância.",
+  "xp": 15,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Interpolação com F-Strings e Tipos Primitivos",
+      "content": "Concatenar textos com o sinal '+' pode ficar confuso rapidamente. No Python 3.6+, usamos as f-strings: basta colocar a letra f antes das aspas e inserir qualquer variável ou expressão dentro de chaves { }. Além disso, o Python diferencia números inteiros (int) de números decimais (float).",
+      "codeExample": "nome = \"Ada\"\nxp = 100\ntaxa = 3.14  # tipo float\n\nprint(f\"Usuária {nome} possui {xp} pontos!\")",
+      "keyTakeaways": [
+        "Coloque o prefixo f antes das aspas para ativar uma f-string.",
+        "Use {variavel} dentro do texto para injetar seu valor.",
+        "Números inteiros são 'int' e números com ponto decimal são 'float'."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "O que o prefixo 'f' antes das aspas faz em Python?",
+      "codeSnippet": "nome = \"Ada\"\nprint(f\"Olá, {nome}!\")",
+      "options": [
+        "Converte o texto em um arquivo (file)",
+        "Cria uma f-string que permite interpolar variáveis com { }",
+        "Formata o número como ponto flutuante (float)",
+        "Força a string a ser imutável"
+      ],
+      "correctIndex": 1,
+      "explanation": "As f-strings (formatted string literals) avaliam expressões dentro de chaves {} diretamente no texto."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Use uma f-string para exibir a variável 'xp' dentro da frase:",
+      "codeTemplate": "xp = 100\nprint({{blank}}\"Você ganhou {{{blank}}} pontos!\")",
+      "blanks": [
+        {
+          "answer": "f",
+          "placeholder": "prefixo"
+        },
+        {
+          "answer": "xp",
+          "placeholder": "variável"
+        }
+      ],
+      "options": [
+        "f",
+        "xp",
+        "s",
+        "$xp"
+      ],
+      "explanation": "Colocamos a letra 'f' antes das aspas e o nome da variável 'xp' dentro das chaves."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é o resultado da expressão type(3.14) em Python?",
+      "options": [
+        "int",
+        "float",
+        "str",
+        "number"
+      ],
+      "correctIndex": 1,
+      "explanation": "Números com casas decimais em Python são representados pelo tipo 'float'."
+    }
+  ]
+}

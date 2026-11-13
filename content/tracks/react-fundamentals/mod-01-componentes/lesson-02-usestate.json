@@ -1,0 +1,43 @@
+{
+  "id": "react-state-02",
+  "title": "Estado Reativo com useState",
+  "description": "Atualizando a interface quando os dados mudam.",
+  "xp": 20,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Reatividade com o Hook useState",
+      "content": "Variáveis comuns não atualizam a tela quando mudam. Para que o React re-renderize a interface automaticamente após uma interação do usuário, guardamos o valor no hook useState(valorInicial).",
+      "codeExample": "const [contador, setContador] = useState(0);\n\n// Ao chamar setContador(contador + 1), o componente re-renderiza!",
+      "keyTakeaways": [
+        "useState retorna uma tupla: [valorAtual, funcaoAtualizadora].",
+        "Chamar a função setter agenda uma nova renderização da UI."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Inicialize um estado 'contador' começando em 0 usando o hook do React:",
+      "codeTemplate": "const [contador, setContador] = {{blank}}(0);",
+      "blanks": [
+        {
+          "answer": "useState",
+          "placeholder": "hook"
+        }
+      ],
+      "options": ["useState", "useEffect", "useRef", "createState"],
+      "explanation": "O hook useState retorna um par: o valor atual do estado e a função para atualizá-lo."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "O que acontece quando chamamos a função atualizadora do useState (ex: setContador(1))?",
+      "options": [
+        "A página inteira recarrega no navegador",
+        "O React agenda uma nova renderização do componente com o novo valor",
+        "A variável muda mas a tela continua igual",
+        "Cria um banco de dados local automaticamente"
+      ],
+      "correctIndex": 1,
+      "explanation": "Chamar a função setter notifica o React que o estado mudou, disparando a re-renderização do componente."
+    }
+  ]
+}

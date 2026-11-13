@@ -1,0 +1,19 @@
+{
+  "id": "spring-security-jwt",
+  "title": "Spring Security & JWT",
+  "description": "Proteja APIs Spring Boot com SecurityFilterChain, autenticação Stateless, BCryptPasswordEncoder e tokens JWT.",
+  "category": "framework",
+  "languageId": "java-basics",
+  "prerequisites": ["java-basics", "spring-boot-java"],
+  "color": "#6DB33F",
+  "icon": "🔐",
+  "author": "Comunidade CodeTrilhas",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: SecurityFilterChain, Stateless e BCrypt",
+      "description": "Configure rotas públicas/privadas com HttpSecurity e criptografe senhas com BCrypt.",
+      "lessons": ["lesson-01-filter-chain-jwt"]
+    }
+  ]
+}

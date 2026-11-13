@@ -1,0 +1,31 @@
+{
+  "id": "cpp-stl-01",
+  "title": "Arrays Dinâmicos com std::vector",
+  "description": "Inserindo elementos em tempo de execução com push_back.",
+  "xp": 20,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Por que usar std::vector da STL?",
+      "content": "Em C/C++ puro, arrays estáticos têm tamanho fixo. A biblioteca padrão (STL) oferece o template std::vector<T>, que gerencia memória contígua automaticamente e cresce conforme inserimos itens com .push_back().",
+      "codeExample": "#include <vector>\n\nstd::vector<int> notas = {10, 20};\nnotas.push_back(30); // Agora possui 3 elementos",
+      "keyTakeaways": [
+        "std::vector<Tipo> cria um array dinâmico fortemente tipado.",
+        ".push_back(valor) adiciona um elemento ao final redimensionando se necessário."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Adicione o número 50 ao final do std::vector 'dados':",
+      "codeTemplate": "std::vector<int> dados = {10, 20};\ndados.{{blank}}(50);",
+      "blanks": [
+        {
+          "answer": "push_back",
+          "placeholder": "método"
+        }
+      ],
+      "options": ["push_back", "append", "add", "insert_end"],
+      "explanation": "Nos containers sequenciais da STL do C++, o método padrão para inserir ao final é push_back()."
+    }
+  ]
+}

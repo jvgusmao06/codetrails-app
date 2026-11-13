@@ -1,0 +1,43 @@
+{
+  "id": "go-sintaxe-01",
+  "title": "Sintaxe Base: Slices, Maps, For e Defer",
+  "description": "Domine as estruturas essenciais do Go: o único loop for, slices dinâmicos, maps chave-valor e limpeza com defer.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "O Minimalismo Sintático do Go",
+      "content": "Go foi projetado para ter apenas 25 palavras-chave. Não existe while nem do-while: tudo é feito com for. Para coleções dinâmicas usamos slices ([]T) criados ou expandidos com append(), e para tabelas hash usamos map[Chave]Valor. Já a instrução defer agenda uma chamada (como fechar um arquivo) para rodar automaticamente no fim da função.",
+      "codeExample": "package main\nimport \"fmt\"\n\nfunc processar() {\n    defer fmt.Println(\"3. Fim da função (defer)\")\n\n    // Slice dinâmico e Map chave-valor\n    nums := []int{10, 20}\n    nums = append(nums, 30)\n    idades := map[string]int{\"Ana\": 25}\n\n    // O único loop do Go (com range)\n    for idx, val := range nums {\n        fmt.Println(idx, val, idades[\"Ana\"])\n    }\n}",
+      "keyTakeaways": [
+        "Go possui apenas a palavra-chave 'for' para todos os tipos de laços (clássico, estilo while e range).",
+        "Slices ([]int) são visões dinâmicas sobre arrays; use 'nums = append(nums, valor)' para adicionar itens.",
+        "'defer' empilha a execução de uma chamada para o exato momento antes de a função retornar."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código Go para criar um slice de strings, adicionar um item com append e iterar sobre ele usando range:",
+      "codeTemplate": "langs := {{blank}}{\"Go\", \"Rust\"}\nlangs = {{blank}}(langs, \"Python\")\nfor _, nome := {{blank}} langs {\n    fmt.Println(nome)\n}",
+      "blanks": [
+        { "answer": "[]string", "placeholder": "tipo slice" },
+        { "answer": "append", "placeholder": "função" },
+        { "answer": "range", "placeholder": "iterador" }
+      ],
+      "options": ["[]string", "append", "range", "push", "in", "string[]"],
+      "explanation": "Em Go o tipo de um slice precede o nome do elemento ([]string), append() retorna o slice atualizado e range itera retornando índice e valor."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene as linhas para abrir um arquivo em Go, verificar o erro imediatamente e agendar seu fechamento com defer:",
+      "blocks": [
+        "f, err := os.Open(\"config.json\")",
+        "if err != nil { return err }",
+        "defer f.Close()",
+        " usarArquivo(f)"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "Em Go, sempre verificamos se err != nil logo após abrir o recurso e em seguida declaramos 'defer f.Close()' para garantir que o arquivo será fechado."
+    }
+  ]
+}

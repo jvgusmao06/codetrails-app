@@ -1,0 +1,44 @@
+{
+  "id": "next-routes-01",
+  "title": "Roteamento Baseado em Pastas",
+  "description": "Criando páginas e segmentos dinâmicos no diretório app/.",
+  "xp": 15,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Roteamento por Pastas e Parâmetros Assíncronos",
+      "content": "No App Router do Next.js, cada pasta dentro de src/app/ define um segmento da URL, e o arquivo page.tsx torna aquela rota acessível ao navegador. Em rotas dinâmicas como [id]/page.tsx, a propriedade 'params' é uma Promise e deve ser lida com 'await'.",
+      "codeExample": "// src/app/tracks/[id]/page.tsx\nexport default async function TrackPage({ params }) {\n  const { id } = await params;\n  return <h1>Trilha: {id}</h1>;\n}",
+      "keyTakeaways": [
+        "page.tsx expõe publicamente uma rota no App Router.",
+        "Pastas entre colchetes como [id] criam rotas dinâmicas.",
+        "No Next.js moderno, params é resolvido de forma assíncrona com await."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "No App Router do Next.js, qual nome de arquivo torna uma pasta publicamente acessível como uma rota de página?",
+      "options": [
+        "index.tsx",
+        "route.config.ts",
+        "page.tsx",
+        "view.tsx"
+      ],
+      "correctIndex": 2,
+      "explanation": "No App Router, o arquivo especial page.tsx define a interface principal de um segmento de rota."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Em versões modernas do Next.js (15/16), 'params' em páginas dinâmicas é assíncrono. Complete a leitura do parâmetro:",
+      "codeTemplate": "export default async function Page({ params }) {\n  const { id } = {{blank}} params;\n  return <div>Trilha {id}</div>;\n}",
+      "blanks": [
+        {
+          "answer": "await",
+          "placeholder": "assíncrono"
+        }
+      ],
+      "options": ["await", "use", "yield", "sync"],
+      "explanation": "Em Server Components assíncronos do Next.js moderno, params é uma Promise e deve ser resolvida com await."
+    }
+  ]
+}

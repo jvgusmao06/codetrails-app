@@ -41,6 +41,7 @@ export default async function LessonPage({
       <LessonPlayer
         trackId={data.track.id}
         trackTitle={data.track.title}
+        languageId={data.track.languageId ?? data.track.id}
         moduleTitle={data.moduleTitle}
         lesson={data.lesson}
       />

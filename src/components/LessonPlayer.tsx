@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import type { Lesson } from "@/lib/schema";
 import { CodeHighlight } from "./CodeHighlight";
+import { CodeEditor } from "./CodeEditor";
 import { ConfettiBurst } from "./ConfettiBurst";
 import {
   completeLessonProgress,
@@ -31,11 +32,13 @@ import {
 export function LessonPlayer({
   trackId,
   trackTitle,
+  languageId,
   moduleTitle,
   lesson,
 }: {
   trackId: string;
   trackTitle: string;
+  languageId?: string;
   moduleTitle: string;
   lesson: Lesson;
 }) {
@@ -777,26 +780,12 @@ export function LessonPlayer({
                 </div>
               )}
 
-              <textarea
-                rows={7}
-                disabled={status !== "idle"}
+              <CodeEditor
                 value={writtenCode}
-                onChange={(e) => setWrittenCode(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Tab") {
-                    e.preventDefault();
-                    const start = e.currentTarget.selectionStart;
-                    const end = e.currentTarget.selectionEnd;
-                    const next =
-                      writtenCode.slice(0, start) +
-                      "  " +
-                      writtenCode.slice(end);
-                    setWrittenCode(next);
-                  }
-                }}
+                onChange={setWrittenCode}
+                languageId={languageId}
+                disabled={status !== "idle"}
                 placeholder="// Escreva seu código do zero aqui..."
-                spellCheck={false}
-                className="w-full p-4 bg-slate-950 font-mono text-xs sm:text-sm text-emerald-300 placeholder:text-slate-600 focus:outline-none leading-relaxed resize-y"
               />
 
               <div className="px-4 py-2 bg-slate-900/80 border-t border-slate-800/80 flex items-center justify-between flex-wrap gap-2">

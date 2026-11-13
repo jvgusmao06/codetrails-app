@@ -16,6 +16,7 @@ import { useUserProgress } from "@/lib/progress";
 import { localizeTracks } from "@/lib/track-i18n";
 import type { Locale } from "@/lib/i18n";
 import { isTrackSatisfied } from "./SkillTree";
+import { ReminderCard } from "./ReminderCard";
 
 const STATS_COPY: Record<
   Locale,
@@ -398,6 +399,9 @@ export function StatsDashboard({ tracks }: { tracks: LoadedTrack[] }) {
           </p>
         </div>
       </div>
+
+      {/* Daily Streak Reminder */}
+      <ReminderCard />
 
       {/* Progress by Base Language / Concept */}
       <div className="rounded-2xl border border-slate-800/90 bg-slate-900/65 p-5 space-y-4">

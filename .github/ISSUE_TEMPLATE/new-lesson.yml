@@ -1,0 +1,32 @@
+name: Sugerir Nova Lição ou Trilha
+description: Proponha uma nova lição, desafio ou trilha de aprendizado para o CodeTrails (sem precisar escrever JSON).
+title: "[Conteúdo]: "
+labels: ["enhancement", "good first issue"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Tipo de sugestão
+      options:
+        - Nova lição em trilha existente
+        - Nova trilha (linguagem, framework ou biblioteca)
+        - Melhoria em lição existente
+    validations:
+      required: true
+
+  - type: input
+    id: track
+    attributes:
+      label: Trilha / Tecnologia
+      placeholder: "Ex: python-basics, fastapi-python, sql-databases"
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: O que deveria ser ensinado?
+      description: Descreva o conceito, exemplos de código ou ideias de desafios (múltipla escolha, preencher lacunas, encontrar o bug, escrever código).
+      placeholder: "Ex: Lição sobre Joins em SQL (INNER JOIN vs LEFT JOIN) com 1 exemplo prático e 2 desafios."
+    validations:
+      required: true

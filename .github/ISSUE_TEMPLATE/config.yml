@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Criar lição visualmente no app
+    url: https://github.com/jvgusmao06/codetrails-app/blob/main/CONTRIBUTING.md
+    about: Leia o guia rápido de contribuição e validação de trilhas.

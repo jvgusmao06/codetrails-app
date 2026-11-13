@@ -20,6 +20,7 @@ import {
 import type { LoadedTrack } from "@/lib/schema";
 import { useUserProgress } from "@/lib/progress";
 import { localizeTracks } from "@/lib/track-i18n";
+import { getWhyLearn } from "@/lib/track-why";
 
 export function isTrackSatisfied(
   track: LoadedTrack,
@@ -211,6 +212,14 @@ export function SkillTree({ tracks }: { tracks: LoadedTrack[] }) {
               <p className="text-sm text-zinc-400 mt-1 max-w-2xl">
                 {currentTrack.description}
               </p>
+              {getWhyLearn(currentTrack.id) && (
+                <p className="text-xs text-emerald-300/90 mt-2 max-w-2xl bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-3 py-1.5">
+                  <span className="font-mono font-semibold text-emerald-400">
+                    Por que aprender:{" "}
+                  </span>
+                  {getWhyLearn(currentTrack.id)}
+                </p>
+              )}
             </div>
           </div>
 

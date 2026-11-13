@@ -17,6 +17,7 @@ import {
 import type { LoadedTrack } from "@/lib/schema";
 import { useUserProgress } from "@/lib/progress";
 import { localizeTracks } from "@/lib/track-i18n";
+import { getWhyLearn } from "@/lib/track-why";
 import { isTrackSatisfied } from "./SkillTree";
 
 export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
@@ -184,6 +185,14 @@ export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
                     <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">
                       {lang.description}
                     </p>
+                    {getWhyLearn(lang.id) && (
+                      <p className="text-xs text-emerald-300/90 mt-1.5">
+                        <span className="font-mono font-semibold text-emerald-400">
+                          Por que aprender:{" "}
+                        </span>
+                        {getWhyLearn(lang.id)}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -317,6 +326,15 @@ export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
                             <p className="text-xs text-zinc-400 mt-2.5 leading-relaxed">
                               {track.description}
                             </p>
+
+                            {getWhyLearn(track.id) && (
+                              <p className="text-[11px] text-emerald-300/90 mt-2 leading-relaxed bg-emerald-500/5 border border-emerald-500/20 rounded-lg px-2.5 py-1.5">
+                                <span className="font-mono font-semibold text-emerald-400">
+                                  Por que aprender:{" "}
+                                </span>
+                                {getWhyLearn(track.id)}
+                              </p>
+                            )}
 
                             {!isUnlocked && (
                               <div className="mt-3 p-2.5 rounded-lg bg-amber-950/20 border border-amber-500/25 flex items-center justify-between gap-2">

@@ -7,7 +7,7 @@
   "prerequisites": ["python-basics"],
   "color": "#4DABCF",
   "icon": "🔢",
-  "author": "Comunidade CodeTrilhas",
+  "author": "Comunidade CodeTrails",
   "modules": [
     {
       "id": "mod-01-arrays-vetorizacao",

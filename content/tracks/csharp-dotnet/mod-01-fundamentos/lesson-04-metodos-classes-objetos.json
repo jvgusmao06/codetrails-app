@@ -1,0 +1,40 @@
+{
+  "id": "csharp-classes-props-04",
+  "title": "Classes, Construtores, Properties ({ get; set; init; }) e Modificadores",
+  "description": "Encapsule dados de forma elegante em C# com Auto-Properties, init-only, readonly e static.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Properties vs Getters/Setters Verbosos",
+      "content": "Diferente de ter que escrever `getNome()` e `setNome()` na mão, o C# possui **Properties** nativas (`public string Nome { get; set; }`)! Se quiser que uma propriedade só possa ser definida na criação do objeto (imutabilidade!), use **`{ get; init; }`**, e marque campos obrigatórios com **`required`**. Também usamos modificadores importantes como `private`, `readonly` e `static`.",
+      "codeExample": "public class Produto {\n    public required string Nome { get; init; }\n    public decimal Preco { get; private set; }\n\n    public void AplicarDesconto(decimal valor) {\n        if (valor > 0) Preco -= valor;\n    }\n}\n\nvar p = new Produto { Nome = \"Monitor\" };",
+      "keyTakeaways": [
+        "`{ get; init; }` permite inicializar na criação `new Foo { Id = 1 }` e impede alterações depois!",
+        "`{ get; private set; }` permite ler de fora, mas só a própria classe pode alterar o valor.",
+        "`required` obriga o chamador a preencher a propriedade ao instanciar com `new`."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual combinação de acessores em uma Property C# permite definir o valor **apenas** ao construir o objeto (`new Usuario { Email = \"...\" }`), tornando-o imutável depois?",
+      "options": [
+        "{ get; set; }",
+        "{ get; init; }",
+        "{ set; }",
+        "{ var; const; }"
+      ],
+      "correctIndex": 1,
+      "explanation": "Introduzido no C# 9, `init` permite atribuir durante a inicialização do objeto e bloqueia modificações posteriores."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Defina uma classe `public class Conta` com uma property `public string Titular { get; init; }` e `public decimal Saldo { get; private set; }`:",
+      "starterCode": "// Crie a classe Conta com init e private set:\n",
+      "requiredTokens": ["public class Conta", "string Titular", "{ get; init; }", "decimal Saldo", "{ get; private set; }"],
+      "sampleSolution": "public class Conta {\n    public string Titular { get; init; } = \"\";\n    public decimal Saldo { get; private set; }\n}",
+      "hint": "Declare `public class Conta` com `public string Titular { get; init; }` e `public decimal Saldo { get; private set; }`.",
+      "explanation": "Encapsular `Saldo` com `private set` garante que ninguém altere o saldo sem passar pelos métodos da conta (como `Depositar`)."
+    }
+  ]
+}

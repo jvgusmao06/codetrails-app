@@ -1,0 +1,23 @@
+{
+  "id": "xunit-csharp",
+  "title": "xUnit.net",
+  "description": "Escreva testes unitários modernos em .NET com [Fact], [Theory], [InlineData] e asserções limpas.",
+  "category": "library",
+  "languageId": "csharp-dotnet",
+  "prerequisites": [
+    "csharp-dotnet"
+  ],
+  "color": "#512BD4",
+  "icon": "🧪",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Testes Unitários com xUnit",
+      "description": "Domine [Fact], [Theory] com [InlineData] e as principais asserções de xUnit.",
+      "lessons": [
+        "lesson-01-fact-theory-assert"
+      ]
+    }
+  ]
+}

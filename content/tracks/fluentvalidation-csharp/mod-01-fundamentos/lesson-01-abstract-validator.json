@@ -1,0 +1,68 @@
+{
+  "id": "lesson-01-abstract-validator",
+  "title": "AbstractValidator e RuleFor",
+  "description": "Crie validadores desacoplados com RuleFor, .NotEmpty(), .EmailAddress() e mensagens customizadas.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Validação fluente fora das entidades",
+      "content": "Em vez de poluir suas classes com Data Annotations (`[Required]`, `[StringLength]`), o **FluentValidation** coloca as regras em classes dedicadas que herdam de `AbstractValidator<T>`.\n\nNo construtor do validador:\n- `RuleFor(x => x.Propriedade)` seleciona o campo via expressão lambda.\n- Encadeie validadores como `.NotEmpty()`, `.EmailAddress()`, `.MinimumLength(8)` e `.WithMessage(\"...\")`.\n- Para validar, chame `validator.Validate(dto)` (retorna `ValidationResult` com `IsValid` e `Errors`).",
+      "codeExample": "using FluentValidation;\n\npublic record CriarUsuarioDto(string Nome, string Email);\n\npublic class CriarUsuarioValidator : AbstractValidator<CriarUsuarioDto>\n{\n    public CriarUsuarioValidator()\n    {\n        RuleFor(x => x.Nome)\n            .NotEmpty().WithMessage(\"Nome é obrigatório\")\n            .MinimumLength(3);\n\n        RuleFor(x => x.Email)\n            .NotEmpty()\n            .EmailAddress();\n    }\n}"
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Onde as regras de validação são definidas ao criar uma classe com FluentValidation?",
+      "options": [
+        "No construtor de uma classe que herda de AbstractValidator<T>",
+        "Como atributos [Required] nas propriedades do DTO",
+        "Dentro do método Validate(T instance) sobrescrito manualmente",
+        "Em um arquivo appsettings.json"
+      ],
+      "correctIndex": 0,
+      "explanation": "Você cria uma classe herdando de AbstractValidator<T> e registra as chamadas RuleFor(...) dentro do construtor dela."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o validador para exigir que Preco seja maior que zero e Titulo não seja vazio:",
+      "codeTemplate": "public class ProdutoValidator : {{blank}}<ProdutoDto>\n{\n    public ProdutoValidator()\n    {\n        {{blank}}(x => x.Titulo).NotEmpty();\n        RuleFor(x => x.Preco).{{blank}}(0);\n    }\n}",
+      "blanks": [
+        { "answer": "AbstractValidator" },
+        { "answer": "RuleFor" },
+        { "answer": "GreaterThan" }
+      ],
+      "options": ["AbstractValidator", "ValidatorBase", "RuleFor", "ValidateFor", "GreaterThan", "MinValue"],
+      "explanation": "AbstractValidator<T> é a classe base, RuleFor seleciona a propriedade e GreaterThan(0) garante valor positivo."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os trechos para criar e executar um validador FluentValidation:",
+      "blocks": [
+        "var result = new LoginValidator().Validate(dto);",
+        "    public LoginValidator()",
+        "public class LoginValidator : AbstractValidator<LoginDto>",
+        "        RuleFor(x => x.Email).NotEmpty().EmailAddress();",
+        "    {",
+        "    }",
+        "{",
+        "}"
+      ],
+      "correctOrder": [2, 6, 1, 4, 3, 5, 7, 0],
+      "explanation": "Primeiro define-se a classe herdando de AbstractValidator<T> com o construtor configurando RuleFor, depois instancia-se e chama-se Validate(dto)."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Crie a classe PedidoValidator herdando de AbstractValidator<PedidoDto> garantindo que ClienteNome não seja vazio (.NotEmpty()) e Valor seja maior que 0 (.GreaterThan(0)).",
+      "starterCode": "using FluentValidation;\n\npublic record PedidoDto(string ClienteNome, decimal Valor);\n\n// Escreva PedidoValidator aqui",
+      "requiredTokens": [
+        "AbstractValidator<PedidoDto>",
+        "RuleFor",
+        "NotEmpty()",
+        "GreaterThan(0)"
+      ],
+      "sampleSolution": "using FluentValidation;\n\npublic record PedidoDto(string ClienteNome, decimal Valor);\n\npublic class PedidoValidator : AbstractValidator<PedidoDto>\n{\n    public PedidoValidator()\n    {\n        RuleFor(x => x.ClienteNome).NotEmpty();\n        RuleFor(x => x.Valor).GreaterThan(0);\n    }\n}",
+      "hint": "Herde de AbstractValidator<PedidoDto> e, no construtor público, use RuleFor(x => x.ClienteNome).NotEmpty() e RuleFor(x => x.Valor).GreaterThan(0).",
+      "explanation": "Validadores FluentValidation são fáceis de testar isoladamente e integram naturalmente com pipelines do ASP.NET Core ou MediatR."
+    }
+  ]
+}

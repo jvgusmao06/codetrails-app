@@ -1,0 +1,19 @@
+{
+  "id": "pydantic-python",
+  "title": "Pydantic v2 (Validação & Schemas)",
+  "description": "Valide dados em velocidade Rust com Pydantic v2: BaseModel, Field, @field_validator, model_validate e model_dump.",
+  "category": "library",
+  "languageId": "python-basics",
+  "prerequisites": ["python-basics"],
+  "color": "#E92063",
+  "icon": "🛡️",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: BaseModel, @field_validator e model_dump",
+      "description": "Garanta contratos de dados seguros em APIs, configs e agentes de IA.",
+      "lessons": ["lesson-01-basemodel-validators"]
+    }
+  ]
+}

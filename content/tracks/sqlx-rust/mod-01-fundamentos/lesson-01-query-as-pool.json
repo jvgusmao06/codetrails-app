@@ -1,0 +1,40 @@
+{
+  "id": "sqlx-rust-01",
+  "title": "SQLx: Validação SQL em Compilação com query_as! e PgPool",
+  "description": "Conecte Axum/Tokio ao PostgreSQL com pool de conexões assíncrono e checagem de tipos direto no schema.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "SQL Checado pelo Compilador Rust com SQLx",
+      "content": "O **SQLx** não é um ORM pesado: você escreve SQL real, e a macro **`sqlx::query_as!(MinhaStruct, \"SELECT ... WHERE id = $1\", id)`** se conecta ao PostgreSQL (ou usa metadados offline `cargo sqlx prepare`) **durante a compilação**! Se você digitar o nome de uma coluna errado no SQL, o código **nem compila** — e os placeholders `$1` evitam SQL Injection!",
+      "codeExample": "#[derive(sqlx::FromRow)]\nstruct User { id: i32, nome: String }\n\nlet user = sqlx::query_as!(\n    User,\n    \"SELECT id, nome FROM usuarios WHERE id = $1\",\n    user_id\n)\n.fetch_one(&pool)\n.await?;",
+      "keyTakeaways": [
+        "`.fetch_one(&pool)` retorna exatamente 1 linha (erro se vazio); `.fetch_optional(&pool)` retorna `Option<T>`; `.fetch_all(&pool)` retorna `Vec<T>`.",
+        "Use sempre bind parameters (`$1`, `$2` no Postgres) — nunca concatene strings com `format!(\"WHERE id = {}\", id)`!",
+        "Compartilhe `PgPool` como estado no Axum usando `State(pool)` (ele já usa `Arc` internamente)."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual método do SQLx deve ser usado quando uma busca `SELECT ... WHERE email = $1` pode legitimamente não encontrar nenhum registro, retornando `Option<Usuario>`?",
+      "options": [
+        ".fetch_one(&pool)",
+        ".fetch_optional(&pool)",
+        ".execute(&pool)",
+        ".fetch_unwrap(&pool)"
+      ],
+      "correctIndex": 1,
+      "explanation": "`.fetch_optional` retorna `Result<Option<T>, sqlx::Error>`, devolvendo `Ok(None)` quando não há resultados em vez de erro `RowNotFound`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Use `sqlx::query_as!(Produto, \"SELECT id, nome FROM produtos WHERE id = $1\", id)` encadeado com `.fetch_optional(&pool).await?`:",
+      "starterCode": "// Busque Produto de forma segura com sqlx::query_as!:\n",
+      "requiredTokens": ["sqlx::query_as!", "Produto", "$1", ".fetch_optional(&pool)", ".await?"],
+      "sampleSolution": "let prod = sqlx::query_as!(\n    Produto,\n    \"SELECT id, nome FROM produtos WHERE id = $1\",\n    id\n).fetch_optional(&pool).await?;",
+      "hint": "Passe `Produto`, a query SQL com `$1`, e `id` para `sqlx::query_as!`, finalizando com `.fetch_optional(&pool).await?`.",
+      "explanation": "O compilador verifica se `id` e `nome` existem na tabela `produtos` e casam com os tipos da struct `Produto`."
+    }
+  ]
+}

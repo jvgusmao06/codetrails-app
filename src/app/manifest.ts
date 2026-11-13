@@ -4,8 +4,8 @@ export const dynamic = "force-static";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "CodeTrilhas — Aprendizado Modular de Programação",
-    short_name: "CodeTrilhas",
+    name: "CodeTrails — Aprendizado Modular de Programação",
+    short_name: "CodeTrails",
     description:
       "Plataforma open-source de trilhas interativas de linguagens, bibliotecas e frameworks criadas pela comunidade.",
     start_url: "/",

@@ -7,7 +7,7 @@
   "prerequisites": ["python-basics"],
   "color": "#A3E635",
   "icon": "🧪",
-  "author": "Comunidade CodeTrilhas",
+  "author": "Comunidade CodeTrails",
   "modules": [
     {
       "id": "mod-01-assertions-fixtures",

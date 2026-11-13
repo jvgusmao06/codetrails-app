@@ -1,0 +1,19 @@
+{
+  "id": "clap-cli-rust",
+  "title": "Clap (CLIs Tipadas em Rust)",
+  "description": "Construa ferramentas de linha de comando profissionais com --help automático, flags tipadas e subcomandos usando #[derive(Parser)].",
+  "category": "library",
+  "languageId": "rust-systems",
+  "prerequisites": ["rust-systems"],
+  "color": "#10B981",
+  "icon": "💻",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: Parser Derive, Flags e Subcomandos",
+      "description": "Transforme structs e enums em CLIs completas em poucas linhas.",
+      "lessons": ["lesson-01-parser-subcommands"]
+    }
+  ]
+}

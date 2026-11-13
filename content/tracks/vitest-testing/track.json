@@ -7,7 +7,7 @@
   "prerequisites": ["typescript-javascript"],
   "color": "#FACC15",
   "icon": "⚡",
-  "author": "Comunidade CodeTrilhas",
+  "author": "Comunidade CodeTrails",
   "modules": [
     {
       "id": "mod-01-vitest-mocks",

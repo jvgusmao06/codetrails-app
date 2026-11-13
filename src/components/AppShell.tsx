@@ -51,7 +51,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </span>
           <div>
             <span className="text-lg font-bold tracking-tight text-white block leading-none">
-              CodeTrilhas
+              CodeTrails
             </span>
             <span className="font-mono text-[10px] uppercase tracking-widest text-teal-400 mt-1 block">
               open-source::tracks
@@ -152,7 +152,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 {">_"}
               </span>
               <span className="font-bold text-base tracking-tight text-white">
-                CodeTrilhas
+                CodeTrails
               </span>
             </Link>
 

@@ -1,0 +1,63 @@
+{
+  "id": "lesson-01-assert-vs-require",
+  "title": "assert vs require no Testify",
+  "description": "Saiba quando usar require.NoError para abortar o teste e assert.Equal para múltiplas verificações.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Asserções limpas além do pacote testing",
+      "content": "Na biblioteca padrão do Go, testes costumam ter vários `if got != want { t.Fatalf(...) }`. O **Testify** (`github.com/stretchr/testify`) simplifica isso com dois pacotes principais:\n\n- **`require`**: se a asserção falhar, **aborta o teste imediatamente** (`t.FailNow()`). Ideal para `require.NoError(t, err)` antes de acessar `res.ID` (evitando nil pointer panic!).\n- **`assert`**: se falhar, marca o teste como falho mas **continua** executando as próximas asserções.",
+      "codeExample": "func TestBuscarUsuario(t *testing.T) {\n    user, err := repo.FindByID(1)\n    require.NoError(t, err)\n    require.NotNil(t, user)\n\n    assert.Equal(t, \"Ana\", user.Name)\n    assert.True(t, user.Active)\n}"
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual a diferença prática entre `require.NoError(t, err)` e `assert.NoError(t, err)` no Testify?",
+      "options": [
+        "require interrompe o teste imediatamente se falhar; assert registra a falha e continua",
+        "assert é apenas para benchmarks e require para testes unitários",
+        "require ignora erros nil e assert lança panic",
+        "Não há diferença; são aliases idênticos"
+      ],
+      "correctIndex": 0,
+      "explanation": "require chama FailNow() na falha, evitando que o código continue usando um ponteiro nil na linha seguinte."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o teste usando require para checar o erro e assert para comparar o resultado:",
+      "codeTemplate": "res, err := SomarPositivos(2, 3)\n{{blank}}.NoError(t, err)\n{{blank}}.{{blank}}(t, 5, res)",
+      "blanks": [
+        { "answer": "require" },
+        { "answer": "assert" },
+        { "answer": "Equal" }
+      ],
+      "options": ["require", "assert", "Equal", "Same", "Expect"],
+      "explanation": "require.NoError garante que não houve erro antes de inspecionar res, e assert.Equal(t, esperado, atual) valida o valor."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha que pode causar um panic (nil pointer dereference) se FindByID retornar erro:",
+      "lines": [
+        "func TestGetUser(t *testing.T) {",
+        "    user, err := FindByID(999)",
+        "    assert.NoError(t, err)",
+        "    assert.Equal(t, \"João\", user.Name)",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "assert.NoError não para o teste quando err != nil; se user for nil, user.Name causará panic na linha seguinte. Deve-se usar require.NoError(t, err)."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva um teste `TestDobrar(t *testing.T)` que chama `val, err := Dobrar(4)`, valida `require.NoError(t, err)` e verifica `assert.Equal(t, 8, val)`.",
+      "starterCode": "func TestDobrar(t *testing.T) {\n    // Escreva o teste com require e assert\n}",
+      "requiredTokens": [
+        "require.NoError(t, err)",
+        "assert.Equal(t, 8, val)"
+      ],
+      "sampleSolution": "func TestDobrar(t *testing.T) {\n    val, err := Dobrar(4)\n    require.NoError(t, err)\n    assert.Equal(t, 8, val)\n}",
+      "hint": "Chame val, err := Dobrar(4), depois require.NoError(t, err) e assert.Equal(t, 8, val).",
+      "explanation": "Combinar require para pré-condições e assert para verificações finais é o padrão idiomático do Testify."
+    }
+  ]
+}

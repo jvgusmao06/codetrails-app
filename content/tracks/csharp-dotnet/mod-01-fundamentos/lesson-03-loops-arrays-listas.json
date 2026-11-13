@@ -1,0 +1,40 @@
+{
+  "id": "csharp-loops-lists-03",
+  "title": "Loops (for, while, foreach) e Coleções (Arrays vs List<T>)",
+  "description": "Percorra dados com foreach e for, e escolha entre arrays fixos e List<T> dinâmica em C#.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Laços de Repetição e List<T> no .NET",
+      "content": "Em C#, temos os loops **`for`**, **`while`**, `do-while` e o queridinho do dia a dia: **`foreach (var item in colecao)`**, que percorre arrays e listas sem risco de errar o índice! Para coleções dinâmicas (onde adicionamos/removemos itens), usamos **`List<T>`** (`using System.Collections.Generic;` — importado globalmente no .NET moderno) com `.Add()` e `.Count` (atenção: em arrays é `.Length`, em `List<T>` é `.Count`!).",
+      "codeExample": "List<string> langs = [\"C#\", \"Python\", \"Rust\"]; // Collection expression (C# 12)\nlangs.Add(\"Go\");\n\nforeach (var lang in langs) {\n    if (lang == \"Python\") continue;\n    Console.WriteLine(lang);\n}\nConsole.WriteLine($\"Total: {langs.Count}\");",
+      "keyTakeaways": [
+        "`foreach (var x in lista)` é mais seguro e legível que `for (int i = 0; ...)` quando não precisamos do índice.",
+        "Array `int[]` usa `.Length`; `List<int>` usa `.Count`.",
+        "No C# 12+, colchetes `[1, 2, 3]` inicializam tanto arrays quanto `List<T>` de forma enxuta!"
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código C# para criar uma `List<int>`, adicionar `40` e percorrê-la com `foreach`:",
+      "codeTemplate": "var nums = new {{blank}}<int> { 10, 20, 30 };\nnums.{{blank}}(40);\n{{blank}} (var n in nums) {\n    Console.WriteLine(n);\n}",
+      "blanks": [
+        { "answer": "List", "placeholder": "lista" },
+        { "answer": "Add", "placeholder": "adicionar" },
+        { "answer": "foreach", "placeholder": "loop" }
+      ],
+      "options": ["List", "Add", "foreach", "Array", "push", "forin"],
+      "explanation": "`List<T>` é a lista dinâmica padrão, `.Add()` insere no final e `foreach (var n in nums)` itera sobre ela."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie uma `List<string> itens = new();`, adicione `\"Livro\"` com `.Add(\"Livro\")` e faça um `foreach (var item in itens)` imprimindo `Console.WriteLine(item);`:",
+      "starterCode": "// Crie List<string>, adicione \"Livro\" e percorra com foreach:\n",
+      "requiredTokens": ["List<string>", ".Add(\"Livro\")", "foreach", "in itens", "Console.WriteLine"],
+      "sampleSolution": "List<string> itens = new();\nitens.Add(\"Livro\");\nforeach (var item in itens) {\n    Console.WriteLine(item);\n}",
+      "hint": "Use `List<string> itens = new();`, `itens.Add(\"Livro\");` e `foreach (var item in itens) { Console.WriteLine(item); }`.",
+      "explanation": "O target-typed `new()` infere o tipo `List<string>` declarado à esquerda."
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "eigen-matrix-01",
+  "title": "Eigen: MatrixXd, Vector3d e Multiplicação Otimizada com SIMD",
+  "description": "Use o padrão da indústria em robótica, visão computacional (OpenCV/ROS) e motores físicos para álgebra linear em C++.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "O Equivalente ao NumPy para C++ de Tempo Real: Eigen",
+      "content": "**Eigen** é uma biblioteca *header-only* de álgebra linear que usa **Expression Templates** e instruções vetoriais da CPU (AVX/NEON) para entregar performance máxima sem alocações temporárias! Para tamanhos fixos pequenos (como 3D em jogos/robótica), use **`Eigen::Vector3d`** ou **`Matrix3d`** (ficam na Stack, zero `malloc`!); para tamanhos dinâmicos, use **`Eigen::MatrixXd`**.",
+      "codeExample": "#include <Eigen/Dense>\n\nEigen::Vector3d v(1.0, 0.0, 0.0);\nEigen::Vector3d w(0.0, 1.0, 0.0);\n\ndouble dot = v.dot(w);          // Produto escalar (0.0)\nEigen::Vector3d cross = v.cross(w); // Produto vetorial (0, 0, 1)\n\nEigen::MatrixXd A = Eigen::MatrixXd::Identity(3, 3);\nEigen::Vector3d res = A * v;    // Multiplicação matriz-vetor!",
+      "keyTakeaways": [
+        "No Eigen, o operador `*` já faz **multiplicação matricial** real (diferente do NumPy!); para elemento-a-elemento use `.cwiseProduct()` ou `.array()`.",
+        "Prefira tipos de tamanho fixo (`Vector3d`, `Matrix4f`) em loops de 60 FPS/robótica porque ficam na Stack.",
+        "CUIDADO com `auto C = A * B;` no Eigen: por causa de lazy evaluation, prefira tipar `MatrixXd C = A * B;`!"
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Em gráficos 3D ou robótica a 1000 Hz, por que preferimos `Eigen::Vector3d` em vez de `Eigen::VectorXd(3)`?",
+      "options": [
+        "Porque VectorXd não aceita números negativos",
+        "Porque Vector3d tem tamanho conhecido em compilação (fica na Stack, sem alocação dinâmica na Heap e melhor otimizado pelo compilador)",
+        "Porque Vector3d roda na placa de som",
+        "Não existe diferença de memória"
+      ],
+      "correctIndex": 1,
+      "explanation": "Tipos de tamanho fixo evitam `new`/`malloc` na Heap e permitem desenrolamento de loops e vetorização em tempo de compilação."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie dois vetores `Eigen::Vector3d a(1, 2, 3);` e `Eigen::Vector3d b(4, 5, 6);` e calcule o produto escalar usando `a.dot(b)`:",
+      "starterCode": "#include <Eigen/Dense>\n// Crie a, b e calcule a.dot(b):\n",
+      "requiredTokens": ["Eigen::Vector3d a", "Eigen::Vector3d b", "a.dot(b)"],
+      "sampleSolution": "Eigen::Vector3d a(1, 2, 3);\nEigen::Vector3d b(4, 5, 6);\ndouble esc = a.dot(b);",
+      "hint": "Declare `Eigen::Vector3d a(1, 2, 3);`, `Eigen::Vector3d b(4, 5, 6);` e `double esc = a.dot(b);`.",
+      "explanation": "`.dot()` calcula o produto escalar em 1 linha com instruções SIMD otimizadas."
+    }
+  ]
+}

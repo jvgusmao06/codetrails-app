@@ -1,0 +1,19 @@
+{
+  "id": "mapstruct-java",
+  "title": "MapStruct (Mapeamento DTO)",
+  "description": "Converta Entities JPA para DTOs/Records em Java em velocidade nativa sem reflection usando @Mapper e @Mapping.",
+  "category": "library",
+  "languageId": "java-basics",
+  "prerequisites": ["java-basics"],
+  "color": "#EA580C",
+  "icon": "🗺️",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: @Mapper(componentModel = \"spring\") e @Mapping",
+      "description": "Gere conversores Entity <-> DTO em tempo de compilação com segurança de tipos.",
+      "lessons": ["lesson-01-mapper-dto"]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "pydantic-v2-01",
+  "title": "Pydantic v2: BaseModel, @field_validator, model_validate e model_dump",
+  "description": "Valide dicionários/JSON, crie regras customizadas com @field_validator e serialize com model_dump().",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Validação de Dados em Alta Velocidade (Core em Rust)",
+      "content": "O **Pydantic v2** (com núcleo reescrito em **Rust**!) é a biblioteca padrão para validação de dados em Python — usada por **FastAPI**, **OpenAI SDK**, **LangChain** e **Pydantic Settings**. Definimos schemas com `BaseModel`, adicionamos regras customizadas com **`@field_validator`** (que recebe `@classmethod`), carregamos dicionários com **`Model.model_validate(data)`** e exportamos com **`obj.model_dump()`**!",
+      "codeExample": "from pydantic import BaseModel, Field, field_validator\n\nclass Usuario(BaseModel):\n    nome: str = Field(min_length=2)\n    email: str\n\n    @field_validator(\"email\")\n    @classmethod\n    def normalizar_email(cls, v: str) -> str:\n        if \"@\" not in v: raise ValueError(\"Email inválido\")\n        return v.strip().lower()\n\nu = Usuario.model_validate({\"nome\": \"Ana\", \"email\": \" ANA@DEV.COM \"})\nprint(u.model_dump())  # {'nome': 'Ana', 'email': 'ana@dev.com'}",
+      "keyTakeaways": [
+        "No Pydantic v2: `dict()` virou `.model_dump()`, `json()` virou `.model_dump_json()` e `parse_obj()` virou `.model_validate()`.",
+        "`@field_validator` deve ser acompanhado de `@classmethod` logo abaixo.",
+        "Use `BaseSettings` (pacote `pydantic-settings`) para validar automaticamente variáveis de ambiente (`.env`)."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "No Pydantic v2, qual método substituiu o antigo `.dict()` para converter uma instância de `BaseModel` em dicionário Python?",
+      "options": [
+        ".to_dict()",
+        ".model_dump()",
+        ".serialize()",
+        ".as_json()"
+      ],
+      "correctIndex": 1,
+      "explanation": "Na v2, todos os métodos do modelo ganharam prefixo `model_`: `.model_dump()`, `.model_dump_json()` e `.model_validate()`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Valide o dicionário `dados` usando `Pedido.model_validate(dados)` e converta de volta para dicionário com `pedido.model_dump()`:",
+      "starterCode": "# Valide dados com Pedido.model_validate e exporte com model_dump:\n",
+      "requiredTokens": ["Pedido.model_validate(dados)", ".model_dump()"],
+      "sampleSolution": "pedido = Pedido.model_validate(dados)\nsaida = pedido.model_dump()",
+      "hint": "Use `pedido = Pedido.model_validate(dados)` e `saida = pedido.model_dump()`.",
+      "explanation": "`model_validate` valida e converte tipos na entrada, e `model_dump` devolve um `dict` limpo na saída."
+    }
+  ]
+}

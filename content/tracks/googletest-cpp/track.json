@@ -7,7 +7,7 @@
   "prerequisites": ["c-cpp-systems"],
   "color": "#00599C",
   "icon": "🧪",
-  "author": "Comunidade CodeTrilhas",
+  "author": "Comunidade CodeTrails",
   "modules": [
     {
       "id": "mod-01-fundamentos",

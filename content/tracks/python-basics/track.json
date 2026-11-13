@@ -1,11 +1,11 @@
 {
   "id": "python-basics",
-  "title": "Python Essencial",
+  "title": "Python",
   "description": "Aprenda Python do zero até funções nativas: variáveis, tipos, condicionais, loops (for/while), listas, funções, dicionários, classes (POO) e built-ins.",
   "category": "language",
   "color": "#eab308",
   "icon": "🐍",
-  "author": "Comunidade CodeTrilhas",
+  "author": "Comunidade CodeTrails",
   "modules": [
     {
       "id": "mod-01-fundamentos",

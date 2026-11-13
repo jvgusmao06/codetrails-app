@@ -28,11 +28,11 @@
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva uma view Django `def api_info(request):` que retorne `JsonResponse({\"app\": \"CodeTrilhas\"})`:",
+      "prompt": "Desafio de Código: Escreva uma view Django `def api_info(request):` que retorne `JsonResponse({\"app\": \"CodeTrails\"})`:",
       "starterCode": "from django.http import JsonResponse\n# Escreva def api_info(request):\n",
       "requiredTokens": ["def", "api_info(request)", "return", "JsonResponse", "\"app\""],
-      "sampleSolution": "def api_info(request):\n    return JsonResponse({\"app\": \"CodeTrilhas\"})",
-      "hint": "Defina `def api_info(request): return JsonResponse({\"app\": \"CodeTrilhas\"})`.",
+      "sampleSolution": "def api_info(request):\n    return JsonResponse({\"app\": \"CodeTrails\"})",
+      "hint": "Defina `def api_info(request): return JsonResponse({\"app\": \"CodeTrails\"})`.",
       "explanation": "Toda view baseada em função no Django recebe `request` como primeiro argumento e retorna uma resposta HTTP."
     }
   ]

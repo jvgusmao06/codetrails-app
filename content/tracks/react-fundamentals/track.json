@@ -7,7 +7,7 @@
   "prerequisites": ["typescript-javascript"],
   "color": "#0ea5e9",
   "icon": "⚛️",
-  "author": "Comunidade CodeTrilhas",
+  "author": "Comunidade CodeTrails",
   "modules": [
     {
       "id": "mod-01-componentes",

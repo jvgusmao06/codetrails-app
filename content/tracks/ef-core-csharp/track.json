@@ -1,0 +1,19 @@
+{
+  "id": "ef-core-csharp",
+  "title": "Entity Framework Core (EF Core)",
+  "description": "Mapeie tabelas com DbContext/DbSet<T>, consulte com LINQ assíncrono (ToListAsync) e otimize leituras com AsNoTracking().",
+  "category": "library",
+  "languageId": "csharp-dotnet",
+  "prerequisites": ["csharp-dotnet", "sql-databases"],
+  "color": "#6D28D9",
+  "icon": "🗄️",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: DbContext, AsNoTracking() e SaveChangesAsync",
+      "description": "Evite gargalos comuns no EF Core e faça queries SQL rápidas via LINQ.",
+      "lessons": ["lesson-01-dbcontext-notracking"]
+    }
+  ]
+}

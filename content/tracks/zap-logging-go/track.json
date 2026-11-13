@@ -1,0 +1,23 @@
+{
+  "id": "zap-logging-go",
+  "title": "Zap (Structured Logging)",
+  "description": "Registre logs estruturados em JSON com zero alocações e altíssima performance usando go.uber.org/zap.",
+  "category": "library",
+  "languageId": "golang-cloud",
+  "prerequisites": [
+    "golang-cloud"
+  ],
+  "color": "#F59E0B",
+  "icon": "📝",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: Logs Estruturados e Tipados com Zap",
+      "description": "Use zap.NewProduction(), defer logger.Sync() e campos fortemente tipados como zap.String e zap.Int.",
+      "lessons": [
+        "lesson-01-zap-structured-fields"
+      ]
+    }
+  ]
+}

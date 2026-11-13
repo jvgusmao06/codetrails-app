@@ -1,0 +1,40 @@
+{
+  "id": "mapstruct-01",
+  "title": "MapStruct: @Mapper(componentModel = \"spring\") e @Mapping",
+  "description": "Substitua mappers lentos baseados em reflection por código Java puro gerado na compilação.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Mapeamento Entity <-> DTO sem Reflection",
+      "content": "Nunca exponha suas entidades `@Entity` direto nos controllers REST! Para converter entre `Usuario` e `UsuarioResponseDto`, o **MapStruct** gera uma implementação com chamadas diretas de `get`/`set` **em tempo de compilação** (10x mais rápido que `ModelMapper`/`BeanUtils`, e se um campo mudar de nome, o projeto avisa na hora!). Basta criar uma `interface` anotada com **`@Mapper(componentModel = \"spring\")`**.",
+      "codeExample": "@Mapper(componentModel = \"spring\")\npublic interface UsuarioMapper {\n    @Mapping(source = \"nomeCompleto\", target = \"nome\")\n    UsuarioDto toDto(Usuario entity);\n}",
+      "keyTakeaways": [
+        "`componentModel = \"spring\"` transforma o mapper gerado em um `@Component` injetável pelo Spring!",
+        "`@Mapping(source = \"origem\", target = \"destino\")` mapeia campos com nomes diferentes.",
+        "Use `unmappedTargetPolicy = ReportingPolicy.IGNORE` apenas quando quiser ignorar campos que não existem no DTO."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Por que o **MapStruct** é muito mais rápido e seguro do que `BeanUtils.copyProperties` ou `ModelMapper`?",
+      "options": [
+        "Porque usa reflection avançada em runtime",
+        "Porque gera código Java simples (getters/setters diretos) em tempo de compilação, validando os nomes dos campos antes de rodar",
+        "Porque roda dentro do banco PostgreSQL",
+        "Porque ignora todos os campos nulos"
+      ],
+      "correctIndex": 1,
+      "explanation": "Ao gerar código na compilação (Annotation Processing), o MapStruct elimina reflection em runtime e detecta erros de mapeamento no build."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie uma interface `@Mapper(componentModel = \"spring\") public interface PedidoMapper` com o método `PedidoDto toDto(Pedido entity);`:",
+      "starterCode": "// Crie a interface PedidoMapper com MapStruct:\n",
+      "requiredTokens": ["@Mapper(componentModel = \"spring\")", "public interface PedidoMapper", "PedidoDto toDto(Pedido entity);"],
+      "sampleSolution": "@Mapper(componentModel = \"spring\")\npublic interface PedidoMapper {\n    PedidoDto toDto(Pedido entity);\n}",
+      "hint": "Coloque `@Mapper(componentModel = \"spring\")` acima de `public interface PedidoMapper { PedidoDto toDto(Pedido entity); }`.",
+      "explanation": "O processador de anotações do MapStruct cria automaticamente a classe `PedidoMapperImpl` durante o `mvn compile` / `gradle build`."
+    }
+  ]
+}

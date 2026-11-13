@@ -7,7 +7,7 @@
   "prerequisites": ["c-cpp-systems"],
   "color": "#0284C7",
   "icon": "🧰",
-  "author": "Comunidade CodeTrilhas",
+  "author": "Comunidade CodeTrails",
   "modules": [
     {
       "id": "mod-01-vectors",

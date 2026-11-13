@@ -1,0 +1,23 @@
+{
+  "id": "grpc-go",
+  "title": "gRPC-Go (RPC & Protobuf)",
+  "description": "Conecte microsserviços em Go com altíssima velocidade usando gRPC, HTTP/2, Protocol Buffers e context.Context.",
+  "category": "framework",
+  "languageId": "golang-cloud",
+  "prerequisites": [
+    "golang-cloud"
+  ],
+  "color": "#244C5A",
+  "icon": "🔌",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: Servidores gRPC e Protobuf",
+      "description": "Implemente interfaces geradas por .proto, registre serviços em grpc.NewServer() e sirva via net.Listen.",
+      "lessons": [
+        "lesson-01-grpc-server-protobuf"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "asio-networking-cpp",
+  "title": "Asio Networking C++",
+  "description": "Construa servidores TCP/UDP assíncronos e clientes de rede de baixíssima latência com io_context, corrotinas co_await e timers.",
+  "category": "library",
+  "languageId": "c-cpp-systems",
+  "prerequisites": ["c-cpp-systems"],
+  "color": "#0284C7",
+  "icon": "🌐",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: io_context, Sockets TCP e Timers Assíncronos",
+      "description": "Entenda o Event Loop de I/O assíncrono no C++ com Asio.",
+      "lessons": ["lesson-01-io-context-async"]
+    }
+  ]
+}

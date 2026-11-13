@@ -1,0 +1,40 @@
+{
+  "id": "reqwest-http-01",
+  "title": "Reqwest: Client Reutilizável, .json::<T>() e .error_for_status()",
+  "description": "Reaproveite conexões TLS com reqwest::Client e transforme respostas HTTP 4xx/5xx em Result::Err automaticamente.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Consumindo APIs REST com Reqwest + Serde",
+      "content": "O **Reqwest** é o cliente HTTP padrão em Rust. Em vez de chamar `reqwest::get(url)` toda vez (o que cria um novo pool de conexões e handshake TLS do zero!), crie e reaproveite um único **`reqwest::Client::new()`**. E lembre: assim como `fetch()` no JS, um status `404` ou `500` não vira `Err` sozinho — chame **`.error_for_status()?`** antes de `.json::<MeuTipo>().await?`!",
+      "codeExample": "let client = reqwest::Client::new();\n\nlet dado: Post = client\n    .get(\"https://api.exemplo.com/posts/1\")\n    .send()\n    .await?\n    .error_for_status()?\n    .json::<Post>()\n    .await?;",
+      "keyTakeaways": [
+        "Reutilize uma instância de `reqwest::Client` (ele usa `Arc` internamente e é barato de clonar!) para manter connection pooling Keep-Alive.",
+        "`.error_for_status()?` converte respostas HTTP 4xx/5xx em `Err` automaticamente.",
+        "Configure sempre um timeout com `Client::builder().timeout(Duration::from_secs(10)).build()?`."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Por que devemos criar e compartilhar um único `reqwest::Client` em vez de chamar `reqwest::get(url)` repetidamente em um servidor?",
+      "options": [
+        "Porque reqwest::get() só funciona com HTTP sem SSL",
+        "Para reutilizar o pool de conexões TCP/TLS (Keep-Alive) e evitar overhead de abrir nova conexão a cada chamada",
+        "Porque reqwest::get() bloqueia o terminal",
+        "Não há diferença de performance"
+      ],
+      "correctIndex": 1,
+      "explanation": "`reqwest::Client` mantém um pool interno de conexões reutilizáveis (`Keep-Alive`), acelerando drasticamente requisições repetidas."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Usando `client`, faça um GET em `url`, valide o status com `.error_for_status()?` e converta com `.json::<User>().await?`:",
+      "starterCode": "// Faça a chamada GET com client, error_for_status()? e json::<User>():\n",
+      "requiredTokens": ["client.get(", ".send().await?", ".error_for_status()?", ".json::<User>().await?"],
+      "sampleSolution": "let user = client.get(url)\n    .send().await?\n    .error_for_status()?\n    .json::<User>().await?;",
+      "hint": "Encadeie `.send().await?.error_for_status()?.json::<User>().await?`.",
+      "explanation": "O operador `?` em cada etapa garante tratamento limpo de erros de rede, status HTTP e JSON inválido."
+    }
+  ]
+}

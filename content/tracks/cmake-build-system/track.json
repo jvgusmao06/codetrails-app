@@ -7,7 +7,7 @@
   "prerequisites": ["c-cpp-systems"],
   "color": "#06B6D4",
   "icon": "🛠️",
-  "author": "Comunidade CodeTrilhas",
+  "author": "Comunidade CodeTrails",
   "modules": [
     {
       "id": "mod-01-cmakelists",

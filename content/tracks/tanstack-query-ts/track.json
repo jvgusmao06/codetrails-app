@@ -1,0 +1,24 @@
+{
+  "id": "tanstack-query-ts",
+  "title": "TanStack Query (React Query)",
+  "description": "Gerencie estado assíncrono de servidor em TypeScript com useQuery, useMutation, cache automático e invalidação via queryKey.",
+  "category": "library",
+  "languageId": "typescript-javascript",
+  "prerequisites": [
+    "typescript-javascript",
+    "react-fundamentals"
+  ],
+  "color": "#FF4154",
+  "icon": "🔄",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: useQuery, useMutation e Invalidação",
+      "description": "Substitua useEffect + fetch manual por cache declarativo, estados de loading/error e mutações otimizadas.",
+      "lessons": [
+        "lesson-01-usequery-usemutation"
+      ]
+    }
+  ]
+}

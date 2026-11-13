@@ -1,0 +1,19 @@
+{
+  "id": "qt-gui-cpp",
+  "title": "Qt 6 (Interfaces Desktop C++)",
+  "description": "Desenvolva aplicações desktop nativas multiplataforma em C++ usando QApplication, QWidget, Signals & Slots e QML.",
+  "category": "framework",
+  "languageId": "c-cpp-systems",
+  "prerequisites": ["c-cpp-systems"],
+  "color": "#41CD52",
+  "icon": "🖥️",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: Signals & Slots e Widgets Qt 6",
+      "description": "Conecte cliques e eventos da UI a funções C++ com connect() type-safe.",
+      "lessons": ["lesson-01-signals-slots-widgets"]
+    }
+  ]
+}

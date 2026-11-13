@@ -1,0 +1,40 @@
+{
+  "id": "csharp-excecoes-using-04",
+  "title": "Exceções (try/catch/throw) e Liberação de Recursos com 'using'",
+  "description": "Capture exceções específicas, relance erros preservando o stack trace com 'throw;' e feche recursos com 'using var'.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "IDisposable, 'using var' e a Pegadinha do 'throw;' vs 'throw ex;'",
+      "content": "Embora o .NET tenha Garbage Collector para memória, arquivos, conexões SQL e streams implementam **`IDisposable`** e precisam ser fechados rápido. A declaração **`using var stream = File.OpenRead(\"a.txt\");`** garante que `.Dispose()` será chamado automaticamente ao sair do bloco! E no `catch (Exception ex)`: se for relançar a exceção, escreva apenas **`throw;`** (nunca `throw ex;`, que apaga o Stack Trace original!).",
+      "codeExample": "using var reader = new StreamReader(\"dados.txt\");\ntry {\n    var conteudo = await reader.ReadToEndAsync();\n} catch (FileNotFoundException ex) {\n    Console.WriteLine($\"Arquivo ausente: {ex.Message}\");\n} catch (Exception) {\n    throw; // Preserva o Stack Trace exato de onde o erro nasceu!\n}",
+      "keyTakeaways": [
+        "`using var recurso = ...;` (C# 8+) descarta o recurso ao final do escopo atual sem aninhar chaves extras.",
+        "`throw;` preserva a linha original do erro; `throw ex;` reseta o stack trace para o bloco `catch`.",
+        "Use `ArgumentNullException.ThrowIfNull(arg)` no .NET moderno para validar argumentos obrigatórios em 1 linha!"
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código C# fechando o stream automaticamente com `using`, capturando o erro específico e relançando sem perder o Stack Trace:",
+      "codeTemplate": "{{blank}} var fs = File.OpenRead(\"log.txt\");\ntry {\n    fs.ReadByte();\n} {{blank}} (IOException) {\n    {{blank}};\n}",
+      "blanks": [
+        { "answer": "using", "placeholder": "auto-dispose" },
+        { "answer": "catch", "placeholder": "capturar" },
+        { "answer": "throw", "placeholder": "relançar" }
+      ],
+      "options": ["using", "catch", "throw", "with", "except", "raise"],
+      "explanation": "`using var` aciona `Dispose()` automaticamente ao sair do escopo, e `throw;` preserva o stack trace original."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Use `ArgumentNullException.ThrowIfNull(nome);` seguido de um bloco `try { ... } catch (ArgumentNullException ex) { Console.WriteLine(ex.Message); }`:",
+      "starterCode": "// Valide com ThrowIfNull dentro de try/catch:\n",
+      "requiredTokens": ["try", "ArgumentNullException.ThrowIfNull(nome)", "catch", "ex.Message"],
+      "sampleSolution": "try {\n    ArgumentNullException.ThrowIfNull(nome);\n} catch (ArgumentNullException ex) {\n    Console.WriteLine(ex.Message);\n}",
+      "hint": "Coloque `ArgumentNullException.ThrowIfNull(nome);` dentro de `try` e trate `ArgumentNullException ex` no `catch`.",
+      "explanation": "`ArgumentNullException.ThrowIfNull` substitui o antigo `if (x == null) throw new ArgumentNullException(...)`."
+    }
+  ]
+}

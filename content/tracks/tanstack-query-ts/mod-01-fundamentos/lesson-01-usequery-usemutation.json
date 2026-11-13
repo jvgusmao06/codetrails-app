@@ -1,0 +1,67 @@
+{
+  "id": "lesson-01-usequery-usemutation",
+  "title": "useQuery, useMutation e Cache",
+  "description": "Busque, armazene em cache e invalide dados de API com tipagem forte em TypeScript.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Estado de servidor sem boilerplate",
+      "content": "Em vez de controlar `useState`, `useEffect`, `isLoading` e `error` na mão, o **TanStack Query** gerencia dados remotos de forma declarativa:\n\n- `useQuery({ queryKey, queryFn })`: busca e armazena dados em cache pela `queryKey` (ex: `[\"users\", id]`).\n- `useMutation({ mutationFn, onSuccess })`: executa `POST`/`PUT`/`DELETE` e permite atualizar a UI.\n- `queryClient.invalidateQueries({ queryKey })`: marca o cache como obsoleto após uma mutação para refazer o fetch automaticamente.",
+      "codeExample": "import { useQuery, useMutation, useQueryClient } from \"@tanstack/react-query\";\n\ntype User = { id: number; name: string };\n\nconst { data, isPending } = useQuery<User[]>({\n  queryKey: [\"users\"],\n  queryFn: () => fetch(\"/api/users\").then((r) => r.json()),\n});\n\nconst queryClient = useQueryClient();\nconst createUser = useMutation({\n  mutationFn: (name: string) =>\n    fetch(\"/api/users\", { method: \"POST\", body: JSON.stringify({ name }) }),\n  onSuccess: () => queryClient.invalidateQueries({ queryKey: [\"users\"] }),\n});"
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual método do QueryClient força o TanStack Query a marcar uma query em cache como obsoleta e refazer a requisição quando necessário?",
+      "options": [
+        "queryClient.invalidateQueries({ queryKey: [\"users\"] })",
+        "queryClient.clearCache(\"users\")",
+        "useQuery.reload([\"users\"])",
+        "queryClient.deleteState([\"users\"])"
+      ],
+      "correctIndex": 0,
+      "explanation": "invalidateQueries marca as queries correspondentes à queryKey como stale e dispara refetch automático se estiverem ativas na tela."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a chamada de useQuery tipada para buscar a lista de tarefas:",
+      "codeTemplate": "const { data, isPending } = {{blank}}<Todo[]>({\n  {{blank}}: [\"todos\"],\n  {{blank}}: () => fetch(\"/api/todos\").then((r) => r.json()),\n});",
+      "blanks": [
+        { "answer": "useQuery" },
+        { "answer": "queryKey" },
+        { "answer": "queryFn" }
+      ],
+      "options": ["useQuery", "useMutation", "queryKey", "cacheKey", "queryFn", "fetchFn"],
+      "explanation": "useQuery recebe um objeto com queryKey (identificador único do cache) e queryFn (função que retorna uma Promise)."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Encontre a linha com erro ao invalidar o cache após criar um item:",
+      "lines": [
+        "const queryClient = useQueryClient();",
+        "const mutation = useMutation({",
+        "  mutationFn: createPost,",
+        "  onSuccess: () => {",
+        "    queryClient.invalidateQueries(\"posts\");",
+        "  },",
+        "});"
+      ],
+      "buggyLineIndex": 4,
+      "explanation": "No TanStack Query v5, invalidateQueries recebe um objeto de filtro com array: queryClient.invalidateQueries({ queryKey: [\"posts\"] })."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva uma chamada useQuery<Product[]> com queryKey [\"products\"] e queryFn buscando de \"/api/products\".",
+      "starterCode": "import { useQuery } from \"@tanstack/react-query\";\n\ntype Product = { id: number; title: string };\n\n// Escreva const { data } = useQuery<Product[]>(...)",
+      "requiredTokens": [
+        "useQuery<Product[]>",
+        "queryKey:",
+        "[\"products\"]",
+        "queryFn:"
+      ],
+      "sampleSolution": "import { useQuery } from \"@tanstack/react-query\";\n\ntype Product = { id: number; title: string };\n\nconst { data } = useQuery<Product[]>({\n  queryKey: [\"products\"],\n  queryFn: () => fetch(\"/api/products\").then((r) => r.json()),\n});",
+      "hint": "Passe { queryKey: [\"products\"], queryFn: () => fetch(\"/api/products\").then((r) => r.json()) } para useQuery<Product[]>().",
+      "explanation": "Passar o tipo genérico <Product[]> garante que data seja inferido como Product[] | undefined."
+    }
+  ]
+}

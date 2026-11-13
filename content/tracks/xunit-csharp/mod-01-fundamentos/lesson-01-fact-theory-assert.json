@@ -1,0 +1,68 @@
+{
+  "id": "lesson-01-fact-theory-assert",
+  "title": "Fact, Theory e Assert",
+  "description": "Crie testes simples com [Fact] e testes parametrizados com [Theory] e [InlineData].",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Testes idiomáticos em .NET com xUnit",
+      "content": "No **xUnit**, você não precisa decorar a classe com atributos: basta decorar os métodos de teste!\n\n- `[Fact]`: um teste sem parâmetros que verifica um cenário único.\n- `[Theory]` + `[InlineData(...)]`: um teste parametrizado que roda uma vez para cada conjunto de dados.\n- `Assert.Equal(esperado, atual)`: compara o valor esperado com o obtido (ordem: esperado primeiro!).\n\nAlém disso, o xUnit cria uma **nova instância da classe de teste para cada método**, garantindo isolamento total entre testes.",
+      "codeExample": "using Xunit;\n\npublic class CalculadoraTests\n{\n    [Fact]\n    public void Somar_DoisNumeros_RetornaSoma()\n    {\n        var calc = new Calculadora();\n        Assert.Equal(5, calc.Somar(2, 3));\n    }\n\n    [Theory]\n    [InlineData(2, true)]\n    [InlineData(3, false)]\n    public void EhPar_ValoresVariados_RetornaEsperado(int n, bool esperado)\n    {\n        Assert.Equal(esperado, n % 2 == 0);\n    }\n}"
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual atributo do xUnit é usado para executar o mesmo método de teste várias vezes com diferentes argumentos fornecidos por [InlineData]?",
+      "options": [
+        "[Theory]",
+        "[Fact]",
+        "[TestCase]",
+        "[Parameterized]"
+      ],
+      "correctIndex": 0,
+      "explanation": "Em xUnit, [Fact] marca testes sem parâmetros, enquanto [Theory] indica um teste parametrizado alimentado por [InlineData], [MemberData] ou [ClassData]."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o teste parametrizado em xUnit para validar múltiplos casos de soma:",
+      "codeTemplate": "[{{blank}}]\n[InlineData(1, 2, 3)]\n[{{blank}}(10, -5, 5)]\npublic void Somar_VariosCasos(int a, int b, int esperado)\n{\n    Assert.{{blank}}(esperado, a + b);\n}",
+      "blanks": [
+        { "answer": "Theory" },
+        { "answer": "InlineData" },
+        { "answer": "Equal" }
+      ],
+      "options": ["Theory", "Fact", "InlineData", "Equal", "AreEqual"],
+      "explanation": "[Theory] declara o teste parametrizado, [InlineData] injeta cada linha de argumentos e Assert.Equal(esperado, atual) verifica o resultado."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Encontre a linha com problema de execução no teste xUnit abaixo:",
+      "lines": [
+        "public class DescontoTests",
+        "{",
+        "    [Fact]",
+        "    [InlineData(100, 90)]",
+        "    public void Aplicar_DezPorCento(decimal valor, decimal esperado)",
+        "    {",
+        "        Assert.Equal(esperado, valor * 0.9m);",
+        "    }",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "[Fact] não aceita parâmetros nem [InlineData]. Métodos parametrizados devem usar [Theory] na linha 3."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva um teste xUnit com [Theory] e dois [InlineData] para testar um método EhMaiorDeIdade(int idade, bool esperado), usando Assert.Equal.",
+      "starterCode": "using Xunit;\n\npublic class IdadeTests\n{\n    // Escreva o método de teste com [Theory] e [InlineData]\n}",
+      "requiredTokens": [
+        "[Theory]",
+        "[InlineData",
+        "Assert.Equal"
+      ],
+      "sampleSolution": "using Xunit;\n\npublic class IdadeTests\n{\n    [Theory]\n    [InlineData(18, true)]\n    [InlineData(16, false)]\n    public void EhMaiorDeIdade_VerificaCorretamente(int idade, bool esperado)\n    {\n        Assert.Equal(esperado, idade >= 18);\n    }\n}",
+      "hint": "Use [Theory] acima dos atributos [InlineData(18, true)] e [InlineData(16, false)], e compare com Assert.Equal(esperado, idade >= 18).",
+      "explanation": "Combinar [Theory] com [InlineData] evita duplicar métodos de teste para entradas diferentes."
+    }
+  ]
+}

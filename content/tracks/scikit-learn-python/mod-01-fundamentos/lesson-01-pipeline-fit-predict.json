@@ -1,0 +1,40 @@
+{
+  "id": "sklearn-pipeline-01",
+  "title": "Scikit-Learn: train_test_split, Pipeline e StandardScaler",
+  "description": "Evite Data Leakage encapsulando pré-processamento e modelo dentro de um Pipeline.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "A API Uniforme do Scikit-Learn + Pipeline Seguro",
+      "content": "No **Scikit-Learn**, todo modelo segue a mesma interface simples: **`.fit(X_train, y_train)`** para aprender e **`.predict(X_test)`** para prever. A regra de ouro para evitar **Data Leakage** (vazar estatísticas do conjunto de teste para o treino!) é usar **`Pipeline([('scaler', StandardScaler()), ('clf', RandomForestClassifier())])`** após separar os dados com **`train_test_split`**!",
+      "codeExample": "from sklearn.model_selection import train_test_split\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.ensemble import RandomForestClassifier\n\nX_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42)\n\npipe = Pipeline([\n    (\"scaler\", StandardScaler()),\n    (\"modelo\", RandomForestClassifier(random_state=42)),\n])\npipe.fit(X_tr, y_tr)\nacuracia = pipe.score(X_te, y_te)",
+      "keyTakeaways": [
+        "NUNCA rode `scaler.fit_transform(X)` antes do `train_test_split` — isso vaza média/desvio do teste para o treino!",
+        "Colocar `StandardScaler()` e o modelo dentro de `Pipeline` aplica `.fit_transform` só no treino e apenas `.transform` no teste.",
+        "Passe `random_state=42` para resultados 100% reprodutíveis."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é a principal vantagem de colocar `StandardScaler()` e o classificador dentro de um `Pipeline` do Scikit-Learn?",
+      "options": [
+        "Treina o modelo na GPU automaticamente",
+        "Evita Data Leakage garantindo que o scaler aprenda média e desvio apenas nos dados de treino durante `fit()` e `cross_val_score`",
+        "Remove a necessidade de separar treino e teste",
+        "Converte o código para C++"
+      ],
+      "correctIndex": 1,
+      "explanation": "O `Pipeline` garante que cada etapa de transformação seja ajustada (`fit`) exclusivamente sobre o conjunto de treino."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Separe `X` e `y` com `train_test_split(X, y, test_size=0.2, random_state=42)` e treine `modelo.fit(X_train, y_train)`:",
+      "starterCode": "from sklearn.model_selection import train_test_split\n# Separe treino/teste e chame modelo.fit():\n",
+      "requiredTokens": ["train_test_split(", "test_size=0.2", "random_state=42", "modelo.fit(X_train, y_train)"],
+      "sampleSolution": "X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\nmodelo.fit(X_train, y_train)",
+      "hint": "Use `X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)` e `modelo.fit(X_train, y_train)`.",
+      "explanation": "Separar 20% dos dados para teste antes de treinar mede a real capacidade de generalização do modelo."
+    }
+  ]
+}

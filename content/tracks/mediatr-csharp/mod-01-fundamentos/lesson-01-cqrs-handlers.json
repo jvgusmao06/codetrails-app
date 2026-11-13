@@ -1,0 +1,64 @@
+{
+  "id": "lesson-01-cqrs-handlers",
+  "title": "IRequest, Handlers e Send",
+  "description": "Envie comandos e queries desacoplados via IMediator.Send para handlers focados.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Desacoplando endpoints com MediatR",
+      "content": "O **MediatR** implementa o padrão Mediator em memória no .NET, sendo a base mais popular para arquiteturas **CQRS** (Command Query Responsibility Segregation) e Vertical Slice.\n\nOs 3 blocos essenciais:\n1. **Request (`IRequest<TResponse>`)**: um `record` imutável representando um Command (escrita) ou Query (leitura).\n2. **Handler (`IRequestHandler<TRequest, TResponse>`)**: a classe que processa aquela requisição no método `Handle`.\n3. **Envio (`IMediator.Send(...)`)**: o endpoint apenas despacha o request sem conhecer o handler ou suas dependências.",
+      "codeExample": "using MediatR;\n\npublic record ObterSaldoQuery(int ContaId) : IRequest<decimal>;\n\npublic class ObterSaldoHandler : IRequestHandler<ObterSaldoQuery, decimal>\n{\n    public Task<decimal> Handle(ObterSaldoQuery request, CancellationToken ct)\n    {\n        return Task.FromResult(1500.00m);\n    }\n}\n\n// No endpoint:\n// var saldo = await mediator.Send(new ObterSaldoQuery(42));"
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual interface um record de Query que retorna um ProdutoDto deve implementar no MediatR?",
+      "options": [
+        "IRequest<ProdutoDto>",
+        "INotification<ProdutoDto>",
+        "IRequestHandler<ProdutoDto>",
+        "IPipelineBehavior<ProdutoDto>"
+      ],
+      "correctIndex": 0,
+      "explanation": "IRequest<TResponse> define o contrato de entrada e o tipo de retorno esperado pelo IMediator.Send."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a definição do Command e de seu Handler no MediatR:",
+      "codeTemplate": "public record CriarPedidoCommand(string Cliente) : {{blank}}<int>;\n\npublic class CriarPedidoHandler : {{blank}}<CriarPedidoCommand, int>\n{\n    public Task<int> {{blank}}(CriarPedidoCommand req, CancellationToken ct)\n        => Task.FromResult(101);\n}",
+      "blanks": [
+        { "answer": "IRequest" },
+        { "answer": "IRequestHandler" },
+        { "answer": "Handle" }
+      ],
+      "options": ["IRequest", "INotification", "IRequestHandler", "Handle", "Execute"],
+      "explanation": "O request implementa IRequest<TResponse>, o handler implementa IRequestHandler<TRequest, TResponse> e o método obrigatório é Handle."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Identifique o erro na chamada do MediatR dentro do endpoint:",
+      "lines": [
+        "app.MapPost(\"/pedidos\", async (CriarPedidoCommand cmd, IMediator mediator) =>",
+        "{",
+        "    var id = await mediator.Publish(cmd);",
+        "    return Results.Ok(id);",
+        "});"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Publish é usado apenas para INotification (eventos sem retorno para múltiplos handlers). Para IRequest<T> com retorno, deve-se usar mediator.Send(cmd)."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva um record PingQuery() : IRequest<string> e seu handler PingHandler retornando Task.FromResult(\"Pong\").",
+      "starterCode": "using MediatR;\n\n// Escreva PingQuery e PingHandler",
+      "requiredTokens": [
+        "IRequest<string>",
+        "IRequestHandler<PingQuery, string>",
+        "Handle("
+      ],
+      "sampleSolution": "using MediatR;\n\npublic record PingQuery() : IRequest<string>;\n\npublic class PingHandler : IRequestHandler<PingQuery, string>\n{\n    public Task<string> Handle(PingQuery request, CancellationToken ct)\n    {\n        return Task.FromResult(\"Pong\");\n    }\n}",
+      "hint": "Defina public record PingQuery() : IRequest<string>; e a classe PingHandler implementando IRequestHandler<PingQuery, string> com o método Task<string> Handle(PingQuery request, CancellationToken ct).",
+      "explanation": "Cada caso de uso fica isolado em seu próprio par Request/Handler, mantendo controllers e Minimal APIs enxutos."
+    }
+  ]
+}

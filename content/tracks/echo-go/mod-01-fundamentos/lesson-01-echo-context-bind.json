@@ -1,0 +1,67 @@
+{
+  "id": "lesson-01-echo-context-bind",
+  "title": "Rotas, Bind e JSON no Echo",
+  "description": "Use echo.Context para fazer bind de JSON em structs e responder com c.JSON(http.StatusOK, ...).",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Minimalismo e extensibilidade com Echo",
+      "content": "O **Echo** (`github.com/labstack/echo/v4`) é um dos frameworks web mais maduros do ecossistema Go, usando `net/http` padrão com roteador de alocação zero:\n\n- `e := echo.New()` cria a instância.\n- Handlers recebem `c echo.Context` (interface, sem ponteiro!) e retornam `error`.\n- `c.Bind(&dto)` faz parse automático do corpo JSON/query/form para sua struct.\n- `c.JSON(http.StatusOK, data)` envia a resposta com o status code explícito.",
+      "codeExample": "e := echo.New()\n\ne.POST(\"/orders\", func(c echo.Context) error {\n    var req CreateOrderReq\n    if err := c.Bind(&req); err != nil {\n        return c.JSON(http.StatusBadRequest, map[string]string{\"error\": err.Error()})\n    }\n    return c.JSON(http.StatusCreated, req)\n})"
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual método de echo.Context preenche automaticamente uma struct Go a partir do JSON enviado no body da requisição?",
+      "options": [
+        "c.Bind(&structVar)",
+        "c.ParseJSON(&structVar)",
+        "c.DecodeBody(&structVar)",
+        "c.ReadStruct(&structVar)"
+      ],
+      "correctIndex": 0,
+      "explanation": "c.Bind(&target) detecta o Content-Type (como application/json) e popula os campos exportados da struct."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o endpoint GET do Echo para retornar uma mensagem JSON com status 200:",
+      "codeTemplate": "e := echo.{{blank}}()\ne.GET(\"/ping\", func(c echo.{{blank}}) error {\n    return c.{{blank}}(http.StatusOK, map[string]string{\"msg\": \"pong\"})\n})",
+      "blanks": [
+        { "answer": "New" },
+        { "answer": "Context" },
+        { "answer": "JSON" }
+      ],
+      "options": ["New", "Create", "Context", "Ctx", "JSON", "Send"],
+      "explanation": "echo.New() cria o servidor, o handler recebe echo.Context e c.JSON(status, payload) envia a resposta."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Encontre o erro na chamada de binding do Echo:",
+      "lines": [
+        "e.POST(\"/users\", func(c echo.Context) error {",
+        "    var u User",
+        "    if err := c.Bind(u); err != nil {",
+        "        return err",
+        "    }",
+        "    return c.JSON(http.StatusCreated, u)",
+        "})"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "c.Bind precisa de um ponteiro (&u) para conseguir modificar os campos da struct User."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Registre uma rota e.GET(\"/users/:id\", ...) no Echo que lê c.Param(\"id\") e retorna c.JSON(http.StatusOK, map[string]string{\"id\": id}).",
+      "starterCode": "e := echo.New()\n// Registre e.GET(\"/users/:id\", ...)",
+      "requiredTokens": [
+        "e.GET(\"/users/:id\"",
+        "echo.Context",
+        "c.Param(\"id\")",
+        "c.JSON("
+      ],
+      "sampleSolution": "e := echo.New()\ne.GET(\"/users/:id\", func(c echo.Context) error {\n    id := c.Param(\"id\")\n    return c.JSON(http.StatusOK, map[string]string{\"id\": id})\n})",
+      "hint": "Em Echo, o método para ler parâmetro de rota é c.Param(\"id\") (no singular).",
+      "explanation": "Diferente do Fiber (c.Params), o Echo usa c.Param(\"nome\") para parâmetros de caminho."
+    }
+  ]
+}

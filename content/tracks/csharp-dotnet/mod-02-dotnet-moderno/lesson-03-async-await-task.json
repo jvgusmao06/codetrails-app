@@ -1,0 +1,40 @@
+{
+  "id": "csharp-async-await-03",
+  "title": "Programação Assíncrona: async Task<T>, await e Task.WhenAll",
+  "description": "Escreva código backend escalável em C# sem travar threads com async/await, Task.WhenAll e CancellationToken.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Async / Await e CancellationToken no .NET",
+      "content": "O C# foi quem popularizou o padrão `async / await`! Métodos assíncronos retornam **`Task`** (quando não há valor) ou **`Task<T>`** (quando retorna `T`), e por convenção terminam com o sufixo `Async` (ex: `BuscarUsuarioAsync`). Use **`await Task.WhenAll(t1, t2)`** para executar várias chamadas em paralelo, e passe sempre **`CancellationToken ct`** para cancelar consultas caso o cliente desconecte!",
+      "codeExample": "public async Task<string> BuscarDadosAsync(HttpClient http, CancellationToken ct) {\n    var resp = await http.GetStringAsync(\"https://api.exemplo.com/v1\", ct);\n    return resp;\n}\n\n// Executando 2 tarefas em paralelo:\nawait Task.WhenAll(EnviarEmailAsync(), AtualizarCacheAsync());",
+      "keyTakeaways": [
+        "NUNCA use `.Result` ou `.Wait()` em uma `Task` dentro de APIs web — isso pode causar **Deadlock** e exaurir threads! Use sempre `await`.",
+        "Evite `async void` (exceto em event handlers de UI), pois exceções em `async void` não podem ser capturadas com `try/catch`! Retorne `async Task`.",
+        "Reutilize uma única instância de `HttpClient` (ou use `IHttpClientFactory`) em produção para não esgotar sockets."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual retorno deve ser usado em um método assíncrono em C# que **não devolve nenhum valor**, para que `await` e `try/catch` funcionem corretamente?",
+      "options": [
+        "async void",
+        "async Task",
+        "async Promise",
+        "async Future"
+      ],
+      "correctIndex": 1,
+      "explanation": "`async Task` permite aguardar a conclusão e propagar exceções corretamente (diferente de `async void`)."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva um método `public async Task<int> CalcularAsync()` que aguarde `await Task.Delay(10);` e retorne `42`:",
+      "starterCode": "// Crie o método assíncrono CalcularAsync:\n",
+      "requiredTokens": ["public async Task<int>", "CalcularAsync()", "await Task.Delay(10)", "return 42"],
+      "sampleSolution": "public async Task<int> CalcularAsync() {\n    await Task.Delay(10);\n    return 42;\n}",
+      "hint": "Declare `public async Task<int> CalcularAsync()` com `await Task.Delay(10);` e `return 42;`.",
+      "explanation": "O compilador do C# transforma `async Task<int>` em uma máquina de estados eficiente sem bloquear a thread durante o `await`."
+    }
+  ]
+}

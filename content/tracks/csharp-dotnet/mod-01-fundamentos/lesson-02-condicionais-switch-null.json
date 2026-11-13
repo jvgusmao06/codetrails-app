@@ -1,0 +1,40 @@
+{
+  "id": "csharp-null-switch-02",
+  "title": "Null-Safety (string?), Operadores ?./?? e Switch Expressions (=>)",
+  "description": "Previna NullReferenceException usando tipos anuláveis (?), coalescência nula (??) e switch moderno com seta.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Segurança Contra Null e Switch Moderno em C#",
+      "content": "Para evitar a clássica `NullReferenceException`, o C# moderno usa **Nullable Reference Types**: `string` não aceita `null`, enquanto **`string?`** indica explicitamente que o valor pode ser nulo! Combinamos isso com **`?.`** (Null-conditional) e **`??`** (Null-coalescing). Além disso, o **Switch Expression** usa `=>` e retorna valor direto sem precisar de `break`!",
+      "codeExample": "string? apelido = null;\nstring exibicao = apelido?.ToUpper() ?? \"Visitante\";\n\nint codigo = 200;\nstring status = codigo switch {\n    200 => \"OK\",\n    404 => \"Não encontrado\",\n    _   => \"Desconhecido\"\n};",
+      "keyTakeaways": [
+        "`_` no `switch` expression funciona como o caso padrão (`default`).",
+        "`obj?.Prop ?? padrao` evita `NullReferenceException` retornando um fallback seguro.",
+        "`string.IsNullOrWhiteSpace(texto)` é a forma nativa idiomática para validar strings vazias ou com espaços."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Em C#, o que significa o caractere `_` dentro de uma Switch Expression (`codigo switch { 200 => \"OK\", _ => \"Erro\" }`)?",
+      "options": [
+        "Ignora o compilador",
+        "É o padrão de descarte (equivalente ao `default:`) que captura qualquer outro valor",
+        "Representa valor nulo apenas",
+        "Finaliza o programa"
+      ],
+      "correctIndex": 1,
+      "explanation": "O discard `_` atua como fallback padrão caso nenhum dos casos anteriores tenha correspondido."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Declare `string? nome = null;` e crie `var saudacao = nome?.Trim() ?? \"Anônimo\";`:",
+      "starterCode": "// Use string?, ?. e ?? abaixo:\n",
+      "requiredTokens": ["string?", "nome", "null", "?.", "??"],
+      "sampleSolution": "string? nome = null;\nvar saudacao = nome?.Trim() ?? \"Anônimo\";",
+      "hint": "Escreva `string? nome = null;` e `var saudacao = nome?.Trim() ?? \"Anônimo\";`.",
+      "explanation": "Se `nome` for `null`, `nome?.Trim()` avalia para `null` sem quebrar e `??` fornece `\"Anônimo\"`."
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "sqlalchemy-2-01",
+  "title": "SQLAlchemy 2.0: DeclarativeBase, Mapped e session.scalars(select(...))",
+  "description": "Defina modelos ORM com autocomplete total de tipos e consulte bancos relacionais com segurança.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "SQLAlchemy 2.0 Moderno com Type Hints",
+      "content": "O **SQLAlchemy 2.0** é o ORM padrão de projetos Python + FastAPI. No estilo moderno, usamos **`Mapped[tipo]`** e **`mapped_column(...)`** dentro de uma classe herdando de **`DeclarativeBase`**, dando autocomplete completo no editor! Para consultar, não usamos mais o antigo `session.query(User)` — usamos **`select(User).where(User.ativo == True)`** com `session.scalars(stmt).all()`.",
+      "codeExample": "from sqlalchemy import select, String\nfrom sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column\n\nclass Base(DeclarativeBase): pass\n\nclass Usuario(Base):\n    __tablename__ = \"usuarios\"\n    id: Mapped[int] = mapped_column(primary_key=True)\n    nome: Mapped[str] = mapped_column(String(100))\n\nstmt = select(Usuario).where(Usuario.nome == \"Ana\")\nusuarios = session.scalars(stmt).all()",
+      "keyTakeaways": [
+        "`Mapped[Optional[str]]` gera automaticamente uma coluna SQL que aceita `NULL`!",
+        "`select(Modelo).where(...)` unifica a sintaxe entre consultas síncronas e assíncronas (`AsyncSession`).",
+        "Use `session.commit()` para persistir alterações e `with Session(engine) as session:` para fechar a sessão."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o modelo e a consulta no padrão SQLAlchemy 2.0:",
+      "codeTemplate": "class Produto(Base):\n    __tablename__ = \"produtos\"\n    id: {{blank}}[int] = {{blank}}(primary_key=True)\n\nstmt = {{blank}}(Produto).where(Produto.id == 1)",
+      "blanks": [
+        { "answer": "Mapped", "placeholder": "tipo" },
+        { "answer": "mapped_column", "placeholder": "coluna" },
+        { "answer": "select", "placeholder": "consulta" }
+      ],
+      "options": ["Mapped", "mapped_column", "select", "Column", "query"],
+      "explanation": "`Mapped[T]` + `mapped_column()` definem colunas tipadas, e `select()` constrói consultas no SQLAlchemy 2.0."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Construa uma query `stmt = select(Cliente).where(Cliente.ativo == True)` e execute `session.scalars(stmt).all()`:",
+      "starterCode": "from sqlalchemy import select\n# Crie stmt com select() e execute com session.scalars():\n",
+      "requiredTokens": ["select(Cliente)", ".where(", "Cliente.ativo == True", "session.scalars(stmt).all()"],
+      "sampleSolution": "stmt = select(Cliente).where(Cliente.ativo == True)\nclientes = session.scalars(stmt).all()",
+      "hint": "Use `stmt = select(Cliente).where(Cliente.ativo == True)` e `clientes = session.scalars(stmt).all()`.",
+      "explanation": "`session.scalars(stmt)` extrai diretamente os objetos `Cliente` sem precisar desempacotar tuplas."
+    }
+  ]
+}

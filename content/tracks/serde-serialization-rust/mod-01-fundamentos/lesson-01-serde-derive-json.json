@@ -1,0 +1,40 @@
+{
+  "id": "serde-derive-01",
+  "title": "Serde: #[derive(Serialize, Deserialize)] e serde_json",
+  "description": "Transforme JSON em structs fortemente tipadas em tempo de compilação sem reflection.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Serialização Zero-Overhead com Serde",
+      "content": "O **Serde** (*SERialize / DEserialize*) é uma das bibliotecas mais famosas do Rust. Basta anotar sua struct com **`#[derive(Serialize, Deserialize)]`** e o compilador gera o código otimizado em tempo de compilação! Use **`#[serde(rename_all = \"camelCase\")]`** para converter `nome_completo` em `nomeCompleto` no JSON para seu frontend TypeScript.",
+      "codeExample": "use serde::{Serialize, Deserialize};\n\n#[derive(Serialize, Deserialize)]\n#[serde(rename_all = \"camelCase\")]\nstruct Usuario {\n    user_id: u32,\n    #[serde(default)]\n    ativo: bool,\n}\n\nlet texto = serde_json::to_string(&user)?;\nlet obj: Usuario = serde_json::from_str(&texto)?;",
+      "keyTakeaways": [
+        "`serde_json::from_str::<T>(&s)` valida o formato e os tipos na hora; se faltar campo obrigatório, retorna `Err`.",
+        "`#[serde(skip_serializing)]` evita vazar campos como `senha_hash` no JSON!",
+        "`#[serde(default)]` preenche campos ausentes com o valor `Default::default()` sem dar erro."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a struct Rust com as macros do Serde e converta para JSON:",
+      "codeTemplate": "#[derive({{blank}}, {{blank}})]\nstruct Ponto { x: i32, y: i32 }\nlet j = serde_json::{{blank}}(&Ponto { x: 1, y: 2 }).unwrap();",
+      "blanks": [
+        { "answer": "Serialize", "placeholder": "serializar" },
+        { "answer": "Deserialize", "placeholder": "desserializar" },
+        { "answer": "to_string", "placeholder": "para string" }
+      ],
+      "options": ["Serialize", "Deserialize", "to_string", "Json", "stringify"],
+      "explanation": "`Serialize` e `Deserialize` habilitam conversão bidirecional, e `serde_json::to_string` gera a String JSON."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Declare um `struct Pedido { id: u64 }` derivado com `#[derive(Serialize, Deserialize)]` e faça parsing de `\"{\\\"id\\\": 1}\"` com `serde_json::from_str::<Pedido>`:",
+      "starterCode": "use serde::{Serialize, Deserialize};\n// Derive Serialize, Deserialize e use serde_json::from_str:\n",
+      "requiredTokens": ["#[derive(Serialize, Deserialize)]", "struct Pedido", "serde_json::from_str"],
+      "sampleSolution": "#[derive(Serialize, Deserialize)]\nstruct Pedido {\n    id: u64,\n}\nlet p: Pedido = serde_json::from_str(\"{\\\"id\\\": 1}\").unwrap();",
+      "hint": "Anote `struct Pedido { id: u64 }` com `#[derive(Serialize, Deserialize)]` e chame `serde_json::from_str`.",
+      "explanation": "O compilador gera um parser especializado para `Pedido` que lê direto para a struct sem alocações extras."
+    }
+  ]
+}

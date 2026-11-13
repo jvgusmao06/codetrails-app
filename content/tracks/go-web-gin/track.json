@@ -7,7 +7,7 @@
   "prerequisites": ["golang-cloud"],
   "color": "#38BDF8",
   "icon": "🌐",
-  "author": "Comunidade CodeTrilhas",
+  "author": "Comunidade CodeTrails",
   "modules": [
     {
       "id": "mod-01-gin-handlers",

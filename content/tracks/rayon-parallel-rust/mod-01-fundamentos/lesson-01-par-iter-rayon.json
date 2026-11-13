@@ -1,0 +1,40 @@
+{
+  "id": "rayon-parallel-01",
+  "title": "Rayon: Paralelismo em 1 Linha com .par_iter() (Zero Data Races)",
+  "description": "Distribua cálculos pesados em CPU entre todos os cores automaticamente usando a biblioteca Rayon.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Fearless Concurrency na Prática: .iter() -> .par_iter()",
+      "content": "Quando você tem **trabalho pesado de CPU** (processar 10 milhões de itens, imagens, simulações) em um vetor, usar `tokio` não acelera a CPU — quem brilha é o **Rayon**! Basta importar **`use rayon::prelude::*;`** e trocar `.iter()` por **`.par_iter()`**: o Rayon divide automaticamente o trabalho entre todos os núcleos usando *work-stealing*, e o compilador Rust garante que **não existe Data Race**!",
+      "codeExample": "use rayon::prelude::*;\n\nlet numeros: Vec<i64> = (1..=1_000_000).collect();\n\n// Roda em paralelo em todos os núcleos da CPU!\nlet soma_quadrados: i64 = numeros\n    .par_iter()\n    .map(|&n| n * n)\n    .sum();",
+      "keyTakeaways": [
+        "Tokio = concorrência de **I/O** (rede, disco, APIs); Rayon = paralelismo de **CPU** (cálculos intensivos).",
+        "`use rayon::prelude::*;` habilita `.par_iter()`, `.par_iter_mut()` e `.into_par_iter()`.",
+        "Se seu código tentar mutar uma variável compartilhada sem `Mutex`/atômico dentro de `.par_iter()`, o Rust bloqueia em tempo de compilação!"
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual trait/módulo você precisa importar para habilitar `.par_iter()` em vetores (`Vec<T>`) e slices no Rayon?",
+      "options": [
+        "use std::thread::*;",
+        "use rayon::prelude::*;",
+        "use tokio::sync::*;",
+        "use serde::*;"
+      ],
+      "correctIndex": 1,
+      "explanation": "Os métodos paralelos como `.par_iter()` vêm das traits expostas em `rayon::prelude::*`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Usando Rayon, calcule `dobrados` multiplicando cada item de `vals` por `2` em paralelo com `.par_iter()`, `.map(|&x| x * 2)` e `.collect()`:",
+      "starterCode": "use rayon::prelude::*;\n// Processe vals em paralelo com .par_iter():\n",
+      "requiredTokens": [".par_iter()", ".map(", "x * 2", ".collect()"],
+      "sampleSolution": "let dobrados: Vec<i32> = vals.par_iter().map(|&x| x * 2).collect();",
+      "hint": "Use `let dobrados: Vec<i32> = vals.par_iter().map(|&x| x * 2).collect();`.",
+      "explanation": "Em uma única linha legível, o Rayon distribui o `.map()` por todos os cores e junta o `Vec` final."
+    }
+  ]
+}

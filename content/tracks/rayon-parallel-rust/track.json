@@ -1,0 +1,19 @@
+{
+  "id": "rayon-parallel-rust",
+  "title": "Rayon (Paralelismo de Dados)",
+  "description": "Transforme loops sequenciais lentos em processamento paralelo em todos os núcleos da CPU trocando .iter() por .par_iter().",
+  "category": "library",
+  "languageId": "rust-systems",
+  "prerequisites": ["rust-systems"],
+  "color": "#F59E0B",
+  "icon": "🔀",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: par_iter(), Work-Stealing e Fearless Concurrency",
+      "description": "Use todos os núcleos do processador sem medo de Data Races graças ao sistema de tipos do Rust.",
+      "lessons": ["lesson-01-par-iter-rayon"]
+    }
+  ]
+}

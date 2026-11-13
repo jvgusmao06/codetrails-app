@@ -1,0 +1,23 @@
+{
+  "id": "echo-go",
+  "title": "Echo (Web Framework)",
+  "description": "Desenvolva APIs REST idiomáticas em Go com Labstack Echo: e.GET, echo.Context, Bind() e middlewares integrados.",
+  "category": "framework",
+  "languageId": "golang-cloud",
+  "prerequisites": [
+    "golang-cloud"
+  ],
+  "color": "#0284C7",
+  "icon": "📡",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: echo.New, Context e Bind",
+      "description": "Crie rotas, faça binding automático de JSON para structs e retorne respostas HTTP limpas no Echo.",
+      "lessons": [
+        "lesson-01-echo-context-bind"
+      ]
+    }
+  ]
+}

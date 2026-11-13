@@ -1,6 +1,6 @@
-# >_ CodeTrilhas — Aprendizado Modular de Programação Open Source
+# >_ CodeTrails — Aprendizado Modular de Programação Open Source
 
-**CodeTrilhas** é uma plataforma web e mobile (PWA) de código aberto para o ensino interativo e gamificado de **linguagens de programação, bibliotecas e frameworks**. Projetado para ser mantido pela comunidade via Git/GitHub, cada trilha combina **explicações teóricas diretas** com **desafios práticos rápidos** em uma interface inspirada em IDEs modernas e grafos de commits.
+**CodeTrails** é uma plataforma web e mobile (PWA) de código aberto para o ensino interativo e gamificado de **linguagens de programação, bibliotecas e frameworks**. Projetado para ser mantido pela comunidade via Git/GitHub, cada trilha combina **explicações teóricas diretas** com **desafios práticos rápidos** em uma interface inspirada em IDEs modernas e grafos de commits.
 
 ---
 
@@ -32,15 +32,13 @@
 
 ---
 
-## 🧭 Trilhas e Árvore de Pré-Requisitos (26 Trilhas / 46 Lições)
+## 🧭 Trilhas e Árvore de Pré-Requisitos (74 Trilhas / 187 Lições)
 
 As trilhas são organizadas de forma hierárquica: o estudante escolhe uma **Linguagem Base** ou **Conceito de Ciência da Computação** no topo e, dentro de cada linguagem, visualiza apenas os **Frameworks, Bibliotecas e Ferramentas daquele ecossistema**, com verificação automática de pré-requisitos (`prerequisites` e `languageId`):
 
 ### 1. 🐍 Ecossistema Python (`python-basics`)
-- **Python Essencial** (Linguagem Base — variáveis, tipos, condicionais, listas, `def` com *Type Hints*, dicionários e *List Comprehensions*)
-  - ↳ ⚡ **FastAPI & APIs REST** (`fastapi-python`) — *Requer concluir: Python Essencial*
-  - ↳ 🐼 **Pandas & Data Science** (`pandas-data-science`) — *Requer concluir: Python Essencial*
-  - ↳ 🧪 **Pytest & Qualidade** (`pytest-testing`) — *Requer concluir: Python Essencial*
+- **Python** (Linguagem Base — variáveis, tipos, condicionais, listas, `def` com *Type Hints*, dicionários e *List Comprehensions*)
+  - ↳ **9 frameworks e bibliotecas:** FastAPI, Django & DRF, Pandas, NumPy, PyTorch, Scikit-learn, SQLAlchemy, Pydantic e Pytest.
 
 ### 2. ☕ Ecossistema Java (`java-basics`)
 - **Java & POO** (Linguagem Base — `main`, tipos estáticos, classes, `record`, Lambdas `->` e `Streams API`)
@@ -74,7 +72,11 @@ As trilhas são organizadas de forma hierárquica: o estudante escolhe uma **Lin
 - **Rust & Segurança de Memória** (Linguagem Base — expressões sem `;`, macros `!`, `struct/impl`, *Ownership*, *Borrowing*, `match`, `Option<T>` e `Result<T, E>`)
   - ↳ 🚀 **Axum, Tokio & Serde (Rust Web)** (`rust-axum-serde`) — *Requer concluir: Rust & Segurança de Memória*
 
-### 8. 🌿 Fundamentos & Conceitos Universais (`category: "concept"` / `"tool"`)
+### 8. 🟣 Ecossistema C# & .NET (`csharp-dotnet`)
+- **C# & .NET** (Linguagem Base — tipos, null-safety, classes, `record`, LINQ e `async/await`)
+  - ↳ **9 frameworks e bibliotecas:** ASP.NET Core, Entity Framework Core, Dapper, Unity (C#), Blazor, xUnit.net, FluentValidation, MediatR e SignalR.
+
+### 9. 🌿 Fundamentos & Conceitos Universais (`category: "concept"` / `"tool"`)
 - **Git & Fluxo GitHub** (`git-github-workflow`) — `commit`, `branch`, `merge` e fluxo de Pull Requests
 - **Algoritmos & Estruturas (Big O)** (`algorithms-data-structures`) — Complexidade de tempo/espaço, Hash Maps $O(1)$ e Busca Binária $O(\log n)$
 

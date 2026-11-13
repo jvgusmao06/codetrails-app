@@ -1,0 +1,40 @@
+{
+  "id": "mockito-verify-01",
+  "title": "Mockito Avançado: @InjectMocks, verify() e ArgumentCaptor",
+  "description": "Valide não só o retorno, mas quantas vezes e com quais argumentos um método dependente foi chamado.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Verificando Comportamentos com verify() no Mockito",
+      "content": "Além de simular retornos com `when(repo.buscar(1)).thenReturn(...)`, o **Mockito** permite garantir que efeitos colaterais realmente aconteceram (ex: um e-mail foi enviado exatamente 1 vez, ou nunca foi enviado em caso de erro!). Usamos **`verify(mock, times(1)).metodo(...)`** ou **`verify(mock, never()).metodo(...)`**, e **`ArgumentCaptor`** para inspecionar o objeto exato passado ao mock.",
+      "codeExample": "@ExtendWith(MockitoExtension.class)\nclass PedidoServiceTest {\n    @Mock EmailClient emailClient;\n    @InjectMocks PedidoService service;\n\n    @Test\n    void naoEnviaEmailSeFalhar() {\n        verify(emailClient, never()).enviar(anyString());\n    }\n}",
+      "keyTakeaways": [
+        "`@InjectMocks` cria a classe testada injetando automaticamente todos os `@Mock` da classe de teste.",
+        "`verify(mock, times(1))` ou `verify(mock, never())` testa efeitos colaterais sem precisar de banco ou SMTP real.",
+        "Use `ArgumentMatchers.any()` (ou `eq(...)` se misturar com valores fixos) nos stubs e verifys."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual chamada do Mockito garante que `auditoria.registrar()` **não foi chamado nenhuma vez** durante o teste?",
+      "options": [
+        "verify(auditoria, zero()).registrar()",
+        "verify(auditoria, never()).registrar()",
+        "when(auditoria.registrar()).thenStop()",
+        "assertNull(auditoria)"
+      ],
+      "correctIndex": 1,
+      "explanation": "`never()` (equivalente a `times(0)`) falha o teste se o método tiver sido invocado uma ou mais vezes."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Configure um stub com `when(repo.buscar(1L)).thenReturn(Optional.of(user));` e depois verifique `verify(repo, times(1)).buscar(1L);`:",
+      "starterCode": "// Configure when().thenReturn() e verify():\n",
+      "requiredTokens": ["when(repo.buscar(1L))", ".thenReturn(", "verify(repo, times(1))", ".buscar(1L)"],
+      "sampleSolution": "when(repo.buscar(1L)).thenReturn(Optional.of(user));\nverify(repo, times(1)).buscar(1L);",
+      "hint": "Use `when(repo.buscar(1L)).thenReturn(Optional.of(user));` e `verify(repo, times(1)).buscar(1L);`.",
+      "explanation": "Combinar `when` (Arrange) e `verify` (Assert) torna testes de regras de negócio extremamente confiáveis."
+    }
+  ]
+}

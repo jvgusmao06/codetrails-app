@@ -1,0 +1,23 @@
+{
+  "id": "fiber-go",
+  "title": "Fiber (Web Framework)",
+  "description": "Construa APIs REST ultrarrápidas em Go com ergonomia estilo Express usando fiber.New(), c.Params() e c.JSON().",
+  "category": "framework",
+  "languageId": "golang-cloud",
+  "prerequisites": [
+    "golang-cloud"
+  ],
+  "color": "#00ACD7",
+  "icon": "⚡",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: Rotas, Contexto e JSON no Fiber",
+      "description": "Crie endpoints HTTP de alta performance com *fiber.Ctx, parâmetros de rota e middlewares.",
+      "lessons": [
+        "lesson-01-fiber-routes-json"
+      ]
+    }
+  ]
+}

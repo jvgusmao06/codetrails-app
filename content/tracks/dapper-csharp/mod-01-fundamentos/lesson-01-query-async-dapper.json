@@ -1,0 +1,40 @@
+{
+  "id": "dapper-query-01",
+  "title": "Dapper: QueryAsync<T>, QueryFirstOrDefaultAsync e Parâmetros @",
+  "description": "Use o micro-ORM criado pelo Stack Overflow para consultas SQL ultrarrápidas e livres de SQL Injection.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "SQL Puro em Velocidade Máxima com Dapper",
+      "content": "Quando o EF Core é pesado demais para relatórios complexos ou APIs de baixíssima latência, o **Dapper** brilha! Ele adiciona métodos de extensão em qualquer `IDbConnection`: **`QueryAsync<T>(sql, param)`** para listas e **`QueryFirstOrDefaultAsync<T>(sql, param)`** para um único registro — sempre passando parâmetros com `@Nome` em um objeto anônimo `new { Nome = ... }` (nunca concatenando strings!).",
+      "codeExample": "const string sql = \"SELECT id, nome FROM produtos WHERE categoria = @Cat\";\nvar lista = await conn.QueryAsync<ProdutoDto>(sql, new { Cat = \"Tech\" });",
+      "keyTakeaways": [
+        "`new { Cat = \"Tech\" }` cria parâmetros SQL reais (`@Cat`), bloqueando 100% de SQL Injection.",
+        "Para `INSERT`/`UPDATE`/`DELETE`, use `await conn.ExecuteAsync(sql, param)`.",
+        "Muitos times usam EF Core para escrita/migrations e Dapper para queries analíticas pesadas (CQRS)."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "No Dapper, qual é a forma segura de passar a variável `email` para uma query SQL?",
+      "options": [
+        "`$\"SELECT * FROM users WHERE email = '{email}'\"`",
+        "`conn.QueryFirstOrDefaultAsync<User>(\"SELECT * FROM users WHERE email = @Email\", new { Email = email })`",
+        "`\"SELECT * FROM users WHERE email = \" + email`",
+        "Usar string.Format"
+      ],
+      "correctIndex": 1,
+      "explanation": "Passar `@Email` na query e `new { Email = email }` como segundo argumento gera um `DbParameter` seguro contra SQL Injection."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Execute uma consulta Dapper usando `await conn.QueryFirstOrDefaultAsync<Usuario>(\"SELECT id, nome FROM usuarios WHERE id = @Id\", new { Id = id });`:",
+      "starterCode": "// Consulte 1 Usuario com Dapper de forma segura:\n",
+      "requiredTokens": ["await", "conn.QueryFirstOrDefaultAsync<Usuario>", "@Id", "new { Id = id }"],
+      "sampleSolution": "var user = await conn.QueryFirstOrDefaultAsync<Usuario>(\n    \"SELECT id, nome FROM usuarios WHERE id = @Id\",\n    new { Id = id }\n);",
+      "hint": "Use `await conn.QueryFirstOrDefaultAsync<Usuario>(\"SELECT id, nome FROM usuarios WHERE id = @Id\", new { Id = id });`.",
+      "explanation": "O Dapper mapeia automaticamente as colunas `id` e `nome` para as propriedades da classe/record `Usuario`."
+    }
+  ]
+}

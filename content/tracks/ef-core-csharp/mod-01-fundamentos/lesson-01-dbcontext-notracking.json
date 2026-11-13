@@ -1,0 +1,40 @@
+{
+  "id": "efcore-notracking-01",
+  "title": "EF Core: DbContext, AsNoTracking(), Include e SaveChangesAsync",
+  "description": "Acelere consultas somente-leitura com AsNoTracking() e evite N+1 usando Include().",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Boas Práticas Essenciais de Performance no EF Core",
+      "content": "No **Entity Framework Core**, o `DbContext` guarda uma cópia na memória (*Change Tracker*) de cada entidade carregada para detectar mudanças no `SaveChangesAsync()`. Em endpoints **`GET` (somente leitura)**, sempre adicione **`.AsNoTracking()`** — isso economiza memória e acelera a query em até 2x! E para carregar relacionamentos sem N+1, use **`.Include(p => p.Cliente)`**.",
+      "codeExample": "var pedidos = await db.Pedidos\n    .AsNoTracking()\n    .Include(p => p.Cliente)\n    .Where(p => p.Pago)\n    .ToListAsync(ct);",
+      "keyTakeaways": [
+        "Use `.AsNoTracking()` em todas as consultas de leitura (`GET`) onde você não vai alterar e salvar as entidades.",
+        "Sempre passe o `CancellationToken` (`ct`) para `.ToListAsync(ct)` e `.SaveChangesAsync(ct)`.",
+        "Use `dotnet ef migrations add Nome` para gerar migrations versionadas do schema."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual método devemos encadear em queries `GET` (somente leitura) do Entity Framework Core para desligar o rastreamento de alterações e ganhar performance?",
+      "options": [
+        ".AsSplitQuery()",
+        ".AsNoTracking()",
+        ".SaveChangesAsync()",
+        ".IgnoreQueryFilters()"
+      ],
+      "correctIndex": 1,
+      "explanation": "`.AsNoTracking()` evita que o `DbContext` aloque snapshots de rastreamento para entidades que não serão modificadas."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Consulte `db.Usuarios` sem rastreamento (`.AsNoTracking()`), filtre `u.Ativo` com `.Where(...)` e materialize com `await ... .ToListAsync()`:",
+      "starterCode": "// Consulte usuarios ativos sem tracking:\n",
+      "requiredTokens": ["await", "db.Usuarios", ".AsNoTracking()", ".Where(", ".ToListAsync("],
+      "sampleSolution": "var ativos = await db.Usuarios\n    .AsNoTracking()\n    .Where(u => u.Ativo)\n    .ToListAsync();",
+      "hint": "Encadeie `await db.Usuarios.AsNoTracking().Where(u => u.Ativo).ToListAsync();`.",
+      "explanation": "Essa combinação entrega queries limpas em C# com ótimo desempenho no PostgreSQL/SQL Server."
+    }
+  ]
+}

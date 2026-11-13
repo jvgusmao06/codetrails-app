@@ -7,7 +7,7 @@
   "prerequisites": ["typescript-javascript"],
   "color": "#22C55E",
   "icon": "🟢",
-  "author": "Comunidade CodeTrilhas",
+  "author": "Comunidade CodeTrails",
   "modules": [
     {
       "id": "mod-01-rotas-middlewares",

@@ -1,0 +1,40 @@
+{
+  "id": "tracing-rust-01",
+  "title": "Tracing: Logs Estruturados (tracing::info!) e #[instrument]",
+  "description": "Rastreie requisições assíncronas com contexto automático usando spans e o atributo #[tracing::instrument].",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Por que Tracing Substituiu println! e Logs Simples?",
+      "content": "Em APIs assíncronas como Axum + Tokio, milhares de requisições rodam intercaladas nas mesmas threads, deixando logs `println!` misturados e impossíveis de debugar! O crate **`tracing`** (da equipe Tokio) registra **Eventos** (`tracing::info!(user_id = 42, \"Pedido criado\")`) dentro de **Spans** (intervalos de tempo com início/fim). Com **`#[tracing::instrument]`** em uma função, ela automaticamente cria um Span com seus parâmetros!",
+      "codeExample": "use tracing::{info, instrument};\n\n#[instrument(skip(senha))]\nasync fn autenticar(email: &str, senha: &str) {\n    info!(usuario = %email, \"Login validado\");\n}\n\n// No main(): tracing_subscriber::fmt::init();",
+      "keyTakeaways": [
+        "SEMPRE use `#[instrument(skip(senha, token))]` para nunca gravar segredos ou senhas nos logs!",
+        "Campos estruturados (`info!(status = 200, \"ok\")`) podem ser exportados direto em JSON para Datadog/Grafana/OpenTelemetry.",
+        "Sem inicializar um `tracing_subscriber` no `main()`, nenhum evento é impresso!"
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Esta função de login usa `#[tracing::instrument]` e acidentalmente vaza a `senha` em texto puro nos logs de produção! Clique na linha que precisa de `skip(senha)`:",
+      "lines": [
+        "#[tracing::instrument]",
+        "async fn fazer_login(email: &str, senha: &str) {",
+        "    tracing::info!(\"Tentativa de login\");",
+        "}"
+      ],
+      "buggyLineIndex": 0,
+      "explanation": "Na linha 1, `#[tracing::instrument]` grava todos os parâmetros da função no Span! O seguro é `#[tracing::instrument(skip(senha))]`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Anote `fn processar(id: u64, token: &str)` com `#[tracing::instrument(skip(token))]` e emita `tracing::info!(pedido_id = id, \"Processado\");`:",
+      "starterCode": "// Instrumente a função pulando o campo sensível token:\n",
+      "requiredTokens": ["#[tracing::instrument(skip(token))]", "fn processar", "tracing::info!", "pedido_id = id"],
+      "sampleSolution": "#[tracing::instrument(skip(token))]\nfn processar(id: u64, token: &str) {\n    tracing::info!(pedido_id = id, \"Processado\");\n}",
+      "hint": "Coloque `#[tracing::instrument(skip(token))]` acima de `fn processar(id: u64, token: &str)` e use `tracing::info!(pedido_id = id, \"Processado\");`.",
+      "explanation": "`skip(token)` protege credenciais enquanto `tracing::info!` cria logs estruturados buscáveis."
+    }
+  ]
+}

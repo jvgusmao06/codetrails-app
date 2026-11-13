@@ -7,7 +7,7 @@
   "prerequisites": ["rust-systems"],
   "color": "#FB923C",
   "icon": "🚀",
-  "author": "Comunidade CodeTrilhas",
+  "author": "Comunidade CodeTrails",
   "modules": [
     {
       "id": "mod-01-axum-serde",

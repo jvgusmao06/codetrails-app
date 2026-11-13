@@ -1,0 +1,40 @@
+{
+  "id": "aspnet-minimal-01",
+  "title": "ASP.NET Core: Minimal APIs (MapGet, MapPost) e Injeção de Dependência",
+  "description": "Defina rotas HTTP limpas em 3 linhas com WebApplication e retorne Results tipados.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Minimal APIs no ASP.NET Core",
+      "content": "No .NET moderno, você não precisa de Controllers pesados para criar uma API REST: as **Minimal APIs** usam **`app.MapGet(\"/rota\", ...)`** e **`app.MapPost(...)`**, injetam serviços direto nos parâmetros da lambda e retornam **`Results.Ok(...)`**, **`Results.Created(...)`** ou **`Results.NotFound()`**!",
+      "codeExample": "var builder = WebApplication.CreateBuilder(args);\nbuilder.Services.AddScoped<IProdutoService, ProdutoService>();\nvar app = builder.Build();\n\napp.MapGet(\"/produtos/{id:int}\", (int id, IProdutoService svc) =>\n    svc.Buscar(id) is { } p ? Results.Ok(p) : Results.NotFound());\n\napp.Run();",
+      "keyTakeaways": [
+        "`AddSingleton` = 1 instância para todo o app; `AddScoped` = 1 instância por requisição HTTP (padrão para serviços e EF Core!); `AddTransient` = nova instância sempre.",
+        "Constraint de rota `{id:int}` rejeita `/produtos/abc` automaticamente com 404.",
+        "`Results.Created($\"/itens/{id}\", item)` retorna HTTP 201 com header `Location`."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual tempo de vida de Injeção de Dependência (`builder.Services.Add...`) é o padrão recomendado para serviços de negócio e `DbContext` que devem durar apenas **uma requisição HTTP**?",
+      "options": [
+        "AddSingleton",
+        "AddScoped",
+        "AddGlobal",
+        "AddStatic"
+      ],
+      "correctIndex": 1,
+      "explanation": "`AddScoped` cria uma instância compartilhada durante uma única requisição HTTP e a descarta (`Dispose`) ao final dela."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie uma rota Minimal API `app.MapGet(\"/health\", () => Results.Ok(new { status = \"ok\" }));`:",
+      "starterCode": "// Crie o endpoint /health com MapGet:\n",
+      "requiredTokens": ["app.MapGet(", "\"/health\"", "Results.Ok("],
+      "sampleSolution": "app.MapGet(\"/health\", () => Results.Ok(new { status = \"ok\" }));",
+      "hint": "Use `app.MapGet(\"/health\", () => Results.Ok(new { status = \"ok\" }));`.",
+      "explanation": "Minimal APIs serializam objetos anônimos ou records automaticamente para JSON."
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "csharp-linq-01",
+  "title": "LINQ: Consultando Coleções com Where, Select, OrderBy e FirstOrDefault",
+  "description": "Transforme listas e consultas de banco (Entity Framework) usando os métodos nativos do LINQ com lambdas (=>).",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "O Superpoder do C#: LINQ (Language Integrated Query)",
+      "content": "Um dos recursos mais amados do C# é o **LINQ** (`using System.Linq;` — já incluído globalmente no .NET moderno). Ele permite filtrar, transformar, ordenar e agregar qualquer coleção (ou banco SQL no EF Core!) usando a mesma sintaxe:\n- **`.Where(x => ...)`**: filtra elementos (como `filter`).\n- **`.Select(x => ...)`**: projeta/transforma elementos (como `map`).\n- **`.FirstOrDefault(x => ...)`**: pega o primeiro que combina (ou `null`/padrão se não achar).\n- **`.Any()` / `.Sum()` / `.OrderByDescending()`**: verificações e agregações instantâneas!",
+      "codeExample": "var nomesAtivos = usuarios\n    .Where(u => u.Ativo && u.Idade >= 18)\n    .OrderBy(u => u.Nome)\n    .Select(u => u.Nome.ToUpper())\n    .ToList();\n\nbool temAdmin = usuarios.Any(u => u.Role == \"ADMIN\");",
+      "keyTakeaways": [
+        "LINQ usa **execução preguiçosa (Deferred Execution)**: a query só roda quando você itera ou chama `.ToList()`, `.Count()` ou `.FirstOrDefault()`.",
+        "Prefira `.Any(cond)` em vez de `.Where(cond).Count() > 0` — `.Any()` para no primeiro item encontrado ($O(1)$ no melhor caso)!",
+        "Os mesmos métodos `.Where` e `.Select` são traduzidos automaticamente em SQL pelo Entity Framework Core."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual método LINQ é mais eficiente para apenas verificar se existe pelo menos um pedido pago em uma lista ou consulta ao banco?",
+      "options": [
+        "pedidos.Where(p => p.Pago).ToList().Count > 0",
+        "pedidos.Any(p => p.Pago)",
+        "pedidos.Select(p => p.Pago).OrderBy(x => x)",
+        "pedidos.Last(p => p.Pago)"
+      ],
+      "correctIndex": 1,
+      "explanation": "`.Any(...)` interrompe a execução assim que encontra o primeiro elemento verdadeiro (equivalente a `EXISTS` no SQL)."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Use LINQ na lista `produtos` para filtrar `p.Preco > 50` com `.Where(...)`, projetar `p.Nome` com `.Select(...)` e materializar com `.ToList()`:",
+      "starterCode": "// Filtre e projete produtos caros com LINQ:\n",
+      "requiredTokens": [".Where(", "p.Preco > 50", ".Select(", "p.Nome", ".ToList()"],
+      "sampleSolution": "var caros = produtos\n    .Where(p => p.Preco > 50)\n    .Select(p => p.Nome)\n    .ToList();",
+      "hint": "Encadeie `produtos.Where(p => p.Preco > 50).Select(p => p.Nome).ToList()`.",
+      "explanation": "Encadear `.Where`, `.Select` e `.ToList()` é a base de quase toda manipulação de dados em C#."
+    }
+  ]
+}

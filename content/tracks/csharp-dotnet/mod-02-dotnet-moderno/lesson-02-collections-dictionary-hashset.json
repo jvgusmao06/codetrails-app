@@ -1,0 +1,39 @@
+{
+  "id": "csharp-collections-dict-02",
+  "title": "Dictionary<K, V>, TryGetValue e HashSet<T> em O(1)",
+  "description": "Faça buscas em tempo constante O(1) em C# com Dictionary e HashSet evitando KeyNotFoundException com TryGetValue.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Dicionários Seguros e Conjuntos Únicos no .NET",
+      "content": "Em C#, **`Dictionary<TKey, TValue>`** é a Hash Table nativa para buscas em $O(1)$. **Cuidado:** acessar `dict[\"chave\"]` direto lança `KeyNotFoundException` se a chave não existir! A forma segura e rápida (apenas 1 lookup!) é usar **`dict.TryGetValue(\"chave\", out var valor)`**. Já **`HashSet<T>`** armazena valores únicos com `.Contains()` também em $O(1)$!",
+      "codeExample": "var estoque = new Dictionary<string, int> {\n    [\"teclado\"] = 15,\n    [\"mouse\"] = 8\n};\n\n// Busca segura sem lançar KeyNotFoundException:\nif (estoque.TryGetValue(\"teclado\", out var qtd)) {\n    Console.WriteLine($\"Em estoque: {qtd}\");\n}\n\nvar tags = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { \"api\", \"API\" }; // 1 item!",
+      "keyTakeaways": [
+        "`TryGetValue(chave, out var val)` checa existência e extrai o valor em uma única busca na tabela hash.",
+        "`HashSet<T>` elimina duplicatas e aceita `StringComparer.OrdinalIgnoreCase` para ignorar maiúsculas/minúsculas.",
+        "Prefira `HashSet<T>.Contains()` em vez de `List<T>.Contains()` ao verificar permissões/IDs dentro de loops."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código C# pode lançar `KeyNotFoundException` e derrubar a requisição se `codigo` não existir no dicionário `precos`. Clique na linha arriscada:",
+      "lines": [
+        "decimal ObterPreco(Dictionary<string, decimal> precos, string codigo) {",
+        "    return precos[codigo];",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Na linha 2, `precos[codigo]` lança exceção se a chave não existir! Use `precos.TryGetValue(codigo, out var p) ? p : 0m;`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Use `if (cache.TryGetValue(chave, out var valor))` para imprimir `Console.WriteLine(valor);` com segurança:",
+      "starterCode": "// Leia 'chave' de 'cache' usando TryGetValue:\n",
+      "requiredTokens": ["if", "cache.TryGetValue(", "out var valor", "Console.WriteLine(valor)"],
+      "sampleSolution": "if (cache.TryGetValue(chave, out var valor)) {\n    Console.WriteLine(valor);\n}",
+      "hint": "Use `if (cache.TryGetValue(chave, out var valor)) { Console.WriteLine(valor); }`.",
+      "explanation": "O padrão `Try*` (`TryGetValue`, `int.TryParse`) evita exceções desnecessárias e melhora a performance no .NET."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "aspnet-core-csharp",
+  "title": "ASP.NET Core (Minimal APIs)",
+  "description": "Construa APIs REST ultrarrápidas em C# com Minimal APIs (MapGet/MapPost), Injeção de Dependência e Results.Ok/NotFound.",
+  "category": "framework",
+  "languageId": "csharp-dotnet",
+  "prerequisites": ["csharp-dotnet"],
+  "color": "#512BD4",
+  "icon": "🌐",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: Minimal APIs, DI e TypedResults",
+      "description": "Crie endpoints HTTP enxutos e tipados no .NET moderno.",
+      "lessons": ["lesson-01-minimal-apis"]
+    }
+  ]
+}

@@ -7,7 +7,7 @@
   "prerequisites": ["typescript-javascript", "react-fundamentals"],
   "color": "#10B981",
   "icon": "▲",
-  "author": "Comunidade CodeTrilhas",
+  "author": "Comunidade CodeTrails",
   "modules": [
     {
       "id": "mod-01-roteamento",

@@ -1,0 +1,40 @@
+{
+  "id": "nlohmann-json-01",
+  "title": "nlohmann/json: json::parse(), .dump() e Acesso Seguro (.value)",
+  "description": "Transforme strings JSON em objetos C++ ergonômicos, extraia campos com fallback seguro e serialize structs.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "JSON Como Cidadão de Primeira Classe em C++",
+      "content": "A biblioteca **nlohmann/json** (`#include <nlohmann/json.hpp>`) é a mais amada do C++ para JSON por ser *header-only* e ter sintaxe intuitiva como um dicionário! Use **`json::parse(texto)`** para ler JSON, **`j.dump(2)`** para converter em string formatada e **`.value(\"chave\", padrao)`** para ler campos opcionais sem lançar exceção!",
+      "codeExample": "#include <nlohmann/json.hpp>\nusing json = nlohmann::json;\n\njson j = json::parse(R\"({\"nome\": \"Ana\", \"nivel\": 5})\");\nstd::string nome = j.value(\"nome\", \"Visitante\");\n\nj[\"ativo\"] = true;\nstd::cout << j.dump(2); // Serializa identado com 2 espaços",
+      "keyTakeaways": [
+        "Prefira `j.value(\"chave\", padrao)` ou `j.contains(\"chave\")` antes de ler chaves que podem não existir.",
+        "`j.dump(2)` gera JSON bonito com indentação de 2 espaços; `j.dump()` gera compacto para tráfego de rede.",
+        "Use `NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(MeuStruct, campo1, campo2)` para converter structs direto para/de `json`!"
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código C++ para fazer parsing da string JSON, ler `\"porta\"` com fallback `8080` e serializar de volta para string:",
+      "codeTemplate": "auto cfg = json::{{blank}}(texto);\nint porta = cfg.{{blank}}(\"porta\", 8080);\nstd::string saida = cfg.{{blank}}();",
+      "blanks": [
+        { "answer": "parse", "placeholder": "analisar" },
+        { "answer": "value", "placeholder": "ler seguro" },
+        { "answer": "dump", "placeholder": "serializar" }
+      ],
+      "options": ["parse", "value", "dump", "stringify", "get"],
+      "explanation": "`json::parse()` lê o JSON, `.value(k, default)` acessa com valor padrão e `.dump()` serializa para string."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Usando `using json = nlohmann::json;`, crie um objeto `json user;` com `user[\"id\"] = 1;` e imprima `std::cout << user.dump();`:",
+      "starterCode": "using json = nlohmann::json;\n// Crie user, defina id = 1 e imprima user.dump():\n",
+      "requiredTokens": ["json user;", "user[\"id\"] = 1", "std::cout", "user.dump()"],
+      "sampleSolution": "json user;\nuser[\"id\"] = 1;\nstd::cout << user.dump();",
+      "hint": "Escreva `json user; user[\"id\"] = 1; std::cout << user.dump();`.",
+      "explanation": "A sobrecarga de `operator[]` em `nlohmann::json` permite construir payloads JSON dinamicamente com legibilidade máxima."
+    }
+  ]
+}

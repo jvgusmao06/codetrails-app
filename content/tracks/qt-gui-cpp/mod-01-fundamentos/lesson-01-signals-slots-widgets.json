@@ -1,0 +1,40 @@
+{
+  "id": "qt-signals-01",
+  "title": "Qt 6: QApplication, QPushButton e Signals & Slots (connect)",
+  "description": "Entenda a arquitetura Signals & Slots type-safe do Qt 6 e o gerenciamento automático de memória pai-filho.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Signals & Slots: A Alma da UI Reativa no Qt",
+      "content": "O **Qt** é o framework padrão da indústria para softwares desktop pesados em C++ (como KDE, VirtualBox, OBS plugins e sistemas automotivos). Sua grande sacada é o mecanismo de **Signals & Slots**: quando um botão é clicado (emite o sinal `&QPushButton::clicked`), conectamos via **`QObject::connect(emissor, sinal, receptor, slot)`** a qualquer método ou lambda C++ com checagem em tempo de compilação!",
+      "codeExample": "#include <QApplication>\n#include <QPushButton>\n\nint main(int argc, char *argv[]) {\n    QApplication app(argc, argv);\n    QPushButton btn(\"Clique aqui\");\n\n    QObject::connect(&btn, &QPushButton::clicked, []() {\n        qDebug(\"Botão pressionado!\");\n    });\n\n    btn.show();\n    return app.exec();\n}",
+      "keyTakeaways": [
+        "Use a sintaxe moderna com ponteiros de função (`&QPushButton::clicked`) — se você errar o nome, não compila (muito mais seguro que macros antigas `SIGNAL()`/`SLOT()`).",
+        "No Qt, objetos filhos que recebem um `QObject* parent` são deletados automaticamente quando o pai é destruído.",
+        "`return app.exec();` inicia o Event Loop gráfico do Qt."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Por que a sintaxe moderna de `QObject::connect(&btn, &QPushButton::clicked, ...)` é preferida em vez das macros antigas `SIGNAL(clicked())`?",
+      "options": [
+        "Porque macros SIGNAL/SLOT só funcionam no Windows",
+        "Porque ponteiros de função são verificados pelo compilador em tempo de compilação e aceitam lambdas C++",
+        "Porque remove a necessidade de QApplication",
+        "Porque desenha botões em 3D"
+      ],
+      "correctIndex": 1,
+      "explanation": "A conexão com `&Classe::sinal` garante segurança de tipos em tempo de compilação e permite conectar lambdas diretamente."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Conecte o sinal `&QPushButton::clicked` do botão `&btn` usando `QObject::connect` para fechar o app chamando `app.quit()`:",
+      "starterCode": "// Conecte &btn clicked a uma lambda que chama app.quit():\n",
+      "requiredTokens": ["QObject::connect", "&btn", "&QPushButton::clicked", "app.quit()"],
+      "sampleSolution": "QObject::connect(&btn, &QPushButton::clicked, [&]() {\n    app.quit();\n});",
+      "hint": "Use `QObject::connect(&btn, &QPushButton::clicked, [&]() { app.quit(); });`.",
+      "explanation": "Lambdas com `QObject::connect` eliminam a necessidade de criar classes ou slots extras para ações simples."
+    }
+  ]
+}

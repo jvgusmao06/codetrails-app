@@ -1,0 +1,19 @@
+{
+  "id": "unity-csharp",
+  "title": "Unity (Game Dev C#)",
+  "description": "Programe jogos 2D e 3D na Unity com MonoBehaviour, Start/Update/FixedUpdate, Time.deltaTime, GetComponent e Física.",
+  "category": "framework",
+  "languageId": "csharp-dotnet",
+  "prerequisites": ["csharp-dotnet"],
+  "color": "#111827",
+  "icon": "🎮",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: MonoBehaviour, Ciclo de Vida e Time.deltaTime",
+      "description": "Entenda Start vs Update vs FixedUpdate e boas práticas de performance na Unity.",
+      "lessons": ["lesson-01-monobehaviour-update"]
+    }
+  ]
+}

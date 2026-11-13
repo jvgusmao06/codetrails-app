@@ -1,0 +1,39 @@
+{
+  "id": "csharp-interfaces-records-05",
+  "title": "Interfaces (I...), Herança (:), virtual/override, Records e Structs",
+  "description": "Modele contratos com interfaces (prefixo I por convenção), DTOs imutáveis em 1 linha com record e structs de valor.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Interfaces, Override Explícito e Records em 1 Linha",
+      "content": "Em C#, tanto herança quanto implementação de interface usam dois-pontos **`:`** (e por convenção interfaces começam com **`I`**, como `IPagamento`). Para sobrescrever um método de uma classe pai, o pai precisa marcar como **`virtual`** e o filho precisa escrever explicitamente **`override`** (evitando sobrescritas acidentais!). E para DTOs imutáveis com igualdade por valor automática, usamos **`public record UsuarioDto(int Id, string Nome);`**!",
+      "codeExample": "public interface IRepositorio {\n    void Salvar(string dado);\n}\n\npublic class SqlRepositorio : IRepositorio {\n    public void Salvar(string dado) => Console.WriteLine(dado);\n}\n\n// DTO imutável completo com igualdade por valor em 1 linha!\npublic record PedidoDto(int Id, decimal Total);",
+      "keyTakeaways": [
+        "Por convenção .NET, toda interface começa com `I` (`IEnumerable`, `IDisposable`, `IUserService`).",
+        "Em C#, métodos NÃO são virtuais por padrão — exija `virtual` no pai e `override` no filho para polimorfismo.",
+        "`record` compara objetos pelo **conteúdo dos campos** (value equality), não pelo endereço de memória!"
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a definição de um `record` imutável e de uma classe que implementa a interface `INotificador`:",
+      "codeTemplate": "public {{blank}} EmailDto(string Para, string Assunto);\n\npublic interface INotificador { void Enviar(); }\npublic class SmsNotificador {{blank}} INotificador {\n    public void Enviar() {}\n}",
+      "blanks": [
+        { "answer": "record", "placeholder": "dto imutável" },
+        { "answer": ":", "placeholder": "implementa" }
+      ],
+      "options": ["record", ":", "implements", "extends", "struct"],
+      "explanation": "`record` cria DTOs imutáveis concisos e `:` é usado tanto para estender classes quanto implementar interfaces em C#."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie uma `public interface IPagamento` com `bool Pagar(decimal valor);` e um `public record ReciboDto(int Id, decimal Valor);`:",
+      "starterCode": "// Crie IPagamento e ReciboDto:\n",
+      "requiredTokens": ["public interface IPagamento", "bool Pagar(decimal valor);", "public record ReciboDto("],
+      "sampleSolution": "public interface IPagamento {\n    bool Pagar(decimal valor);\n}\npublic record ReciboDto(int Id, decimal Valor);",
+      "hint": "Defina `public interface IPagamento { bool Pagar(decimal valor); }` e `public record ReciboDto(int Id, decimal Valor);`.",
+      "explanation": "Combinar interfaces (`I*`) para serviços e `record` para dados/DTOs é o núcleo da arquitetura limpa no .NET."
+    }
+  ]
+}

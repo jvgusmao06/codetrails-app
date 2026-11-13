@@ -1,0 +1,19 @@
+{
+  "id": "dapper-csharp",
+  "title": "Dapper (Micro-ORM SQL)",
+  "description": "Execute SQL puro em C# com velocidade quase nativa mapeando resultados direto para records com QueryAsync<T> e parâmetros seguros.",
+  "category": "library",
+  "languageId": "csharp-dotnet",
+  "prerequisites": ["csharp-dotnet", "sql-databases"],
+  "color": "#0284C7",
+  "icon": "⚡",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: QueryAsync<T> e Parâmetros Anti-SQL Injection",
+      "description": "Combine o controle total do SQL com a ergonomia de objetos C# usando Dapper.",
+      "lessons": ["lesson-01-query-async-dapper"]
+    }
+  ]
+}

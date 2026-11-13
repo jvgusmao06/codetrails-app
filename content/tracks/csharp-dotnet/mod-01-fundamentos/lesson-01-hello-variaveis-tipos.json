@@ -1,0 +1,40 @@
+{
+  "id": "csharp-vars-01",
+  "title": "Primeiros Passos: Console.WriteLine, Variáveis, Tipos e $ Interpolação",
+  "description": "Comece do zero em C# moderno com Top-level statements, tipos primitivos, var, const e strings interpoladas.",
+  "xp": 25,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Criando Variáveis e Exibindo Saída em C# Moderno",
+      "content": "No C# moderno (.NET 8+), você não precisa mais escrever `class Program { static void Main() {} }` só para começar — o **Top-level statement** permite programar direto! Os principais tipos são **`int`**, **`double`**, **`decimal`** (obrigatório para dinheiro!), **`bool`** e **`string`**. Usamos **`var`** para inferência estática de tipo, **`const`** para constantes e **`$\"...{var}\"`** para interpolar strings com clareza.",
+      "codeExample": "const string Versao = \"8.0\";\nstring nome = \"Ana\";\nvar idade = 25;             // Compilador infere int\ndecimal preco = 19.90m;     // Sufixo 'm' para decimal financeiro\nbool ativo = true;\n\nConsole.WriteLine($\"Olá {nome}, versão {Versao}, R$ {preco}\");",
+      "keyTakeaways": [
+        "`var` em C# continua sendo **100% fortemente tipado** — o tipo é fixado pelo compilador na inicialização.",
+        "Para valores financeiros (preços, saldos), use sempre `decimal` (sufixo `m`) em vez de `double` para evitar erros de arredondamento.",
+        "Prefixar strings com `$` permite inserir expressões diretamente dentro de `{}`."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código C# declarando uma constante, um valor monetário `decimal` e exibindo uma string interpolada:",
+      "codeTemplate": "{{blank}} int MaxItens = 10;\n{{blank}} valor = 49.90m;\nConsole.WriteLine({{blank}}\"Total: {valor}\");",
+      "blanks": [
+        { "answer": "const", "placeholder": "constante" },
+        { "answer": "decimal", "placeholder": "tipo financeiro" },
+        { "answer": "$", "placeholder": "interpolação" }
+      ],
+      "options": ["const", "decimal", "$", "float", "let", "@"],
+      "explanation": "`const` define constante em compilação, `decimal` garante precisão monetária e `$\"...\"` ativa interpolação."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Em C#, declare `var linguagem = \"C#\";` e imprima usando `Console.WriteLine($\"Estudando {linguagem}\");`:",
+      "starterCode": "// Crie var linguagem e imprima com Console.WriteLine:\n",
+      "requiredTokens": ["var", "linguagem", "\"C#\"", "Console.WriteLine", "$\""],
+      "sampleSolution": "var linguagem = \"C#\";\nConsole.WriteLine($\"Estudando {linguagem}\");",
+      "hint": "Escreva `var linguagem = \"C#\";` e `Console.WriteLine($\"Estudando {linguagem}\");`.",
+      "explanation": "Top-level statements + `var` + `$\"...\"` tornam o C# moderno tão conciso quanto Python ou TypeScript."
+    }
+  ]
+}

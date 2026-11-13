@@ -1,0 +1,19 @@
+{
+  "id": "sqlalchemy-python",
+  "title": "SQLAlchemy 2.0 (ORM Python)",
+  "description": "Mapeie tabelas SQL com tipagem moderna usando DeclarativeBase, Mapped, mapped_column e queries select() na versão 2.0.",
+  "category": "library",
+  "languageId": "python-basics",
+  "prerequisites": ["python-basics", "sql-databases"],
+  "color": "#D71F00",
+  "icon": "🗄️",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: Mapped, mapped_column e select() 2.0",
+      "description": "Use a sintaxe moderna tipada do SQLAlchemy 2.0 com FastAPI e PostgreSQL.",
+      "lessons": ["lesson-01-mapped-select"]
+    }
+  ]
+}

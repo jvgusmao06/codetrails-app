@@ -1,0 +1,40 @@
+{
+  "id": "tauri-cmd-01",
+  "title": "Tauri v2: #[tauri::command] e Ponte TypeScript <-> Rust",
+  "description": "Entenda como o Tauri entrega binários de ~5 MB usando a WebView do sistema e comandos IPC tipados em Rust.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Por que Tauri em vez de Electron?",
+      "content": "Enquanto o Electron empacota um navegador Chromium + Node.js inteiro em cada app (~150 MB), o **Tauri** usa a **WebView nativa do sistema operacional** + um backend compilado em **Rust** (~3–10 MB!). Para o TypeScript chamar uma função nativa em Rust (ler arquivos, usar SQLite, rodar código pesado), basta anotar a função Rust com **`#[tauri::command]`** e registrá-la em `tauri::generate_handler![...]`!",
+      "codeExample": "// No backend Rust (src-tauri/src/lib.rs):\n#[tauri::command]\nfn saudar(nome: &str) -> String {\n    format!(\"Olá, {}! Bem-vindo ao Rust.\", nome)\n}\n\n// No frontend TypeScript:\n// import { invoke } from '@tauri-apps/api/core';\n// const msg = await invoke('saudar', { nome: 'Ana' });",
+      "keyTakeaways": [
+        "`#[tauri::command]` usa Serde por baixo dos panos para serializar argumentos e retornos (`Result<T, String>`) entre JS e Rust.",
+        "Use `async fn` em comandos Tauri pesados para não travar a thread principal da interface!",
+        "Permissões de arquivo/rede ficam isoladas por *Capabilities* seguras no Tauri v2."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual atributo Rust transforma uma função comum em um comando invocável pelo frontend TypeScript/React no Tauri?",
+      "options": [
+        "#[tokio::main]",
+        "#[tauri::command]",
+        "#[derive(Parser)]",
+        "#[serde(export)]"
+      ],
+      "correctIndex": 1,
+      "explanation": "`#[tauri::command]` gera a ponte IPC permitindo chamar a função via `invoke('nome_da_funcao', ...)` no frontend."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva um comando Tauri `#[tauri::command]` chamado `fn somar(a: i32, b: i32) -> i32` que retorne `a + b`:",
+      "starterCode": "// Exponha a função somar para o frontend Tauri:\n",
+      "requiredTokens": ["#[tauri::command]", "fn somar(", "a: i32", "b: i32", "-> i32", "a + b"],
+      "sampleSolution": "#[tauri::command]\nfn somar(a: i32, b: i32) -> i32 {\n    a + b\n}",
+      "hint": "Coloque `#[tauri::command]` acima de `fn somar(a: i32, b: i32) -> i32 { a + b }`.",
+      "explanation": "O valor retornado (`i32`) é automaticamente serializado em JSON para a Promise do `invoke()` no JavaScript."
+    }
+  ]
+}

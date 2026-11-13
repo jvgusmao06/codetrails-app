@@ -1,0 +1,19 @@
+{
+  "id": "spring-kafka-java",
+  "title": "Apache Kafka (Spring Kafka)",
+  "description": "Construa arquiteturas orientadas a eventos em Java com KafkaTemplate, @KafkaListener, tópicos, partições e Consumer Groups.",
+  "category": "framework",
+  "languageId": "java-basics",
+  "prerequisites": ["java-basics", "spring-boot-java"],
+  "color": "#231F20",
+  "icon": "📨",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: Producers (KafkaTemplate) e Consumers (@KafkaListener)",
+      "description": "Publique e consuma eventos assíncronos em escala com Spring Kafka.",
+      "lessons": ["lesson-01-producer-consumer"]
+    }
+  ]
+}

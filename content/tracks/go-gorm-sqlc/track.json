@@ -7,7 +7,7 @@
   "prerequisites": ["golang-cloud", "sql-databases"],
   "color": "#00ADD8",
   "icon": "🗄️",
-  "author": "Comunidade CodeTrilhas",
+  "author": "Comunidade CodeTrails",
   "modules": [
     {
       "id": "mod-01-fundamentos",

@@ -1,0 +1,40 @@
+{
+  "id": "sdl-raylib-01",
+  "title": "Game Loop em C/C++ com Raylib e SDL2 (WindowShouldClose & Delta Time)",
+  "description": "Abra janelas com aceleração de hardware, desenhe a 60 FPS e mova objetos independentemente do FPS usando GetFrameTime().",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "A Estrutura Clássica do Game Loop em C/C++",
+      "content": "Tanto na **SDL2** quanto na **Raylib**, todo jogo funciona dentro de um **Game Loop**:\n1. Ler inputs (teclado, mouse, gamepad).\n2. Atualizar a física/posição multiplicando pela variação de tempo do último frame (**Delta Time**, ex: `GetFrameTime()` no Raylib) para o personagem não correr mais rápido em monitores 144Hz!\n3. Limpar a tela e desenhar entre `BeginDrawing()` e `EndDrawing()`.",
+      "codeExample": "#include \"raylib.h\"\n\nint main() {\n    InitWindow(800, 450, \"Meu Jogo C++\");\n    SetTargetFPS(60);\n\n    float x = 100.0f;\n    while (!WindowShouldClose()) {\n        x += 200.0f * GetFrameTime(); // Movimento independente de FPS!\n\n        BeginDrawing();\n        ClearBackground(BLACK);\n        DrawCircle((int)x, 225, 20, GREEN);\n        EndDrawing();\n    }\n    CloseWindow();\n}",
+      "keyTakeaways": [
+        "Sempre multiplique velocidades por `dt` (Delta Time) para a física rodar na mesma velocidade em 60Hz e 240Hz.",
+        "Em Raylib, todo comando `Draw*` precisa ficar entre `BeginDrawing()` e `EndDrawing()`.",
+        "Em SDL2, use `SDL_PollEvent(&e)` dentro do loop e libere texturas com `SDL_DestroyTexture` ao fechar."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Por que multiplicamos a velocidade de movimento (`x += velocidade * dt`) pelo **Delta Time** (`GetFrameTime()`) no Game Loop?",
+      "options": [
+        "Para economizar memória RAM",
+        "Para garantir que o objeto se mova na mesma velocidade real por segundo independente se o PC roda a 30 FPS ou 144 FPS",
+        "Para desligar a placa de vídeo",
+        "Porque C++ não aceita soma sem multiplicação"
+      ],
+      "correctIndex": 1,
+      "explanation": "Se você somar `x += 5` por frame sem Delta Time, um monitor 144Hz moverá o jogador mais de 2x mais rápido que um de 60Hz!"
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva o loop principal de um jogo Raylib usando `while (!WindowShouldClose())`, chamando `BeginDrawing();`, `ClearBackground(RAYWHITE);` e `EndDrawing();`:",
+      "starterCode": "InitWindow(800, 600, \"Demo\");\n// Escreva o Game Loop com BeginDrawing / EndDrawing:\n",
+      "requiredTokens": ["while (!WindowShouldClose())", "BeginDrawing();", "ClearBackground(", "EndDrawing();"],
+      "sampleSolution": "while (!WindowShouldClose()) {\n    BeginDrawing();\n    ClearBackground(RAYWHITE);\n    EndDrawing();\n}",
+      "hint": "Envolva `ClearBackground(RAYWHITE);` entre `BeginDrawing();` e `EndDrawing();` dentro de `while (!WindowShouldClose())`.",
+      "explanation": "`WindowShouldClose()` detecta clique no X da janela ou tecla ESC para encerrar o loop de forma limpa."
+    }
+  ]
+}

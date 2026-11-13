@@ -7,7 +7,7 @@
   "prerequisites": ["python-basics"],
   "color": "#EE4C2C",
   "icon": "🔥",
-  "author": "Comunidade CodeTrilhas",
+  "author": "Comunidade CodeTrails",
   "modules": [
     {
       "id": "mod-01-tensores-redes",

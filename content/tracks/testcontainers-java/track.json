@@ -1,0 +1,19 @@
+{
+  "id": "testcontainers-java",
+  "title": "Testcontainers (Testes com Docker)",
+  "description": "Rode testes de integração em Java contra PostgreSQL, Redis e Kafka reais descartáveis usando @Testcontainers e @ServiceConnection.",
+  "category": "tool",
+  "languageId": "java-basics",
+  "prerequisites": ["java-basics", "spring-boot-java"],
+  "color": "#2496ED",
+  "icon": "🐳",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: Containers Reais com @Container e @ServiceConnection",
+      "description": "Abandone bancos em memória H2 que mascaram bugs SQL e teste no PostgreSQL real.",
+      "lessons": ["lesson-01-testcontainers-postgres"]
+    }
+  ]
+}

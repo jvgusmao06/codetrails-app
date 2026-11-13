@@ -1,0 +1,19 @@
+{
+  "id": "tracing-telemetry-rust",
+  "title": "Tracing (Logs & Telemetria Rust)",
+  "description": "Instrumente APIs assíncronas Tokio/Axum com spans, eventos estruturados e #[instrument] para observabilidade em produção.",
+  "category": "library",
+  "languageId": "rust-systems",
+  "prerequisites": ["rust-systems"],
+  "color": "#6366F1",
+  "icon": "📡",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: Spans, Eventos Estruturados e #[instrument]",
+      "description": "Substitua println! por telemetria estruturada pronta para JSON e OpenTelemetry.",
+      "lessons": ["lesson-01-tracing-instrument-spans"]
+    }
+  ]
+}

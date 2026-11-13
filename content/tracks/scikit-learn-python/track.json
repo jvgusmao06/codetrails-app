@@ -1,0 +1,19 @@
+{
+  "id": "scikit-learn-python",
+  "title": "Scikit-Learn (Machine Learning)",
+  "description": "Treine modelos de Machine Learning clássico em Python com train_test_split, Pipeline, StandardScaler e RandomForestClassifier.",
+  "category": "library",
+  "languageId": "python-basics",
+  "prerequisites": ["python-basics"],
+  "color": "#F7931E",
+  "icon": "🤖",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: Pipeline, fit/predict e Prevenção de Data Leakage",
+      "description": "Construa pipelines de ML limpos com Scikit-Learn.",
+      "lessons": ["lesson-01-pipeline-fit-predict"]
+    }
+  ]
+}

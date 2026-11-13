@@ -1,0 +1,40 @@
+{
+  "id": "testcontainers-01",
+  "title": "Testcontainers + Spring Boot: @Container e @ServiceConnection",
+  "description": "Suba um PostgreSQL real em Docker durante seus testes JUnit 5 com configuração zero no Spring Boot 3.1+.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Testando Contra o Banco Real (Adeus H2!)",
+      "content": "Testar queries PostgreSQL (como `JSONB`, `ILIKE` ou migrations Flyway) usando um banco em memória H2 costuma esconder bugs que só aparecem em produção! O **Testcontainers** sobe um container Docker real (ex: `PostgreSQLContainer<?>`) automaticamente antes dos testes e destrói ao final. No Spring Boot 3.1+, basta adicionar **`@ServiceConnection`** no campo `@Container` para autoconfigurar URL, usuário e senha!",
+      "codeExample": "@SpringBootTest\n@Testcontainers\nclass UsuarioRepositoryIT {\n    @Container\n    @ServiceConnection\n    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(\"postgres:16-alpine\");\n\n    @Test\n    void salvaNoPostgresReal() { /* ... */ }\n}",
+      "keyTakeaways": [
+        "Declare o container como `static` para reutilizá-lo entre todos os `@Test` da mesma classe (muito mais rápido!).",
+        "`@ServiceConnection` elimina o antigo `@DynamicPropertySource` no Spring Boot 3.1+.",
+        "Funciona também para `KafkaContainer`, `GenericContainer` (Redis) e LocalStack."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "No Spring Boot 3.1+ com Testcontainers, qual anotação configura automaticamente `spring.datasource.url`, usuário e senha do container para os testes?",
+      "options": [
+        "@Autowired",
+        "@ServiceConnection",
+        "@Transactional",
+        "@EnableJpa"
+      ],
+      "correctIndex": 1,
+      "explanation": "`@ServiceConnection` detecta o tipo do container (`PostgreSQLContainer`, `KafkaContainer`, etc.) e injeta os detalhes de conexão automaticamente."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Declare um container PostgreSQL estático com `@Container`, `@ServiceConnection` e `new PostgreSQLContainer<>(\"postgres:16-alpine\")`:",
+      "starterCode": "// Declare o PostgreSQLContainer com Testcontainers:\n",
+      "requiredTokens": ["@Container", "@ServiceConnection", "static", "PostgreSQLContainer", "\"postgres:16-alpine\""],
+      "sampleSolution": "@Container\n@ServiceConnection\nstatic PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(\"postgres:16-alpine\");",
+      "hint": "Anote `static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(\"postgres:16-alpine\");` com `@Container` e `@ServiceConnection`.",
+      "explanation": "O JUnit 5 inicia o container antes da classe de teste e o remove via Ryuk ao final da suíte."
+    }
+  ]
+}

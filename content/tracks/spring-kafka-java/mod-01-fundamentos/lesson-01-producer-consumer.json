@@ -1,0 +1,40 @@
+{
+  "id": "spring-kafka-01",
+  "title": "Spring Kafka: KafkaTemplate.send() e @KafkaListener",
+  "description": "Desacople microsserviços Java publicando eventos em tópicos Kafka e processando com Consumer Groups.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Comunicação Assíncrona por Eventos com Apache Kafka",
+      "content": "Em arquiteturas de microsserviços, se o serviço de Pedidos chamar o serviço de E-mail via HTTP síncrono e o E-mail cair, a compra falha! Com **Apache Kafka** e **Spring Kafka**, o serviço de Pedidos apenas publica um evento usando **`kafkaTemplate.send(\"pedidos-criados\", chave, evento)`**. Do outro lado, qualquer consumidor escuta com **`@KafkaListener(topics = \"pedidos-criados\", groupId = \"email-group\")`**!",
+      "codeExample": "// Producer:\nkafkaTemplate.send(\"pedidos-criados\", pedido.id().toString(), pedido);\n\n// Consumer:\n@KafkaListener(topics = \"pedidos-criados\", groupId = \"notificacoes\")\npublic void consumir(PedidoEvento evento) {\n    System.out.println(\"Recebido: \" + evento.id());\n}",
+      "keyTakeaways": [
+        "Passar uma **chave** (`pedido.id()`) no `.send(topico, chave, valor)` garante que eventos da mesma entidade vão para a **mesma partição** na ordem exata!",
+        "`groupId` permite escalar horizontalmente: várias instâncias no mesmo grupo dividem as partições sem duplicar processamento.",
+        "Configure sempre uma **DLQ (Dead Letter Queue)** para mensagens que falham após N tentativas."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "No Apache Kafka, o que acontece quando você sobe 3 instâncias de um microsserviço usando o **mesmo `groupId`** em `@KafkaListener` para um tópico com 3 partições?",
+      "options": [
+        "Todas as 3 instâncias processam todas as mensagens em triplicata",
+        "Cada instância assume 1 partição, dividindo a carga de trabalho em paralelo sem duplicidade",
+        "O Kafka bloqueia a segunda instância",
+        "As mensagens são apagadas sem leitura"
+      ],
+      "correctIndex": 1,
+      "explanation": "Dentro de um mesmo Consumer Group, cada partição é atribuída a apenas um consumidor por vez."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva um método consumidor Java anotado com `@KafkaListener(topics = \"pagamentos\", groupId = \"fiscal\")` recebendo `(String mensagem)`:",
+      "starterCode": "// Crie o método @KafkaListener:\n",
+      "requiredTokens": ["@KafkaListener(", "topics = \"pagamentos\"", "groupId = \"fiscal\"", "public void"],
+      "sampleSolution": "@KafkaListener(topics = \"pagamentos\", groupId = \"fiscal\")\npublic void processarPagamento(String mensagem) {\n    System.out.println(mensagem);\n}",
+      "hint": "Use `@KafkaListener(topics = \"pagamentos\", groupId = \"fiscal\")` acima de `public void processarPagamento(String mensagem)`.",
+      "explanation": "O Spring Kafka gerencia o loop de polling, deserialização e commit de offsets automaticamente."
+    }
+  ]
+}

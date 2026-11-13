@@ -1,0 +1,23 @@
+{
+  "id": "fluentvalidation-csharp",
+  "title": "FluentValidation",
+  "description": "Construa regras de validação fortemente tipadas, legíveis e testáveis para DTOs e comandos em C#.",
+  "category": "library",
+  "languageId": "csharp-dotnet",
+  "prerequisites": [
+    "csharp-dotnet"
+  ],
+  "color": "#059669",
+  "icon": "🛡️",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Regras Fluentes com AbstractValidator",
+      "description": "Separe validação de domínio dos modelos usando AbstractValidator<T> e RuleFor.",
+      "lessons": [
+        "lesson-01-abstract-validator"
+      ]
+    }
+  ]
+}

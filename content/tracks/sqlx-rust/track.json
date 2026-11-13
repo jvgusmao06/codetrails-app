@@ -1,0 +1,19 @@
+{
+  "id": "sqlx-rust",
+  "title": "SQLx (SQL Type-Safe Rust)",
+  "description": "Escreva SQL puro assíncrono em PostgreSQL/SQLite com suas queries validadas contra o banco em tempo de compilação via query_as!.",
+  "category": "library",
+  "languageId": "rust-systems",
+  "prerequisites": ["rust-systems", "sql-databases"],
+  "color": "#0EA5E9",
+  "icon": "🗄️",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: PgPool, query_as! e Bind Seguro",
+      "description": "Proteja suas APIs Rust contra SQL Injection e erros de schema ainda na compilação.",
+      "lessons": ["lesson-01-query-as-pool"]
+    }
+  ]
+}

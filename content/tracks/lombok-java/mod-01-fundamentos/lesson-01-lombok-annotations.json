@@ -1,0 +1,40 @@
+{
+  "id": "lombok-01",
+  "title": "Lombok na Prática: @RequiredArgsConstructor, @Builder, @Getter e @Slf4j",
+  "description": "Gere construtores de injeção de dependência, Builders fluentes e loggers SLF4J em tempo de compilação.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Menos Boilerplate, Mais Foco na Regra de Negócio",
+      "content": "O **Project Lombok** gera getters, setters, construtores e logs automaticamente durante a compilação! No Spring Boot moderno, duas anotações são onipresentes:\n1. **`@RequiredArgsConstructor`**: gera um construtor para todos os campos `private final`, fazendo injeção de dependência limpa sem `@Autowired`!\n2. **`@Builder`**: cria o padrão Builder fluente (`Usuario.builder().nome(\"Ana\").build()`).\n3. **`@Slf4j`**: injeta automaticamente `log.info(...)`.",
+      "codeExample": "@Service\n@RequiredArgsConstructor\n@Slf4j\npublic class PagamentoService {\n    private final PagamentoRepository repo; // Injetado no construtor!\n\n    public void processar(Long id) {\n        log.info(\"Processando pedido {}\", id);\n    }\n}",
+      "keyTakeaways": [
+        "CUIDADO com `@Data` em entidades JPA (`@Entity`)! `@Data` gera `equals/hashCode/toString` em todos os campos, podendo causar loops infinitos em relações `@OneToMany` — prefira `@Getter` + `@Setter`.",
+        "`@RequiredArgsConstructor` + campos `private final` é o padrão ouro de injeção no Spring.",
+        "Para DTOs imutáveis simples no Java 17+, você também pode usar `record` nativo sem precisar de Lombok!"
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Por que devemos evitar `@Data` em classes `@Entity` do JPA/Hibernate?",
+      "options": [
+        "Porque @Data não funciona com Java 17",
+        "Porque @Data gera equals/hashCode e toString tocando todos os relacionamentos, podendo disparar LazyInitializationException ou StackOverflow",
+        "Porque impede criar chaves primárias",
+        "Porque remove o construtor padrão"
+      ],
+      "correctIndex": 1,
+      "explanation": "Em entidades JPA, prefira `@Getter` e `@Setter` explícitos em vez de `@Data`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Anote `public class PedidoService` com `@RequiredArgsConstructor` e `@Slf4j`, declarando `private final PedidoRepository repo;`:",
+      "starterCode": "// Crie PedidoService com Lombok:\n",
+      "requiredTokens": ["@RequiredArgsConstructor", "@Slf4j", "public class PedidoService", "private final PedidoRepository repo;"],
+      "sampleSolution": "@RequiredArgsConstructor\n@Slf4j\npublic class PedidoService {\n    private final PedidoRepository repo;\n}",
+      "hint": "Coloque `@RequiredArgsConstructor` e `@Slf4j` acima da classe e declare `private final PedidoRepository repo;`.",
+      "explanation": "O Lombok gera automaticamente o construtor `public PedidoService(PedidoRepository repo)` e o campo estático `log`."
+    }
+  ]
+}

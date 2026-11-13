@@ -1,0 +1,63 @@
+{
+  "id": "lesson-01-zap-structured-fields",
+  "title": "NewProduction e Campos Tipados",
+  "description": "Emita logs JSON de alta performance com zap.String, zap.Int, zap.Error e defer logger.Sync().",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Por que usar Zap em vez de fmt.Println?",
+      "content": "Em produção, sistemas de observabilidade (Datadog, Loki, ELK) precisam de **logs estruturados em JSON**, não texto solto.\n\nO **Uber Zap** (`go.uber.org/zap`) é famoso por evitar reflection e alocações extras usando campos tipados:\n- `logger, _ := zap.NewProduction()` cria um logger JSON otimizado (ou `zap.NewDevelopment()` no local).\n- `defer logger.Sync()` garante que buffers pendentes sejam descarregados antes do processo sair.\n- Passe campos tipados: `zap.String(\"user\", \"ana\")`, `zap.Int(\"status\", 200)`, `zap.Error(err)`.",
+      "codeExample": "logger, _ := zap.NewProduction()\ndefer logger.Sync()\n\nlogger.Info(\"pedido criado\",\n    zap.Int(\"order_id\", 42),\n    zap.String(\"currency\", \"BRL\"),\n)"
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Por que é boa prática chamar `defer logger.Sync()` logo após criar o logger no Zap?",
+      "options": [
+        "Para descarregar (flush) quaisquer logs ainda retidos em buffer antes de o programa encerrar",
+        "Para sincronizar o relógio do servidor com NTP",
+        "Para converter logs de desenvolvimento em XML",
+        "Para habilitar o modo multithread no Go"
+      ],
+      "correctIndex": 0,
+      "explanation": "O Zap faz buffering de escrita para ganhar performance; Sync() garante que nenhuma entrada pendente se perca no encerramento."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o log estruturado de erro usando campos tipados do Zap:",
+      "codeTemplate": "logger, _ := zap.{{blank}}()\ndefer logger.{{blank}}()\n\nlogger.Error(\"falha ao salvar\",\n    zap.{{blank}}(\"table\", \"users\"),\n    zap.Error(err),\n)",
+      "blanks": [
+        { "answer": "NewProduction" },
+        { "answer": "Sync" },
+        { "answer": "String" }
+      ],
+      "options": ["NewProduction", "Create", "Sync", "Close", "String", "Text"],
+      "explanation": "zap.NewProduction() cria o logger JSON, defer logger.Sync() faz o flush final e zap.String adiciona um campo textual tipado."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Encontre o problema de performance/uso na chamada do Zap padrão (não-Sugared):",
+      "lines": [
+        "logger, _ := zap.NewProduction()",
+        "defer logger.Sync()",
+        "logger.Info(\"usuário autenticado\", \"id\", 99)"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "O zap.Logger padrão exige campos tipados (zap.Int(\"id\", 99)), não pares chave-valor soltos (isso só funciona com logger.Sugar().Infow)."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Crie um logger com zap.NewProduction(), agende defer logger.Sync() e registre logger.Info(\"servidor iniciado\", zap.Int(\"port\", 8080)).",
+      "starterCode": "import \"go.uber.org/zap\"\n\nfunc startLog() {\n    // Escreva aqui\n}",
+      "requiredTokens": [
+        "zap.NewProduction()",
+        "defer logger.Sync()",
+        "logger.Info(",
+        "zap.Int("
+      ],
+      "sampleSolution": "import \"go.uber.org/zap\"\n\nfunc startLog() {\n    logger, _ := zap.NewProduction()\n    defer logger.Sync()\n    logger.Info(\"servidor iniciado\", zap.Int(\"port\", 8080))\n}",
+      "hint": "Inicialize logger, _ := zap.NewProduction(), coloque defer logger.Sync() e chame logger.Info(\"servidor iniciado\", zap.Int(\"port\", 8080)).",
+      "explanation": "Logs tipados no Zap evitam reflection em runtime e produzem JSON pronto para indexação."
+    }
+  ]
+}

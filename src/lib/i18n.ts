@@ -174,7 +174,7 @@ export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
       badge: "Governança Aberta via Git",
       title: "Crie e Aprove Trilhas pela Comunidade",
       description:
-        "No CodeTrilhas, qualquer pessoa pode criar uma trilha de linguagem, biblioteca ou framework. Todas as lições incluem passos teóricos e exercícios JSON validados automaticamente por schema Zod via Pull Request.",
+        "No CodeTrails, qualquer pessoa pode criar uma trilha de linguagem, biblioteca ou framework. Todas as lições incluem passos teóricos e exercícios JSON validados automaticamente por schema Zod via Pull Request.",
       step1Title: "1. Crie o JSON em /content",
       step1Desc:
         "Adicione sua pasta em content/tracks/<sua-trilha> com track.json e as lições.",
@@ -264,7 +264,7 @@ export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
       badge: "Open Git Governance",
       title: "Create & Approve Community Tracks",
       description:
-        "In CodeTrilhas, anyone can create a language, library, or framework track. Every lesson supports theory briefings and interactive exercises validated by Zod via Pull Request.",
+        "In CodeTrails, anyone can create a language, library, or framework track. Every lesson supports theory briefings and interactive exercises validated by Zod via Pull Request.",
       step1Title: "1. Create JSON in /content",
       step1Desc:
         "Add your folder in content/tracks/<your-track> with track.json and lessons.",
@@ -355,7 +355,7 @@ export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
       badge: "Gobernanza Abierta vía Git",
       title: "Crea y Aprueba Rutas en Comunidad",
       description:
-        "En CodeTrilhas, cualquier persona puede crear una ruta de lenguaje, librería o framework con pasos teóricos y ejercicios validados por Zod mediante Pull Request.",
+        "En CodeTrails, cualquier persona puede crear una ruta de lenguaje, librería o framework con pasos teóricos y ejercicios validados por Zod mediante Pull Request.",
       step1Title: "1. Crea el JSON en /content",
       step1Desc:
         "Añade tu carpeta en content/tracks/<tu-ruta> con track.json y las lecciones.",
@@ -445,7 +445,7 @@ export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
       badge: "Git 开源社区治理",
       title: "由社区共同创建与审核课程",
       description:
-        "在 CodeTrilhas 中，任何人都可以创建语言、库或框架教程。所有课时均包含理论讲解与互动练习，并通过 Pull Request 和 Zod 自动校验。",
+        "在 CodeTrails 中，任何人都可以创建语言、库或框架教程。所有课时均包含理论讲解与互动练习，并通过 Pull Request 和 Zod 自动校验。",
       step1Title: "1. 在 /content 下创建 JSON",
       step1Desc: "在 content/tracks/<课程名> 中添加 track.json 和课时文件。",
       step2Title: "2. 本地校验",
@@ -531,7 +531,7 @@ export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
       badge: "ओपन गिट गवर्नेंस",
       title: "समुदाय के साथ ट्रैक बनाएँ और स्वीकृत करें",
       description:
-        "CodeTrilhas में कोई भी व्यक्ति नई भाषा, लाइब्रेरी या फ़्रेमवर्क का ट्रैक बना सकता है। प्रत्येक पाठ में थ्योरी और अभ्यास होते हैं जिन्हें Pull Request के माध्यम से सत्यापित किया जाता है।",
+        "CodeTrails में कोई भी व्यक्ति नई भाषा, लाइब्रेरी या फ़्रेमवर्क का ट्रैक बना सकता है। प्रत्येक पाठ में थ्योरी और अभ्यास होते हैं जिन्हें Pull Request के माध्यम से सत्यापित किया जाता है।",
       step1Title: "1. /content में JSON बनाएँ",
       step1Desc: "content/tracks/<track> में track.json और पाठ फ़ाइलें जोड़ें।",
       step2Title: "2. लोकल जांच करें",
@@ -617,7 +617,7 @@ export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
       badge: "Gouvernance Open Git",
       title: "Créez et validez des parcours avec la communauté",
       description:
-        "Sur CodeTrilhas, chacun peut proposer un nouveau langage ou framework via Pull Request sur GitHub.",
+        "Sur CodeTrails, chacun peut proposer un nouveau langage ou framework via Pull Request sur GitHub.",
       step1Title: "1. Créez un JSON dans /content",
       step1Desc: "Ajoutez track.json et vos leçons dans content/tracks/<id>.",
       step2Title: "2. Validez en local",
@@ -702,7 +702,7 @@ export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
       badge: "حوكمة Git المفتوحة",
       title: "أنشئ واعتمد مسارات تعليمية مع المجتمع",
       description:
-        "يمكن لأي شخص إضافة لغة أو إطار عمل جديد في CodeTrilhas عبر Pull Request على GitHub.",
+        "يمكن لأي شخص إضافة لغة أو إطار عمل جديد في CodeTrails عبر Pull Request على GitHub.",
       step1Title: "1. أنشئ ملف JSON",
       step1Desc: "أضف track.json والدروس داخل content/tracks/<id>.",
       step2Title: "2. تحقق محلياً",
@@ -787,7 +787,7 @@ export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
       badge: "Открытое управление Git",
       title: "Создавайте треки вместе с сообществом",
       description:
-        "Любой может добавить новый язык или фреймворк в CodeTrilhas через Pull Request на GitHub.",
+        "Любой может добавить новый язык или фреймворк в CodeTrails через Pull Request на GitHub.",
       step1Title: "1. Создайте JSON в /content",
       step1Desc: "Добавьте track.json и уроки в content/tracks/<id>.",
       step2Title: "2. Проверьте локально",

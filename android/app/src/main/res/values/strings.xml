@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">CodeTrilhas</string>
-    <string name="title_activity_main">CodeTrilhas</string>
-    <string name="package_name">dev.codetrilhas.app</string>
-    <string name="custom_url_scheme">dev.codetrilhas.app</string>
+    <string name="app_name">CodeTrails</string>
+    <string name="title_activity_main">CodeTrails</string>
+    <string name="package_name">dev.CodeTrails.app</string>
+    <string name="custom_url_scheme">dev.CodeTrails.app</string>
 </resources>

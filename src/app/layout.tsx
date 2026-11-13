@@ -14,13 +14,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CodeTrilhas — Aprendizado Modular de Programação Open Source",
+  title: "CodeTrails — Aprendizado Modular de Programação Open Source",
   description:
     "Plataforma open-source de roadmaps e trilhas interativas para linguagens, bibliotecas e frameworks.",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "CodeTrilhas",
+    title: "CodeTrails",
   },
 };
 

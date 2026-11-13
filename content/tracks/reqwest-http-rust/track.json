@@ -1,0 +1,19 @@
+{
+  "id": "reqwest-http-rust",
+  "title": "Reqwest (HTTP Client Async)",
+  "description": "Consuma APIs REST externas em Rust com reqwest::Client, connection pooling, timeouts e desserialização JSON automática.",
+  "category": "library",
+  "languageId": "rust-systems",
+  "prerequisites": ["rust-systems"],
+  "color": "#3B82F6",
+  "icon": "🌐",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: Client Reutilizável, GET/POST JSON e error_for_status",
+      "description": "Faça requisições HTTP assíncronas rápidas e seguras em Rust.",
+      "lessons": ["lesson-01-client-json-status"]
+    }
+  ]
+}

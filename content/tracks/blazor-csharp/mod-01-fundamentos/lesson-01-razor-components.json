@@ -1,0 +1,40 @@
+{
+  "id": "blazor-comp-01",
+  "title": "Blazor: Componentes .razor, [Parameter], @bind e @onclick",
+  "description": "Reaproveite componentes web escritos 100% em C# compartilhando os mesmos DTOs entre frontend e backend.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Componentes Web em C# com Blazor",
+      "content": "Com o **Blazor**, você cria componentes `.razor` misturando HTML e C# (`@variavel`). A diretiva **`@onclick=\"Incrementar\"`** dispara métodos C# no clique, **`@bind=\"nome\"`** cria two-way data binding em `<input>` automaticamente, e **`[Parameter]`** permite receber props de componentes pai!",
+      "codeExample": "<h3>Contador: @contagem</h3>\n<button @onclick=\"Somar\">+1</button>\n\n@code {\n    [Parameter] public int Passo { get; set; } = 1;\n    private int contagem = 0;\n    private void Somar() => contagem += Passo;\n}",
+      "keyTakeaways": [
+        "`@page \"/sobre\"` transforma um componente `.razor` em uma rota navegável.",
+        "`[Parameter]` equivale às `props` do React!",
+        "No .NET 8+, Blazor unifica renderização Server (SSR/SignalR) e WebAssembly (cliente)."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Em um componente Blazor (`.razor`), qual atributo C# permite que um componente pai passe um valor para o componente filho (como `props` no React)?",
+      "options": [
+        "[Inject]",
+        "[Parameter]",
+        "[SerializeField]",
+        "[Route]"
+      ],
+      "correctIndex": 1,
+      "explanation": "`[Parameter]` marca propriedades públicas do componente como parâmetros recebíveis via atributos HTML no pai."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva o trecho Razor/Blazor de um botão `<button @onclick=\"Salvar\">Salvar</button>` e o bloco `@code { private void Salvar() {} }`:",
+      "starterCode": "<!-- Escreva o botão com @onclick e o bloco @code: -->\n",
+      "requiredTokens": ["<button", "@onclick=\"Salvar\"", "@code", "void Salvar()"],
+      "sampleSolution": "<button @onclick=\"Salvar\">Salvar</button>\n\n@code {\n    private void Salvar() {}\n}",
+      "hint": "Use `<button @onclick=\"Salvar\">Salvar</button>` e `@code { private void Salvar() {} }`.",
+      "explanation": "O Blazor atualiza o DOM automaticamente após a execução do manipulador `@onclick`."
+    }
+  ]
+}

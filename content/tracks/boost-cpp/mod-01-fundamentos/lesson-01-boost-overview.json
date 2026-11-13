@@ -1,0 +1,40 @@
+{
+  "id": "boost-overview-01",
+  "title": "Boost C++: Algorithm, Lexical Cast e Containers Rápidos",
+  "description": "Manipule strings com boost::algorithm, converta tipos com segurança e entenda a relação entre Boost e o padrão ISO C++.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Por que Boost é Chamado de 'Campo de Provas' do C++?",
+      "content": "Muitos recursos que hoje fazem parte da `std::` (como `shared_ptr`, `filesystem`, `optional`, `variant` e `regex`) nasceram dentro do **Boost**! Mesmo no C++20/23, o Boost continua essencial para utilitários de string (`boost::algorithm::trim`, `split`), grafos (`Boost.Graph`), parsing (`Boost.Spirit`) e containers sem alocação na Heap (`boost::container::flat_map`).",
+      "codeExample": "#include <boost/algorithm/string.hpp>\n#include <string>\n#include <vector>\n\nstd::string texto = \"  C++,Boost,CMake  \";\nboost::trim(texto);\n\nstd::vector<std::string> partes;\nboost::split(partes, texto, boost::is_any_of(\",\"));",
+      "keyTakeaways": [
+        "Várias bibliotecas Boost são *header-only* (basta dar `#include`, sem compilar bibliotecas extras).",
+        "`boost::trim(s)` e `boost::to_upper(s)` modificam a string in-place sem alocar memória extra.",
+        "Antes de usar algo do Boost, confira se já entrou na `std::` moderna (ex: use `std::filesystem` no C++17+)."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é o papel histórico e prático da coleção Boost no ecossistema C++?",
+      "options": [
+        "Substituir o compilador GCC/Clang por um interpretador",
+        "Fornecer bibliotecas revisadas por pares de alta qualidade, muitas das quais posteriormente entram na biblioteca padrão (std::)",
+        "Servir apenas para estilização CSS",
+        "Gerenciar pacotes Python"
+      ],
+      "correctIndex": 1,
+      "explanation": "Recursos como smart pointers, thread, optional, variant e filesystem foram testados no Boost antes de entrarem no padrão ISO C++."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Inclua `<boost/algorithm/string.hpp>`, crie `std::string s = \"  ola  \";` e remova espaços das pontas in-place com `boost::trim(s);`:",
+      "starterCode": "// Use boost::trim(s) para limpar espaços:\n",
+      "requiredTokens": ["#include <boost/algorithm/string.hpp>", "std::string s", "boost::trim(s)"],
+      "sampleSolution": "#include <boost/algorithm/string.hpp>\nstd::string s = \"  ola  \";\nboost::trim(s);",
+      "hint": "Inclua `<boost/algorithm/string.hpp>`, declare `std::string s = \"  ola  \";` e chame `boost::trim(s);`.",
+      "explanation": "`boost::trim(s)` modifica `s` diretamente (in-place) eliminando cópias desnecessárias."
+    }
+  ]
+}

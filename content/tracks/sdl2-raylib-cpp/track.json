@@ -1,0 +1,19 @@
+{
+  "id": "sdl2-raylib-cpp",
+  "title": "SDL2 & Raylib (Games C/C++)",
+  "description": "Crie jogos 2D/3D em C e C++ dominando o Game Loop, janela, renderização a 60 FPS, delta time e captura de teclado/mouse.",
+  "category": "library",
+  "languageId": "c-cpp-systems",
+  "prerequisites": ["c-cpp-systems"],
+  "color": "#E11D48",
+  "icon": "🎮",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: O Game Loop, Input e Delta Time",
+      "description": "Entenda como engines e jogos em C/C++ renderizam quadros com Raylib e SDL2.",
+      "lessons": ["lesson-01-gameloop-raylib-sdl2"]
+    }
+  ]
+}

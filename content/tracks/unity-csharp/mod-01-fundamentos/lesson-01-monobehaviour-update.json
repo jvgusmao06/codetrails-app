@@ -1,0 +1,40 @@
+{
+  "id": "unity-mono-01",
+  "title": "Unity C#: MonoBehaviour, Update vs FixedUpdate e [SerializeField]",
+  "description": "Domine o ciclo de vida de scripts na Unity e evite chamar GetComponent dentro do Update().",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Ciclo de Vida de Scripts na Unity",
+      "content": "Na **Unity**, todo script anexado a um `GameObject` herda de **`MonoBehaviour`**. Três métodos controlam tudo:\n- **`Awake()` / `Start()`**: rodam uma vez na inicialização (ótimo para fazer cache de `GetComponent<Rigidbody>()`!).\n- **`Update()`**: roda a cada frame visual — multiplique movimentos por **`Time.deltaTime`**!\n- **`FixedUpdate()`**: roda em intervalo fixo de física — use aqui para `rb.AddForce(...)`!\nE para expor um campo no Inspector sem torná-lo `public`, use **`[SerializeField] private float velocidade = 5f;`**!",
+      "codeExample": "using UnityEngine;\n\npublic class Jogador : MonoBehaviour {\n    [SerializeField] private float velocidade = 6f;\n    private Rigidbody _rb;\n\n    void Awake() => _rb = GetComponent<Rigidbody>(); // Cache fora do Update!\n\n    void Update() {\n        transform.Translate(Vector3.forward * velocidade * Time.deltaTime);\n    }\n}",
+      "keyTakeaways": [
+        "NUNCA chame `GetComponent<T>()` ou `GameObject.Find()` dentro de `Update()` — faça cache no `Awake()`/`Start()`!",
+        "Use `[SerializeField] private` em vez de `public` para manter encapsulamento e ainda editar no Inspector.",
+        "Use `FixedUpdate()` para física (`Rigidbody`) e `Update()` para leitura de Input e câmera."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este script Unity causa queda de FPS em cenas grandes porque busca o componente na árvore toda a cada frame (60+ vezes por segundo). Clique na linha ineficiente:",
+      "lines": [
+        "void Update() {",
+        "    var rb = GetComponent<Rigidbody>();",
+        "    rb.AddForce(Vector3.up * 10f);",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Na linha 2, `GetComponent<Rigidbody>()` está sendo chamado dentro de `Update()`! Faça cache de `_rb` em `Awake()` e aplique forças em `FixedUpdate()`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Crie uma classe `public class Inimigo : MonoBehaviour` com `[SerializeField] private int vida = 100;` e um `void Update()` usando `Time.deltaTime`:",
+      "starterCode": "// Crie o script MonoBehaviour Inimigo:\n",
+      "requiredTokens": ["public class Inimigo : MonoBehaviour", "[SerializeField]", "private int vida", "void Update()", "Time.deltaTime"],
+      "sampleSolution": "public class Inimigo : MonoBehaviour {\n    [SerializeField] private int vida = 100;\n    void Update() {\n        transform.Translate(Vector3.right * Time.deltaTime);\n    }\n}",
+      "hint": "Use `public class Inimigo : MonoBehaviour`, `[SerializeField] private int vida = 100;` e `Time.deltaTime` no `Update()`.",
+      "explanation": "Essa estrutura limpa é a base de qualquer componente reutilizável em jogos Unity."
+    }
+  ]
+}

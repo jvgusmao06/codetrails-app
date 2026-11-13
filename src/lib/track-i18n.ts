@@ -8,7 +8,7 @@ const TRACK_TRANSLATIONS: Partial<
 > = {
   en: {
     "python-basics": {
-      title: "Essential Python",
+      title: "Python",
       description:
         "Learn Python's clean syntax: variables, data types, control flow, and lists with hands-on practice.",
     },
@@ -77,6 +77,11 @@ const TRACK_TRANSLATIONS: Partial<
       description:
         "Write blazingly fast software with compile-time memory safety: let mut, ownership, and borrowing.",
     },
+    "csharp-dotnet": {
+      title: "C# & .NET",
+      description:
+        "Learn C# from scratch to modern .NET: variables, null-safety, classes, records, LINQ, and async/await.",
+    },
     "git-github-workflow": {
       title: "Git & Version Control",
       description:
@@ -140,7 +145,7 @@ const TRACK_TRANSLATIONS: Partial<
   },
   es: {
     "python-basics": {
-      title: "Python Esencial",
+      title: "Python",
       description:
         "Aprende la sintaxis limpia de Python: variables, tipos de datos, condicionales y listas en la práctica.",
     },
@@ -209,6 +214,11 @@ const TRACK_TRANSLATIONS: Partial<
       description:
         "Escribe software ultrarrápido con seguridad garantizada en compilación: let mut, ownership y borrowing.",
     },
+    "csharp-dotnet": {
+      title: "C# y .NET",
+      description:
+        "Aprende C# desde cero hasta .NET moderno: variables, null-safety, clases, records, LINQ y async/await.",
+    },
     "git-github-workflow": {
       title: "Git y Control de Versiones",
       description:
@@ -272,7 +282,7 @@ const TRACK_TRANSLATIONS: Partial<
   },
   zh: {
     "python-basics": {
-      title: "Python 核心基础",
+      title: "Python",
       description: "掌握 Python 简洁语法：变量、数据类型、条件控制流与列表操作。",
     },
     "java-basics": {
@@ -327,6 +337,10 @@ const TRACK_TRANSLATIONS: Partial<
       title: "Rust 与内存安全",
       description: "编写极致性能与编译期内存安全的系统软件：let mut、所有权与借用。",
     },
+    "csharp-dotnet": {
+      title: "C# 与 .NET",
+      description: "从零掌握现代 C# 与 .NET：变量、空安全、类、Record、LINQ 与 async/await。",
+    },
     "git-github-workflow": {
       title: "Git 版本控制与协作",
       description: "掌握开发者必备工作流：暂存区、Commit、分支管理与 Pull Request。",
@@ -378,7 +392,7 @@ const TRACK_TRANSLATIONS: Partial<
   },
   hi: {
     "python-basics": {
-      title: "Python बुनियादी कोर्स",
+      title: "Python",
       description: "Python का सरल सिंटैक्स सीखें: वेरिएबल्स, डेटा प्रकार, शर्तें (if/else) और सूचियाँ (lists)।",
     },
     "java-basics": {
@@ -433,6 +447,10 @@ const TRACK_TRANSLATIONS: Partial<
       title: "Rust और मेमोरी सुरक्षा",
       description: "कंपाइल-टाइम मेमोरी सुरक्षा के साथ तेज़ सॉफ़्टवेयर लिखें: let mut और ओनरशिप।",
     },
+    "csharp-dotnet": {
+      title: "C# और .NET",
+      description: "शुरुआत से आधुनिक C# और .NET सीखें: वेरिएबल्स, नल-सेफ्टी, क्लास, LINQ और async/await।",
+    },
     "git-github-workflow": {
       title: "Git और वर्ज़न कंट्रोल",
       description: "हर डेवलपर का आवश्यक वर्कफ़्लो: कमिट, ब्रांच, मर्ज और Pull Requests।",
@@ -484,7 +502,7 @@ const TRACK_TRANSLATIONS: Partial<
   },
   fr: {
     "python-basics": {
-      title: "Python Essentiel",
+      title: "Python",
       description: "Apprenez la syntaxe claire de Python : variables, types, conditions, listes, fonctions et dictionnaires.",
     },
     "java-basics": {
@@ -511,6 +529,10 @@ const TRACK_TRANSLATIONS: Partial<
       title: "Rust & Sécurité Mémoire",
       description: "Écrivez du code ultra-rapide et sûr : ownership, borrowing, match et Result.",
     },
+    "csharp-dotnet": {
+      title: "C# & .NET",
+      description: "Apprenez C# de zéro à .NET moderne : variables, null-safety, classes, records, LINQ et async/await.",
+    },
     "git-github-workflow": {
       title: "Git & Contrôle de Version",
       description: "Maîtrisez le flux essentiel : staging, commits, branches, merges et Pull Requests.",
@@ -522,7 +544,7 @@ const TRACK_TRANSLATIONS: Partial<
   },
   ar: {
     "python-basics": {
-      title: "أساسيات Python",
+      title: "Python",
       description: "تعلم صياغة بايثون النظيفة: المتغيرات، الأنواع، الشروط، القوائم، الدوال والقواميس.",
     },
     "java-basics": {
@@ -549,6 +571,10 @@ const TRACK_TRANSLATIONS: Partial<
       title: "Rust وأمان الذاكرة",
       description: "اكتب برمجيات فائقة السرعة بأمان الذاكرة: Ownership و Borrowing و match.",
     },
+    "csharp-dotnet": {
+      title: "C# و .NET",
+      description: "تعلم C# من الصفر حتى .NET الحديث: المتغيرات، الكلاسات، LINQ و async/await.",
+    },
     "git-github-workflow": {
       title: "Git وإدارة الإصدارات",
       description: "أتقن سير عمل المطورين: commit و branch و merge وطلبات الدمج Pull Requests.",
@@ -560,7 +586,7 @@ const TRACK_TRANSLATIONS: Partial<
   },
   ru: {
     "python-basics": {
-      title: "Основы Python",
+      title: "Python",
       description: "Изучите чистый синтаксис Python: переменные, типы, условия, списки, функции и словари.",
     },
     "java-basics": {
@@ -586,6 +612,10 @@ const TRACK_TRANSLATIONS: Partial<
     "rust-systems": {
       title: "Rust и безопасность памяти",
       description: "Пишите быстрый и безопасный код: ownership, borrowing, match и Result.",
+    },
+    "csharp-dotnet": {
+      title: "C# и .NET",
+      description: "Изучите C# с нуля до современного .NET: переменные, null-safety, классы, LINQ и async/await.",
     },
     "git-github-workflow": {
       title: "Git и контроль версий",

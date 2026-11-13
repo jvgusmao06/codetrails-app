@@ -1,0 +1,23 @@
+{
+  "id": "viper-config-go",
+  "title": "Viper (Configurações)",
+  "description": "Centralize configurações em Go lendo arquivos YAML/JSON, variáveis de ambiente e flags com spf13/viper.",
+  "category": "library",
+  "languageId": "golang-cloud",
+  "prerequisites": [
+    "golang-cloud"
+  ],
+  "color": "#8B5CF6",
+  "icon": "⚙️",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Módulo 1: ReadInConfig, AutomaticEnv e Unmarshal",
+      "description": "Carregue configs de múltiplos ambientes e mapeie tudo para structs tipadas em Go.",
+      "lessons": [
+        "lesson-01-viper-env-unmarshal"
+      ]
+    }
+  ]
+}

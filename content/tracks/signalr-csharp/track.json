@@ -1,0 +1,23 @@
+{
+  "id": "signalr-csharp",
+  "title": "SignalR",
+  "description": "Implemente comunicação em tempo real bidirecional com WebSockets, Hubs e grupos no ASP.NET Core.",
+  "category": "framework",
+  "languageId": "csharp-dotnet",
+  "prerequisites": [
+    "csharp-dotnet"
+  ],
+  "color": "#0EA5E9",
+  "icon": "📡",
+  "author": "Comunidade CodeTrails",
+  "modules": [
+    {
+      "id": "mod-01-fundamentos",
+      "title": "Hubs em Tempo Real com SignalR",
+      "description": "Crie Hubs, envie mensagens com Clients.All.SendAsync e mapeie rotas com MapHub.",
+      "lessons": [
+        "lesson-01-hubs-realtime"
+      ]
+    }
+  ]
+}

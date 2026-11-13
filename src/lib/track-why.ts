@@ -1,3 +1,5 @@
+import type { Locale } from "./i18n";
+
 const TRACK_WHY_PT: Record<string, string> = {
   "algorithms-data-structures":
     "Base essencial para resolver problemas complexos, escrever código eficiente (Big O) e mandar bem em entrevistas técnicas.",
@@ -149,6 +151,161 @@ const TRACK_WHY_PT: Record<string, string> = {
     "Validação de schemas TypeScript-first para garantir segurança nos dados de formulários, APIs e variáveis de ambiente.",
 };
 
-export function getWhyLearn(trackId: string): string | undefined {
-  return TRACK_WHY_PT[trackId];
+const TRACK_WHY_EN: Record<string, string> = {
+  "algorithms-data-structures":
+    "Essential foundation for solving complex problems, writing efficient code (Big O), and acing technical interviews.",
+  "asio-networking-cpp":
+    "Industry standard in C++ for ultra-low-latency async networking, servers, and real-time systems.",
+  "aspnet-core-csharp":
+    "Microsoft's high-performance enterprise web framework for REST APIs, microservices, and cloud apps.",
+  "blazor-csharp":
+    "Build interactive web UIs using C# and .NET instead of JavaScript while sharing code with your backend.",
+  "boost-cpp":
+    "Battle-tested C++ libraries complementing the STL for graphs, regex, threading, and advanced utilities.",
+  "c-cpp-systems":
+    "Master memory control, pointers, and peak performance for operating systems, games, embedded devices, and compilers.",
+  "clap-cli-rust":
+    "De facto Rust library for building fast, type-safe command-line tools with automatic help output.",
+  "cmake-build-system":
+    "Industry-standard cross-platform build system for managing C and C++ projects of any scale.",
+  "cobra-cli-go":
+    "Framework powering tools like Docker, kubectl, and GitHub CLI for building robust Go CLIs.",
+  "csharp-dotnet":
+    "Modern, strongly typed language versatile across enterprise backends, Unity games, desktop, and Azure cloud.",
+  "dapper-csharp":
+    "Ultra-fast micro-ORM for .NET when you want full SQL control with typed object mapping.",
+  "django-python":
+    "Batteries-included Python web framework with built-in admin, ORM, and security to ship products fast.",
+  "echo-go":
+    "Minimalist, high-speed Go web microframework for clean REST APIs with simple routing and middleware.",
+  "ef-core-csharp":
+    "Official .NET ORM for working with relational databases using LINQ, migrations, and strong typing.",
+  "eigen-linalg-cpp":
+    "High-performance C++ linear algebra library for matrices and vectors, used in robotics, vision, and games.",
+  "fastapi-python":
+    "One of the fastest Python API frameworks, featuring automatic Pydantic validation and native OpenAPI docs.",
+  "fiber-go":
+    "Express-inspired Go web framework focused on minimal latency and maximum request throughput.",
+  "fluentvalidation-csharp":
+    "Clean .NET pattern for separating complex validation rules from entities with fluent, testable syntax.",
+  "git-github-workflow":
+    "Indispensable tool for every software team to version code, review PRs, and collaborate safely.",
+  "go-gorm-sqlc":
+    "Master Go persistence: from ORM productivity (GORM) to type-safe compiled raw SQL (sqlc).",
+  "go-web-gin":
+    "Go's most popular web framework for building fast APIs and microservices with low memory footprint.",
+  "golang-cloud":
+    "Google-designed language for simple concurrency (goroutines), single binaries, and cloud-native infrastructure.",
+  "googletest-cpp":
+    "Google's standard framework for writing reliable unit tests and mocks in C++ projects.",
+  "grpc-go":
+    "High-performance RPC communication with Protocol Buffers, ideal for low-latency Go microservices.",
+  "java-basics":
+    "One of the most in-demand enterprise languages, powering banking, distributed systems, and Android.",
+  "junit-mockito":
+    "Essential Java duo for ensuring code quality with isolated unit tests and dependency mocks.",
+  "lombok-java":
+    "Eliminates boilerplate (getters, setters, builders) in Java, keeping classes clean and readable.",
+  "mapstruct-java":
+    "Generates compile-time DTO mappers in Java, avoiding slow reflection and manual conversion bugs.",
+  "mediatr-csharp":
+    "Implements Mediator/CQRS in .NET to decouple handlers, commands, and events in clean architectures.",
+  "mockito-java":
+    "Leading Java mocking library to simulate dependencies in unit tests and verify behavior clearly.",
+  "nextjs-app-router":
+    "Market-leading full-stack React framework for SEO, Server Components, file routing, and fast web apps.",
+  "nlohmann-json-cpp":
+    "The most intuitive, modern way to parse, manipulate, and serialize JSON in C++ with Python-like syntax.",
+  "nodejs-hono-api":
+    "Ultrafast multi-runtime web framework (Node, Cloudflare Workers, Bun) for modern edge APIs.",
+  "numpy-python":
+    "Numerical foundation of Python data science and AI, providing vectorized arrays at C speed.",
+  "pandas-data-science":
+    "Standard Python toolkit for cleaning, transforming, and analyzing spreadsheets and tabular datasets.",
+  "playwright-e2e":
+    "Modern browser automation for reliable end-to-end testing across Chrome, Firefox, and WebKit.",
+  "prisma-drizzle-orm":
+    "Leading modern TypeScript ORMs for querying SQL databases with autocomplete and full type safety.",
+  "pydantic-python":
+    "Data validation and contracts in Python using Type Hints, powering FastAPI and modern AI agents.",
+  "pytest-testing":
+    "Python's most productive testing framework, with powerful fixtures and clean, boilerplate-free assertions.",
+  "python-basics":
+    "Versatile, approachable language leading Data Science, AI, automation, and rapid backend development.",
+  "pytorch-ml-python":
+    "Preferred Deep Learning framework for researchers and engineers training neural networks and AI models.",
+  "qt-gui-cpp":
+    "Classic cross-platform framework for building native GUIs and desktop or embedded software in C++.",
+  "rayon-parallel-rust":
+    "Turns sequential iterators into safe parallel processing with a single line of Rust code.",
+  "react-fundamentals":
+    "World's most popular library for building reactive, component-driven web UIs and frontend ecosystems.",
+  "redis-caching":
+    "Blazing-fast in-memory store essential for caching, queues, sessions, and rate limiting at scale.",
+  "reqwest-http-rust":
+    "Ergonomic, async HTTP client in Rust for consuming external APIs safely and efficiently.",
+  "rust-axum-serde":
+    "Modern Rust stack for safe, ergonomic, ultra-fast web APIs with zero-cost serialization.",
+  "rust-systems":
+    "Guarantees memory safety without a garbage collector—the modern choice for systems, Wasm, CLIs, and infra.",
+  "scikit-learn-python":
+    "Practical gateway to classic Machine Learning (classification, regression, clustering) in Python.",
+  "sdl2-raylib-cpp":
+    "Direct libraries for building 2D/3D games, engines, and real-time graphics in C and C++.",
+  "serde-serialization-rust":
+    "Rust's gold standard for serializing and deserializing JSON, YAML, and binary formats at zero runtime cost.",
+  "signalr-csharp":
+    "Adds real-time WebSocket communication to .NET apps for live chats, notifications, and dashboards.",
+  "spring-boot-java":
+    "Primary Java ecosystem framework for building production-ready enterprise APIs and microservices.",
+  "spring-data-jpa":
+    "Drastically simplifies SQL database access in Spring Boot by generating queries from Java interfaces.",
+  "spring-kafka-java":
+    "Connects Java apps to Apache Kafka for event-driven architectures and large-scale data streaming.",
+  "spring-security-jwt":
+    "Secures Spring Boot APIs with stateless JWT authentication, filters, and fine-grained permissions.",
+  "sql-databases":
+    "Universal language for querying, modeling, and ensuring integrity in relational databases across backend and data.",
+  "sqlalchemy-python":
+    "Python's most complete ORM and SQL toolkit for modeling relational databases safely and flexibly.",
+  "sqlx-rust":
+    "Runs async SQL queries in Rust while checking syntax and types against your database at compile time.",
+  "stl-cpp":
+    "C++ Standard Template Library (vectors, maps, algorithms) so you write fast code without reinventing the wheel.",
+  "tailwind-css":
+    "Utility-first CSS framework that speeds up building responsive, consistent UIs directly in HTML/JSX.",
+  "tanstack-query-ts":
+    "Handles request caching, syncing, and loading states in React without manual boilerplate.",
+  "tauri-desktop-rust":
+    "Build lightweight, secure desktop apps using a web frontend with a native Rust backend instead of Electron.",
+  "testcontainers-java":
+    "Spins up real databases and services in Docker containers during Java tests, avoiding fragile mocks.",
+  "testify-go":
+    "Adds expressive assertions and mocks to Go's native tests, making test suites much cleaner to read.",
+  "tokio-async-rust":
+    "Standard async runtime in Rust for building high-scale network servers, APIs, and concurrent tasks.",
+  "tracing-telemetry-rust":
+    "Structured instrumentation in Rust for logs, spans, and observability in async distributed systems.",
+  "typescript-javascript":
+    "Core language of the web (frontend and Node.js), with static typing in TypeScript to scale safely.",
+  "unity-csharp":
+    "Most popular game engine for building 2D, 3D, mobile, and interactive experiences with C#.",
+  "viper-config-go":
+    "Complete Go solution for loading configuration from files, environment variables, and CLI flags.",
+  "vitest-testing":
+    "Blazing-fast test runner built for Vite/TypeScript ecosystems with a Jest-compatible API.",
+  "xunit-csharp":
+    "Modern, extensible testing framework most widely adopted by the .NET community and Microsoft.",
+  "zap-logging-go":
+    "Uber's ultra-fast structured logger for Go services requiring zero-allocation performance in production.",
+  "zod-validation":
+    "TypeScript-first schema validation to keep forms, APIs, and environment variables type-safe at runtime.",
+};
+
+export function getWhyLearn(
+  trackId: string,
+  locale: Locale = "pt"
+): string | undefined {
+  if (locale === "pt") return TRACK_WHY_PT[trackId];
+  return TRACK_WHY_EN[trackId] ?? TRACK_WHY_PT[trackId];
 }

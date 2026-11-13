@@ -228,21 +228,6 @@ codetrails-app/
 
 ---
 
-## 🗺️ Roadmap de Implementações Futuras
-
-- [ ] **Execução Real de Código Offline (Sandbox Wasm)**:
-  - Integrar **Pyodide** (Python) e **sql.js** (SQLite) para rodar código real do usuário direto no navegador/Capacitor sem depender de servidor.
-- [x] **Editor Touch Mobile (CodeMirror 6)**:
-  - Editor com realce de sintaxe por linguagem, autocompletar, quebra de linha e numeração otimizada para telas de celular.
-- [ ] **Sync em Nuvem Opcional (GitHub / Google Login)**:
-  - Sincronização de XP, *streak* e conquistas entre dispositivos mantendo o `localStorage` como modo convidado instantâneo.
-- [x] **Lembretes Nativos & Offline Total**:
-  - `@capacitor/local-notifications` para lembretes diários de ofensiva no Android/iOS e **Serwist** (`@serwist/turbopack`) para cache 100% offline no PWA.
-- [ ] **Publicação Direta via PR na Aba Contribuir**:
-  - Fluxo guiado com GitHub OAuth para abrir Pull Requests de novas lições diretamente pela interface do app.
-
----
-
 ## 📄 Licença
 
 Distribuído sob a licença **MIT**. Sinta-se livre para estudar, modificar, criar novas trilhas e contribuir!

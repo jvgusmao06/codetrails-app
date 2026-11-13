@@ -97,6 +97,32 @@ export interface UIDictionary {
     copyJson: string;
     copied: string;
   };
+  common: {
+    whyLearn: string;
+    requirement: string;
+    searchPlaceholder: string;
+    loading: string;
+    lesson: string;
+    theory: string;
+    exercisesShort: string;
+    unlockPrereqs: string;
+    hint: string;
+    reset: string;
+    viewSolution: string;
+    referenceSolution: string;
+    editorPlaceholder: string;
+    toggleModeTitle: string;
+    skipTheoryTitle: string;
+    reminderTitle: string;
+    reminderDescNative: string;
+    reminderDescWeb: string;
+    reminderNotifTitle: string;
+    reminderNotifBody: string;
+    reminderTimeLabel: string;
+    enabled: string;
+    disabled: string;
+    permissionDenied: string;
+  };
 }
 
 export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
@@ -190,6 +216,37 @@ export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
       copyJson: "Copiar JSON",
       copied: "Copiado!",
     },
+    common: {
+      whyLearn: "Por que aprender",
+      requirement: "Requisito",
+      searchPlaceholder:
+        "Buscar linguagem, framework ou conceito (ex: Rust, Gin, Pandas, SQL, ORM...)",
+      loading: "Carregando...",
+      lesson: "Lição",
+      theory: "Teoria",
+      exercisesShort: "Ex.",
+      unlockPrereqs: "Liberar Pré-requisitos",
+      hint: "dica",
+      reset: "reiniciar",
+      viewSolution: "Ver solução",
+      referenceSolution: "Solução de referência:",
+      editorPlaceholder: "// Escreva seu código do zero aqui...",
+      toggleModeTitle:
+        "Alternar entre Modo Guiado (com Teoria) e Modo Só Prática",
+      skipTheoryTitle: "Pular explicação teórica e ir direto para os exercícios",
+      reminderTitle: "Lembrete Diário de Ofensiva",
+      reminderDescNative:
+        "Receba uma notificação local todo dia para manter sua ofensiva.",
+      reminderDescWeb:
+        "Preferência salva localmente. As notificações disparam no app Android/iOS.",
+      reminderNotifTitle: "Hora de praticar no CodeTrails!",
+      reminderNotifBody:
+        "Mantenha sua ofensiva diária completando uma lição rápida.",
+      reminderTimeLabel: "Horário do lembrete",
+      enabled: "Ativado",
+      disabled: "Desativado",
+      permissionDenied: "Permissão de notificação negada no dispositivo.",
+    },
   },
   en: {
     nav: {
@@ -279,6 +336,36 @@ export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
         "Build a lesson with a theory briefing and exercise ready to paste into your PR.",
       copyJson: "Copy JSON",
       copied: "Copied!",
+    },
+    common: {
+      whyLearn: "Why learn it",
+      requirement: "Requirement",
+      searchPlaceholder:
+        "Search a language, framework or concept (e.g. Rust, Gin, Pandas, SQL, ORM...)",
+      loading: "Loading...",
+      lesson: "Lesson",
+      theory: "Theory",
+      exercisesShort: "Ex.",
+      unlockPrereqs: "Unlock Prerequisites",
+      hint: "hint",
+      reset: "reset",
+      viewSolution: "Show solution",
+      referenceSolution: "Reference solution:",
+      editorPlaceholder: "// Write your code from scratch here...",
+      toggleModeTitle:
+        "Toggle between Guided Mode (with Theory) and Practice-Only Mode",
+      skipTheoryTitle: "Skip the theory and go straight to the exercises",
+      reminderTitle: "Daily Streak Reminder",
+      reminderDescNative:
+        "Get a daily local notification to keep your streak alive.",
+      reminderDescWeb:
+        "Preference saved locally. Notifications fire on the Android/iOS app.",
+      reminderNotifTitle: "Time to practice on CodeTrails!",
+      reminderNotifBody: "Keep your daily streak alive with a quick lesson.",
+      reminderTimeLabel: "Reminder time",
+      enabled: "Enabled",
+      disabled: "Disabled",
+      permissionDenied: "Notification permission denied on this device.",
     },
   },
   es: {
@@ -371,6 +458,37 @@ export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
       copyJson: "Copiar JSON",
       copied: "¡Copiado!",
     },
+    common: {
+      whyLearn: "Por qué aprenderlo",
+      requirement: "Requisito",
+      searchPlaceholder:
+        "Buscar lenguaje, framework o concepto (ej: Rust, Gin, Pandas, SQL, ORM...)",
+      loading: "Cargando...",
+      lesson: "Lección",
+      theory: "Teoría",
+      exercisesShort: "Ej.",
+      unlockPrereqs: "Desbloquear Prerrequisitos",
+      hint: "pista",
+      reset: "reiniciar",
+      viewSolution: "Ver solución",
+      referenceSolution: "Solución de referencia:",
+      editorPlaceholder: "// Escribe tu código desde cero aquí...",
+      toggleModeTitle:
+        "Alternar entre Modo Guiado (con Teoría) y Modo Solo Práctica",
+      skipTheoryTitle: "Saltar la teoría e ir directo a los ejercicios",
+      reminderTitle: "Recordatorio Diario de Racha",
+      reminderDescNative:
+        "Recibe una notificación local cada día para mantener tu racha.",
+      reminderDescWeb:
+        "Preferencia guardada localmente. Las notificaciones se envían en la app Android/iOS.",
+      reminderNotifTitle: "¡Hora de practicar en CodeTrails!",
+      reminderNotifBody:
+        "Mantén tu racha diaria completando una lección rápida.",
+      reminderTimeLabel: "Hora del recordatorio",
+      enabled: "Activado",
+      disabled: "Desactivado",
+      permissionDenied: "Permiso de notificaciones denegado en el dispositivo.",
+    },
   },
   zh: {
     nav: {
@@ -456,6 +574,32 @@ export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
       generatorSubtitle: "在线编写理论介绍与代码填空题，一键复制 JSON 用于 PR。",
       copyJson: "复制 JSON",
       copied: "已复制！",
+    },
+    common: {
+      whyLearn: "为什么要学",
+      requirement: "前置要求",
+      searchPlaceholder: "搜索语言、框架或概念（如：Rust、Gin、Pandas、SQL、ORM...）",
+      loading: "加载中...",
+      lesson: "课时",
+      theory: "理论",
+      exercisesShort: "练习",
+      unlockPrereqs: "解锁前置课程",
+      hint: "提示",
+      reset: "重置",
+      viewSolution: "查看答案",
+      referenceSolution: "参考答案：",
+      editorPlaceholder: "// 在这里从零开始编写代码...",
+      toggleModeTitle: "在引导模式（含理论）与纯练习模式之间切换",
+      skipTheoryTitle: "跳过理论讲解，直接进入练习",
+      reminderTitle: "每日连续学习提醒",
+      reminderDescNative: "每天接收一条本地通知，保持连续学习记录。",
+      reminderDescWeb: "偏好已保存在本地。通知将在 Android/iOS 应用中发送。",
+      reminderNotifTitle: "该在 CodeTrails 练习了！",
+      reminderNotifBody: "完成一节简短课程，保持你的每日连胜。",
+      reminderTimeLabel: "提醒时间",
+      enabled: "已开启",
+      disabled: "已关闭",
+      permissionDenied: "设备已拒绝通知权限。",
     },
   },
   hi: {
@@ -543,6 +687,36 @@ export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
       copyJson: "JSON कॉपी करें",
       copied: "कॉपी हो गया!",
     },
+    common: {
+      whyLearn: "क्यों सीखें",
+      requirement: "आवश्यकता",
+      searchPlaceholder:
+        "भाषा, फ़्रेमवर्क या कॉन्सेप्ट खोजें (जैसे: Rust, Gin, Pandas, SQL, ORM...)",
+      loading: "लोड हो रहा है...",
+      lesson: "पाठ",
+      theory: "थ्योरी",
+      exercisesShort: "अभ्यास",
+      unlockPrereqs: "आवश्यक शर्तें अनलॉक करें",
+      hint: "संकेत",
+      reset: "रीसेट",
+      viewSolution: "समाधान देखें",
+      referenceSolution: "संदर्भ समाधान:",
+      editorPlaceholder: "// यहाँ शुरू से अपना कोड लिखें...",
+      toggleModeTitle:
+        "गाइडेड मोड (थ्योरी सहित) और केवल अभ्यास मोड के बीच बदलें",
+      skipTheoryTitle: "थ्योरी छोड़कर सीधे अभ्यास पर जाएँ",
+      reminderTitle: "दैनिक स्ट्रीक रिमाइंडर",
+      reminderDescNative:
+        "अपनी स्ट्रीक बनाए रखने के लिए हर दिन एक लोकल सूचना पाएँ।",
+      reminderDescWeb:
+        "पसंद लोकल रूप से सहेजी गई। सूचनाएँ Android/iOS ऐप में आती हैं।",
+      reminderNotifTitle: "CodeTrails पर अभ्यास का समय!",
+      reminderNotifBody: "एक छोटा पाठ पूरा करके अपनी दैनिक स्ट्रीक बनाए रखें।",
+      reminderTimeLabel: "रिमाइंडर का समय",
+      enabled: "चालू",
+      disabled: "बंद",
+      permissionDenied: "इस डिवाइस पर सूचना की अनुमति अस्वीकृत है।",
+    },
   },
   fr: {
     nav: {
@@ -629,6 +803,36 @@ export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
       copyJson: "Copier le JSON",
       copied: "Copié !",
     },
+    common: {
+      whyLearn: "Pourquoi l'apprendre",
+      requirement: "Prérequis",
+      searchPlaceholder:
+        "Rechercher un langage, framework ou concept (ex : Rust, Gin, Pandas, SQL, ORM...)",
+      loading: "Chargement...",
+      lesson: "Leçon",
+      theory: "Théorie",
+      exercisesShort: "Ex.",
+      unlockPrereqs: "Débloquer les prérequis",
+      hint: "indice",
+      reset: "réinitialiser",
+      viewSolution: "Voir la solution",
+      referenceSolution: "Solution de référence :",
+      editorPlaceholder: "// Écrivez votre code à partir de zéro ici...",
+      toggleModeTitle:
+        "Basculer entre le Mode Guidé (avec théorie) et le Mode Pratique seule",
+      skipTheoryTitle: "Passer la théorie et aller directement aux exercices",
+      reminderTitle: "Rappel Quotidien de Série",
+      reminderDescNative:
+        "Recevez une notification locale chaque jour pour garder votre série.",
+      reminderDescWeb:
+        "Préférence enregistrée localement. Les notifications sont envoyées dans l'app Android/iOS.",
+      reminderNotifTitle: "C'est l'heure de pratiquer sur CodeTrails !",
+      reminderNotifBody: "Gardez votre série quotidienne avec une leçon rapide.",
+      reminderTimeLabel: "Heure du rappel",
+      enabled: "Activé",
+      disabled: "Désactivé",
+      permissionDenied: "Autorisation de notification refusée sur cet appareil.",
+    },
   },
   ar: {
     nav: {
@@ -714,6 +918,34 @@ export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
       copyJson: "نسخ JSON",
       copied: "تم النسخ!",
     },
+    common: {
+      whyLearn: "لماذا تتعلمها",
+      requirement: "متطلب",
+      searchPlaceholder:
+        "ابحث عن لغة أو إطار عمل أو مفهوم (مثل: Rust، Gin، Pandas، SQL، ORM...)",
+      loading: "جارٍ التحميل...",
+      lesson: "درس",
+      theory: "شرح نظري",
+      exercisesShort: "تمارين",
+      unlockPrereqs: "فتح المتطلبات الأساسية",
+      hint: "تلميح",
+      reset: "إعادة تعيين",
+      viewSolution: "عرض الحل",
+      referenceSolution: "الحل المرجعي:",
+      editorPlaceholder: "// اكتب الكود من الصفر هنا...",
+      toggleModeTitle: "التبديل بين الوضع الموجَّه (مع الشرح) ووضع التدريب فقط",
+      skipTheoryTitle: "تخطَّ الشرح النظري وانتقل مباشرة إلى التمارين",
+      reminderTitle: "تذكير السلسلة اليومية",
+      reminderDescNative: "احصل على إشعار محلي يومياً للحفاظ على سلسلتك.",
+      reminderDescWeb:
+        "تم حفظ التفضيل محلياً. تُرسل الإشعارات في تطبيق Android/iOS.",
+      reminderNotifTitle: "حان وقت التدريب على CodeTrails!",
+      reminderNotifBody: "حافظ على سلسلتك اليومية بإكمال درس سريع.",
+      reminderTimeLabel: "وقت التذكير",
+      enabled: "مفعّل",
+      disabled: "معطّل",
+      permissionDenied: "تم رفض إذن الإشعارات على هذا الجهاز.",
+    },
   },
   ru: {
     nav: {
@@ -798,6 +1030,36 @@ export const UI_DICTIONARIES: Record<Locale, UIDictionary> = {
       generatorSubtitle: "Сгенерируйте JSON теории и практики для вашего PR.",
       copyJson: "Копировать JSON",
       copied: "Скопировано!",
+    },
+    common: {
+      whyLearn: "Зачем изучать",
+      requirement: "Требование",
+      searchPlaceholder:
+        "Поиск языка, фреймворка или концепции (напр.: Rust, Gin, Pandas, SQL, ORM...)",
+      loading: "Загрузка...",
+      lesson: "Урок",
+      theory: "Теория",
+      exercisesShort: "упр.",
+      unlockPrereqs: "Открыть требования",
+      hint: "подсказка",
+      reset: "сброс",
+      viewSolution: "Показать решение",
+      referenceSolution: "Эталонное решение:",
+      editorPlaceholder: "// Напишите свой код с нуля здесь...",
+      toggleModeTitle:
+        "Переключение между режимом с теорией и режимом только практики",
+      skipTheoryTitle: "Пропустить теорию и сразу перейти к упражнениям",
+      reminderTitle: "Ежедневное напоминание о серии",
+      reminderDescNative:
+        "Получайте локальное уведомление каждый день, чтобы не прерывать серию.",
+      reminderDescWeb:
+        "Настройка сохранена локально. Уведомления приходят в приложении Android/iOS.",
+      reminderNotifTitle: "Время практиковаться в CodeTrails!",
+      reminderNotifBody: "Сохраните ежедневную серию — пройдите короткий урок.",
+      reminderTimeLabel: "Время напоминания",
+      enabled: "Включено",
+      disabled: "Выключено",
+      permissionDenied: "Доступ к уведомлениям на устройстве запрещён.",
     },
   },
 };

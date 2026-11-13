@@ -66,7 +66,7 @@ export function CodeEditor({
   onChange,
   languageId,
   disabled = false,
-  placeholder = "// Escreva seu código do zero aqui...",
+  placeholder,
 }: {
   value: string;
   onChange: (value: string) => void;

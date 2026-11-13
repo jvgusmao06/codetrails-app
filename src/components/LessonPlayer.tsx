@@ -352,7 +352,7 @@ export function LessonPlayer({
                   ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-300"
                   : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200"
               }`}
-              title="Alternar entre Modo Guiado (com Teoria) e Modo Só Prática"
+              title={t.common.toggleModeTitle}
             >
               <Dumbbell className="w-3 h-3" />
               <span>
@@ -530,7 +530,7 @@ export function LessonPlayer({
                   }}
                   className="font-mono text-[11px] text-zinc-400 hover:text-zinc-200 flex items-center gap-1 cursor-pointer"
                 >
-                  <RotateCcw className="w-3 h-3" /> reset
+                  <RotateCcw className="w-3 h-3" /> {t.common.reset}
                 </button>
               </div>
 
@@ -610,7 +610,7 @@ export function LessonPlayer({
                   onClick={() => setOrderedIndices([])}
                   className="font-mono text-[11px] text-zinc-400 hover:text-zinc-200 flex items-center gap-1 cursor-pointer disabled:opacity-40"
                 >
-                  <RotateCcw className="w-3 h-3" /> reset
+                  <RotateCcw className="w-3 h-3" /> {t.common.reset}
                 </button>
               </div>
 
@@ -753,7 +753,7 @@ export function LessonPlayer({
                       onClick={() => setShowHint((h) => !h)}
                       className="font-mono text-[11px] text-amber-300 hover:text-amber-200 flex items-center gap-1 cursor-pointer"
                     >
-                      <Lightbulb className="w-3 h-3" /> dica
+                      <Lightbulb className="w-3 h-3" /> {t.common.hint}
                     </button>
                   )}
                   <button
@@ -762,7 +762,7 @@ export function LessonPlayer({
                     onClick={() => setWrittenCode(currentStep.starterCode ?? "")}
                     className="font-mono text-[11px] text-slate-400 hover:text-slate-200 flex items-center gap-1 cursor-pointer"
                   >
-                    <RotateCcw className="w-3 h-3" /> reset
+                    <RotateCcw className="w-3 h-3" /> {t.common.reset}
                   </button>
                 </div>
               </div>
@@ -775,7 +775,7 @@ export function LessonPlayer({
                     onClick={() => setWrittenCode(currentStep.sampleSolution)}
                     className="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] shrink-0 cursor-pointer"
                   >
-                    Ver solução
+                    {t.common.viewSolution}
                   </button>
                 </div>
               )}
@@ -785,7 +785,7 @@ export function LessonPlayer({
                 onChange={setWrittenCode}
                 languageId={languageId}
                 disabled={status !== "idle"}
-                placeholder="// Escreva seu código do zero aqui..."
+                placeholder={t.common.editorPlaceholder}
               />
 
               <div className="px-4 py-2 bg-slate-900/80 border-t border-slate-800/80 flex items-center justify-between flex-wrap gap-2">
@@ -818,7 +818,7 @@ export function LessonPlayer({
             {status !== "idle" && (
               <div className="rounded-xl border border-slate-800 bg-slate-950 p-3.5 space-y-1.5">
                 <span className="font-mono text-[11px] text-slate-400 block">
-                  Solução de referência:
+                  {t.common.referenceSolution}
                 </span>
                 <pre className="font-mono text-xs text-slate-200 overflow-x-auto">
                   <code>

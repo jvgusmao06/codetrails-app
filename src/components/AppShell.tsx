@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -18,6 +19,12 @@ import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { progress, setUserLocale, t } = useUserProgress();
+
+  useEffect(() => {
+    const html = document.documentElement;
+    html.lang = progress.locale === "pt" ? "pt-BR" : progress.locale;
+    html.dir = progress.locale === "ar" ? "rtl" : "ltr";
+  }, [progress.locale]);
 
   const navItems = [
     { href: "/", label: t.nav.roadmap, icon: TerminalSquare },
@@ -96,6 +103,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 type="button"
                 onClick={() => setUserLocale(loc.code)}
                 title={loc.label}
+                aria-label={loc.label}
                 className={`py-1.5 rounded-lg font-mono text-xs flex flex-col items-center justify-center border transition cursor-pointer ${
                   progress.locale === loc.code
                     ? "bg-emerald-500/20 border-emerald-500/60 text-white"
@@ -229,7 +237,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl font-medium text-[11px] transition ${
+                className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl font-medium text-xs transition ${
                   active
                     ? "text-emerald-400 bg-emerald-500/12"
                     : "text-slate-400 hover:text-slate-200"

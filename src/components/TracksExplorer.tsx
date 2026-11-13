@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Check,
@@ -21,7 +20,6 @@ import { getWhyLearn } from "@/lib/track-why";
 import { isTrackSatisfied } from "./SkillTree";
 
 export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
-  const router = useRouter();
   const { progress, setActiveTrack, toggleMasteredTrack, t } =
     useUserProgress();
 
@@ -32,11 +30,6 @@ export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
 
   const [selectedLangId, setSelectedLangId] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
-
-  function handleSelect(trackId: string) {
-    setActiveTrack(trackId);
-    router.push("/");
-  }
 
   const q = searchQuery.trim().toLowerCase();
 
@@ -87,7 +80,8 @@ export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar linguagem, framework ou conceito (ex: Rust, Gin, Pandas, SQL, ORM...)"
+            placeholder={t.common.searchPlaceholder}
+            aria-label={t.common.searchPlaceholder}
             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-800 text-sm text-white placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none transition"
           />
         </div>
@@ -185,12 +179,12 @@ export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
                     <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">
                       {lang.description}
                     </p>
-                    {getWhyLearn(lang.id) && (
+                    {getWhyLearn(lang.id, progress.locale) && (
                       <p className="text-xs text-emerald-300/90 mt-1.5">
                         <span className="font-mono font-semibold text-emerald-400">
-                          Por que aprender:{" "}
+                          {t.common.whyLearn}:{" "}
                         </span>
-                        {getWhyLearn(lang.id)}
+                        {getWhyLearn(lang.id, progress.locale)}
                       </p>
                     )}
                   </div>
@@ -258,16 +252,6 @@ export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
                         (acc, m) => acc + m.lessons.length,
                         0
                       );
-                      const completedCount = isTrackMastered
-                        ? totalLessons
-                        : track.modules.reduce(
-                            (acc, m) =>
-                              acc +
-                              m.lessons.filter((l) =>
-                                progress.completedLessons.includes(l.id)
-                              ).length,
-                            0
-                          );
 
                       const unmetReqs = (track.prerequisites ?? [])
                         .map((reqId) =>
@@ -302,7 +286,7 @@ export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
                                     {track.title}
                                   </h3>
                                   <span className="font-mono text-[10px] uppercase text-zinc-400">
-                                    {track.category}
+                                    {t.categories[track.category]}
                                   </span>
                                 </div>
                               </div>
@@ -318,7 +302,7 @@ export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
                                 </span>
                               ) : (
                                 <span className="inline-flex items-center gap-1 font-mono text-[10px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30">
-                                  <Lock className="w-3 h-3" /> Requisito
+                                  <Lock className="w-3 h-3" /> {t.common.requirement}
                                 </span>
                               )}
                             </div>
@@ -327,12 +311,12 @@ export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
                               {track.description}
                             </p>
 
-                            {getWhyLearn(track.id) && (
+                            {getWhyLearn(track.id, progress.locale) && (
                               <p className="text-[11px] text-emerald-300/90 mt-2 leading-relaxed bg-emerald-500/5 border border-emerald-500/20 rounded-lg px-2.5 py-1.5">
                                 <span className="font-mono font-semibold text-emerald-400">
-                                  Por que aprender:{" "}
+                                  {t.common.whyLearn}:{" "}
                                 </span>
-                                {getWhyLearn(track.id)}
+                                {getWhyLearn(track.id, progress.locale)}
                               </p>
                             )}
 

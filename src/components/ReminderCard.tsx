@@ -10,31 +10,6 @@ import {
 } from "@/lib/notifications";
 import { useUserProgress } from "@/lib/progress";
 
-const COPY = {
-  pt: {
-    title: "Lembrete Diário de Ofensiva",
-    descNative: "Receba uma notificação local todo dia para manter seu streak.",
-    descWeb:
-      "Preferência salva localmente. Notificações nativas disparam no app Android/iOS.",
-    notifTitle: "Hora de praticar no CodeTrails!",
-    notifBody: "Mantenha sua ofensiva diária completando uma lição rápida.",
-    enabled: "Ativado",
-    disabled: "Desativado",
-    denied: "Permissão de notificação negada no dispositivo.",
-  },
-  en: {
-    title: "Daily Streak Reminder",
-    descNative: "Get a daily local notification to keep your streak alive.",
-    descWeb:
-      "Preference saved locally. Native notifications fire on the Android/iOS app.",
-    notifTitle: "Time to practice on CodeTrails!",
-    notifBody: "Keep your daily streak alive with a quick lesson.",
-    enabled: "Enabled",
-    disabled: "Disabled",
-    denied: "Notification permission denied on this device.",
-  },
-} as const;
-
 function pad2(n: number) {
   return String(n).padStart(2, "0");
 }
@@ -42,8 +17,8 @@ function pad2(n: number) {
 const emptySubscribe = () => () => {};
 
 export function ReminderCard() {
-  const { progress } = useUserProgress();
-  const c = progress.locale === "pt" ? COPY.pt : COPY.en;
+  const { t } = useUserProgress();
+  const c = t.common;
 
   const isClient = useSyncExternalStore(
     emptySubscribe,
@@ -78,12 +53,12 @@ export function ReminderCard() {
     const res = await enableDailyReminder(
       hour,
       minute,
-      c.notifTitle,
-      c.notifBody
+      c.reminderNotifTitle,
+      c.reminderNotifBody
     );
     if (!res.ok) {
       setEnabled(false);
-      setError(c.denied);
+      setError(c.permissionDenied);
       return;
     }
     setEnabled(true);
@@ -106,9 +81,9 @@ export function ReminderCard() {
           )}
         </div>
         <div>
-          <h3 className="font-bold text-sm text-white">{c.title}</h3>
+          <h3 className="font-bold text-sm text-white">{c.reminderTitle}</h3>
           <p className="text-xs text-slate-400 mt-0.5">
-            {native ? c.descNative : c.descWeb}
+            {native ? c.reminderDescNative : c.reminderDescWeb}
           </p>
           {error && <p className="text-xs text-rose-400 mt-1">{error}</p>}
         </div>
@@ -117,6 +92,7 @@ export function ReminderCard() {
       <div className="flex items-center gap-2.5 shrink-0">
         <input
           type="time"
+          aria-label={c.reminderTimeLabel}
           value={effectiveTime}
           onChange={(e) => {
             const val = e.target.value || "20:00";

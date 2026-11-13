@@ -212,12 +212,12 @@ export function SkillTree({ tracks }: { tracks: LoadedTrack[] }) {
               <p className="text-sm text-zinc-400 mt-1 max-w-2xl">
                 {currentTrack.description}
               </p>
-              {getWhyLearn(currentTrack.id) && (
+              {getWhyLearn(currentTrack.id, progress.locale) && (
                 <p className="text-xs text-emerald-300/90 mt-2 max-w-2xl bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-3 py-1.5">
                   <span className="font-mono font-semibold text-emerald-400">
-                    Por que aprender:{" "}
+                    {t.common.whyLearn}:{" "}
                   </span>
-                  {getWhyLearn(currentTrack.id)}
+                  {getWhyLearn(currentTrack.id, progress.locale)}
                 </p>
               )}
             </div>
@@ -506,7 +506,7 @@ export function SkillTree({ tracks }: { tracks: LoadedTrack[] }) {
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                           <div className="space-y-1">
                             <span className="font-mono text-xs text-zinc-500">
-                              Lição #{globalLessonNumber}/{allLessonsOrdered.length} • {lesson.id}
+                              {t.common.lesson} #{globalLessonNumber}/{allLessonsOrdered.length} • {lesson.id}
                             </span>
                             <h3 className="font-bold text-base text-zinc-300">
                               {lesson.title}
@@ -521,8 +521,8 @@ export function SkillTree({ tracks }: { tracks: LoadedTrack[] }) {
                             }}
                             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg font-mono text-xs bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 self-start sm:self-auto cursor-pointer transition"
                           >
-                            <FastForward className="w-3.5 h-3.5" /> Liberar
-                            Pré-requisitos
+                            <FastForward className="w-3.5 h-3.5" />{" "}
+                            {t.common.unlockPrereqs}
                           </button>
                         </div>
                       </div>
@@ -540,15 +540,15 @@ export function SkillTree({ tracks }: { tracks: LoadedTrack[] }) {
                           <div className="space-y-1">
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="font-mono text-xs text-emerald-400 font-semibold">
-                                Lição #{globalLessonNumber}/{allLessonsOrdered.length}
+                                {t.common.lesson} #{globalLessonNumber}/{allLessonsOrdered.length}
                               </span>
                               <span className="font-mono text-xs text-zinc-500">
                                 • {lesson.id}
                               </span>
                               {hasTheory && (
                                 <span className="inline-flex items-center gap-1 font-mono text-[10px] uppercase px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-                                  <BookOpen className="w-3 h-3" /> Teoria +{" "}
-                                  {practiceCount} Ex.
+                                  <BookOpen className="w-3 h-3" /> {t.common.theory} +{" "}
+                                  {practiceCount} {t.common.exercisesShort}
                                 </span>
                               )}
                               {isCompleted && (
@@ -583,7 +583,7 @@ export function SkillTree({ tracks }: { tracks: LoadedTrack[] }) {
                             <Link
                               href={`/lesson/${currentTrack.id}/${lesson.id}?mode=practice`}
                               className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg font-mono text-xs font-semibold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 transition"
-                              title="Pular explicação teórica e ir direto para os exercícios"
+                              title={t.common.skipTheoryTitle}
                             >
                               <Dumbbell className="w-3.5 h-3.5" />
                               {t.roadmap.practice}

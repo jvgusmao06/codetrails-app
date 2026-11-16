@@ -1,40 +1,93 @@
 {
-  "id": "java-optional-enums-05",
-  "title": "Optional<T>, Enums Poderosos e Inferência com var",
-  "description": "Elimine NullPointerException usando Optional<T>, modele estados fixos com enum e simplifique variáveis locais com var.",
-  "xp": 40,
+  "id": "java-heranca-interfaces-05",
+  "title": "Herança (extends), Interfaces (implements) e @Override",
+  "description": "Modele contratos com interface, compartilhe comportamento com extends/super/abstract e garanta segurança com @Override.",
+  "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Optional<T>, Enum e var no Java Moderno",
-      "content": "Para evitar o temido `NullPointerException`, métodos de busca em Java moderno retornam **`Optional<T>`** em vez de `null` — permitindo encadear `.orElse(...)` ou `.orElseThrow()`. Já o **`enum`** em Java é muito mais poderoso que constantes simples: pode ter campos, construtores e métodos! E desde o Java 10, **`var`** infere o tipo de variáveis locais mantendo a tipagem estática forte.",
-      "codeExample": "import java.util.Optional;\n\nenum StatusPedido { PAGO, PENDENTE, CANCELADO }\n\nOptional<String> email = Optional.ofNullable(buscarEmail());\nString destino = email.orElse(\"sem-email@dominio.com\");\n\nvar status = StatusPedido.PAGO; // Tipo inferido: StatusPedido",
+      "title": "Polimorfismo com interface, implements, extends, super e abstract",
+      "content": "Em Java, uma classe pode herdar de apenas **uma** classe pai usando **`extends`** (e chamar o construtor ou método do pai com **`super`**), mas pode implementar **várias** interfaces usando **`implements`**. Quando uma classe base serve apenas de modelo incompleto e não deve ser instanciada diretamente com `new`, marcamos como **`abstract class`**. Já uma **`interface`** define um contrato de métodos sem estado de instância. Sempre que sobrescrever um método da interface ou classe pai, anote com **`@Override`** para o compilador validar a assinatura.",
+      "codeExample": "interface Notificavel {\n    void enviar(String msg);\n}\n\nabstract class Funcionario {\n    protected String nome;\n    public Funcionario(String nome) { this.nome = nome; }\n}\n\nclass Gerente extends Funcionario implements Notificavel {\n    public Gerente(String nome) { super(nome); }\n\n    @Override\n    public void enviar(String msg) {\n        System.out.println(nome + \": \" + msg);\n    }\n}",
       "keyTakeaways": [
-        "Use `Optional.ofNullable(valor).orElse(padrao)` em vez de `if (x != null)` espalhados pelo código.",
-        "`enum` garante em tempo de compilação que apenas valores válidos existam (ex: `StatusPedido.PAGO`).",
-        "`var` só funciona em variáveis locais inicializadas (nunca em parâmetros de método ou campos de classe)."
+        "`extends` herda de uma classe (e `super(...)` chama o construtor do pai); `implements` cumpre uma ou mais `interface`s.",
+        "`abstract class` não pode ser instanciada diretamente com `new` — serve apenas de base para subclasses.",
+        "`@Override` faz o compilador acusar erro se você errar o nome ou os parâmetros do método sobrescrito."
       ]
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código Java para que `PixPagamento` cumpra o contrato da interface `Pagamento` e sobrescreva o método `pagar`:",
+      "codeTemplate": "{{blank}} Pagamento { void pagar(double valor); }\n\nclass PixPagamento {{blank}} Pagamento {\n    {{blank}}\n    public void pagar(double valor) {}\n}",
+      "blanks": [
+        { "answer": "interface", "placeholder": "contrato" },
+        { "answer": "implements", "placeholder": "implementa" },
+        { "answer": "@Override", "placeholder": "anotação" }
+      ],
+      "options": ["interface", "implements", "@Override", "extends", "trait", "super"],
+      "explanation": "Interfaces são definidas com `interface`, adotadas com `implements` e seus métodos implementados levam `@Override`."
+    },
+    {
       "type": "multiple_choice",
-      "prompt": "Qual método de `Optional<String>` retorna o valor presente ou um valor padrão alternativo caso esteja vazio, sem lançar exceção?",
+      "prompt": "Em Java, quantas classes uma subclasse pode herdar com `extends` e quantas interfaces pode adotar com `implements`?",
       "options": [
-        ".get()",
-        ".orElse(\"padrao\")",
-        ".isNull()",
-        ".unwrap()"
+        "Várias classes com `extends` e apenas 1 interface com `implements`",
+        "Apenas 1 classe com `extends` e várias interfaces com `implements`",
+        "Apenas 1 classe e apenas 1 interface",
+        "Nenhuma classe, apenas interfaces"
       ],
       "correctIndex": 1,
-      "explanation": "`.get()` lança `NoSuchElementException` se estiver vazio; já `.orElse(\"padrao\")` devolve com segurança o valor alternativo."
+      "explanation": "Java não permite herança múltipla de classes (`extends`), mas uma classe pode implementar múltiplas interfaces separadas por vírgula (`implements A, B`)."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para criar uma subclasse `Gerente` que herda de `Funcionario` e repassa o `nome` ao construtor da classe pai:",
+      "blocks": [
+        "class Gerente extends Funcionario {",
+        "    public Gerente(String nome) {",
+        "        super(nome);",
+        "    }",
+        "}"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "explanation": "No construtor da subclasse (`extends`), `super(nome)` invoca o construtor correspondente da classe pai."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O código abaixo tenta instanciar uma classe abstrata diretamente. Clique na linha com o bug:",
+      "lines": [
+        "abstract class Veiculo {",
+        "    abstract void mover();",
+        "}",
+        "public class Main {",
+        "    public static void main(String[] args) {",
+        "        Veiculo v = new Veiculo();",
+        "    }",
+        "}"
+      ],
+      "buggyLineIndex": 5,
+      "explanation": "Uma `abstract class` não pode ser instanciada diretamente com `new Veiculo()`; é preciso instanciar uma subclasse concreta que a estenda."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é a vantagem prática de anotar um método sobrescrito com `@Override` ao usar `extends` ou `implements`?",
+      "options": [
+        "Torna o método `static` automaticamente",
+        "Garante em tempo de compilação que a assinatura realmente corresponde a um método do pai ou da interface",
+        "Permite instanciar uma `interface` com `new`",
+        "Impede que a classe seja herdada"
+      ],
+      "correctIndex": 1,
+      "explanation": "Se você digitar o nome do método errado ou trocar o tipo de um parâmetro, `@Override` faz o compilador apontar o erro imediatamente."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie um `enum Nivel { INICIANTE, INTERMEDIARIO, AVANCADO }` e use `Optional.ofNullable(nome).orElse(\"Visitante\")` atribuído a `var exibicao`:",
-      "starterCode": "// Defina enum Nivel e use Optional.ofNullable:\n",
-      "requiredTokens": ["enum", "Nivel", "var", "Optional.ofNullable", ".orElse("],
-      "sampleSolution": "enum Nivel { INICIANTE, INTERMEDIARIO, AVANCADO }\nvar exibicao = Optional.ofNullable(nome).orElse(\"Visitante\");",
-      "hint": "Declare `enum Nivel { INICIANTE, INTERMEDIARIO, AVANCADO }` e `var exibicao = Optional.ofNullable(nome).orElse(\"Visitante\");`.",
-      "explanation": "`enum` e `Optional` tornam suas regras de negócio explícitas e à prova de valores nulos."
+      "prompt": "Defina uma `interface` chamada `Autenticavel` que declare um método `login` recebendo uma `String senha` e retornando um `boolean`.",
+      "starterCode": "",
+      "requiredTokens": ["interface", "Autenticavel", "boolean", "login", "String"],
+      "sampleSolution": "interface Autenticavel {\n    boolean login(String senha);\n}",
+      "hint": "Declare `interface Autenticavel` e, dentro das chaves, apenas a assinatura do método terminada com `;`.",
+      "explanation": "Métodos declarados em uma `interface` são implicitamente públicos e abstratos, definindo apenas o contrato da assinatura."
     }
   ]
 }

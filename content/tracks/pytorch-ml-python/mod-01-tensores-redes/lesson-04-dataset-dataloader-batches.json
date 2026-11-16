@@ -28,12 +28,47 @@
       "explanation": "Na linha 3, `model(X_teste)` roda em modo treino e rastreando gradientes na memória! Sempre envolva com `model.eval()` e `with torch.no_grad():`."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete a criação do `DataLoader` de treino com lotes de tamanho 32 e embaralhamento ativado:",
+      "codeTemplate": "from torch.utils.data import {{blank}}\n\ntrain_loader = DataLoader(dataset, batch_size=32, {{blank}}=True)",
+      "blanks": [
+        { "answer": "DataLoader", "placeholder": "classe" },
+        { "answer": "shuffle", "placeholder": "parâmetro" }
+      ],
+      "options": ["DataLoader", "shuffle", "eval", "no_grad", "Sequential"],
+      "explanation": "`DataLoader` fatia o `dataset` em mini-batches e `shuffle=True` embaralha os dados no treino."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é a diferença de comportamento ao chamar `model.eval()` antes de avaliar o modelo em validação?",
+      "options": [
+        "Apaga todos os pesos treinados do modelo",
+        "Desativa camadas como `Dropout` e congela estatísticas de `BatchNorm` para previsões determinísticas",
+        "Ativa o cálculo automático de gradientes",
+        "Embaralha o `DataLoader` de validação"
+      ],
+      "correctIndex": 1,
+      "explanation": "`model.eval()` coloca o modelo em modo de inferência, garantindo comportamento determinístico em `Dropout` e `BatchNorm`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para preparar o `DataLoader` de validação e executar a inferência com `model.eval()` e `torch.no_grad()`:",
+      "blocks": [
+        "with torch.no_grad():",
+        "val_loader = DataLoader(val_ds, batch_size=32, shuffle=False)",
+        "    previsoes = model(X_val)",
+        "model.eval()"
+      ],
+      "correctOrder": [1, 3, 0, 2],
+      "explanation": "Criamos o `DataLoader` de validação com `shuffle=False`, ativamos `model.eval()` e executamos `model(X_val)` dentro de `with torch.no_grad():`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Coloque `model` em modo avaliação com `model.eval()` e execute `pred = model(x)` dentro de `with torch.no_grad():`:",
-      "starterCode": "# Configure modo avaliação e torch.no_grad():\n",
+      "prompt": "Desafio de Código: Coloque `model` em modo de avaliação e, dentro de um bloco que desativa o rastreamento de gradientes do PyTorch, armazene em `pred` o resultado da inferência de `model` sobre `x`.",
+      "starterCode": "",
       "requiredTokens": ["model.eval()", "with torch.no_grad():", "pred = model(x)"],
       "sampleSolution": "model.eval()\nwith torch.no_grad():\n    pred = model(x)",
-      "hint": "Escreva `model.eval()` e depois `with torch.no_grad(): pred = model(x)`.",
+      "hint": "Chame o método `eval()` de `model` e use o gerenciador de contexto `torch.no_grad()`.",
       "explanation": "Essa dupla é obrigatória em qualquer endpoint de inferência com PyTorch."
     }
   ]

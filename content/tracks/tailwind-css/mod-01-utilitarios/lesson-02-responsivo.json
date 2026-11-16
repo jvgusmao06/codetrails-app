@@ -2,21 +2,22 @@
   "id": "tw-resp-02",
   "title": "Design Mobile-First",
   "description": "Adaptando layouts para telas maiores usando prefixos de breakpoint.",
-  "xp": 15,
+  "xp": 35,
   "steps": [
     {
       "type": "theory",
       "title": "Sistema Responsivo Mobile-First",
-      "content": "No Tailwind, classes sem prefixo (como hidden ou flex-col) são aplicadas imediatamente em todas as telas a partir do celular. Quando adicionamos um prefixo de breakpoint como 'md:' (768px+), aquela regra passa a valer de telas médias para cima.",
-      "codeExample": "<!-- Oculto no celular, visível como flex no desktop -->\n<aside className=\"hidden md:flex\">\n  Sidebar Desktop\n</aside>",
+      "content": "No Tailwind, classes sem prefixo (como `hidden` ou `flex-col`) são aplicadas imediatamente em todas as telas a partir do celular (**Mobile-First**). Quando adicionamos um prefixo de breakpoint — como `sm:` (640px+), `md:` (768px+) ou `lg:` (1024px+) — aquela regra passa a sobrescrever o estilo base a partir daquela largura em diante.\n\nPor exemplo, `flex flex-col md:flex-row` empilha cards em coluna no celular e os coloca lado a lado em telas médias ou maiores.",
+      "codeExample": "<!-- Oculto no celular, visível como flex no desktop -->\n<aside className=\"hidden md:flex\">\n  Sidebar Desktop\n</aside>\n\n<!-- Coluna no mobile, linha em telas médias+ -->\n<section className=\"flex flex-col md:flex-row gap-4\">\n  <div>Card 1</div>\n  <div>Card 2</div>\n</section>",
       "keyTakeaways": [
-        "Classes base estilizam o mobile primeiro (Mobile-First).",
-        "Prefixos como sm:, md: e lg: sobrescrevem estilos em telas maiores."
+        "Classes base estilizam o mobile primeiro (Mobile-First, via media queries `min-width`).",
+        "Prefixos como `sm:`, `md:` e `lg:` sobrescrevem estilos em telas maiores.",
+        "Combinar `flex-col` com `md:flex-row` adapta layouts automaticamente entre celular e desktop."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Como funciona o sistema de breakpoints (como sm:, md:, lg:) no Tailwind CSS?",
+      "prompt": "Como funciona o sistema de breakpoints (como `sm:`, `md:`, `lg:`) no Tailwind CSS?",
       "options": [
         "É Desktop-First: classes sem prefixo só valem para monitores grandes",
         "É Mobile-First: classes sem prefixo valem para todas as telas, e md: aplica a partir de 768px para cima",
@@ -24,11 +25,11 @@
         "Precisa de JavaScript para detectar o tamanho da tela"
       ],
       "correctIndex": 1,
-      "explanation": "O Tailwind usa media queries min-width (mobile-first): você estiliza o celular por padrão e adiciona md: ou lg: para telas maiores."
+      "explanation": "O Tailwind usa media queries `min-width` (mobile-first): você estiliza o celular por padrão e adiciona `md:` ou `lg:` para telas maiores."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Faça o menu ficar oculto no celular e aparecer como flex em telas médias (md) ou maiores:",
+      "prompt": "Faça o menu ficar oculto no celular e aparecer como flex em telas médias (`md`) ou maiores:",
       "codeTemplate": "<aside className=\"{{blank}} {{blank}}:flex\">",
       "blanks": [
         {
@@ -41,7 +42,40 @@
         }
       ],
       "options": ["hidden", "md", "none", "mobile"],
-      "explanation": "'hidden' aplica display: none no mobile, e 'md:flex' altera para display: flex a partir de 768px."
+      "explanation": "`hidden` aplica `display: none` no mobile, e `md:flex` altera para `display: flex` a partir de 768px."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Quais classes fazem um container Flexbox empilhar os itens verticalmente no celular e exibi-los em linha horizontal a partir de telas médias (`768px+`)?",
+      "options": [
+        "flex flex-row md:flex-col",
+        "flex flex-col md:flex-row",
+        "block md:flex-col",
+        "flex sm:hidden md:flex-col"
+      ],
+      "correctIndex": 1,
+      "explanation": "No modo mobile-first, `flex-col` define a direção em coluna no celular e `md:flex-row` muda para linha a partir de `768px`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este layout deveria ocultar a barra lateral no celular e exibi-la no desktop, mas faz exatamente o inverso (aparece no celular e some no desktop). Clique na linha com o bug:",
+      "lines": [
+        "<div className=\"flex\">",
+        "  <aside className=\"flex md:hidden\">Menu</aside>",
+        "  <main className=\"p-4\">Conteúdo</main>",
+        "</div>"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Na linha 2, os prefixos estão invertidos: `flex md:hidden` exibe no mobile e oculta a partir de `md`. O correto para exibir apenas no desktop é `hidden md:flex`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva um elemento `<section>` em JSX com Tailwind CSS que seja Flexbox em coluna no celular, mude para linha horizontal a partir do breakpoint `md`, e tenha 16px de espaçamento entre os dois `<div>` filhos.",
+      "starterCode": "",
+      "requiredTokens": ["<section", "className=", "flex", "flex-col", "md:flex-row", "gap-4"],
+      "sampleSolution": "<section className=\"flex flex-col md:flex-row gap-4\">\n  <div>Coluna 1</div>\n  <div>Coluna 2</div>\n</section>",
+      "hint": "Use `flex`, `flex-col`, `md:flex-row` e `gap-4` no `className` de `<section>`.",
+      "explanation": "A combinação `flex flex-col md:flex-row gap-4` aplica o padrão mobile-first com adaptação responsiva no breakpoint `md`."
     }
   ]
 }

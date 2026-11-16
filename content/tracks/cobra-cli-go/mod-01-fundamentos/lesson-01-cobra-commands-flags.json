@@ -1,13 +1,13 @@
 {
   "id": "lesson-01-cobra-commands-flags",
   "title": "cobra.Command e Flags",
-  "description": "Defina comandos, subcomandos com AddCommand e flags com Flags().StringVar.",
+  "description": "Defina comandos, subcomandos com AddCommand e flags com Flags().StringVarP.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
       "title": "O padrão ouro para CLIs em Go",
-      "content": "O **Cobra** (`github.com/spf13/cobra`) alimenta algumas das CLIs mais famosas do mundo: `kubectl`, `docker`, `gh` e `hugo`.\n\nCada comando é uma struct `&cobra.Command` com:\n- `Use`: nome do comando na linha de comando (ex: `\"deploy\"`).\n- `Short`: descrição curta exibida no `--help`.\n- `RunE` (ou `Run`): função executada quando o comando é chamado.\n- `rootCmd.AddCommand(subCmd)` aninha subcomandos e `rootCmd.Execute()` inicia a CLI.",
+      "content": "O **Cobra** (`github.com/spf13/cobra`) alimenta algumas das CLIs mais famosas do mundo: `kubectl`, `docker`, `gh` e `hugo`.\n\nCada comando é uma struct `&cobra.Command` com:\n- `Use`: nome do comando na linha de comando (ex: `\"deploy\"`).\n- `Short`: descrição curta exibida no `--help`.\n- `RunE` (ou `Run`): função executada quando o comando é chamado.\n- `Flags().StringVarP(&var, ...)` / `IntVarP(&var, ...)`: vincula uma flag (com ponteiro `&`) a uma variável Go.\n- `rootCmd.AddCommand(subCmd)` aninha subcomandos e `rootCmd.Execute()` inicia a CLI.",
       "codeExample": "var env string\n\nvar deployCmd = &cobra.Command{\n    Use:   \"deploy\",\n    Short: \"Faz deploy da aplicação\",\n    RunE: func(cmd *cobra.Command, args []string) error {\n        fmt.Println(\"Deploy em:\", env)\n        return nil\n    },\n}\n\nfunc init() {\n    deployCmd.Flags().StringVarP(&env, \"env\", \"e\", \"staging\", \"Ambiente alvo\")\n    rootCmd.AddCommand(deployCmd)\n}"
     },
     {
@@ -35,6 +35,20 @@
       "explanation": "Define-se &cobra.Command com Use, Short e Run (ou RunE), e chama-se rootCmd.Execute() no main."
     },
     {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha com erro ao registrar a flag `--port` no comando Cobra:",
+      "lines": [
+        "var port int",
+        "var serveCmd = &cobra.Command{Use: \"serve\", Run: func(cmd *cobra.Command, args []string) { fmt.Println(port) }}",
+        "func init() {",
+        "    serveCmd.Flags().IntVarP(port, \"port\", \"p\", 8080, \"Porta HTTP\")",
+        "    rootCmd.AddCommand(serveCmd)",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "`IntVarP` exige um ponteiro (`&port`) para conseguir preencher a variável `port` quando a flag for passada."
+    },
+    {
       "type": "order_code",
       "prompt": "Ordene as linhas para criar um comando Cobra com flag --port e executá-lo:",
       "blocks": [
@@ -48,8 +62,8 @@
     },
     {
       "type": "write_code",
-      "prompt": "Crie um comando `versionCmd := &cobra.Command` com `Use: \"version\"`, `Short: \"Mostra a versão\"` e `Run` imprimindo \"v1.0.0\", e adicione-o ao `rootCmd` com `AddCommand`.",
-      "starterCode": "rootCmd := &cobra.Command{Use: \"app\"}\n// Crie versionCmd e registre em rootCmd",
+      "prompt": "Crie o comando raiz `rootCmd` (para o app) e um subcomando `versionCmd` no Cobra com nome `version`, descrição curta e função de execução que imprime `\"v1.0.0\"`, registrando `versionCmd` dentro de `rootCmd`.",
+      "starterCode": "",
       "requiredTokens": [
         "&cobra.Command",
         "Use:",
@@ -57,7 +71,7 @@
         "rootCmd.AddCommand("
       ],
       "sampleSolution": "rootCmd := &cobra.Command{Use: \"app\"}\nversionCmd := &cobra.Command{\n    Use:   \"version\",\n    Short: \"Mostra a versão\",\n    Run: func(cmd *cobra.Command, args []string) {\n        fmt.Println(\"v1.0.0\")\n    },\n}\nrootCmd.AddCommand(versionCmd)",
-      "hint": "Defina versionCmd := &cobra.Command{ Use: \"version\", Short: \"Mostra a versão\", Run: func(cmd *cobra.Command, args []string) { ... } } e chame rootCmd.AddCommand(versionCmd).",
+      "hint": "Defina `rootCmd` e `versionCmd` como `&cobra.Command` com `Use`, `Short` e `Run: func(cmd *cobra.Command, args []string) { ... }`, e conecte-os via `AddCommand`.",
       "explanation": "O Cobra gera automaticamente `app version --help` a partir dos metadados Use e Short."
     }
   ]

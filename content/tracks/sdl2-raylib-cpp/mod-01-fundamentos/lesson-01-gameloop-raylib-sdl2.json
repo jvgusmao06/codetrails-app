@@ -7,11 +7,11 @@
     {
       "type": "theory",
       "title": "A Estrutura Clássica do Game Loop em C/C++",
-      "content": "Tanto na **SDL2** quanto na **Raylib**, todo jogo funciona dentro de um **Game Loop**:\n1. Ler inputs (teclado, mouse, gamepad).\n2. Atualizar a física/posição multiplicando pela variação de tempo do último frame (**Delta Time**, ex: `GetFrameTime()` no Raylib) para o personagem não correr mais rápido em monitores 144Hz!\n3. Limpar a tela e desenhar entre `BeginDrawing()` e `EndDrawing()`.",
+      "content": "Tanto na **SDL2** quanto na **Raylib**, todo jogo funciona dentro de um **Game Loop**:\n1. Ler inputs (teclado, mouse, gamepad — na SDL2 com `SDL_PollEvent(&e)`, na Raylib automaticamente via `WindowShouldClose()`).\n2. Atualizar a física/posição multiplicando pela variação de tempo do último frame (**Delta Time**, ex: `GetFrameTime()` na Raylib) para o personagem não correr mais rápido em monitores 144Hz!\n3. Limpar a tela com `ClearBackground(...)` e desenhar entre `BeginDrawing()` e `EndDrawing()`, encerrando a janela com `CloseWindow()` ao sair do loop.",
       "codeExample": "#include \"raylib.h\"\n\nint main() {\n    InitWindow(800, 450, \"Meu Jogo C++\");\n    SetTargetFPS(60);\n\n    float x = 100.0f;\n    while (!WindowShouldClose()) {\n        x += 200.0f * GetFrameTime(); // Movimento independente de FPS!\n\n        BeginDrawing();\n        ClearBackground(BLACK);\n        DrawCircle((int)x, 225, 20, GREEN);\n        EndDrawing();\n    }\n    CloseWindow();\n}",
       "keyTakeaways": [
-        "Sempre multiplique velocidades por `dt` (Delta Time) para a física rodar na mesma velocidade em 60Hz e 240Hz.",
-        "Em Raylib, todo comando `Draw*` precisa ficar entre `BeginDrawing()` e `EndDrawing()`.",
+        "Sempre multiplique velocidades por `dt` (Delta Time, `GetFrameTime()`) para a física rodar na mesma velocidade em 60Hz e 240Hz.",
+        "Em Raylib, todo comando `Draw*` e `ClearBackground` precisa ficar entre `BeginDrawing()` e `EndDrawing()`.",
         "Em SDL2, use `SDL_PollEvent(&e)` dentro do loop e libere texturas com `SDL_DestroyTexture` ao fechar."
       ]
     },
@@ -28,13 +28,51 @@
       "explanation": "Se você somar `x += 5` por frame sem Delta Time, um monitor 144Hz moverá o jogador mais de 2x mais rápido que um de 60Hz!"
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete a atualização de posição com Delta Time e o bloco de renderização na Raylib:",
+      "codeTemplate": "while (!{{blank}}()) {\n    x += 150.0f * {{blank}}();\n    {{blank}}();\n    ClearBackground(BLACK);\n    EndDrawing();\n}",
+      "blanks": [
+        { "answer": "WindowShouldClose", "placeholder": "condição" },
+        { "answer": "GetFrameTime", "placeholder": "delta time" },
+        { "answer": "BeginDrawing", "placeholder": "iniciar desenho" }
+      ],
+      "options": ["WindowShouldClose", "GetFrameTime", "BeginDrawing", "CloseWindow", "GetFPS"],
+      "explanation": "`WindowShouldClose()` controla o fim do loop, `GetFrameTime()` retorna o Delta Time em segundos e `BeginDrawing()` inicia o frame gráfico."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos de um frame completo no Game Loop da Raylib (atualização + renderização):",
+      "blocks": [
+        "    EndDrawing();",
+        "    BeginDrawing();",
+        "    x += 200.0f * GetFrameTime();",
+        "    ClearBackground(RAYWHITE);"
+      ],
+      "correctOrder": [2, 1, 3, 0],
+      "explanation": "Primeiro atualizamos a lógica/física com `GetFrameTime()`, depois abrimos o desenho com `BeginDrawing()`, limpamos a tela com `ClearBackground` e fechamos com `EndDrawing()`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Encontre a linha que causa comportamento errado na renderização por estar fora do bloco `BeginDrawing()` / `EndDrawing()`:",
+      "lines": [
+        "while (!WindowShouldClose()) {",
+        "    ClearBackground(BLACK);",
+        "    BeginDrawing();",
+        "    DrawCircle(400, 225, 20, GREEN);",
+        "    EndDrawing();",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "`ClearBackground(BLACK)` é um comando gráfico e deve ser chamado *após* `BeginDrawing()`, nunca antes."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva o loop principal de um jogo Raylib usando `while (!WindowShouldClose())`, chamando `BeginDrawing();`, `ClearBackground(RAYWHITE);` e `EndDrawing();`:",
-      "starterCode": "InitWindow(800, 600, \"Demo\");\n// Escreva o Game Loop com BeginDrawing / EndDrawing:\n",
-      "requiredTokens": ["while (!WindowShouldClose())", "BeginDrawing();", "ClearBackground(", "EndDrawing();"],
-      "sampleSolution": "while (!WindowShouldClose()) {\n    BeginDrawing();\n    ClearBackground(RAYWHITE);\n    EndDrawing();\n}",
-      "hint": "Envolva `ClearBackground(RAYWHITE);` entre `BeginDrawing();` e `EndDrawing();` dentro de `while (!WindowShouldClose())`.",
-      "explanation": "`WindowShouldClose()` detecta clique no X da janela ou tecla ESC para encerrar o loop de forma limpa."
+      "prompt": "Escreva um loop principal em Raylib que continue rodando enquanto a janela não for fechada, atualize uma variável `x` usando Delta Time com velocidade `120.0f`, limpe a tela com `RAYWHITE` dentro do bloco de desenho e encerre a janela após o loop.",
+      "starterCode": "",
+      "requiredTokens": ["while (!WindowShouldClose())", "GetFrameTime()", "BeginDrawing();", "ClearBackground(", "EndDrawing();", "CloseWindow();"],
+      "sampleSolution": "while (!WindowShouldClose()) {\n    x += 120.0f * GetFrameTime();\n    BeginDrawing();\n    ClearBackground(RAYWHITE);\n    EndDrawing();\n}\nCloseWindow();",
+      "hint": "Use `while (!WindowShouldClose())`, atualize `x` com `GetFrameTime()`, envolva `ClearBackground(RAYWHITE)` entre `BeginDrawing()` e `EndDrawing()`, e chame `CloseWindow()` ao final.",
+      "explanation": "Esse ciclo combina atualização independente de FPS com renderização estruturada e liberação limpa da janela."
     }
   ]
 }

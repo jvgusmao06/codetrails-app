@@ -7,13 +7,25 @@
     {
       "type": "theory",
       "title": "Evitando o Problema N+1 e Tratando 404 no Django",
-      "content": "Em views reais, nunca deixe `.get(id=pk)` estourar um erro 500 se o ID não existir: use **`get_object_or_404(Produto, pk=pk)`**, que retorna HTTP 404 limpo! E atenção à performance: ao iterar sobre `pedidos` e acessar `pedido.cliente.nome`, o Django faz 1 query extra por pedido (**Problema N+1**). Use **`select_related('cliente')`** (para `ForeignKey`/`OneToOne`, faz SQL JOIN) ou **`prefetch_related('itens')`** (para `ManyToMany`/reverso)!",
-      "codeExample": "from django.shortcuts import get_object_or_404\nfrom django.db.models import Q\n\n# 404 seguro se não existir\nproduto = get_object_or_404(Produto, id=produto_id)\n\n# Resolve N+1 com JOIN SQL em uma única query!\npedidos = Pedido.objects.select_related(\"cliente\").filter(\n    Q(status=\"PAGO\") | Q(urgente=True)\n)",
+      "content": "Em views reais, nunca deixe `.get(id=pk)` estourar um erro 500 se o ID não existir: use **`get_object_or_404(Produto, pk=pk)`**, que retorna HTTP 404 limpo! E atenção à performance: ao iterar sobre `pedidos` e acessar `pedido.cliente.nome`, o Django faz 1 query extra por pedido (**Problema N+1**). Use **`select_related('cliente')`** (para `ForeignKey`/`OneToOne`, faz SQL JOIN) ou **`prefetch_related('itens')`** (para `ManyToMany`/reverso)!\n\nPara consultas com condições `OR` ou negação no ORM, combine objetos **`Q(...) | Q(...)`** dentro de `.filter(...)`.",
+      "codeExample": "from django.shortcuts import get_object_or_404\nfrom django.db.models import Q\n\n# 404 seguro se não existir\nproduto = get_object_or_404(Produto, id=produto_id)\n\n# Resolve N+1 com JOIN SQL em uma única query e aplica filtro OR!\npedidos = Pedido.objects.select_related(\"cliente\").filter(\n    Q(status=\"PAGO\") | Q(urgente=True)\n)",
       "keyTakeaways": [
         "`select_related('fk')` usa `INNER/LEFT JOIN` no SQL (1 query); `prefetch_related('m2m')` faz 2 queries e junta em Python.",
-        "`Q(a=1) | Q(b=2)` permite filtros `OR` e negação `~Q(...)` no Django ORM.",
-        "`get_object_or_404(Modelo, pk=id)` substitui `try / except Modelo.DoesNotExist`."
+        "`Q(a=1) | Q(b=2)` permite filtros `OR` e `~Q(...)` permite negação no Django ORM.",
+        "`get_object_or_404(Modelo, pk=id)` substitui `try / except Modelo.DoesNotExist` retornando HTTP 404 automático."
       ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual método do Django ORM deve ser usado para otimizar um relacionamento `ManyToMany` (ou reverso) evitando queries N+1 com duas consultas combinadas em Python?",
+      "options": [
+        "select_related()",
+        "prefetch_related()",
+        "join_related()",
+        "get_object_or_404()"
+      ],
+      "correctIndex": 1,
+      "explanation": "`prefetch_related()` é indicado para relacionamentos `ManyToMany` e reversos (1-para-N), enquanto `select_related()` usa SQL JOIN para `ForeignKey` e `OneToOne`."
     },
     {
       "type": "spot_the_bug",
@@ -28,13 +40,34 @@
       "explanation": "Na linha 2, `Livro.objects.all()` não carrega `autor`; ao acessar `l.autor.nome` 500 vezes, dispara 500 queries extras! Use `Livro.objects.select_related(\"autor\")[:500]`."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete a busca segura por ID (retornando 404 se ausente) e o filtro ORM com condição OR usando `Q`:",
+      "codeTemplate": "cliente = {{blank}}(Cliente, pk=cliente_id)\npedidos = Pedido.objects.filter({{blank}}(status=\"PAGO\") {{blank}} {{blank}}(urgente=True))",
+      "blanks": [
+        { "answer": "get_object_or_404", "placeholder": "atalho 404" },
+        { "answer": "Q", "placeholder": "objeto Q" },
+        { "answer": "|", "placeholder": "operador OR" },
+        { "answer": "Q", "placeholder": "objeto Q" }
+      ],
+      "options": ["get_object_or_404", "Q", "|", "&", "or", "filter_or"],
+      "explanation": "`get_object_or_404` evita erro 500 quando o registro não existe, e `Q(...) | Q(...)` expressa condição OR no `.filter()`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Busque `pedidos` usando `Pedido.objects.select_related(\"usuario\").filter(ativo=True)`:",
-      "starterCode": "# Otimize a consulta com select_related:\n",
-      "requiredTokens": ["Pedido.objects.select_related", "\"usuario\"", ".filter(", "ativo=True"],
-      "sampleSolution": "pedidos = Pedido.objects.select_related(\"usuario\").filter(ativo=True)",
-      "hint": "Escreva: pedidos = Pedido.objects.select_related(\"usuario\").filter(ativo=True)",
-      "explanation": "`select_related` traz a tabela relacionada via JOIN na mesma ida ao banco de dados."
+      "prompt": "Busque um objeto `Cliente` pelo `cliente_id` retornando 404 caso não exista e armazene em `cliente`. Em seguida, consulte os registros de `Pedido` otimizando a relação `\"usuario\"` para evitar N+1 e filtrando aqueles que estejam com `status=\"PAGO\"` ou `urgente=True`, armazenando em `pedidos`.",
+      "starterCode": "",
+      "requiredTokens": [
+        "get_object_or_404(",
+        "Pedido.objects.select_related(",
+        "\"usuario\"",
+        ".filter(",
+        "Q(status=\"PAGO\")",
+        "|",
+        "Q(urgente=True)"
+      ],
+      "sampleSolution": "cliente = get_object_or_404(Cliente, pk=cliente_id)\npedidos = Pedido.objects.select_related(\"usuario\").filter(Q(status=\"PAGO\") | Q(urgente=True))",
+      "hint": "Use `get_object_or_404(Cliente, pk=cliente_id)` e encadeie `Pedido.objects.select_related(\"usuario\").filter(...)` com objetos `Q` unidos por `|`.",
+      "explanation": "Combinar `get_object_or_404`, `select_related` e objetos `Q` garante endpoints seguros, rápidos (sem N+1) e com filtros flexíveis."
     }
   ]
 }

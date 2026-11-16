@@ -7,13 +7,25 @@
     {
       "type": "theory",
       "title": "APIs Web em Go: Struct Tags e Gin Framework",
-      "content": "Em Go, apenas campos de struct que começam com Letra Maiúscula são exportados (públicos) para o pacote JSON! Para usar nomes em minúsculas no JSON, adicionamos Struct Tags como `json:\"nome\"`. No framework Gin, 'c.ShouldBindJSON(&input)' lê e valida o corpo da requisição, e 'c.JSON(status, dados)' envia a resposta.",
-      "codeExample": "type CriarItemDTO struct {\n    Titulo string  `json:\"titulo\" binding:\"required\"`\n    Preco  float64 `json:\"preco\"`\n}\n\nfunc criar(c *gin.Context) {\n    var body CriarItemDTO\n    if err := c.ShouldBindJSON(&body); err != nil {\n        c.JSON(400, gin.H{\"erro\": err.Error()})\n        return\n    }\n    c.JSON(201, body)\n}",
+      "content": "Em Go, apenas campos de struct que começam com **Letra Maiúscula** são exportados (públicos) para o pacote `encoding/json`! Para usar nomes em minúsculas no JSON, adicionamos Struct Tags como `json:\"nome\"` e regras de validação como `binding:\"required\"`.\n\nNo framework **Gin**, criamos o roteador com `r := gin.Default()`, registramos rotas com `r.POST(\"/itens\", criar)` e, dentro do handler `func(c *gin.Context)`, usamos `c.ShouldBindJSON(&input)` para ler e validar o corpo da requisição e `c.JSON(status, dados)` (com `gin.H{...}` ou structs) para responder.",
+      "codeExample": "type CriarItemDTO struct {\n    Titulo string  `json:\"titulo\" binding:\"required\"`\n    Preco  float64 `json:\"preco\"`\n}\n\nfunc criar(c *gin.Context) {\n    var body CriarItemDTO\n    if err := c.ShouldBindJSON(&body); err != nil {\n        c.JSON(400, gin.H{\"erro\": err.Error()})\n        return\n    }\n    c.JSON(201, body)\n}\n\nr := gin.Default()\nr.POST(\"/itens\", criar)",
       "keyTakeaways": [
-        "Campos de struct com inicial minúscula (ex: 'senha string') são privados e ignorados pelo serializador JSON do Go!",
-        "c.ShouldBindJSON(&variavel) precisa receber o ponteiro (&) do struct para preencher seus campos.",
-        "gin.H{\"chave\": valor} é um atalho prático para criar respostas JSON rápidas (map[string]any)."
+        "Campos de struct com inicial minúscula (ex: `senha string`) são privados e ignorados pelo serializador JSON do Go.",
+        "Use `binding:\"required\"` na struct tag para que `c.ShouldBindJSON(&variavel)` valide campos obrigatórios automaticamente.",
+        "`c.ShouldBindJSON(&variavel)` precisa receber o ponteiro (`&`) do struct, e `gin.H{\"chave\": valor}` cria respostas JSON rápidas."
       ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual struct tag instrui o `c.ShouldBindJSON(&body)` no Gin a retornar erro caso um campo obrigatório não seja enviado no JSON?",
+      "options": [
+        "`binding:\"required\"`",
+        "`json:\"mandatory\"`",
+        "`gin:\"notnull\"`",
+        "`validate:\"exists\"`"
+      ],
+      "correctIndex": 0,
+      "explanation": "O Gin usa o validador integrado com a tag `binding:\"required\"` durante o `ShouldBindJSON`."
     },
     {
       "type": "spot_the_bug",
@@ -40,6 +52,39 @@
       ],
       "options": ["ShouldBindJSON", "&", "JSON", "ParseJSON", "*", "Send"],
       "explanation": "Passamos o endereço '&req' para c.ShouldBindJSON() preencher a estrutura e respondemos com c.JSON(200, req)."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene as linhas de um handler Gin que valida um DTO via JSON e responde com erro 400 ou sucesso 201:",
+      "blocks": [
+        "c.JSON(201, body)",
+        "var body CriarItemDTO",
+        "    return",
+        "if err := c.ShouldBindJSON(&body); err != nil {",
+        "    c.JSON(400, gin.H{\"erro\": err.Error()})",
+        "}"
+      ],
+      "correctOrder": [1, 3, 4, 2, 5, 0],
+      "explanation": "Primeiro declaramos a struct, tentamos fazer o bind com ShouldBindJSON(&body), retornamos 400 com gin.H e return em caso de erro, e só então respondemos 201."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Defina a struct `ProdutoDTO` com o campo exportado `Nome` (string, mapeado para `\"nome\"` no JSON e obrigatório). Em seguida, implemente o handler `criarProduto` recebendo `*gin.Context` que faz o bind do JSON, retorna status 400 com `gin.H` em caso de erro e status 201 com o DTO em caso de sucesso.",
+      "starterCode": "",
+      "requiredTokens": [
+        "type ProdutoDTO struct",
+        "Nome string",
+        "json:\"nome\"",
+        "binding:\"required\"",
+        "*gin.Context",
+        "ShouldBindJSON(&",
+        "c.JSON(400",
+        "gin.H{",
+        "c.JSON(201"
+      ],
+      "sampleSolution": "type ProdutoDTO struct {\n    Nome string `json:\"nome\" binding:\"required\"`\n}\n\nfunc criarProduto(c *gin.Context) {\n    var dto ProdutoDTO\n    if err := c.ShouldBindJSON(&dto); err != nil {\n        c.JSON(400, gin.H{\"erro\": err.Error()})\n        return\n    }\n    c.JSON(201, dto)\n}",
+      "hint": "Lembre-se de usar inicial maiúscula em `Nome`, adicionar as tags `json` e `binding`, passar `&dto` para `c.ShouldBindJSON` e encerrar com `return` após o `c.JSON(400, ...)`.",
+      "explanation": "Combinar struct tags exportadas com `c.ShouldBindJSON(&dto)` e `c.JSON` forma a base de qualquer endpoint REST seguro no Gin."
     }
   ]
 }

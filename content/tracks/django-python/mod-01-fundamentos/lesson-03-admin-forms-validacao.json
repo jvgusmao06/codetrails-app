@@ -7,12 +7,12 @@
     {
       "type": "theory",
       "title": "Produtividade Extrema com Django Admin e ModelForm",
-      "content": "Um dos maiores diferenciais do Django é o **Django Admin** (`/admin`): basta registrar seu Model no `admin.py` com **`@admin.register(Produto)`** e definir `list_display` e `search_fields` para ganhar busca, filtros e CRUD completos sem escrever HTML! Além disso, **`ModelForm`** gera e valida formulários automaticamente a partir dos campos e regras do seu `models.Model`.",
-      "codeExample": "from django.contrib import admin\nfrom .models import Produto\n\n@admin.register(Produto)\nclass ProdutoAdmin(admin.ModelAdmin):\n    list_display = (\"nome\", \"preco\", \"ativo\")\n    search_fields = (\"nome\",)\n    list_filter = (\"ativo\",)",
+      "content": "Um dos maiores diferenciais do Django é o **Django Admin** (`/admin`): basta registrar seu Model no `admin.py` com **`@admin.register(Produto)`** em uma classe herdando de `admin.ModelAdmin` e definir `list_display`, `search_fields` e `list_filter` para ganhar busca, filtros e CRUD completos sem escrever HTML!\n\nAlém disso, **`forms.ModelForm`** gera e valida formulários automaticamente a partir dos campos e regras do seu `models.Model` usando `class Meta:` com `model` e `fields`.",
+      "codeExample": "from django.contrib import admin\nfrom django import forms\nfrom .models import Produto\n\n@admin.register(Produto)\nclass ProdutoAdmin(admin.ModelAdmin):\n    list_display = (\"nome\", \"preco\", \"ativo\")\n    search_fields = (\"nome\",)\n    list_filter = (\"ativo\",)\n\nclass ProdutoForm(forms.ModelForm):\n    class Meta:\n        model = Produto\n        fields = [\"nome\", \"preco\", \"ativo\"]",
       "keyTakeaways": [
-        "`list_display` define quais colunas aparecem na tabela do painel Admin.",
-        "`search_fields` adiciona uma barra de pesquisa SQL automática.",
-        "`ModelForm` evita duplicar regras de validação entre o Model e o formulário."
+        "`@admin.register(Model)` + `admin.ModelAdmin` configura o painel Admin com `list_display` (colunas), `search_fields` (busca) e `list_filter` (filtros laterais).",
+        "`forms.ModelForm` evita duplicar regras de validação entre o Model e o formulário HTML.",
+        "Todo `ModelForm` define uma classe interna `Meta` especificando `model` e `fields`."
       ]
     },
     {
@@ -28,13 +28,48 @@
       "explanation": "`list_display = (\"campo1\", \"campo2\")` configura as colunas exibidas na lista de registros do Django Admin."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete o registro do `Produto` no Django Admin com barra de pesquisa por nome e filtro lateral por status ativo:",
+      "codeTemplate": "@admin.{{blank}}(Produto)\nclass ProdutoAdmin(admin.{{blank}}):\n    list_display = (\"nome\", \"preco\")\n    {{blank}} = (\"nome\",)\n    {{blank}} = (\"ativo\",)",
+      "blanks": [
+        { "answer": "register", "placeholder": "decorator" },
+        { "answer": "ModelAdmin", "placeholder": "classe base" },
+        { "answer": "search_fields", "placeholder": "busca" },
+        { "answer": "list_filter", "placeholder": "filtro" }
+      ],
+      "options": ["register", "ModelAdmin", "search_fields", "list_filter", "ModelForm", "filter_by"],
+      "explanation": "`@admin.register(Produto)` decora uma subclasse de `admin.ModelAdmin` com `search_fields` para pesquisa e `list_filter` para filtros."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este formulário tenta gerar campos automaticamente a partir do model `Produto`, mas falha porque herda da classe errada. Clique na linha com o erro:",
+      "lines": [
+        "from django import forms",
+        "from .models import Produto",
+        "class ProdutoForm(forms.Form):",
+        "    class Meta:",
+        "        model = Produto",
+        "        fields = [\"nome\", \"preco\"]"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "`forms.Form` não possui suporte automático a `class Meta: model = ...`. Para vincular a um Model, a classe deve herdar de `forms.ModelForm`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Registre o modelo `Pedido` no Django Admin usando `@admin.register(Pedido)` e uma classe `PedidoAdmin(admin.ModelAdmin)` com `list_display = (\"id\", \"total\")`:",
-      "starterCode": "# Registre Pedido no Django Admin:\n",
-      "requiredTokens": ["@admin.register(Pedido)", "class", "PedidoAdmin", "admin.ModelAdmin", "list_display"],
-      "sampleSolution": "@admin.register(Pedido)\nclass PedidoAdmin(admin.ModelAdmin):\n    list_display = (\"id\", \"total\")",
-      "hint": "Use `@admin.register(Pedido)` acima de `class PedidoAdmin(admin.ModelAdmin): list_display = (\"id\", \"total\")`.",
-      "explanation": "O decorator `@admin.register` é a forma moderna e limpa de registrar modelos no painel administrativo."
+      "prompt": "Registre o model `Pedido` no Django Admin configurando `PedidoAdmin` para exibir as colunas `\"id\"` e `\"total\"` na listagem e habilitar a busca pelo campo `\"id\"`. Em seguida, crie a classe `PedidoForm` usando `ModelForm` para o model `Pedido` expondo os campos `\"cliente\"` e `\"total\"`.",
+      "starterCode": "",
+      "requiredTokens": [
+        "@admin.register(Pedido)",
+        "admin.ModelAdmin",
+        "list_display",
+        "search_fields",
+        "forms.ModelForm",
+        "class Meta:",
+        "model = Pedido"
+      ],
+      "sampleSolution": "@admin.register(Pedido)\nclass PedidoAdmin(admin.ModelAdmin):\n    list_display = (\"id\", \"total\")\n    search_fields = (\"id\",)\n\nclass PedidoForm(forms.ModelForm):\n    class Meta:\n        model = Pedido\n        fields = [\"cliente\", \"total\"]",
+      "hint": "Use `@admin.register(Pedido)` sobre `class PedidoAdmin(admin.ModelAdmin):` com `list_display` e `search_fields`, e depois `class PedidoForm(forms.ModelForm):` com `class Meta:`.",
+      "explanation": "Combinar `ModelAdmin` e `ModelForm` permite construir tanto o painel administrativo quanto a validação de formulários reaproveitando as definições do Model."
     }
   ]
 }

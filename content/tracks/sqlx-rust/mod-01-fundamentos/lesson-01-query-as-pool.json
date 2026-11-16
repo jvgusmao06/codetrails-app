@@ -7,7 +7,7 @@
     {
       "type": "theory",
       "title": "SQL Checado pelo Compilador Rust com SQLx",
-      "content": "O **SQLx** não é um ORM pesado: você escreve SQL real, e a macro **`sqlx::query_as!(MinhaStruct, \"SELECT ... WHERE id = $1\", id)`** se conecta ao PostgreSQL (ou usa metadados offline `cargo sqlx prepare`) **durante a compilação**! Se você digitar o nome de uma coluna errado no SQL, o código **nem compila** — e os placeholders `$1` evitam SQL Injection!",
+      "content": "O **SQLx** não é um ORM pesado: você escreve SQL real, e a macro **`sqlx::query_as!(MinhaStruct, \"SELECT ... WHERE id = $1\", id)`** se conecta ao PostgreSQL (ou usa metadados offline `cargo sqlx prepare`) **durante a compilação**! Se você digitar o nome de uma coluna errado no SQL, o código **nem compila** — e os placeholders `$1`, `$2` evitam SQL Injection! Para executar, encadeamos `.fetch_one(&pool)`, `.fetch_optional(&pool)` ou `.fetch_all(&pool)`.",
       "codeExample": "#[derive(sqlx::FromRow)]\nstruct User { id: i32, nome: String }\n\nlet user = sqlx::query_as!(\n    User,\n    \"SELECT id, nome FROM usuarios WHERE id = $1\",\n    user_id\n)\n.fetch_one(&pool)\n.await?;",
       "keyTakeaways": [
         "`.fetch_one(&pool)` retorna exatamente 1 linha (erro se vazio); `.fetch_optional(&pool)` retorna `Option<T>`; `.fetch_all(&pool)` retorna `Vec<T>`.",
@@ -28,13 +28,49 @@
       "explanation": "`.fetch_optional` retorna `Result<Option<T>, sqlx::Error>`, devolvendo `Ok(None)` quando não há resultados em vez de erro `RowNotFound`."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete a consulta tipada do SQLx usando bind parameter seguro no PostgreSQL e buscando múltiplas linhas:",
+      "codeTemplate": "let itens = sqlx::{{blank}}(\n    Item,\n    \"SELECT id, titulo FROM itens WHERE ativo = {{blank}}\",\n    ativo\n).{{blank}}(&pool).await?;",
+      "blanks": [
+        { "answer": "query_as!", "placeholder": "macro" },
+        { "answer": "$1", "placeholder": "parâmetro" },
+        { "answer": "fetch_all", "placeholder": "método" }
+      ],
+      "options": ["query_as!", "query_raw!", "$1", "?", "fetch_all", "fetch_one"],
+      "explanation": "`sqlx::query_as!` mapeia as colunas para a struct `Item`, `$1` vincula o parâmetro no Postgres e `.fetch_all(&pool)` retorna `Vec<Item>`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para definir a struct compatível com SQLx e executar uma consulta de linha única:",
+      "blocks": [
+        "let u = sqlx::query_as!(User, \"SELECT id, nome FROM usuarios WHERE id = $1\", id)",
+        "#[derive(sqlx::FromRow)]",
+        "    .fetch_one(&pool).await?;",
+        "struct User { id: i32, nome: String }"
+      ],
+      "correctOrder": [1, 3, 0, 2],
+      "explanation": "Primeiro anotamos `struct User` com `#[derive(sqlx::FromRow)]`, depois chamamos `sqlx::query_as!` e finalizamos com `.fetch_one(&pool).await?`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Encontre a linha com vulnerabilidade grave de SQL Injection ao montar uma query SQLx:",
+      "lines": [
+        "let sql = format!(\"SELECT id, nome FROM usuarios WHERE email = '{}'\", email);",
+        "let user = sqlx::query_as::<_, User>(&sql)",
+        "    .fetch_optional(&pool)",
+        "    .await?;"
+      ],
+      "buggyLineIndex": 0,
+      "explanation": "Nunca interpole variáveis do usuário com `format!` dentro de SQL! Use bind parameters (`$1`) com `sqlx::query_as!(User, \"... WHERE email = $1\", email)`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Use `sqlx::query_as!(Produto, \"SELECT id, nome FROM produtos WHERE id = $1\", id)` encadeado com `.fetch_optional(&pool).await?`:",
-      "starterCode": "// Busque Produto de forma segura com sqlx::query_as!:\n",
+      "prompt": "Consulte `id` e `nome` da tabela `produtos` filtrando por `id` com placeholder seguro do PostgreSQL, mapeando o resultado em tempo de compilação para a struct `Produto` e retornando `Option<Produto>` usando o pool `pool`.",
+      "starterCode": "",
       "requiredTokens": ["sqlx::query_as!", "Produto", "$1", ".fetch_optional(&pool)", ".await?"],
       "sampleSolution": "let prod = sqlx::query_as!(\n    Produto,\n    \"SELECT id, nome FROM produtos WHERE id = $1\",\n    id\n).fetch_optional(&pool).await?;",
-      "hint": "Passe `Produto`, a query SQL com `$1`, e `id` para `sqlx::query_as!`, finalizando com `.fetch_optional(&pool).await?`.",
-      "explanation": "O compilador verifica se `id` e `nome` existem na tabela `produtos` e casam com os tipos da struct `Produto`."
+      "hint": "Passe `Produto`, a query SQL com `WHERE id = $1` e a variável `id` para `sqlx::query_as!`, finalizando com `.fetch_optional(&pool).await?`.",
+      "explanation": "O compilador verifica se `id` e `nome` existem na tabela `produtos` e casam com os tipos da struct `Produto`, enquanto `.fetch_optional` devolve `Option<Produto>`."
     }
   ]
 }

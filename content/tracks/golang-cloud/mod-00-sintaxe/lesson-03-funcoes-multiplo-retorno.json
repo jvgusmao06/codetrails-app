@@ -1,18 +1,19 @@
 {
   "id": "go-funcoes-variadicas-03",
   "title": "Funções em Go: Múltiplos Retornos, Variádicas (...T) e Closures",
-  "description": "Aprenda a assinatura idiomática de funções em Go retornando (valor, error), funções variádicas e funções anônimas.",
+  "description": "Aprenda a assinatura idiomática de funções em Go retornando (valor, error), funções variádicas e closures.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Múltiplos Retornos e Funções Variádicas em Go",
-      "content": "Uma marca registrada do Go é que funções podem retornar **múltiplos valores** — quase sempre `(resultado, error)` em vez de usar exceções `try/catch`! Se quiser ignorar um dos retornos, use o identificador vazio **`_`** (blank identifier). Além disso, funções podem aceitar um número variável de argumentos usando **`...Tipo`** (como `fmt.Println(a, b, c)`), e funções são cidadãs de primeira classe (podem ser guardadas em variáveis como closures).",
-      "codeExample": "func dividir(a, b float64) (float64, error) {\n    if b == 0 {\n        return 0, fmt.Errorf(\"divisão por zero\")\n    }\n    return a / b, nil\n}\n\nfunc somarTudo(nums ...int) int {\n    total := 0\n    for _, n := range nums { total += n }\n    return total\n}",
+      "title": "Múltiplos Retornos, Variádicas e Closures em Go",
+      "content": "Uma marca registrada do Go é que funções podem retornar **múltiplos valores** — quase sempre `(resultado, error)` em vez de usar exceções `try/catch`! Se quiser ignorar um dos retornos, use o identificador vazio **`_`** (blank identifier). Além disso, funções podem aceitar um número variável de argumentos usando **`...Tipo`** (como `fmt.Println(a, b, c)`). Por fim, funções são cidadãs de primeira classe: podemos criar funções anônimas (**closures**) guardadas em variáveis que capturam variáveis do escopo externo.",
+      "codeExample": "func dividir(a, b float64) (float64, error) {\n    if b == 0 {\n        return 0, fmt.Errorf(\"divisão por zero\")\n    }\n    return a / b, nil\n}\n\nfunc somarTudo(nums ...int) int {\n    total := 0\n    for _, n := range nums { total += n }\n    return total\n}\n\nfunc main() {\n    base := 10\n    somarBase := func(x int) int { return base + x }\n    fmt.Println(somarBase(5)) // 15\n}",
       "keyTakeaways": [
-        "Em Go, o padrão idiomático é retornar `(valor, err)` e checar `if err != nil { return err }`.",
+        "Em Go, o padrão idiomático é retornar `(valor, err)` e checar `if err != nil`.",
         "Use `_` para descartar valores retornados que você não precisa (ex: `for _, v := range slice`).",
-        "`nums ...int` transforma os argumentos recebidos em um slice `[]int` dentro da função."
+        "`nums ...int` transforma os argumentos recebidos em um slice `[]int` dentro da função.",
+        "Closures (`func(...) { ... }`) podem ser atribuídas a variáveis e mantêm acesso às variáveis do escopo onde foram criadas."
       ]
     },
     {
@@ -28,13 +29,53 @@
       "explanation": "`...int` define parâmetro variádico, `error` é o tipo nativo de erro e `_` ignora o índice."
     },
     {
+      "type": "multiple_choice",
+      "prompt": "O que será impresso ao executar a closure abaixo em Go?",
+      "codeSnippet": "fator := 2\nmultiplicar := func(n int) int {\n    return n * fator\n}\nfmt.Println(multiplicar(5))",
+      "options": [
+        "Erro de compilação porque 'fator' não foi passado como parâmetro",
+        "10, pois a closure captura a variável 'fator' do escopo externo",
+        "0, pois closures em Go recebem apenas zero values",
+        "5, pois 'fator' não é acessível dentro de funções anônimas"
+      ],
+      "correctIndex": 1,
+      "explanation": "Closures em Go capturam e mantêm referência às variáveis do escopo externo onde foram definidas."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "A função 'buscarPorta' retorna dois valores (int, error), mas quem a chama cometeu um erro de atribuição. Clique na linha incorreta:",
+      "lines": [
+        "func buscarPorta() (int, error) {",
+        "    return 8080, nil",
+        "}",
+        "func main() {",
+        "    porta := buscarPorta()",
+        "    fmt.Println(porta)",
+        "}"
+      ],
+      "buggyLineIndex": 4,
+      "explanation": "Em Go não é permitido atribuir múltiplos retornos a uma única variável. É preciso receber ambos (`porta, err := buscarPorta()`) ou descartar um deles com `_` (`porta, _ := buscarPorta()`)."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para chamar uma função de divisão que retorna (float64, error) e tratar o erro antes de imprimir o resultado:",
+      "blocks": [
+        "fmt.Println(\"Resultado:\", res)",
+        "if err != nil {",
+        "res, err := dividir(10, 0)",
+        "    fmt.Println(\"Erro:\", err)\n    return\n}"
+      ],
+      "correctOrder": [2, 1, 3, 0],
+      "explanation": "Recebemos `(res, err)`, verificamos `if err != nil` imediatamente e só usamos `res` após garantir que não houve erro."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva uma função Go `dobrar(x int) int` que retorne `x * 2`:",
-      "starterCode": "// Escreva a função dobrar em Go:\n",
-      "requiredTokens": ["func", "dobrar", "int", "return", "x * 2"],
-      "sampleSolution": "func dobrar(x int) int {\n    return x * 2\n}",
-      "hint": "Use: func dobrar(x int) int { return x * 2 }",
-      "explanation": "Em Go, o tipo do parâmetro e o tipo de retorno vêm depois do nome."
+      "prompt": "Desafio de Código: Escreva uma função 'somarPositivos' que receba um parâmetro variádico de inteiros (`nums ...int`) e retorne `(int, error)`. Se `len(nums) == 0`, retorne `0` e um erro com `fmt.Errorf`. Caso contrário, some os valores usando `for` e `range` (ignorando o índice com `_`) e retorne o total e `nil`.",
+      "starterCode": "",
+      "requiredTokens": ["func", "somarPositivos", "...int", "error", "for", "range", "_", "return", "nil"],
+      "sampleSolution": "func somarPositivos(nums ...int) (int, error) {\n    if len(nums) == 0 {\n        return 0, fmt.Errorf(\"lista vazia\")\n    }\n    total := 0\n    for _, n := range nums {\n        total += n\n    }\n    return total, nil\n}",
+      "hint": "Declare os dois tipos de retorno entre parênteses `(int, error)` e verifique `len(nums) == 0` antes de percorrer `nums` com `for _, n := range nums`.",
+      "explanation": "Combinar parâmetros variádicos (`...T`) com retorno múltiplo `(valor, error)` e `_` no `range` é o padrão idiomático de funções em Go."
     }
   ]
 }

@@ -7,7 +7,7 @@
     {
       "type": "theory",
       "title": "Menos Boilerplate, Mais Foco na Regra de Negócio",
-      "content": "O **Project Lombok** gera getters, setters, construtores e logs automaticamente durante a compilação! No Spring Boot moderno, duas anotações são onipresentes:\n1. **`@RequiredArgsConstructor`**: gera um construtor para todos os campos `private final`, fazendo injeção de dependência limpa sem `@Autowired`!\n2. **`@Builder`**: cria o padrão Builder fluente (`Usuario.builder().nome(\"Ana\").build()`).\n3. **`@Slf4j`**: injeta automaticamente `log.info(...)`.",
+      "content": "O **Project Lombok** gera getters, setters, construtores e logs automaticamente durante a compilação! No Spring Boot moderno, três anotações são onipresentes:\n1. **`@RequiredArgsConstructor`**: gera um construtor para todos os campos `private final`, fazendo injeção de dependência limpa sem `@Autowired`!\n2. **`@Builder`**: cria o padrão Builder fluente (`Usuario.builder().nome(\"Ana\").build()`).\n3. **`@Slf4j`**: injeta automaticamente o logger `log` (`log.info(...)`).",
       "codeExample": "@Service\n@RequiredArgsConstructor\n@Slf4j\npublic class PagamentoService {\n    private final PagamentoRepository repo; // Injetado no construtor!\n\n    public void processar(Long id) {\n        log.info(\"Processando pedido {}\", id);\n    }\n}",
       "keyTakeaways": [
         "CUIDADO com `@Data` em entidades JPA (`@Entity`)! `@Data` gera `equals/hashCode/toString` em todos os campos, podendo causar loops infinitos em relações `@OneToMany` — prefira `@Getter` + `@Setter`.",
@@ -28,12 +28,51 @@
       "explanation": "Em entidades JPA, prefira `@Getter` e `@Setter` explícitos em vez de `@Data`."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código usando Lombok para gerar um Builder fluente e instanciar o objeto `Usuario`:",
+      "codeTemplate": "@{{blank}}\npublic class Usuario {\n    private String nome;\n}\n\nUsuario u = Usuario.{{blank}}().nome(\"Ana\").{{blank}}();",
+      "blanks": [
+        { "answer": "Builder", "placeholder": "anotacao" },
+        { "answer": "builder", "placeholder": "inicio" },
+        { "answer": "build", "placeholder": "fim" }
+      ],
+      "options": ["Builder", "builder", "build", "Data", "create", "new"],
+      "explanation": "`@Builder` gera o método estático `.builder()` e o método final `.build()` na classe."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Identifique por que a injeção de dependência via `@RequiredArgsConstructor` falhará nesta classe:",
+      "lines": [
+        "@Service",
+        "@RequiredArgsConstructor",
+        "public class EstoqueService {",
+        "    private EstoqueRepository repo;",
+        "    public void atualizar() { repo.saveAll(); }",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "`@RequiredArgsConstructor` só inclui no construtor campos marcados como `final` (ou `@NonNull`). Sem `final`, `repo` não entra no construtor e fica `null`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para montar um serviço Spring Boot com injeção via Lombok e logging SLF4J:",
+      "blocks": [
+        "    private final PagamentoRepository repo;",
+        "@Slf4j",
+        "@RequiredArgsConstructor",
+        "public class PagamentoService {",
+        "}"
+      ],
+      "correctOrder": [2, 1, 3, 0, 4],
+      "explanation": "Aplicamos `@RequiredArgsConstructor` e `@Slf4j` acima da classe e declaramos os campos `private final` dentro dela."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Anote `public class PedidoService` com `@RequiredArgsConstructor` e `@Slf4j`, declarando `private final PedidoRepository repo;`:",
-      "starterCode": "// Crie PedidoService com Lombok:\n",
+      "prompt": "Desafio de Código: Em Java com Lombok, crie a classe pública `PedidoService` anotada para gerar automaticamente o construtor de campos obrigatórios e o logger SLF4J, contendo o campo privado final `repo` do tipo `PedidoRepository`.",
+      "starterCode": "",
       "requiredTokens": ["@RequiredArgsConstructor", "@Slf4j", "public class PedidoService", "private final PedidoRepository repo;"],
       "sampleSolution": "@RequiredArgsConstructor\n@Slf4j\npublic class PedidoService {\n    private final PedidoRepository repo;\n}",
-      "hint": "Coloque `@RequiredArgsConstructor` e `@Slf4j` acima da classe e declare `private final PedidoRepository repo;`.",
+      "hint": "Anote `public class PedidoService` com `@RequiredArgsConstructor` e `@Slf4j`, e declare `private final PedidoRepository repo;` no corpo da classe.",
       "explanation": "O Lombok gera automaticamente o construtor `public PedidoService(PedidoRepository repo)` e o campo estático `log`."
     }
   ]

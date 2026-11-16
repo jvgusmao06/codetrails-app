@@ -24,16 +24,73 @@
         "optimizer.step()",
         "loss = criterion(model(X), y)"
       ],
-      "correctOrder": [1, 3, 0, 2],
+      "correctOrder": [
+        1,
+        3,
+        0,
+        2
+      ],
       "explanation": "Primeiro zeramos (`zero_grad`), depois calculamos `loss`, propagamos gradientes (`backward`) e atualizamos pesos (`step`)."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete a inicialização do otimizador `AdamW` e da função de perda `CrossEntropyLoss`:",
+      "codeTemplate": "optimizer = torch.optim.{{blank}}(model.parameters(), lr=1e-3)\ncriterion = nn.{{blank}}()",
+      "blanks": [
+        {
+          "answer": "AdamW",
+          "placeholder": "otimizador"
+        },
+        {
+          "answer": "CrossEntropyLoss",
+          "placeholder": "loss"
+        }
+      ],
+      "options": [
+        "AdamW",
+        "CrossEntropyLoss",
+        "Sequential",
+        "backward",
+        "DataLoader"
+      ],
+      "explanation": "`torch.optim.AdamW` recebe `model.parameters()` e `nn.CrossEntropyLoss()` instancia a função de perda para classificação."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Neste loop de treino, os gradientes estão se acumulando a cada batch fazendo o modelo divergir. Clique na linha do início da iteração onde falta limpar os gradientes:",
+      "lines": [
+        "for X_batch, y_batch in loader:",
+        "    preds = model(X_batch)",
+        "    loss = criterion(preds, y_batch)",
+        "    loss.backward()",
+        "    optimizer.step()"
+      ],
+      "buggyLineIndex": 0,
+      "explanation": "Sem `optimizer.zero_grad()` no início de cada iteração do loop, o PyTorch soma os gradientes dos batches anteriores."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Ao treinar um classificador multiclasse com `nn.CrossEntropyLoss()`, o que a última camada `nn.Linear` do modelo deve retornar?",
+      "options": [
+        "Os logits crus, pois `CrossEntropyLoss` já aplica Softmax internamente",
+        "Apenas valores booleanos `True`/`False`",
+        "Um dicionário JSON",
+        "Os pesos do otimizador"
+      ],
+      "correctIndex": 0,
+      "explanation": "`nn.CrossEntropyLoss()` combina `LogSoftmax` e `NLLLoss` internamente, portanto espera os logits crus."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva as 3 chamadas finais após `preds = model(x)`: calcular `loss = criterion(preds, y)`, rodar `loss.backward()` e atualizar com `optimizer.step()`:",
-      "starterCode": "optimizer.zero_grad()\npreds = model(x)\n# Complete loss, backward e step:\n",
-      "requiredTokens": ["loss = criterion(preds, y)", "loss.backward()", "optimizer.step()"],
+      "prompt": "Desafio de Código: Considerando que `optimizer.zero_grad()` e `preds = model(x)` já foram executados, complete as três instruções finais da iteração: calcule a variável `loss` usando `criterion` com `preds` e `y`, execute a retropropagação e dê o passo de atualização do otimizador.",
+      "starterCode": "",
+      "requiredTokens": [
+        "loss = criterion(preds, y)",
+        "loss.backward()",
+        "optimizer.step()"
+      ],
       "sampleSolution": "loss = criterion(preds, y)\nloss.backward()\noptimizer.step()",
-      "hint": "Escreva `loss = criterion(preds, y)`, `loss.backward()` e `optimizer.step()`.",
+      "hint": "Calcule `loss` chamando `criterion(preds, y)`, depois chame `backward()` em `loss` e `step()` em `optimizer`.",
       "explanation": "Esse ciclo de 5 linhas é idêntico seja treinando uma regressão linear ou um LLM gigante."
     }
   ]

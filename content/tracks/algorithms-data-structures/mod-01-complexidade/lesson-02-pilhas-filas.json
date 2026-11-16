@@ -2,38 +2,75 @@
   "id": "algo-pilhas-filas-02",
   "title": "Pilhas (LIFO), Filas (FIFO) e Hash Maps (Dicionários em O(1))",
   "description": "Escolha a estrutura certa para cada problema: Pilhas para histórico/undo, Filas para processamento em ordem de chegada e Hash Maps para buscas instantâneas.",
-  "xp": 35,
+  "xp": 40,
   "steps": [
     {
       "type": "theory",
       "title": "Pilha (Stack), Fila (Queue) e Tabela Hash (Hash Map)",
-      "content": "Três estruturas de dados resolvem 90% dos problemas do dia a dia e entrevistas técnicas:\n1. **Pilha (Stack - LIFO: Last In, First Out)**: O último a entrar é o primeiro a sair (como uma pilha de pratos ou o botão Desfazer `Ctrl+Z`). Operações: `push` (empilhar) e `pop` (desempilhar) em $O(1)$.\n2. **Fila (Queue - FIFO: First In, First Out)**: O primeiro a entrar é o primeiro a sair (como uma fila de banco ou fila de impressão). Operações: `enqueue` e `dequeue` em $O(1)$.\n3. **Hash Map (Dicionário / Map)**: Armazena pares `chave -> valor` usando uma função hash para transformar a chave num endereço direto, permitindo buscar, inserir e remover em tempo médio **$O(1)$**!",
-      "codeExample": "# 1. Pilha (LIFO) em Python\npilha = []\npilha.append('A')  # push\npilha.append('B')  # push\nultimo = pilha.pop()  # 'B' (Last In, First Out)\n\n# 2. Hash Map (dict) -> Busca em O(1)!\nvistos = {}\nfor num in [10, 20, 10]:\n    vistos[num] = vistos.get(num, 0) + 1  # {10: 2, 20: 1}",
+      "content": "Três estruturas de dados resolvem grande parte dos problemas de entrevista e do dia a dia:\n1. **Pilha (Stack - LIFO: Last In, First Out)**: O último a entrar é o primeiro a sair (como uma pilha de pratos ou `Ctrl+Z`). Operações: `push` (`append`) e `pop` em $O(1)$.\n2. **Fila (Queue - FIFO: First In, First Out)**: O primeiro a entrar é o primeiro a sair (como fila de atendimento ou fila de impressão). Em Python, usamos `collections.deque` com `append` (enfileirar) e `popleft()` (desenfileirar) em $O(1)$.\n3. **Hash Map (Dicionário / Map)**: Armazena pares `chave -> valor` usando uma função hash para transformar a chave num endereço direto, permitindo buscar, inserir e remover em tempo médio **$O(1)$**!",
+      "codeExample": "from collections import deque\n\n# 1. Pilha (LIFO)\npilha = []\npilha.append('A')\npilha.append('B')\nultimo = pilha.pop()  # 'B'\n\n# 2. Fila (FIFO)\nfila = deque(['cliente1', 'cliente2'])\nprimeiro = fila.popleft()  # 'cliente1'\n\n# 3. Hash Map (dict) -> Busca em O(1)!\nvistos = {}\nfor num in [10, 20, 10]:\n    vistos[num] = vistos.get(num, 0) + 1  # {10: 2, 20: 1}",
       "keyTakeaways": [
-        "Pilha (LIFO): último que entra é o primeiro que sai (`Ctrl+Z`, histórico de navegação, Call Stack).",
-        "Fila (FIFO): primeiro que entra é o primeiro que sai (filas de mensagens, atendimento, busca em largura BFS).",
-        "Hash Map (`dict` em Python, `Map` em JS, `HashMap` em Java/Rust): troca um pouco de memória por buscas instantâneas em $O(1)$!"
+        "Pilha (LIFO): último que entra é o primeiro que sai (`Ctrl+Z`, histórico, Call Stack).",
+        "Fila (FIFO): primeiro que entra é o primeiro que sai (`deque` com `popleft()` em $O(1)$).",
+        "Hash Map (`dict` em Python, `Map` em JS): troca um pouco de memória por buscas instantâneas em $O(1)$!"
       ]
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código Python para empilhar e desempilhar em uma Pilha (LIFO) e inicializar um Dicionário (Hash Map) com busca em O(1):",
+      "prompt": "Complete o código Python para desempilhar em uma Pilha (LIFO) e inicializar um Dicionário (Hash Map) com busca em O(1):",
       "codeTemplate": "pilha = []\npilha.append(10)\nultimo = pilha.{{blank}}()\nfrequencias = {{blank}}",
       "blanks": [
         { "answer": "pop", "placeholder": "desempilhar" },
         { "answer": "{}", "placeholder": "hash map" }
       ],
-      "options": ["pop", "{}", "shift", "[]", "first", "()"],
-      "explanation": "Em Python, '.pop()' remove e retorna o último item da pilha (LIFO) em O(1), e '{}' cria um dicionário (Hash Map) com acesso médio O(1)."
+      "options": ["pop", "{}", "popleft", "[]", "first"],
+      "explanation": "Em Python, `.pop()` remove e retorna o último item da pilha (LIFO) em O(1), e `{}` cria um dicionário (Hash Map) com acesso médio O(1)."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Em uma Fila (FIFO) implementada com `collections.deque`, qual método remove e retorna o elemento que chegou PRIMEIRO em tempo $O(1)$?",
+      "options": [
+        "fila.pop()",
+        "fila.popleft()",
+        "fila.append()",
+        "fila.sort()"
+      ],
+      "correctIndex": 1,
+      "explanation": "`popleft()` remove o item da frente da fila (o primeiro a entrar) em tempo constante $O(1)$, respeitando a regra FIFO."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código deveria simular uma Fila (FIFO) de atendimento, mas está atendendo o último cliente que chegou! Clique na linha com o bug:",
+      "lines": [
+        "from collections import deque",
+        "fila = deque(['Ana', 'Beto', 'Caio'])",
+        "fila.append('Duda')",
+        "atendido = fila.pop()",
+        "print(atendido)"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Usar `fila.pop()` remove do final (comportamento de Pilha LIFO). Para uma Fila FIFO, deve-se usar `fila.popleft()`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para processar uma fila de tarefas e contar quantas vezes cada tipo apareceu usando um Hash Map:",
+      "blocks": [
+        "contagem = {}",
+        "while fila:",
+        "    tarefa = fila.popleft()",
+        "    contagem[tarefa] = contagem.get(tarefa, 0) + 1"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "Primeiro inicializamos o dicionário, iteramos enquanto houver itens na fila, removemos o primeiro da fila com `popleft()` e incrementamos no Hash Map em O(1)."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Usando um dicionário (`vistos = {}`), escreva uma função `tem_duplicata(nums)` que percorra `for n in nums:`, retorne `True` se `n in vistos`, adicione `vistos[n] = True`, e ao final retorne `False`:",
-      "starterCode": "# Detecte duplicatas em O(n) usando Hash Map:\n",
-      "requiredTokens": ["def", "tem_duplicata", "vistos", "for", "in", "nums", "if", "return", "True", "False"],
+      "prompt": "Desafio de Código: Implemente uma função `tem_duplicata(nums)` em Python que utilize um dicionário (Hash Map) para detectar em tempo $O(n)$ se existe algum número repetido na lista.",
+      "starterCode": "",
+      "requiredTokens": ["def", "tem_duplicata", "for", "if", "return", "True", "False"],
       "sampleSolution": "def tem_duplicata(nums):\n    vistos = {}\n    for n in nums:\n        if n in vistos:\n            return True\n        vistos[n] = True\n    return False",
-      "hint": "Crie 'vistos = {}', percorra 'for n in nums:', se 'n in vistos:' retorne True; senão 'vistos[n] = True'. No fim, retorne False.",
-      "explanation": "Em vez de dois loops aninhados O(n²), usar um Hash Map/Set reduz a detecção de duplicatas para uma única passada O(n)!"
+      "hint": "Crie um dicionário vazio antes do loop; para cada número, verifique se ele já é uma chave no dicionário antes de registrá-lo.",
+      "explanation": "Em vez de dois loops aninhados O(n²), usar um Hash Map reduz a detecção de duplicatas para uma única passada O(n)!"
     }
   ]
 }

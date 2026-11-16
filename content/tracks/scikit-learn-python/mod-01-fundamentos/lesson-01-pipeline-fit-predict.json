@@ -7,7 +7,7 @@
     {
       "type": "theory",
       "title": "A API Uniforme do Scikit-Learn + Pipeline Seguro",
-      "content": "No **Scikit-Learn**, todo modelo segue a mesma interface simples: **`.fit(X_train, y_train)`** para aprender e **`.predict(X_test)`** para prever. A regra de ouro para evitar **Data Leakage** (vazar estatísticas do conjunto de teste para o treino!) é usar **`Pipeline([('scaler', StandardScaler()), ('clf', RandomForestClassifier())])`** após separar os dados com **`train_test_split`**!",
+      "content": "No **Scikit-Learn**, todo modelo segue a mesma interface simples: **`.fit(X_train, y_train)`** para aprender, **`.predict(X_test)`** para prever e **`.score(X_test, y_test)`** para avaliar. A regra de ouro para evitar **Data Leakage** (vazar estatísticas do conjunto de teste para o treino!) é primeiro separar os dados com **`train_test_split(X, y, test_size=0.2, random_state=42)`** e depois encapsular **`StandardScaler()`** e o estimador (ex: **`RandomForestClassifier()`**) dentro de um **`Pipeline`**!",
       "codeExample": "from sklearn.model_selection import train_test_split\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.ensemble import RandomForestClassifier\n\nX_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42)\n\npipe = Pipeline([\n    (\"scaler\", StandardScaler()),\n    (\"modelo\", RandomForestClassifier(random_state=42)),\n])\npipe.fit(X_tr, y_tr)\nacuracia = pipe.score(X_te, y_te)",
       "keyTakeaways": [
         "NUNCA rode `scaler.fit_transform(X)` antes do `train_test_split` — isso vaza média/desvio do teste para o treino!",
@@ -28,13 +28,60 @@
       "explanation": "O `Pipeline` garante que cada etapa de transformação seja ajustada (`fit`) exclusivamente sobre o conjunto de treino."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Separe 20% dos dados para teste de forma reprodutível antes de criar o Pipeline:",
+      "codeTemplate": "X_tr, X_te, y_tr, y_te = {{blank}}(X, y, test_size=0.2, {{blank}}=42)",
+      "blanks": [
+        { "answer": "train_test_split", "placeholder": "função" },
+        { "answer": "random_state", "placeholder": "semente" }
+      ],
+      "options": ["train_test_split", "split_data", "random_state", "seed"],
+      "explanation": "`train_test_split` divide os conjuntos de treino e teste, e `random_state=42` garante reprodutibilidade."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Encapsule a normalização e o classificador em um `Pipeline` e treine-o nos dados de treino:",
+      "codeTemplate": "pipe = {{blank}}([\n    (\"scaler\", {{blank}}()),\n    (\"clf\", RandomForestClassifier(random_state=42)),\n])\npipe.{{blank}}(X_tr, y_tr)",
+      "blanks": [
+        { "answer": "Pipeline", "placeholder": "classe" },
+        { "answer": "StandardScaler", "placeholder": "scaler" },
+        { "answer": "fit", "placeholder": "método" }
+      ],
+      "options": ["Pipeline", "Sequential", "StandardScaler", "Normalizer", "fit", "train"],
+      "explanation": "`Pipeline` recebe uma lista de tuplas `(nome, etapa)` e expõe `.fit(X_tr, y_tr)` como qualquer estimador."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene as etapas de um fluxo seguro sem Data Leakage no Scikit-Learn:",
+      "blocks": [
+        "pipe.fit(X_tr, y_tr)",
+        "X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42)",
+        "preds = pipe.predict(X_te)",
+        "pipe = Pipeline([(\"scaler\", StandardScaler()), (\"clf\", RandomForestClassifier())])"
+      ],
+      "correctOrder": [1, 3, 0, 2],
+      "explanation": "Primeiro dividimos os dados (`train_test_split`), depois montamos o `Pipeline`, ajustamos apenas no treino (`pipe.fit`) e prevemos no teste (`pipe.predict`)."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Encontre a linha que causa Data Leakage ao vazar estatísticas do conjunto de teste para o treino:",
+      "lines": [
+        "scaler = StandardScaler()",
+        "X_scaled = scaler.fit_transform(X)",
+        "X_tr, X_te, y_tr, y_te = train_test_split(X_scaled, y, test_size=0.2)",
+        "clf = RandomForestClassifier().fit(X_tr, y_tr)"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Chamar `scaler.fit_transform(X)` antes de `train_test_split` calcula média e desvio padrão usando também as amostras de teste! Use `StandardScaler()` dentro de um `Pipeline` após a divisão."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Separe `X` e `y` com `train_test_split(X, y, test_size=0.2, random_state=42)` e treine `modelo.fit(X_train, y_train)`:",
-      "starterCode": "from sklearn.model_selection import train_test_split\n# Separe treino/teste e chame modelo.fit():\n",
-      "requiredTokens": ["train_test_split(", "test_size=0.2", "random_state=42", "modelo.fit(X_train, y_train)"],
-      "sampleSolution": "X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\nmodelo.fit(X_train, y_train)",
-      "hint": "Use `X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)` e `modelo.fit(X_train, y_train)`.",
-      "explanation": "Separar 20% dos dados para teste antes de treinar mede a real capacidade de generalização do modelo."
+      "prompt": "Divida `X` e `y` em treino e teste (20% para teste, semente 42), crie um `Pipeline` combinando `StandardScaler` e `RandomForestClassifier`, treine o pipeline no conjunto de treino e gere as previsões para o conjunto de teste.",
+      "starterCode": "",
+      "requiredTokens": ["train_test_split(", "Pipeline(", "StandardScaler()", "RandomForestClassifier(", ".fit(", ".predict("],
+      "sampleSolution": "from sklearn.model_selection import train_test_split\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.ensemble import RandomForestClassifier\n\nX_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42)\n\npipe = Pipeline([\n    (\"scaler\", StandardScaler()),\n    (\"clf\", RandomForestClassifier(random_state=42)),\n])\npipe.fit(X_tr, y_tr)\npreds = pipe.predict(X_te)",
+      "hint": "Use `train_test_split(X, y, test_size=0.2, random_state=42)`, construa um `Pipeline` com `StandardScaler()` e `RandomForestClassifier()`, chame `pipe.fit(X_tr, y_tr)` e `pipe.predict(X_te)`.",
+      "explanation": "Dividir os dados antes e encapsular `StandardScaler` + `RandomForestClassifier` no `Pipeline` elimina Data Leakage e padroniza treino e inferência."
     }
   ]
 }

@@ -7,10 +7,10 @@
     {
       "type": "theory",
       "title": "Comunicação Assíncrona por Eventos com Apache Kafka",
-      "content": "Em arquiteturas de microsserviços, se o serviço de Pedidos chamar o serviço de E-mail via HTTP síncrono e o E-mail cair, a compra falha! Com **Apache Kafka** e **Spring Kafka**, o serviço de Pedidos apenas publica um evento usando **`kafkaTemplate.send(\"pedidos-criados\", chave, evento)`**. Do outro lado, qualquer consumidor escuta com **`@KafkaListener(topics = \"pedidos-criados\", groupId = \"email-group\")`**!",
+      "content": "Em arquiteturas de microsserviços, se o serviço de Pedidos chamar o serviço de E-mail via HTTP síncrono e o E-mail cair, a compra falha! Com **Apache Kafka** e **Spring Kafka**, o serviço de Pedidos apenas publica um evento usando `kafkaTemplate.send(\"pedidos-criados\", chave, evento)`. Do outro lado, qualquer consumidor escuta com `@KafkaListener(topics = \"pedidos-criados\", groupId = \"notificacoes\")`.",
       "codeExample": "// Producer:\nkafkaTemplate.send(\"pedidos-criados\", pedido.id().toString(), pedido);\n\n// Consumer:\n@KafkaListener(topics = \"pedidos-criados\", groupId = \"notificacoes\")\npublic void consumir(PedidoEvento evento) {\n    System.out.println(\"Recebido: \" + evento.id());\n}",
       "keyTakeaways": [
-        "Passar uma **chave** (`pedido.id()`) no `.send(topico, chave, valor)` garante que eventos da mesma entidade vão para a **mesma partição** na ordem exata!",
+        "Passar uma **chave** (`pedido.id()`) no `.send(topico, chave, valor)` garante que eventos da mesma entidade vão para a **mesma partição** na ordem exata.",
         "`groupId` permite escalar horizontalmente: várias instâncias no mesmo grupo dividem as partições sem duplicar processamento.",
         "Configure sempre uma **DLQ (Dead Letter Queue)** para mensagens que falham após N tentativas."
       ]
@@ -28,13 +28,56 @@
       "explanation": "Dentro de um mesmo Consumer Group, cada partição é atribuída a apenas um consumidor por vez."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete o envio de evento com chave de particionamento no producer e a escuta no consumer:",
+      "codeTemplate": "kafkaTemplate.{{blank}}(\"pedidos-criados\", pedidoId, evento);\n\n@{{blank}}(topics = \"pedidos-criados\", groupId = \"{{blank}}\")\npublic void consumir(String evento) {}",
+      "blanks": [
+        { "answer": "send", "placeholder": "método" },
+        { "answer": "KafkaListener", "placeholder": "anotação" },
+        { "answer": "notificacoes", "placeholder": "grupo" }
+      ],
+      "options": ["send", "KafkaListener", "notificacoes", "publish", "EventListener"],
+      "explanation": "`kafkaTemplate.send(topico, chave, valor)` publica o evento garantindo ordenação pela chave, e `@KafkaListener` consome do tópico dentro do `groupId`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha com erro de configuração no consumidor `@KafkaListener`:",
+      "lines": [
+        "@Service",
+        "public class PagamentoConsumer {",
+        "  @KafkaListener(topics = \"pagamentos\")",
+        "  public void ler(String payload) {",
+        "    System.out.println(payload);",
+        "  }",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Na linha 3, faltou informar o `groupId` no `@KafkaListener` (ex: `groupId = \"pagamentos-group\"`), obrigatório para gerenciar offsets e paralelismo."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para montar um consumidor Spring Kafka que registra o evento recebido e o encaminha em caso de erro:",
+      "blocks": [
+        "public void processar(String mensagem) {",
+        "  System.out.println(\"Evento: \" + mensagem);\n}",
+        "@KafkaListener(topics = \"pedidos\", groupId = \"estoque\")"
+      ],
+      "correctOrder": [2, 0, 1],
+      "explanation": "A anotação `@KafkaListener` precede a assinatura do método consumidor e seu corpo de processamento."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva um método consumidor Java anotado com `@KafkaListener(topics = \"pagamentos\", groupId = \"fiscal\")` recebendo `(String mensagem)`:",
-      "starterCode": "// Crie o método @KafkaListener:\n",
-      "requiredTokens": ["@KafkaListener(", "topics = \"pagamentos\"", "groupId = \"fiscal\"", "public void"],
+      "prompt": "Crie um método consumidor Java chamado `processarPagamento` que receba uma `String mensagem`, escute o tópico `pagamentos` e pertença ao grupo de consumidores `fiscal`.",
+      "starterCode": "",
+      "requiredTokens": [
+        "@KafkaListener(",
+        "topics = \"pagamentos\"",
+        "groupId = \"fiscal\"",
+        "public void processarPagamento"
+      ],
       "sampleSolution": "@KafkaListener(topics = \"pagamentos\", groupId = \"fiscal\")\npublic void processarPagamento(String mensagem) {\n    System.out.println(mensagem);\n}",
-      "hint": "Use `@KafkaListener(topics = \"pagamentos\", groupId = \"fiscal\")` acima de `public void processarPagamento(String mensagem)`.",
-      "explanation": "O Spring Kafka gerencia o loop de polling, deserialização e commit de offsets automaticamente."
+      "hint": "Use `@KafkaListener` com `topics` e `groupId` acima do método `public void processarPagamento(String mensagem)`.",
+      "explanation": "O Spring Kafka gerencia o loop de polling, desserialização e commit de offsets automaticamente."
     }
   ]
 }

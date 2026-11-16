@@ -1,31 +1,91 @@
 {
   "id": "java-spring-01",
   "title": "Criando um @RestController",
-  "description": "Transformando classes Java em endpoints REST.",
-  "xp": 20,
+  "description": "Transformando classes Java em endpoints REST com mapeamento de rotas, parâmetros e corpo JSON.",
+  "xp": 35,
   "steps": [
     {
       "type": "theory",
       "title": "Anotações Declarativas no Spring Boot",
-      "content": "No ecossistema Java, o Spring Boot elimina configurações complexas usando anotações (@). Ao marcar uma classe com @RestController e um método com @GetMapping, o Spring expõe automaticamente aquele método como uma rota HTTP.",
-      "codeExample": "@RestController\npublic class HealthController {\n  @GetMapping(\"/ping\")\n  public String ping() {\n    return \"pong\";\n  }\n}",
+      "content": "No ecossistema Java, o Spring Boot elimina configurações complexas usando anotações (`@`). Ao marcar uma classe com `@RestController` e definir uma rota base com `@RequestMapping(\"/recurso\")`, cada método anotado com `@GetMapping` ou `@PostMapping` vira um endpoint HTTP.\n\nPara capturar dados da requisição, use `@PathVariable` para segmentos da URL (como `/pedidos/{id}`) e `@RequestBody` para desserializar o JSON enviado no corpo de requisições POST/PUT.",
+      "codeExample": "@RestController\n@RequestMapping(\"/saude\")\npublic class HealthController {\n  @GetMapping(\"/ping/{id}\")\n  public String ping(@PathVariable Long id) {\n    return \"pong-\" + id;\n  }\n\n  @PostMapping\n  public String registrar(@RequestBody String payload) {\n    return \"Recebido: \" + payload;\n  }\n}",
       "keyTakeaways": [
-        "@RestController combina @Controller e @ResponseBody.",
-        "@GetMapping mapeia requisições HTTP GET para o método Java."
+        "`@RestController` combina `@Controller` e `@ResponseBody`, serializando o retorno diretamente na resposta HTTP.",
+        "`@RequestMapping` define o prefixo de rota da classe, enquanto `@GetMapping` e `@PostMapping` mapeiam os verbos HTTP.",
+        "`@PathVariable` extrai variáveis da URL e `@RequestBody` converte o corpo JSON para um objeto Java."
       ]
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Anote a classe Java para que o Spring Boot a reconheça como um controlador REST:",
-      "codeTemplate": "@{{blank}}\npublic class ApiController {\n  @GetMapping(\"/status\")\n  public String status() {\n    return \"OK\";\n  }\n}",
+      "prompt": "Anote a classe Java como controlador REST e mapeie o método `status` para requisições HTTP GET:",
+      "codeTemplate": "@{{blank}}\npublic class ApiController {\n  @{{blank}}(\"/status\")\n  public String status() {\n    return \"OK\";\n  }\n}",
       "blanks": [
         {
           "answer": "RestController",
-          "placeholder": "anotação"
+          "placeholder": "anotação classe"
+        },
+        {
+          "answer": "GetMapping",
+          "placeholder": "mapeamento HTTP"
         }
       ],
-      "options": ["RestController", "Service", "Entity", "Bean"],
-      "explanation": "A anotação @RestController informa ao Spring que os métodos da classe retornam dados diretamente na resposta HTTP."
+      "options": ["RestController", "GetMapping", "Service", "PostMapping", "Entity"],
+      "explanation": "`@RestController` registra a classe como controlador REST e `@GetMapping` mapeia requisições HTTP GET para o método."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Em um endpoint `@PostMapping` do Spring Boot, qual anotação deve ser colocada no parâmetro do método para receber e desserializar um objeto JSON enviado no corpo da requisição?",
+      "options": [
+        "@PathVariable",
+        "@RequestBody",
+        "@RequestMapping",
+        "@ResponseBody"
+      ],
+      "correctIndex": 1,
+      "explanation": "`@RequestBody` instrui o Spring a ler o corpo HTTP (JSON) e convertê-lo para o tipo do parâmetro Java."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para formar um controlador REST com rota base `/pedidos` e um endpoint GET que recebe o `id` pela URL:",
+      "blocks": [
+        "  @GetMapping(\"/{id}\")\n  public String buscar(@PathVariable Long id) {",
+        "@RestController\n@RequestMapping(\"/pedidos\")",
+        "    return \"Pedido \" + id;\n  }\n}",
+        "public class PedidoController {"
+      ],
+      "correctOrder": [1, 3, 0, 2],
+      "explanation": "Primeiro vêm as anotações de classe (`@RestController` e `@RequestMapping`), depois a declaração da classe, seguida pelo método `@GetMapping` com `@PathVariable` e o fechamento."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha com erro que impede o parâmetro `id` da URL de ser injetado corretamente no método:",
+      "lines": [
+        "@RestController",
+        "@RequestMapping(\"/usuarios\")",
+        "public class UsuarioController {",
+        "  @GetMapping(\"/{id}\")",
+        "  public String buscar(Long id) {",
+        "    return \"Usuário \" + id;",
+        "  }",
+        "}"
+      ],
+      "buggyLineIndex": 4,
+      "explanation": "Na linha 5 (`public String buscar(Long id)`), faltou a anotação `@PathVariable` antes de `Long id` para vincular o `{id}` da rota ao parâmetro."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Crie um controlador REST chamado `ProdutoController` com rota base `/produtos` e um endpoint GET que receba um `id` do tipo `Long` pela URL e retorne uma `String`.",
+      "starterCode": "",
+      "requiredTokens": [
+        "@RestController",
+        "@RequestMapping(\"/produtos\")",
+        "@GetMapping",
+        "@PathVariable",
+        "ProdutoController"
+      ],
+      "sampleSolution": "@RestController\n@RequestMapping(\"/produtos\")\npublic class ProdutoController {\n  @GetMapping(\"/{id}\")\n  public String buscarPorId(@PathVariable Long id) {\n    return \"Produto \" + id;\n  }\n}",
+      "hint": "Use `@RestController` e `@RequestMapping(\"/produtos\")` na classe, e `@GetMapping(\"/{id}\")` com `@PathVariable Long id` no método.",
+      "explanation": "Combinar `@RestController`, `@RequestMapping`, `@GetMapping` e `@PathVariable` permite criar endpoints REST limpos e tipados no Spring Boot."
     }
   ]
 }

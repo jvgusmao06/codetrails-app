@@ -8,11 +8,12 @@
       "type": "theory",
       "title": "Esperando Goroutines e Evitando Race Conditions",
       "content": "Se `main()` terminar antes das suas goroutines, o programa encerra na hora! Para esperar várias goroutines terminarem, usamos **`sync.WaitGroup`**: `wg.Add(1)` antes de lançar, `defer wg.Done()` dentro da goroutine e `wg.Wait()` no final. Quando duas goroutines precisam alterar a mesma variável compartilhada, usamos **`sync.Mutex`** (`mu.Lock()` e `defer mu.Unlock()`). E o comando **`select`** funciona como um `switch` para múltiplos channels, executando o primeiro que ficar pronto!",
-      "codeExample": "var wg sync.WaitGroup\nwg.Add(1)\ngo func() {\n    defer wg.Done()\n    fmt.Println(\"Tarefa concluída\")\n}()\nwg.Wait() // Aguarda todas as goroutines terminarem\n\nselect {\ncase msg := <-canal1:\n    fmt.Println(msg)\ncase <-time.After(time.Second):\n    fmt.Println(\"Timeout!\")\n}",
+      "codeExample": "var wg sync.WaitGroup\nvar mu sync.Mutex\ntotal := 0\n\nwg.Add(1)\ngo func() {\n    defer wg.Done()\n    mu.Lock()\n    defer mu.Unlock()\n    total++\n}()\nwg.Wait() // Aguarda todas as goroutines terminarem\n\nselect {\ncase msg := <-canal1:\n    fmt.Println(msg)\ncase <-time.After(time.Second):\n    fmt.Println(\"Timeout!\")\n}",
       "keyTakeaways": [
         "`wg.Add(n)`, `defer wg.Done()` e `wg.Wait()` garantem que nenhuma goroutine seja abandonada.",
-        "`select` bloqueia até que um dos `case <-canal` esteja pronto (excelente para timeouts com `time.After`).",
-        "Rode `go test -race` para detectar automaticamente condições de corrida (data races) na memória."
+        "`mu.Lock()` e `defer mu.Unlock()` protegem dados compartilhados contra condições de corrida (race conditions).",
+        "`select` bloqueia até que um dos `case <-canal` esteja pronto (ou executa `default:` imediatamente se nenhum estiver pronto).",
+        "Rode `go test -race` para detectar automaticamente condições de corrida na memória."
       ]
     },
     {
@@ -28,13 +29,51 @@
       "explanation": "`sync.WaitGroup` mantém um contador atômico de tarefas pendentes (`Add`, `Done`, `Wait`)."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Proteja o incremento da variável compartilhada `visitas` usando `sync.Mutex`:",
+      "codeTemplate": "var mu {{blank}}\nfunc registrar() {\n    mu.{{blank}}()\n    defer mu.{{blank}}()\n    visitas++\n}",
+      "blanks": [
+        { "answer": "sync.Mutex", "placeholder": "tipo" },
+        { "answer": "Lock", "placeholder": "travar" },
+        { "answer": "Unlock", "placeholder": "destravar" }
+      ],
+      "options": ["sync.Mutex", "Lock", "Unlock", "sync.WaitGroup", "Wait", "Done"],
+      "explanation": "`mu.Lock()` adquire exclusão mútua e `defer mu.Unlock()` garante a liberação mesmo se a função retornar antes."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código pode encerrar antes da goroutine rodar porque `wg.Add(1)` foi chamado no lugar errado. Clique na linha com o bug:",
+      "lines": [
+        "var wg sync.WaitGroup",
+        "go func() {",
+        "    wg.Add(1)",
+        "    defer wg.Done()",
+        "    fmt.Println(\"processando\")",
+        "}()",
+        "wg.Wait()"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "`wg.Add(1)` deve ser chamado ANTES de iniciar a goroutine (`go func()`), pois `wg.Wait()` pode executar antes da goroutine começar e ver o contador zerado."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para montar um `select` não-bloqueante que lê de `ch` ou cai no `default`:",
+      "blocks": [
+        "default:\n    fmt.Println(\"vazio\")\n}",
+        "select {",
+        "case msg := <-ch:\n    fmt.Println(msg)"
+      ],
+      "correctOrder": [1, 2, 0],
+      "explanation": "O bloco `select` inicia com `select {`, lista os `case` de channels e pode terminar com `default:` para não bloquear."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva um bloco `select` em Go com dois `case`: um recebendo `msg := <-ch` e outro com `default:` imprimindo `fmt.Println(\"vazio\")`:",
-      "starterCode": "// Escreva o select não-bloqueante:\n",
-      "requiredTokens": ["select", "case", "<-ch", "default:", "fmt.Println"],
-      "sampleSolution": "select {\ncase msg := <-ch:\n    fmt.Println(msg)\ndefault:\n    fmt.Println(\"vazio\")\n}",
-      "hint": "Use `select { case msg := <-ch: fmt.Println(msg); default: fmt.Println(\"vazio\") }`.",
-      "explanation": "Adicionar `default:` em um `select` torna a leitura do channel não-bloqueante."
+      "prompt": "Desafio de Código: Declare um `var wg sync.WaitGroup`, adicione `1` tarefa pendente com `wg.Add(1)`, inicie uma goroutine com `go func()` que agende `defer wg.Done()` e execute um `select` lendo `msg := <-ch` para imprimir com `fmt.Println` ou caindo em `default:` imprimindo `\"vazio\"`. Por fim, chame `wg.Wait()`.",
+      "starterCode": "",
+      "requiredTokens": ["sync.WaitGroup", "wg.Add", "go", "wg.Done", "select", "<-ch", "default:", "wg.Wait"],
+      "sampleSolution": "var wg sync.WaitGroup\nwg.Add(1)\ngo func() {\n    defer wg.Done()\n    select {\n    case msg := <-ch:\n        fmt.Println(msg)\n    default:\n        fmt.Println(\"vazio\")\n    }\n}()\nwg.Wait()",
+      "hint": "Chame `wg.Add(1)` antes da goroutine, coloque `defer wg.Done()` e o bloco `select` dentro de `go func() { ... }()` e finalize com `wg.Wait()`.",
+      "explanation": "Combinar `sync.WaitGroup` com `select` garante que a goroutine seja aguardada e que a leitura do channel não trave indefinidamente."
     }
   ]
 }

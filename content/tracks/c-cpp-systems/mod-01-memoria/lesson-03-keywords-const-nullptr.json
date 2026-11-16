@@ -1,0 +1,72 @@
+{
+  "id": "cpp-keywords-03",
+  "title": "Palavras Reservadas: const, auto, sizeof e nullptr",
+  "description": "Controle imutabilidade, inferência de tipos, tamanho em memória e ponteiros nulos seguros em C e C++.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Segurança de Tipos e Memória com const, auto, sizeof e nullptr",
+      "content": "Em C e C++, algumas palavras reservadas são essenciais para escrever código seguro e eficiente. A palavra `const` impede que uma variável seja alterada após a inicialização. Em C++11+, `auto` deduz automaticamente o tipo da variável a partir do valor inicial. O operador `sizeof()` retorna, em tempo de compilação, quantos bytes um tipo ou variável ocupa na memória. Por fim, `nullptr` representa um ponteiro nulo tipado e seguro em C++ moderno (substituindo `NULL` ou `0`).",
+      "codeExample": "#include <iostream>\n\nint main() {\n    const int limite = 100;\n    auto taxa = 2.5;        // deduzido como double\n    int* ptr = nullptr;     // ponteiro nulo seguro\n    std::cout << sizeof(limite) << \" bytes\\n\";\n    return 0;\n}",
+      "keyTakeaways": [
+        "`const` torna a variável somente-leitura após sua inicialização.",
+        "`auto` infere o tipo automaticamente na compilação, exigindo inicialização imediata.",
+        "`sizeof(tipo)` retorna o tamanho em bytes na memória em tempo de compilação.",
+        "`nullptr` é o literal padrão de ponteiro nulo em C++ moderno."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual palavra-chave impede que o valor de uma variável seja modificado após ser inicializada?",
+      "options": ["auto", "const", "sizeof", "nullptr"],
+      "correctIndex": 1,
+      "explanation": "O qualificador `const` garante imutabilidade: qualquer tentativa de reatribuir a variável gera erro de compilação."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código C++ utilizando `nullptr` para o ponteiro, `sizeof` para consultar bytes e `auto` para inferir o tipo:",
+      "codeTemplate": "int* p = {{blank}};\nsize_t bytes = {{blank}}(int);\n{{blank}} ativo = true;",
+      "blanks": [
+        { "answer": "nullptr", "placeholder": "ponteiro nulo" },
+        { "answer": "sizeof", "placeholder": "tamanho" },
+        { "answer": "auto", "placeholder": "inferência" }
+      ],
+      "options": ["nullptr", "sizeof", "auto", "NULL", "len", "var"],
+      "explanation": "nullptr inicializa ponteiros nulos com segurança, sizeof retorna os bytes do tipo int e auto infere bool."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O código abaixo tenta usar `const` e `auto`, mas contém um erro que impede a compilação. Clique na linha com bug:",
+      "lines": [
+        "const int maxConexoes = 50;",
+        "auto porta = 8080;",
+        "maxConexoes = 100;",
+        "int* ptr = nullptr;"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Como `maxConexoes` foi declarada como `const`, não é possível reatribuir um novo valor a ela depois."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para declarar uma constante, um ponteiro nulo seguro, consultar o tamanho em bytes e exibir com `std::cout`:",
+      "blocks": [
+        "const int portas = 4;",
+        "int* ptr = nullptr;",
+        "auto tamanho = sizeof(portas);",
+        "std::cout << tamanho << std::endl;"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "Declaramos a constante `portas`, inicializamos `ptr` com `nullptr`, calculamos `sizeof(portas)` com `auto` e imprimimos o resultado."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva um programa em C++ (com `<iostream>` e `main`) que declare uma constante inteira `limite` com valor `64`, um ponteiro para inteiro `ptr` inicializado como nulo seguro, uma variável com inferência automática de tipo guardando o tamanho em bytes de `limite` e imprima esse tamanho na saída padrão.",
+      "starterCode": "",
+      "requiredTokens": ["#include", "<iostream>", "const", "nullptr", "auto", "sizeof", "std::cout", "return 0"],
+      "sampleSolution": "#include <iostream>\n\nint main() {\n    const int limite = 64;\n    int* ptr = nullptr;\n    auto bytes = sizeof(limite);\n    std::cout << bytes << std::endl;\n    return 0;\n}",
+      "hint": "Combine `const int`, `nullptr`, `auto` com `sizeof(limite)` e envie o resultado para `std::cout`.",
+      "explanation": "O uso combinado de `const`, `nullptr`, `auto` e `sizeof` garante segurança de tipos, inicialização explícita e zero custo em execução."
+    }
+  ]
+}

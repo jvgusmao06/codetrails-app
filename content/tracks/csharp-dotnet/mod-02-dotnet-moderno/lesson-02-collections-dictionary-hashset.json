@@ -7,12 +7,12 @@
     {
       "type": "theory",
       "title": "Dicionários Seguros e Conjuntos Únicos no .NET",
-      "content": "Em C#, **`Dictionary<TKey, TValue>`** é a Hash Table nativa para buscas em $O(1)$. **Cuidado:** acessar `dict[\"chave\"]` direto lança `KeyNotFoundException` se a chave não existir! A forma segura e rápida (apenas 1 lookup!) é usar **`dict.TryGetValue(\"chave\", out var valor)`**. Já **`HashSet<T>`** armazena valores únicos com `.Contains()` também em $O(1)$!",
-      "codeExample": "var estoque = new Dictionary<string, int> {\n    [\"teclado\"] = 15,\n    [\"mouse\"] = 8\n};\n\n// Busca segura sem lançar KeyNotFoundException:\nif (estoque.TryGetValue(\"teclado\", out var qtd)) {\n    Console.WriteLine($\"Em estoque: {qtd}\");\n}\n\nvar tags = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { \"api\", \"API\" }; // 1 item!",
+      "content": "Em C#, **`Dictionary<TKey, TValue>`** é a Hash Table nativa para buscas em $O(1)$. **Cuidado:** acessar `dict[\"chave\"]` direto lança `KeyNotFoundException` se a chave não existir! A forma segura e rápida (apenas 1 lookup!) é usar **`dict.TryGetValue(\"chave\", out var valor)`**. Já **`HashSet<T>`** armazena apenas valores únicos, evita duplicatas automaticamente e realiza buscas com `.Contains()` também em $O(1)$!",
+      "codeExample": "var estoque = new Dictionary<string, int> {\n    [\"teclado\"] = 15,\n    [\"mouse\"] = 8\n};\n\n// Busca segura sem lançar KeyNotFoundException:\nif (estoque.TryGetValue(\"teclado\", out var qtd)) {\n    Console.WriteLine($\"Em estoque: {qtd}\");\n}\n\nvar tags = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { \"api\", \"API\" };\ntags.Add(\"dotnet\");\nbool existe = tags.Contains(\"DOTNET\"); // true em O(1)!",
       "keyTakeaways": [
         "`TryGetValue(chave, out var val)` checa existência e extrai o valor em uma única busca na tabela hash.",
-        "`HashSet<T>` elimina duplicatas e aceita `StringComparer.OrdinalIgnoreCase` para ignorar maiúsculas/minúsculas.",
-        "Prefira `HashSet<T>.Contains()` em vez de `List<T>.Contains()` ao verificar permissões/IDs dentro de loops."
+        "`HashSet<T>` elimina duplicatas automaticamente e aceita `StringComparer.OrdinalIgnoreCase` para ignorar maiúsculas/minúsculas.",
+        "Prefira `HashSet<T>.Contains()` em vez de `List<T>.Contains()` ao verificar permissões ou IDs em $O(1)$."
       ]
     },
     {
@@ -27,13 +27,61 @@
       "explanation": "Na linha 2, `precos[codigo]` lança exceção se a chave não existir! Use `precos.TryGetValue(codigo, out var p) ? p : 0m;`."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete a leitura segura de um `Dictionary` usando o padrão `TryGetValue` com variável `out`:",
+      "codeTemplate": "if (usuarios.{{blank}}(id, {{blank}} var nome)) {\n    Console.WriteLine(nome);\n}",
+      "blanks": [
+        { "answer": "TryGetValue", "placeholder": "busca segura" },
+        { "answer": "out", "placeholder": "parâmetro de saída" }
+      ],
+      "options": ["TryGetValue", "out", "ref", "GetOrDefault", "ContainsKey"],
+      "explanation": "`TryGetValue(chave, out var valor)` retorna `bool` indicando se encontrou e já preenche `valor` em um único acesso."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Quantos elementos terá `var permissoes = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { \"admin\", \"ADMIN\", \"editor\" };`?",
+      "options": [
+        "3 elementos",
+        "2 elementos (\"admin\" e \"editor\")",
+        "1 elemento",
+        "Lança exceção por chave duplicada"
+      ],
+      "correctIndex": 1,
+      "explanation": "O `HashSet<T>` descarta duplicatas silenciosamente (`Add` retorna `false`), e `StringComparer.OrdinalIgnoreCase` trata `\"admin\"` e `\"ADMIN\"` como iguais."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código para criar um conjunto de valores únicos `HashSet<string>` sem distinção de maiúsculas/minúsculas e verificar se contém `\"VIP\"`:",
+      "codeTemplate": "var perfis = new {{blank}}<string>({{blank}}.OrdinalIgnoreCase) { \"vip\" };\nbool autorizado = perfis.{{blank}}(\"VIP\");",
+      "blanks": [
+        { "answer": "HashSet", "placeholder": "conjunto único" },
+        { "answer": "StringComparer", "placeholder": "comparador" },
+        { "answer": "Contains", "placeholder": "busca O(1)" }
+      ],
+      "options": ["HashSet", "StringComparer", "Contains", "List", "Dictionary", "Has"],
+      "explanation": "`HashSet<string>(StringComparer.OrdinalIgnoreCase)` + `.Contains(...)` oferece verificação case-insensitive em tempo constante $O(1)$."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para registrar tags únicas em um `HashSet<string>` e consultar a quantidade em um `Dictionary<string, int>` com `TryGetValue`:",
+      "blocks": [
+        "var contadores = new Dictionary<string, int> { [\"csharp\"] = 10 };",
+        "var vistas = new HashSet<string> { \"csharp\" };",
+        "if (vistas.Contains(\"csharp\") && contadores.TryGetValue(\"csharp\", out var total)) {",
+        "    Console.WriteLine($\"Total: {total}\");",
+        "}"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "explanation": "Combinar `HashSet<T>.Contains` e `Dictionary<K,V>.TryGetValue` garante duas verificações seguras e em $O(1)$."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Use `if (cache.TryGetValue(chave, out var valor))` para imprimir `Console.WriteLine(valor);` com segurança:",
-      "starterCode": "// Leia 'chave' de 'cache' usando TryGetValue:\n",
-      "requiredTokens": ["if", "cache.TryGetValue(", "out var valor", "Console.WriteLine(valor)"],
-      "sampleSolution": "if (cache.TryGetValue(chave, out var valor)) {\n    Console.WriteLine(valor);\n}",
-      "hint": "Use `if (cache.TryGetValue(chave, out var valor)) { Console.WriteLine(valor); }`.",
-      "explanation": "O padrão `Try*` (`TryGetValue`, `int.TryParse`) evita exceções desnecessárias e melhora a performance no .NET."
+      "prompt": "Desafio de Código: Crie um `Dictionary<string, int>` chamado `estoque` com pelo menos um item, um `HashSet<string>` chamado `tags` usando `StringComparer.OrdinalIgnoreCase`, adicione `\"dotnet\"` a `tags`, e use `TryGetValue` para ler uma variável `chave` de `estoque` e imprimir o valor encontrado com `Console.WriteLine`.",
+      "starterCode": "",
+      "requiredTokens": ["Dictionary<string, int>", "HashSet<string>", "StringComparer.OrdinalIgnoreCase", "TryGetValue(", "out var", "Console.WriteLine"],
+      "sampleSolution": "var estoque = new Dictionary<string, int> { [\"dotnet\"] = 5 };\nvar tags = new HashSet<string>(StringComparer.OrdinalIgnoreCase);\ntags.Add(\"dotnet\");\n\nstring chave = \"dotnet\";\nif (estoque.TryGetValue(chave, out var qtd)) {\n    Console.WriteLine(qtd);\n}",
+      "hint": "Instancie `Dictionary<string, int>`, `HashSet<string>(StringComparer.OrdinalIgnoreCase)` com `.Add(\"dotnet\")`, e use `if (estoque.TryGetValue(chave, out var qtd))`.",
+      "explanation": "`Dictionary` + `TryGetValue` e `HashSet` formam a dupla essencial para buscas rápidas e seguras em $O(1)$ no .NET."
     }
   ]
 }

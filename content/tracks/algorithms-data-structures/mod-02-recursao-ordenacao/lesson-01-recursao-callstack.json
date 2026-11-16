@@ -2,17 +2,17 @@
   "id": "algo-recursao-01",
   "title": "Recursão, Caso Base e a Pilha de Chamadas (Call Stack)",
   "description": "Compreenda como uma função pode chamar a si mesma para dividir problemas complexos e por que o Caso Base evita o famoso erro Stack Overflow.",
-  "xp": 35,
+  "xp": 40,
   "steps": [
     {
       "type": "theory",
       "title": "Dividir para Conquistar: Caso Base + Passo Recursivo",
-      "content": "Uma função **recursiva** é aquela que chama a si mesma para resolver uma versão menor do mesmo problema. Toda recursão correta PRECISA de duas partes obrigatórias:\n1. **Caso Base (Condição de Parada)**: O caso mais simples possível, que retorna a resposta diretamente sem fazer novas chamadas.\n2. **Passo Recursivo**: A chamada para a própria função com um argumento reduzido que se aproxima do Caso Base.\nCada chamada fica empilhada na memória (**Call Stack**). Se você esquecer o Caso Base, a pilha cresce até estourar a memória (**Stack Overflow / RecursionError**)!",
+      "content": "Uma função **recursiva** é aquela que chama a si mesma para resolver uma versão menor do mesmo problema. Toda recursão correta PRECISA de duas partes obrigatórias:\n1. **Caso Base (Condição de Parada)**: O caso mais simples possível, que retorna a resposta diretamente sem fazer novas chamadas.\n2. **Passo Recursivo**: A chamada para a própria função com um argumento reduzido que se aproxima do Caso Base.\nCada chamada fica empilhada na memória (**Call Stack**), que funciona como uma Pilha (LIFO). Se você esquecer o Caso Base ou não reduzir o argumento, a pilha cresce até estourar a memória (**Stack Overflow / RecursionError**)!",
       "codeExample": "def fatorial(n):\n    # 1. Caso Base (Condição de parada obrigatória!)\n    if n <= 1:\n        return 1\n    # 2. Passo Recursivo (reduz n -> n - 1)\n    return n * fatorial(n - 1)\n\nprint(fatorial(4))  # 4 * 3 * 2 * 1 = 24",
       "keyTakeaways": [
         "Sem Caso Base (ou se o passo recursivo não avançar em direção ao caso base), ocorre Stack Overflow (estouro da pilha).",
         "A Call Stack funciona como uma Pilha (LIFO): a última chamada a ser empilhada é a primeira a retornar.",
-        "Recursão é a base para percorrer árvores (DOM HTML, diretórios de arquivos, JSON aninhado) e algoritmos como Merge Sort e Quick Sort."
+        "Recursão é a base para percorrer árvores e algoritmos como Merge Sort e Quick Sort."
       ]
     },
     {
@@ -25,16 +25,51 @@
         "    return n + soma_ate(n)"
       ],
       "buggyLineIndex": 3,
-      "explanation": "Na linha 4, a função chama 'soma_ate(n)' com o mesmo valor 'n' em vez de 'soma_ate(n - 1)'! Como 'n' nunca diminui, nunca chega ao caso base 'n <= 0'."
+      "explanation": "Na linha 4, a função chama `soma_ate(n)` com o mesmo valor `n` em vez de `soma_ate(n - 1)`! Como `n` nunca diminui, nunca chega ao caso base `n <= 0`."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Por que a memória usada durante chamadas recursivas é chamada de **Call Stack** (Pilha de Chamadas)?",
+      "options": [
+        "Porque as funções são executadas em ordem alfabética",
+        "Porque segue o modelo LIFO: a última chamada empilhada é a primeira a terminar e retornar seu valor",
+        "Porque segue o modelo FIFO: a primeira chamada termina antes das demais",
+        "Porque armazena apenas variáveis globais"
+      ],
+      "correctIndex": 1,
+      "explanation": "Cada chamada recursiva é empilhada no topo da Call Stack; ao atingir o Caso Base, as chamadas vão retornando do topo para a base (LIFO)."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a função recursiva de contagem regressiva definindo o Caso Base e o Passo Recursivo:",
+      "codeTemplate": "def contagem(n):\n    if n <= {{blank}}:\n        return\n    print(n)\n    contagem({{blank}})",
+      "blanks": [
+        { "answer": "0", "placeholder": "parada" },
+        { "answer": "n - 1", "placeholder": "passo" }
+      ],
+      "options": ["0", "n - 1", "n", "n + 1", "1"],
+      "explanation": "Quando `n <= 0` a função para (Caso Base), e `contagem(n - 1)` reduz o problema a cada chamada até atingir o caso base."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para implementar a função recursiva de potência `potencia(base, exp)`:",
+      "blocks": [
+        "def potencia(base, exp):",
+        "    if exp == 0:",
+        "        return 1",
+        "    return base * potencia(base, exp - 1)"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "O Caso Base (`exp == 0` retorna `1`) vem sempre antes do Passo Recursivo (`exp - 1`), garantindo que a Call Stack não estoure."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva a função recursiva `fatorial(n)` que retorne `1` quando `if n <= 1:` (caso base) e, caso contrário, retorne `n * fatorial(n - 1)`:",
-      "starterCode": "# Escreva a função recursiva fatorial(n):\n",
-      "requiredTokens": ["def", "fatorial", "if", "<=", "1", "return", "*", "n - 1"],
+      "prompt": "Desafio de Código: Implemente a função recursiva `fatorial(n)` em Python, tratando o caso base para valores menores ou iguais a 1 e aplicando o passo recursivo.",
+      "starterCode": "",
+      "requiredTokens": ["def", "fatorial", "if", "return", "*", "fatorial("],
       "sampleSolution": "def fatorial(n):\n    if n <= 1:\n        return 1\n    return n * fatorial(n - 1)",
-      "hint": "Defina 'def fatorial(n):', verifique 'if n <= 1: return 1' e abaixo retorne 'return n * fatorial(n - 1)'.",
-      "explanation": "O caso base 'if n <= 1: return 1' interrompe a recursão e desempilha as multiplicações na Call Stack."
+      "hint": "Verifique primeiro se `n <= 1` para retornar `1`; caso contrário, multiplique `n` pelo resultado da própria função com `n - 1`.",
+      "explanation": "O caso base `if n <= 1: return 1` interrompe a recursão e desempilha as multiplicações na Call Stack."
     }
   ]
 }

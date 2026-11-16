@@ -2,12 +2,12 @@
   "id": "redis-cache-01",
   "title": "Redis na Prática: SET, GET, TTL (EX) e Rate Limiting com INCR",
   "description": "Implemente o padrão Cache-Aside e contadores atômicos com expiração automática em microssegundos.",
-  "xp": 35,
+  "xp": 40,
   "steps": [
     {
       "type": "theory",
       "title": "Por que Usar Redis Junto com PostgreSQL?",
-      "content": "O **Redis** é um banco chave-valor em **memória RAM** com latência sub-milissegundo ($O(1)$). No padrão **Cache-Aside**, antes de fazer um `SELECT` pesado no PostgreSQL, a API consulta o Redis (`GET user:42`). Se não existir (*Cache Miss*), busca no SQL e salva no Redis com **TTL** (*Time To Live*): **`SET user:42 '{...}' EX 300`** (expira sozinho em 300s!). Além disso, `INCR` + `EXPIRE` criam **Rate Limiters** atômicos em 2 comandos.",
+      "content": "O **Redis** é um banco chave-valor em **memória RAM** com latência sub-milissegundo ($O(1)$). No padrão **Cache-Aside**, antes de fazer um `SELECT` pesado no PostgreSQL, a API consulta o Redis (`GET user:42`). Se não existir (*Cache Miss*), busca no SQL e salva no Redis com **TTL** (*Time To Live*): **`SET user:42 '{...}' EX 300`** (expira sozinho em 300s!). Além disso, **`INCR`** + **`EXPIRE`** criam **Rate Limiters** atômicos em 2 comandos.",
       "codeExample": "# Salvar chave com expiração (TTL) de 60 segundos\nSET sessao:abc \"user_10\" EX 60\n\n# Ler valor em O(1)\nGET sessao:abc\n\n# Contador atômico (Rate Limiting)\nINCR rate:ip:127.0.0.1\nEXPIRE rate:ip:127.0.0.1 60",
       "keyTakeaways": [
         "Sempre defina um TTL (`EX segundos`) em chaves de cache para não lotar a RAM e evitar dados obsoletos.",
@@ -28,12 +28,59 @@
       "explanation": "No Cache-Aside, a aplicação lê do banco em caso de *miss* e popula o cache com TTL para as próximas requisições."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete os dois comandos Redis para implementar um Rate Limiter que incrementa o contador de requisições do IP e define expiração de 60 segundos:",
+      "codeTemplate": "{{blank}} rate:ip:10.0.0.1\n{{blank}} rate:ip:10.0.0.1 60",
+      "blanks": [
+        { "answer": "INCR", "placeholder": "incrementar" },
+        { "answer": "EXPIRE", "placeholder": "expiração" }
+      ],
+      "options": ["INCR", "EXPIRE", "SET", "GET", "TTL"],
+      "explanation": "`INCR` soma 1 de forma atômica (criando a chave em 0 se não existir), e `EXPIRE` define em quantos segundos a janela do Rate Limiter zera."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Por que usar `INCR` no Redis para limitar requisições por minuto evita *race conditions* mesmo com milhares de acessos simultâneos?",
+      "options": [
+        "Porque o Redis executa comandos de forma atômica em um loop single-threaded",
+        "Porque o Redis salva os dados em disco antes de responder",
+        "Porque `INCR` bloqueia o navegador do usuário",
+        "Porque `EXPIRE` duplica o valor da chave"
+      ],
+      "correctIndex": 0,
+      "explanation": "Como o Redis processa comandos atomicamente em sua thread principal, dois `INCR` concorrentes nunca sobrescrevem a contagem um do outro."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este comando de cache funciona no início, mas com o tempo esgota toda a memória RAM do servidor Redis e mantém dados desatualizados para sempre! Clique na linha problemática:",
+      "lines": [
+        "GET produto:99",
+        "# Cache miss -> consulta no PostgreSQL",
+        "SET produto:99 \"Notebook\"",
+        "GET produto:99"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Faltou definir um TTL com `EX <segundos>` no comando `SET` (ex: `SET produto:99 \"Notebook\" EX 300`). Sem expiração, a chave fica na RAM indefinidamente."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os passos do fluxo **Cache-Aside** quando um usuário acessa `perfil:42` pela primeira vez:",
+      "blocks": [
+        "GET perfil:42  # Retorna (nil) - Cache Miss",
+        "# API consulta SELECT * FROM users WHERE id = 42",
+        "SET perfil:42 \"{\\\"nome\\\":\\\"Ana\\\"}\" EX 300",
+        "GET perfil:42  # Próxima requisição: Cache Hit!"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "Primeiro tentamos ler do Redis (`GET`), no miss vamos ao banco relacional, gravamos no Redis com `EX` e nas próximas leituras ocorre Cache Hit."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva o comando Redis para salvar a chave `config:tema` com valor `\"dark\"` e expiração (`EX`) de `300` segundos:",
-      "starterCode": "# Salve config:tema com TTL de 300 segundos:\n",
+      "prompt": "Desafio de Código: Escreva o comando Redis para armazenar na chave `config:tema` o valor `\"dark\"` com tempo de expiração automático de `300` segundos.",
+      "starterCode": "",
       "requiredTokens": ["SET", "config:tema", "\"dark\"", "EX", "300"],
       "sampleSolution": "SET config:tema \"dark\" EX 300",
-      "hint": "Use: SET config:tema \"dark\" EX 300",
+      "hint": "Use o comando de escrita passando a chave, o valor entre aspas e a opção de expiração em segundos.",
       "explanation": "A flag `EX 300` garante que a chave será removida automaticamente da memória após 5 minutos."
     }
   ]

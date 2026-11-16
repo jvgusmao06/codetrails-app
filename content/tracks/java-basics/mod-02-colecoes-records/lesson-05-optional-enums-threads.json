@@ -1,40 +1,88 @@
 {
-  "id": "java-excecoes-try-resources-04",
-  "title": "Exceções (try/catch/throw) e Try-with-Resources",
-  "description": "Entenda Checked vs Unchecked Exceptions, lance erros com throw e feche conexões automaticamente com try-with-resources.",
-  "xp": 35,
+  "id": "java-optional-enums-threads-05",
+  "title": "Optional<T>, Enums, var e Threads",
+  "description": "Elimine NullPointerException com Optional<T>, modele estados fixos com enum, use var e execute tarefas concorrentes com Threads.",
+  "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Tratamento de Exceções e AutoCloseable em Java",
-      "content": "Em Java existem dois grupos de exceções: **Unchecked** (`RuntimeException`, como `IllegalArgumentException` ou `NullPointerException`, que não obrigam `try/catch`) e **Checked** (`IOException`, `SQLException`, que o compilador obriga você a capturar com `try/catch` ou declarar na assinatura com `throws`). Para fechar arquivos ou conexões automaticamente sem precisar de `finally { close(); }`, usamos **try-with-resources**: `try (var sc = new Scanner(System.in)) { ... }`.",
-      "codeExample": "public static void sacar(double valor) {\n    if (valor <= 0) {\n        throw new IllegalArgumentException(\"Valor deve ser positivo\");\n    }\n}\n\n// Try-with-resources: fecha 'sc' automaticamente ao sair do bloco\ntry (var sc = new java.util.Scanner(System.in)) {\n    sacar(-10);\n} catch (IllegalArgumentException e) {\n    System.out.println(\"Erro: \" + e.getMessage());\n}",
+      "title": "Optional<T>, Enum, var e Concorrência com Threads",
+      "content": "Para evitar `NullPointerException`, métodos de busca em Java retornam **`Optional<T>`** em vez de `null` — permitindo encadear `.orElse(...)` ou `.orElseThrow()`. Já o **`enum`** define um conjunto fechado e seguro de constantes (ex: `StatusPedido.PAGO`). Desde o Java 10, **`var`** infere o tipo de variáveis locais inicializadas mantendo a tipagem estática. Por fim, para executar código em paralelo em uma nova linha de execução, criamos uma **`Thread`** passando um `Runnable` (facilmente escrito com lambda `() -> ...`) e chamamos **`.start()`**.",
+      "codeExample": "import java.util.Optional;\n\nenum StatusPedido { PAGO, PENDENTE, CANCELADO }\n\nOptional<String> email = Optional.ofNullable(buscarEmail());\nString destino = email.orElse(\"sem-email@dominio.com\");\n\nvar status = StatusPedido.PAGO; // Tipo inferido: StatusPedido\n\nThread worker = new Thread(() -> {\n    System.out.println(\"Executando em paralelo!\");\n});\nworker.start(); // Inicia a nova Thread",
       "keyTakeaways": [
-        "`throw new ...` dispara uma exceção; `throws` na assinatura do método avisa quem chama que aquele método pode falhar.",
-        "Try-with-resources funciona com qualquer classe que implemente `AutoCloseable` (arquivos, sockets, JDBC).",
-        "Use `IllegalArgumentException` para validar parâmetros inválidos logo no início do método."
+        "Use `Optional.ofNullable(valor).orElse(padrao)` para lidar com ausências sem `if (x != null)`.",
+        "`enum` garante em tempo de compilação que apenas valores válidos existam; `var` só funciona em variáveis locais inicializadas.",
+        "Para iniciar uma `Thread` concorrente, passe um `Runnable` (lambda `() -> ...`) e chame `.start()` (nunca `.run()` diretamente)."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Complete o método Java para lançar uma exceção quando a quantidade for inválida e capturá-la no bloco try/catch:",
-      "codeTemplate": "if (qtd < 0) {{blank}} new IllegalArgumentException(\"Negativo\");\n\n{{blank}} {\n    processar(-1);\n} {{blank}} (IllegalArgumentException ex) {\n    System.out.println(ex.getMessage());\n}",
-      "blanks": [
-        { "answer": "throw", "placeholder": "lançar" },
-        { "answer": "try", "placeholder": "tentar" },
-        { "answer": "catch", "placeholder": "capturar" }
+      "type": "multiple_choice",
+      "prompt": "Qual método de `Optional<String>` retorna o valor presente ou um valor padrão alternativo caso esteja vazio, sem lançar exceção?",
+      "options": [
+        ".get()",
+        ".orElse(\"padrao\")",
+        ".isNull()",
+        ".unwrap()"
       ],
-      "options": ["throw", "throws", "try", "catch", "except", "raise"],
-      "explanation": "`throw` dispara a instância da exceção, enquanto `try / catch` captura e trata o erro."
+      "correctIndex": 1,
+      "explanation": "`.get()` lança `NoSuchElementException` se estiver vazio; já `.orElse(\"padrao\")` devolve com segurança o valor alternativo."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código para criar uma `Thread` usando uma expressão lambda `Runnable` e iniciá-la em paralelo:",
+      "codeTemplate": "{{blank}} tarefa = new Thread(() {{blank}} {\n    System.out.println(\"Rodando\");\n});\ntarefa.{{blank}}();",
+      "blanks": [
+        { "answer": "Thread", "placeholder": "classe" },
+        { "answer": "->", "placeholder": "lambda" },
+        { "answer": "start", "placeholder": "iniciar" }
+      ],
+      "options": ["Thread", "->", "start", "run", "=>", "Async"],
+      "explanation": "Instanciamos `new Thread(() -> ...)` e chamamos `.start()` para a JVM criar e agendar a nova thread de execução."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O código abaixo pretende executar a tarefa em uma nova thread separada, mas acaba rodando de forma síncrona na thread atual. Clique na linha com o bug:",
+      "lines": [
+        "Thread worker = new Thread(() -> {",
+        "    System.out.println(\"Processando...\");",
+        "});",
+        "worker.run();"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Chamar `worker.run()` executa o método normalmente na thread atual; é obrigatório chamar `worker.start()` para iniciar uma nova thread."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para definir um `enum`, inferir o tipo com `var` e usar `Optional` com valor padrão:",
+      "blocks": [
+        "enum Papel { ADMIN, USER }",
+        "var papelPadrao = Papel.USER;",
+        "Optional<Papel> opt = Optional.ofNullable(null);",
+        "Papel atual = opt.orElse(papelPadrao);"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "Definimos o `enum Papel`, inferimos `Papel.USER` com `var` e usamos `Optional.ofNullable(...).orElse(...)` como fallback seguro."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Sobre o uso da palavra-chave `var` em Java, qual afirmação está correta?",
+      "options": [
+        "Torna Java dinamicamente tipado, permitindo mudar o tipo da variável depois",
+        "Só pode ser usada em variáveis locais que já são inicializadas na mesma linha",
+        "Pode ser usada em parâmetros de métodos e atributos de classe",
+        "Substitui a necessidade de `Optional<T>`"
+      ],
+      "correctIndex": 1,
+      "explanation": "Em Java, `var` faz inferência de tipo em tempo de compilação apenas para variáveis locais inicializadas (ex: `var x = 10;`)."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva um bloco `try { ... } catch (Exception e) { System.out.println(e.getMessage()); }` chamando `Integer.parseInt(\"abc\")` dentro do `try`:",
-      "starterCode": "// Trate Integer.parseInt(\"abc\") com try/catch:\n",
-      "requiredTokens": ["try", "Integer.parseInt", "catch", "Exception", "getMessage()"],
-      "sampleSolution": "try {\n    int n = Integer.parseInt(\"abc\");\n} catch (Exception e) {\n    System.out.println(e.getMessage());\n}",
-      "hint": "Coloque `int n = Integer.parseInt(\"abc\");` no `try` e `System.out.println(e.getMessage());` no `catch (Exception e)`.",
-      "explanation": "`Integer.parseInt` lança `NumberFormatException` (subclasse de `Exception`) quando o texto não é um número válido."
+      "prompt": "Defina um `enum` chamado `Nivel` com os valores `INICIANTE`, `INTERMEDIARIO` e `AVANCADO`. Em seguida, declare uma variável local `exibicao` usando inferência de tipo (`var`) que envolva `nome` em um `Optional.ofNullable` com fallback `\"Visitante\"`.",
+      "starterCode": "",
+      "requiredTokens": ["enum", "Nivel", "var", "Optional.ofNullable", ".orElse("],
+      "sampleSolution": "enum Nivel { INICIANTE, INTERMEDIARIO, AVANCADO }\nvar exibicao = Optional.ofNullable(nome).orElse(\"Visitante\");",
+      "hint": "Declare `enum Nivel { ... }` e atribua `Optional.ofNullable(nome).orElse(\"Visitante\")` a `var exibicao`.",
+      "explanation": "`enum` e `Optional` tornam suas regras de negócio explícitas e à prova de valores nulos, enquanto `var` reduz a verbosidade local."
     }
   ]
 }

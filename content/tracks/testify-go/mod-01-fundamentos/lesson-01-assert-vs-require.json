@@ -7,8 +7,13 @@
     {
       "type": "theory",
       "title": "Asserções limpas além do pacote testing",
-      "content": "Na biblioteca padrão do Go, testes costumam ter vários `if got != want { t.Fatalf(...) }`. O **Testify** (`github.com/stretchr/testify`) simplifica isso com dois pacotes principais:\n\n- **`require`**: se a asserção falhar, **aborta o teste imediatamente** (`t.FailNow()`). Ideal para `require.NoError(t, err)` antes de acessar `res.ID` (evitando nil pointer panic!).\n- **`assert`**: se falhar, marca o teste como falho mas **continua** executando as próximas asserções.",
-      "codeExample": "func TestBuscarUsuario(t *testing.T) {\n    user, err := repo.FindByID(1)\n    require.NoError(t, err)\n    require.NotNil(t, user)\n\n    assert.Equal(t, \"Ana\", user.Name)\n    assert.True(t, user.Active)\n}"
+      "content": "Na biblioteca padrão do Go, testes costumam ter vários `if got != want { t.Fatalf(...) }`. O **Testify** (`github.com/stretchr/testify`) simplifica isso com dois pacotes principais:\n\n- **`require`**: se a asserção falhar, **aborta o teste imediatamente** (`t.FailNow()`). Ideal para `require.NoError(t, err)` e `require.NotNil(t, user)` antes de acessar `user.Name` (evitando nil pointer panic!).\n- **`assert`**: se falhar, marca o teste como falho mas **continua** executando as próximas asserções (ex: `assert.Equal(t, esperado, atual)`, `assert.True(t, cond)`).",
+      "codeExample": "func TestBuscarUsuario(t *testing.T) {\n    user, err := repo.FindByID(1)\n    require.NoError(t, err)\n    require.NotNil(t, user)\n\n    assert.Equal(t, \"Ana\", user.Name)\n    assert.True(t, user.Active)\n}",
+      "keyTakeaways": [
+        "`require` aborta o teste na primeira falha (`FailNow`), protegendo contra panics subsequentes.",
+        "`assert` registra a falha e continua validando as demais asserções do teste.",
+        "Sempre passe `t` como primeiro argumento e, em `assert.Equal(t, esperado, atual)`, o valor esperado vem antes do atual."
+      ]
     },
     {
       "type": "multiple_choice",
@@ -20,11 +25,11 @@
         "Não há diferença; são aliases idênticos"
       ],
       "correctIndex": 0,
-      "explanation": "require chama FailNow() na falha, evitando que o código continue usando um ponteiro nil na linha seguinte."
+      "explanation": "`require` chama `FailNow()` na falha, evitando que o código continue usando um ponteiro `nil` na linha seguinte."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o teste usando require para checar o erro e assert para comparar o resultado:",
+      "prompt": "Complete o teste usando `require` para checar o erro e `assert` para comparar o resultado:",
       "codeTemplate": "res, err := SomarPositivos(2, 3)\n{{blank}}.NoError(t, err)\n{{blank}}.{{blank}}(t, 5, res)",
       "blanks": [
         { "answer": "require" },
@@ -32,11 +37,23 @@
         { "answer": "Equal" }
       ],
       "options": ["require", "assert", "Equal", "Same", "Expect"],
-      "explanation": "require.NoError garante que não houve erro antes de inspecionar res, e assert.Equal(t, esperado, atual) valida o valor."
+      "explanation": "`require.NoError` garante que não houve erro antes de inspecionar `res`, e `assert.Equal(t, esperado, atual)` valida o valor."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene as linhas de um teste Go com Testify garantindo que o ponteiro não seja nulo antes de checar seus campos:",
+      "blocks": [
+        "    assert.Equal(t, \"Ana\", user.Name)",
+        "    require.NoError(t, err)",
+        "    user, err := repo.FindByID(1)",
+        "    require.NotNil(t, user)"
+      ],
+      "correctOrder": [2, 1, 3, 0],
+      "explanation": "Primeiro chamamos `FindByID(1)`, depois validamos pré-condições críticas com `require.NoError` e `require.NotNil`, e por fim verificamos `user.Name` com `assert.Equal`."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Identifique a linha que pode causar um panic (nil pointer dereference) se FindByID retornar erro:",
+      "prompt": "Identifique a linha que pode causar um panic (nil pointer dereference) se `FindByID` retornar erro:",
       "lines": [
         "func TestGetUser(t *testing.T) {",
         "    user, err := FindByID(999)",
@@ -45,19 +62,20 @@
         "}"
       ],
       "buggyLineIndex": 2,
-      "explanation": "assert.NoError não para o teste quando err != nil; se user for nil, user.Name causará panic na linha seguinte. Deve-se usar require.NoError(t, err)."
+      "explanation": "`assert.NoError` não para o teste quando `err != nil`; se `user` for `nil`, `user.Name` causará panic na linha seguinte. Deve-se usar `require.NoError(t, err)`."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva um teste `TestDobrar(t *testing.T)` que chama `val, err := Dobrar(4)`, valida `require.NoError(t, err)` e verifica `assert.Equal(t, 8, val)`.",
-      "starterCode": "func TestDobrar(t *testing.T) {\n    // Escreva o teste com require e assert\n}",
+      "prompt": "Escreva uma função de teste Go `TestDobrar` que chame `Dobrar(4)` (retornando `(val, err)`), aborte imediatamente se houver erro e verifique com asserção não-fatal se o valor retornado é `8`.",
+      "starterCode": "",
       "requiredTokens": [
+        "func TestDobrar(t *testing.T)",
         "require.NoError(t, err)",
         "assert.Equal(t, 8, val)"
       ],
       "sampleSolution": "func TestDobrar(t *testing.T) {\n    val, err := Dobrar(4)\n    require.NoError(t, err)\n    assert.Equal(t, 8, val)\n}",
-      "hint": "Chame val, err := Dobrar(4), depois require.NoError(t, err) e assert.Equal(t, 8, val).",
-      "explanation": "Combinar require para pré-condições e assert para verificações finais é o padrão idiomático do Testify."
+      "hint": "Declare `func TestDobrar(t *testing.T)`, receba `val, err := Dobrar(4)`, valide `err` com `require.NoError` e compare `8` com `val` usando `assert.Equal`.",
+      "explanation": "Combinar `require` para pré-condições e `assert` para verificações finais é o padrão idiomático do Testify."
     }
   ]
 }

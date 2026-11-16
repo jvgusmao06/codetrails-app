@@ -1,44 +1,88 @@
 {
   "id": "sql-select-01",
-  "title": "Consultas SELECT, WHERE e ORDER BY",
-  "description": "Buscando colunas específicas e ordenando resultados.",
-  "xp": 20,
+  "title": "01. Consultas SELECT, WHERE e ORDER BY",
+  "description": "Aprenda a anatomia de uma consulta SQL com SELECT, FROM, WHERE e ORDER BY.",
+  "xp": 25,
   "steps": [
     {
       "type": "theory",
       "title": "Anatomia de uma Query SQL",
-      "content": "O SQL (Structured Query Language) é a linguagem universal para bancos de dados relacionais. Uma consulta segue uma ordem estrita de cláusulas: primeiro SELECT (quais colunas), depois FROM (qual tabela), WHERE (filtro de linhas) e ORDER BY (ordenação).",
+      "content": "O SQL (Structured Query Language) segue uma ordem rígida de cláusulas ao consultar dados:\n\n1. **`SELECT` e `FROM`**: `SELECT` define quais colunas retornar (ex: `SELECT nome, email`, ou `SELECT *` para todas), e `FROM` indica de qual tabela ler os dados.\n2. **`WHERE`**: Filtra as linhas antes de retorná-las, aplicando condições (como `WHERE ativo = true` ou `WHERE preco > 100`).\n3. **`ORDER BY`**: Ordena o resultado por uma ou mais colunas. Por padrão é crescente (`ASC`); para ordenar do maior para o menor, usamos `DESC`.",
       "codeExample": "SELECT nome, xp\nFROM usuarios\nWHERE ativo = true\nORDER BY xp DESC;",
       "keyTakeaways": [
-        "SELECT escolhe as colunas; FROM define a tabela de origem.",
-        "WHERE filtra as linhas antes de retornar os dados.",
-        "ORDER BY ... DESC ordena do maior para o menor."
+        "A ordem sintática é sempre: SELECT -> FROM -> WHERE -> ORDER BY.",
+        "WHERE filtra linhas com base em condições.",
+        "ORDER BY coluna DESC ordena de forma decrescente; ASC ordena de forma crescente."
       ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual cláusula SQL é responsável por filtrar apenas as linhas que atendem a uma condição?",
+      "options": [
+        "SELECT",
+        "FROM",
+        "WHERE",
+        "ORDER BY"
+      ],
+      "correctIndex": 2,
+      "explanation": "WHERE aplica critérios de filtro sobre as linhas da tabela indicada em FROM."
     },
     {
       "type": "order_code",
       "prompt": "Ordene os blocos SQL na sequência sintática correta para buscar os usuários ativos com maior XP:",
       "blocks": [
-        "WHERE ativo = true",
-        "SELECT nome, xp",
         "ORDER BY xp DESC;",
+        "SELECT nome, xp",
+        "WHERE ativo = true",
         "FROM usuarios"
       ],
-      "correctOrder": [1, 3, 0, 2],
-      "explanation": "Em SQL, a ordem obrigatória das cláusulas é: SELECT -> FROM -> WHERE -> ORDER BY."
+      "correctOrder": [1, 3, 2, 0],
+      "explanation": "Uma query SQL segue estritamente a ordem: SELECT -> FROM -> WHERE -> ORDER BY."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a consulta para retornar apenas os produtos com preço maior que 100:",
-      "codeTemplate": "SELECT nome, preco FROM produtos {{blank}} preco > 100;",
+      "prompt": "Complete a consulta para retornar nome e preço dos produtos com preço maior que 100, do mais caro para o mais barato:",
+      "codeTemplate": "{{blank}} nome, preco\n{{blank}} produtos\n{{blank}} preco > 100\nORDER BY preco {{blank}};",
       "blanks": [
-        {
-          "answer": "WHERE",
-          "placeholder": "filtro"
-        }
+        { "answer": "SELECT", "placeholder": "colunas" },
+        { "answer": "FROM", "placeholder": "tabela" },
+        { "answer": "WHERE", "placeholder": "filtro" },
+        { "answer": "DESC", "placeholder": "direção" }
       ],
-      "options": ["WHERE", "FILTER", "HAVING", "WHEN"],
-      "explanation": "A cláusula WHERE filtra registros individuais diretamente na tabela."
+      "options": ["SELECT", "FROM", "WHERE", "DESC", "ASC"],
+      "explanation": "SELECT escolhe as colunas, FROM aponta a tabela, WHERE filtra preco > 100 e DESC ordena do maior para o menor."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "A query abaixo tenta filtrar produtos em estoque e ordená-los, mas as cláusulas estão fora de ordem. Qual linha está na posição errada?",
+      "lines": [
+        "SELECT nome, preco",
+        "FROM produtos",
+        "ORDER BY preco ASC",
+        "WHERE estoque > 0;"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "ORDER BY deve vir sempre depois de WHERE, nunca antes."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Combine SELECT, WHERE e os operadores IN/BETWEEN aprendidos na lição anterior:",
+      "codeTemplate": "SELECT titulo, preco\nFROM cursos\nWHERE categoria {{blank}} ('sql', 'python')\n  AND preco {{blank}} 50 AND 150;",
+      "blanks": [
+        { "answer": "IN", "placeholder": "lista" },
+        { "answer": "BETWEEN", "placeholder": "faixa" }
+      ],
+      "options": ["IN", "BETWEEN", "LIKE", "ORDER BY"],
+      "explanation": "Dentro do WHERE podemos combinar múltiplos operadores como IN e BETWEEN."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva uma consulta SQL que selecione as colunas 'nome' e 'salario' da tabela 'funcionarios', filtrando apenas quem tem 'ativo' igual a verdadeiro e ordenando pelo 'salario' em ordem decrescente.",
+      "starterCode": "",
+      "requiredTokens": ["SELECT", "nome", "salario", "FROM", "funcionarios", "WHERE", "ORDER BY", "DESC"],
+      "sampleSolution": "SELECT nome, salario\nFROM funcionarios\nWHERE ativo = true\nORDER BY salario DESC;",
+      "hint": "Siga a ordem SELECT -> FROM -> WHERE -> ORDER BY ... DESC.",
+      "explanation": "A consulta combina seleção de colunas específicas, origem na tabela, filtro booleano no WHERE e ordenação decrescente."
     }
   ]
 }

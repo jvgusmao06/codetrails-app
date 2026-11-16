@@ -1,23 +1,24 @@
 {
   "id": "java-oop-02",
-  "title": "Classes e Instâncias",
-  "description": "Criando moldes de objetos com a palavra-chave new.",
-  "xp": 20,
+  "title": "Classes, Instâncias e Encapsulamento",
+  "description": "Criando moldes de objetos com class, instanciando com new e protegendo atributos com private.",
+  "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "Orientação a Objetos: new e Encapsulamento",
-      "content": "Em Java, uma Classe funciona como um molde. Para criar um objeto real na memória (uma instância), utilizamos a palavra-chave 'new'. Já para proteger os dados internos da classe contra alterações indevidas, marcamos os atributos como 'private'.",
-      "codeExample": "public class Servidor {\n  private int porta = 8080;\n}\n\n// Criando uma instância:\nServidor srv = new Servidor();",
+      "title": "Orientação a Objetos: class, new e Encapsulamento",
+      "content": "Em Java, uma `class` funciona como um molde que define atributos (dados) e métodos (comportamentos). Para criar um objeto real na memória (uma instância), utilizamos o operador `new`, que invoca o construtor da classe. Para proteger os dados internos contra alterações indevidas, marcamos os atributos como `private` e expomos apenas métodos `public` controlados (como getters).",
+      "codeExample": "public class Servidor {\n  private int porta;\n\n  public Servidor(int porta) {\n    this.porta = porta;\n  }\n\n  public int getPorta() {\n    return porta;\n  }\n}\n\n// Criando uma instância:\nServidor srv = new Servidor(8080);",
       "keyTakeaways": [
-        "O operador 'new' aloca memória e chama o construtor da classe.",
-        "Atributos 'private' só podem ser lidos ou alterados dentro da própria classe."
+        "O operador `new` aloca memória na Heap da JVM e chama o construtor da classe.",
+        "Atributos `private` só podem ser lidos ou alterados dentro da própria classe.",
+        "Métodos `public` permitem expor leitura ou validação controlada dos dados encapsulados."
       ]
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Instancie um novo objeto da classe 'Servidor' usando o operador correto:",
-      "codeTemplate": "Servidor srv = {{blank}} Servidor();",
+      "prompt": "Instancie um novo objeto da classe `Servidor` usando o operador correto:",
+      "codeTemplate": "Servidor srv = {{blank}} Servidor(8080);",
       "blanks": [
         {
           "answer": "new",
@@ -25,11 +26,11 @@
         }
       ],
       "options": ["new", "create", "init", "malloc"],
-      "explanation": "O operador 'new' aloca memória na Heap da JVM e invoca o construtor da classe."
+      "explanation": "O operador `new` aloca memória na Heap da JVM e invoca o construtor da classe."
     },
     {
       "type": "multiple_choice",
-      "prompt": "O que significa o modificador 'private' em um atributo de classe Java?",
+      "prompt": "O que significa o modificador `private` em um atributo de classe Java?",
       "options": [
         "O atributo pode ser acessado de qualquer arquivo do projeto",
         "O atributo só pode ser acessado diretamente dentro da própria classe",
@@ -37,7 +38,57 @@
         "O atributo pertence à classe e não à instância"
       ],
       "correctIndex": 1,
-      "explanation": "O encapsulamento com 'private' restringe o acesso direto ao atributo apenas aos métodos da própria classe."
+      "explanation": "O encapsulamento com `private` restringe o acesso direto ao atributo apenas aos métodos da própria classe."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para definir uma classe `Conta` com atributo encapsulado e método de leitura:",
+      "blocks": [
+        "public class Conta {",
+        "  private double saldo = 100.0;",
+        "  public double getSaldo() {",
+        "    return saldo;",
+        "  }",
+        "}"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4, 5],
+      "explanation": "O atributo `private` fica protegido dentro da classe e é exposto de forma segura pelo método `public getSaldo()`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O código abaixo tenta alterar um atributo encapsulado diretamente de fora da classe. Clique na linha com o bug:",
+      "lines": [
+        "public class Main {",
+        "  public static void main(String[] args) {",
+        "    Servidor srv = new Servidor(8080);",
+        "    srv.porta = 9090;",
+        "    System.out.println(srv.getPorta());",
+        "  }",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Como `porta` é `private` em `Servidor`, `srv.porta = 9090;` não compila fora da classe `Servidor`."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Ao combinar `private` nos atributos e um construtor `public`, como garantimos que um objeto `Produto` sempre nasça com um preço válido?",
+      "options": [
+        "Deixando o atributo público e confiando no chamador",
+        "Validando o parâmetro no construtor `public` antes de atribuir ao campo `private`",
+        "Removendo o operador `new` da instanciação",
+        "Declarando o método `main` dentro de `Produto`"
+      ],
+      "correctIndex": 1,
+      "explanation": "Validar no construtor `public` junto com atributos `private` impede que código externo coloque o objeto em estado inválido."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Crie uma classe `Produto` com um atributo privado `preco` do tipo `double` e um método público `getPreco` que retorne esse valor.",
+      "starterCode": "",
+      "requiredTokens": ["class", "Produto", "private", "double", "public", "return"],
+      "sampleSolution": "public class Produto {\n  private double preco;\n\n  public double getPreco() {\n    return preco;\n  }\n}",
+      "hint": "Declare `class Produto`, adicione `private double preco;` e crie o método `public double getPreco()` retornando `preco`.",
+      "explanation": "Esse padrão encapsula o estado (`private double preco`) e fornece acesso controlado por meio de um getter público."
     }
   ]
 }

@@ -16,7 +16,7 @@
     {
       "id": "mod-02-fluxo",
       "title": "Unidade 2: Condicionais, Listas e Loops (for/while)",
-      "description": "Tome decisões com if/else, organize listas e domine repetições com range, break e continue.",
+      "description": "Tome decisões com if/else, organize listas com fatiamento e domine repetições com for, while, break e continue.",
       "lessons": [
         "lesson-01-condicionais",
         "lesson-02-listas",
@@ -26,13 +26,16 @@
     {
       "id": "mod-03-funcoes-dicts",
       "title": "Unidade 3: Funções (def), Dicionários e Comprehensions",
-      "description": "Defina funções com Type Hints, tabelas hash e List Comprehensions.",
-      "lessons": ["lesson-01-def-dicts-comp"]
+      "description": "Defina funções com Type Hints e valores padrão seguros, domine dicionários e crie List Comprehensions.",
+      "lessons": [
+        "lesson-01-funcoes-def",
+        "lesson-02-dicts-comprehensions"
+      ]
     },
     {
       "id": "mod-04-classes-nativas",
       "title": "Unidade 4: Classes, Objetos e Funções Nativas",
-      "description": "Crie classes com __init__/self, domine funções built-in (len, sum, enumerate) e resolva desafios de código.",
+      "description": "Crie classes com __init__/self, domine funções built-in (len, sum, map), tratamento de erros e coleções avançadas.",
       "lessons": [
         "lesson-01-classes-init-self",
         "lesson-02-funcoes-nativas-desafio",

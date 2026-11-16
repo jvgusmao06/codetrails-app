@@ -1,19 +1,31 @@
 {
   "id": "pandas-df-01",
-  "title": "DataFrames, Filtros Booleanos e GroupBy",
-  "description": "Carregue dados em um DataFrame do Pandas, aplique máscaras booleanas e calcule métricas agrupadas.",
+  "title": "DataFrames, Filtros Booleanos (& vs and) e GroupBy",
+  "description": "Carregue dados em um DataFrame do Pandas, aplique máscaras booleanas combinadas com & e calcule métricas agrupadas.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
       "title": "Operações Vetorizadas com Pandas DataFrame",
-      "content": "O Pandas é a biblioteca padrão de Ciência de Dados em Python. Em vez de iterar linha por linha com loops 'for' lentos, operamos sobre colunas inteiras de um DataFrame de forma vetorizada em C: filtramos linhas com máscaras booleanas (df[df['vendas'] > 100]) e agregamos dados com .groupby().",
-      "codeExample": "import pandas as pd\n\ndf = pd.read_csv(\"vendas.csv\")\n\n# Remover nulos na coluna 'valor'\ndf = df.dropna(subset=[\"valor\"])\n\n# Filtrar vendas altas e somar por categoria\naltas = df[df[\"valor\"] > 500]\ntotal_por_cat = altas.groupby(\"categoria\")[\"valor\"].sum()",
+      "content": "O Pandas é a biblioteca padrão de Ciência de Dados em Python. Em vez de iterar linha por linha com loops `for` lentos, operamos sobre colunas inteiras de um DataFrame de forma vetorizada em C: filtramos linhas com máscaras booleanas (`df[df[\"vendas\"] > 100]`) e agregamos dados com `.groupby()`.\n\n**Regra crucial de combinação:** ao juntar duas condições em um filtro, nunca use `and`/`or` do Python (que geram `ValueError`). Use sempre **`&`** (E) ou **`|`** (OU) com **parênteses** em volta de cada condição: `df[(df[\"idade\"] > 18) & (df[\"vip\"] == True)]`.",
+      "codeExample": "import pandas as pd\n\ndf = pd.read_csv(\"vendas.csv\")\n\n# Combinar condições exige & e parênteses (nunca 'and'!)\naltas_pagas = df[(df[\"valor\"] > 500) & (df[\"pago\"] == True)]\n\n# Agregar por categoria\ntotal_por_cat = altas_pagas.groupby(\"categoria\")[\"valor\"].sum()",
       "keyTakeaways": [
-        "df[df['coluna'] > valor] filtra todas as linhas onde a condição é verdadeira de uma só vez.",
-        "df.groupby('coluna')['metrica'].mean() agrupa e calcula a média sem precisar de laços.",
-        "Evite usar 'for' ou '.iterrows()' em DataFrames grandes: operações vetorizadas são até 100x mais rápidas."
+        "`df[df[\"coluna\"] > valor]` filtra todas as linhas onde a condição é verdadeira de uma só vez.",
+        "Para combinar filtros, use `&` e `|` com parênteses em cada condição — nunca `and` ou `or`.",
+        "`df.groupby(\"coluna\")[\"metrica\"].mean()` (ou `.sum()`) agrupa e agrega sem precisar de laços."
       ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Por que `df[df[\"idade\"] > 18 and df[\"vip\"] == True]` lança `ValueError` no Pandas?",
+      "options": [
+        "Porque DataFrames não aceitam colunas booleanas",
+        "Porque `and` tenta avaliar uma Series inteira como um único booleano; em filtros vetorizados devemos usar `&` com parênteses em cada condição",
+        "Porque o filtro precisa usar `.groupby()` antes",
+        "Porque `True` deve ser escrito em minúsculo"
+      ],
+      "correctIndex": 1,
+      "explanation": "O operador `and` do Python não é vetorizado. No Pandas, usamos o operador bit-a-bit `&` (ou `|`) envolvendo cada condição entre parênteses."
     },
     {
       "type": "fill_in_blank",
@@ -38,6 +50,26 @@
       ],
       "buggyLineIndex": 2,
       "explanation": "Em filtros vetorizados do Pandas, não se pode usar 'and'/'or' do Python. Deve-se usar '&' (E comercial) ou '|' com cada condição entre parênteses: df[(df['idade'] > 18) & (df['vip'] == True)]."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para carregar um CSV, filtrar vendas pagas acima de 100 e somar o valor por categoria:",
+      "blocks": [
+        "resumo = filtradas.groupby(\"categoria\")[\"valor\"].sum()",
+        "df = pd.read_csv(\"vendas.csv\")",
+        "filtradas = df[(df[\"valor\"] > 100) & (df[\"pago\"] == True)]"
+      ],
+      "correctOrder": [1, 2, 0],
+      "explanation": "Primeiro carregamos `df` com `read_csv`, depois filtramos com `&` e parênteses e por fim agrupamos com `.groupby(...)[...].sum()`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Em Python com Pandas, filtre no DataFrame `df` apenas as linhas em que `ativo` é `True` e `valor` é maior que `100`, e calcule em `total` a soma da coluna `valor` agrupada por `categoria`.",
+      "starterCode": "",
+      "requiredTokens": ["df[", "&", ".groupby(\"categoria\")", "[\"valor\"].sum()"],
+      "sampleSolution": "filtrados = df[(df[\"ativo\"] == True) & (df[\"valor\"] > 100)]\ntotal = filtrados.groupby(\"categoria\")[\"valor\"].sum()",
+      "hint": "Combine as duas condições com `&` (cada uma entre parênteses) dentro de `df[...]` e encadeie `.groupby(\"categoria\")[\"valor\"].sum()`.",
+      "explanation": "Combinar máscaras booleanas com `&` e agregar com `.groupby()` substitui loops lentos por operações vetorizadas em C."
     }
   ]
 }

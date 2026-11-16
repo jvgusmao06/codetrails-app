@@ -8,11 +8,28 @@
       "type": "theory",
       "title": "Testes idiomáticos em .NET com xUnit",
       "content": "No **xUnit**, você não precisa decorar a classe com atributos: basta decorar os métodos de teste!\n\n- `[Fact]`: um teste sem parâmetros que verifica um cenário único.\n- `[Theory]` + `[InlineData(...)]`: um teste parametrizado que roda uma vez para cada conjunto de dados.\n- `Assert.Equal(esperado, atual)`: compara o valor esperado com o obtido (ordem: esperado primeiro!).\n\nAlém disso, o xUnit cria uma **nova instância da classe de teste para cada método**, garantindo isolamento total entre testes.",
-      "codeExample": "using Xunit;\n\npublic class CalculadoraTests\n{\n    [Fact]\n    public void Somar_DoisNumeros_RetornaSoma()\n    {\n        var calc = new Calculadora();\n        Assert.Equal(5, calc.Somar(2, 3));\n    }\n\n    [Theory]\n    [InlineData(2, true)]\n    [InlineData(3, false)]\n    public void EhPar_ValoresVariados_RetornaEsperado(int n, bool esperado)\n    {\n        Assert.Equal(esperado, n % 2 == 0);\n    }\n}"
+      "codeExample": "using Xunit;\n\npublic class CalculadoraTests\n{\n    [Fact]\n    public void Somar_DoisNumeros_RetornaSoma()\n    {\n        var calc = new Calculadora();\n        Assert.Equal(5, calc.Somar(2, 3));\n    }\n\n    [Theory]\n    [InlineData(2, true)]\n    [InlineData(3, false)]\n    public void EhPar_ValoresVariados_RetornaEsperado(int n, bool esperado)\n    {\n        Assert.Equal(esperado, n % 2 == 0);\n    }\n}",
+      "keyTakeaways": [
+        "`[Fact]` marca testes unitários simples sem parâmetros.",
+        "`[Theory]` + `[InlineData(...)]` executa o mesmo teste para múltiplos casos de entrada.",
+        "Em `Assert.Equal(esperado, atual)`, o valor esperado é sempre o primeiro argumento."
+      ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual atributo do xUnit é usado para executar o mesmo método de teste várias vezes com diferentes argumentos fornecidos por [InlineData]?",
+      "prompt": "Quando você quer escrever um teste unitário simples em xUnit que verifica apenas um cenário fixo sem receber parâmetros, qual atributo deve usar?",
+      "options": [
+        "[Theory]",
+        "[Fact]",
+        "[InlineData]",
+        "[TestMethod]"
+      ],
+      "correctIndex": 1,
+      "explanation": "Em xUnit, `[Fact]` marca testes sem parâmetros de cenário único, enquanto `[Theory]` é usado para testes parametrizados."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual atributo do xUnit é usado para executar o mesmo método de teste várias vezes com diferentes argumentos fornecidos por `[InlineData]`?",
       "options": [
         "[Theory]",
         "[Fact]",
@@ -20,7 +37,7 @@
         "[Parameterized]"
       ],
       "correctIndex": 0,
-      "explanation": "Em xUnit, [Fact] marca testes sem parâmetros, enquanto [Theory] indica um teste parametrizado alimentado por [InlineData], [MemberData] ou [ClassData]."
+      "explanation": "`[Theory]` indica um teste parametrizado alimentado por `[InlineData]`, `[MemberData]` ou `[ClassData]`."
     },
     {
       "type": "fill_in_blank",
@@ -32,7 +49,19 @@
         { "answer": "Equal" }
       ],
       "options": ["Theory", "Fact", "InlineData", "Equal", "AreEqual"],
-      "explanation": "[Theory] declara o teste parametrizado, [InlineData] injeta cada linha de argumentos e Assert.Equal(esperado, atual) verifica o resultado."
+      "explanation": "`[Theory]` declara o teste parametrizado, `[InlineData]` injeta cada linha de argumentos e `Assert.Equal(esperado, atual)` verifica o resultado."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para montar um teste parametrizado válido em xUnit:",
+      "blocks": [
+        "public void Dobro_RetornaValorEsperado(int x, int esperado)",
+        "[Theory]",
+        "{ Assert.Equal(esperado, x * 2); }",
+        "[InlineData(3, 6)]"
+      ],
+      "correctOrder": [1, 3, 0, 2],
+      "explanation": "Os atributos `[Theory]` e `[InlineData(3, 6)]` precedem a assinatura do método, seguida pelo corpo com `Assert.Equal(esperado, x * 2)`."
     },
     {
       "type": "spot_the_bug",
@@ -49,20 +78,21 @@
         "}"
       ],
       "buggyLineIndex": 2,
-      "explanation": "[Fact] não aceita parâmetros nem [InlineData]. Métodos parametrizados devem usar [Theory] na linha 3."
+      "explanation": "`[Fact]` não aceita parâmetros nem `[InlineData]`. Métodos parametrizados devem usar `[Theory]` na linha 3."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva um teste xUnit com [Theory] e dois [InlineData] para testar um método EhMaiorDeIdade(int idade, bool esperado), usando Assert.Equal.",
-      "starterCode": "using Xunit;\n\npublic class IdadeTests\n{\n    // Escreva o método de teste com [Theory] e [InlineData]\n}",
+      "prompt": "Escreva uma classe de teste xUnit `IdadeTests` contendo um teste parametrizado com dois conjuntos de dados (um maior de idade `18` -> `true` e um menor `16` -> `false`) que valide a expressão `idade >= 18`.",
+      "starterCode": "",
       "requiredTokens": [
+        "using Xunit;",
         "[Theory]",
         "[InlineData",
         "Assert.Equal"
       ],
       "sampleSolution": "using Xunit;\n\npublic class IdadeTests\n{\n    [Theory]\n    [InlineData(18, true)]\n    [InlineData(16, false)]\n    public void EhMaiorDeIdade_VerificaCorretamente(int idade, bool esperado)\n    {\n        Assert.Equal(esperado, idade >= 18);\n    }\n}",
-      "hint": "Use [Theory] acima dos atributos [InlineData(18, true)] e [InlineData(16, false)], e compare com Assert.Equal(esperado, idade >= 18).",
-      "explanation": "Combinar [Theory] com [InlineData] evita duplicar métodos de teste para entradas diferentes."
+      "hint": "Importe `Xunit`, use `[Theory]` acima de dois `[InlineData(...)]` e compare `esperado` com `idade >= 18` via `Assert.Equal`.",
+      "explanation": "Combinar `[Theory]` com `[InlineData]` evita duplicar métodos de teste para entradas diferentes."
     }
   ]
 }

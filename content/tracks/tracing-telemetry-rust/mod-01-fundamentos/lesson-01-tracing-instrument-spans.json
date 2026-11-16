@@ -7,13 +7,36 @@
     {
       "type": "theory",
       "title": "Por que Tracing Substituiu println! e Logs Simples?",
-      "content": "Em APIs assíncronas como Axum + Tokio, milhares de requisições rodam intercaladas nas mesmas threads, deixando logs `println!` misturados e impossíveis de debugar! O crate **`tracing`** (da equipe Tokio) registra **Eventos** (`tracing::info!(user_id = 42, \"Pedido criado\")`) dentro de **Spans** (intervalos de tempo com início/fim). Com **`#[tracing::instrument]`** em uma função, ela automaticamente cria um Span com seus parâmetros!",
+      "content": "Em APIs assíncronas como Axum + Tokio, milhares de requisições rodam intercaladas nas mesmas threads, deixando logs `println!` misturados e impossíveis de debugar! O crate **`tracing`** (da equipe Tokio) registra **Eventos** (`tracing::info!(user_id = 42, \"Pedido criado\")`) dentro de **Spans** (intervalos de tempo com início/fim). Com **`#[tracing::instrument]`** em uma função, ela automaticamente cria um Span com seus parâmetros — e no `main()` inicializamos `tracing_subscriber::fmt::init()` para exibir os eventos.",
       "codeExample": "use tracing::{info, instrument};\n\n#[instrument(skip(senha))]\nasync fn autenticar(email: &str, senha: &str) {\n    info!(usuario = %email, \"Login validado\");\n}\n\n// No main(): tracing_subscriber::fmt::init();",
       "keyTakeaways": [
         "SEMPRE use `#[instrument(skip(senha, token))]` para nunca gravar segredos ou senhas nos logs!",
         "Campos estruturados (`info!(status = 200, \"ok\")`) podem ser exportados direto em JSON para Datadog/Grafana/OpenTelemetry.",
         "Sem inicializar um `tracing_subscriber` no `main()`, nenhum evento é impresso!"
       ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "O que acontece se você usar `tracing::info!` e `#[tracing::instrument]` na aplicação sem inicializar um `tracing_subscriber` no `main()`?",
+      "options": [
+        "O código não compila",
+        "O programa entra em panic na primeira requisição",
+        "Nenhum evento ou span é exibido/coletado na saída",
+        "Os logs são gravados automaticamente em `/var/log/rust.log`"
+      ],
+      "correctIndex": 2,
+      "explanation": "O crate `tracing` apenas emite eventos e spans; é o `tracing_subscriber` (como `tracing_subscriber::fmt::init()`) que os coleta e imprime."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a inicialização do subscriber e o registro de um evento estruturado com campo `status`:",
+      "codeTemplate": "tracing_subscriber::fmt::{{blank}}();\ntracing::{{blank}}(status = 200, \"Requisição concluída\");",
+      "blanks": [
+        { "answer": "init", "placeholder": "inicializar" },
+        { "answer": "info!", "placeholder": "macro" }
+      ],
+      "options": ["init", "start", "info!", "println!"],
+      "explanation": "`tracing_subscriber::fmt::init()` ativa a saída padrão de logs e `tracing::info!(chave = valor, \"mensagem\")` registra um evento estruturado."
     },
     {
       "type": "spot_the_bug",
@@ -28,13 +51,25 @@
       "explanation": "Na linha 1, `#[tracing::instrument]` grava todos os parâmetros da função no Span! O seguro é `#[tracing::instrument(skip(senha))]`."
     },
     {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para instrumentar uma função pulando o campo sensível `segredo` e registrar um evento estruturado:",
+      "blocks": [
+        "fn validar(id: u64, segredo: &str) {",
+        "}",
+        "#[tracing::instrument(skip(segredo))]",
+        "    tracing::info!(conta_id = id, \"Validado\");"
+      ],
+      "correctOrder": [2, 0, 3, 1],
+      "explanation": "O atributo `#[tracing::instrument(skip(segredo))]` decora a função e, dentro dela, `tracing::info!` emite o evento estruturado dentro do Span."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Anote `fn processar(id: u64, token: &str)` com `#[tracing::instrument(skip(token))]` e emita `tracing::info!(pedido_id = id, \"Processado\");`:",
-      "starterCode": "// Instrumente a função pulando o campo sensível token:\n",
+      "prompt": "Crie uma função `processar` que receba `id: u64` e `token: &str`, instrumentada com Tracing garantindo que o parâmetro sensível `token` não seja registrado no Span, e emita um evento informativo estruturado associando `id` à chave `pedido_id`.",
+      "starterCode": "",
       "requiredTokens": ["#[tracing::instrument(skip(token))]", "fn processar", "tracing::info!", "pedido_id = id"],
       "sampleSolution": "#[tracing::instrument(skip(token))]\nfn processar(id: u64, token: &str) {\n    tracing::info!(pedido_id = id, \"Processado\");\n}",
       "hint": "Coloque `#[tracing::instrument(skip(token))]` acima de `fn processar(id: u64, token: &str)` e use `tracing::info!(pedido_id = id, \"Processado\");`.",
-      "explanation": "`skip(token)` protege credenciais enquanto `tracing::info!` cria logs estruturados buscáveis."
+      "explanation": "`skip(token)` protege credenciais enquanto `tracing::info!` cria logs estruturados buscáveis dentro do Span da função."
     }
   ]
 }

@@ -2,17 +2,17 @@
   "id": "git-init-00",
   "title": "Primeiros Passos: git init, clone, status e diff",
   "description": "Entenda como o Git rastreia arquivos desde o zero: Working Directory, Staging Area, git status e git diff.",
-  "xp": 25,
+  "xp": 35,
   "steps": [
     {
       "type": "theory",
       "title": "Os 3 Estados do Git e Seus Primeiros Comandos",
-      "content": "O Git gerencia seu código em 3 áreas locais: 1) Working Directory (arquivos que você está editando), 2) Staging Area / Index (arquivos preparados com 'git add' para o próximo snapshot) e 3) Repositório '.git' (histórico de commits gravados). Usamos 'git init' para criar um repositório novo, 'git clone <url>' para baixar um existente, 'git status' para ver o que mudou e 'git diff' para inspecionar linha a linha as alterações.",
+      "content": "O Git gerencia seu código em 3 áreas locais: 1) **Working Directory** (arquivos que você está editando), 2) **Staging Area / Index** (arquivos preparados com `git add` para o próximo snapshot) e 3) **Repositório `.git`** (histórico de commits gravados). Usamos `git init` para criar um repositório novo, `git clone <url>` para baixar um existente, `git status` para ver o estado dos arquivos e `git diff` para inspecionar linha a linha as alterações ainda não adicionadas à Staging Area.",
       "codeExample": "git init\ngit status\ngit diff                # Mostra alterações ainda não adicionadas\ngit add src/index.ts    # Move o arquivo para a Staging Area\ngit commit -m \"feat: inicializa projeto\"",
       "keyTakeaways": [
-        "'git status' é o comando mais usado no dia a dia: mostra arquivos modificados, preparados (staged) e não rastreados (untracked).",
-        "'git diff' compara seu arquivo atual com a última versão salva antes de você dar 'git add'.",
-        "O arquivo '.gitignore' lista pastas (como node_modules/ e .env) que o Git nunca deve rastrear."
+        "`git status` é o comando mais usado no dia a dia: mostra arquivos modificados, preparados (staged) e não rastreados (untracked).",
+        "`git diff` compara seu arquivo atual com a última versão salva antes de você dar `git add`.",
+        "`git init` inicia um repositório local do zero; `git clone <url>` copia um repositório remoto."
       ]
     },
     {
@@ -25,16 +25,52 @@
         { "answer": "diff", "placeholder": "diferenças" }
       ],
       "options": ["init", "status", "diff", "start", "check", "changes"],
-      "explanation": "git init cria o repositório .git, git status resume o estado dos arquivos e git diff exibe as linhas adicionadas/removidas."
+      "explanation": "`git init` cria o repositório `.git`, `git status` resume o estado dos arquivos e `git diff` exibe as linhas adicionadas ou removidas."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é a diferença principal entre `git status` e `git diff` antes de executar `git add`?",
+      "options": [
+        "`git status` lista quais arquivos mudaram ou não são rastreados; `git diff` mostra exatamente quais linhas foram alteradas dentro deles",
+        "`git status` envia código para o GitHub; `git diff` apaga alterações locais",
+        "Ambos fazem exatamente a mesma coisa",
+        "`git diff` só funciona depois do `git commit`"
+      ],
+      "correctIndex": 0,
+      "explanation": "`git status` dá uma visão geral dos arquivos (modified, untracked, staged), enquanto `git diff` exibe o conteúdo linha a linha modificado no Working Directory."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Um desenvolvedor editou `app.ts` e tentou salvar o histórico direto, mas o Git não incluiu o arquivo no commit! Clique na linha com a sequência problemática:",
+      "lines": [
+        "git init",
+        "git status",
+        "git commit -m \"inicial\"",
+        "git diff"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Faltou preparar os arquivos na Staging Area com `git add <arquivo>` (ou `git add .`) antes de rodar `git commit -m`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os comandos para criar um novo repositório local, inspecionar alterações, preparar os arquivos e gravar o primeiro commit:",
+      "blocks": [
+        "git init",
+        "git status",
+        "git add .",
+        "git commit -m \"feat: projeto inicial\""
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "Primeiro inicializamos com `git init`, conferimos com `git status`, movemos para a Staging Area com `git add .` e gravamos com `git commit -m`."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva do zero os dois comandos Git para adicionar todos os arquivos ('git add .') e criar um commit com mensagem ('git commit -m \"inicial\"'):",
-      "starterCode": "# Digite os comandos git add e git commit:\n",
+      "prompt": "Desafio de Código: Escreva os comandos Git necessários para preparar todos os arquivos modificados do diretório atual na Staging Area e gravar um commit com uma mensagem descritiva.",
+      "starterCode": "",
       "requiredTokens": ["git add", "git commit", "-m"],
-      "sampleSolution": "git add .\ngit commit -m \"inicial\"",
-      "hint": "Escreva: git add . na primeira linha e git commit -m \"inicial\" na segunda.",
-      "explanation": "Primeiro preparamos os arquivos na Staging Area com 'git add' e depois gravamos o snapshot com 'git commit -m'."
+      "sampleSolution": "git add .\ngit commit -m \"feat: inicial\"",
+      "hint": "Primeiro use o comando que move todas as alterações do diretório atual para a Staging Area e, na linha seguinte, grave o snapshot informando a flag de mensagem.",
+      "explanation": "Primeiro preparamos os arquivos na Staging Area com `git add` e depois gravamos o snapshot no repositório local com `git commit -m`."
     }
   ]
 }

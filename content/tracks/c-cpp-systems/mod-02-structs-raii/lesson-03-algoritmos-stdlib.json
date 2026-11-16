@@ -1,0 +1,68 @@
+{
+  "id": "cpp-algoritmos-stdlib-03",
+  "title": "Algoritmos Nativos da Stdlib (sort, max, min, empty)",
+  "description": "Use funções nativas de <algorithm>, <string> e <cstring> sem reinventar a roda.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Algoritmos e Métodos Nativos da Biblioteca Padrão",
+      "content": "Em C++, reinventar ordenação ou busca de máximo manualmente gera bugs e código lento. O cabeçalho `<algorithm>` fornece `std::sort(inicio, fim)` (ordenando em $O(n \\log n)$ usando `.begin()` e `.end()`), além de `std::max(a, b)` e `std::min(a, b)`. Para verificar se uma `std::string` ou container está vazio, prefira `.empty()` em vez de `.size() == 0`. Já ao lidar com C-strings herdadas de C (`<cstring>`), `strlen(s)` calcula o tamanho até encontrar `'\\0'`.",
+      "codeExample": "#include <algorithm>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main() {\n    std::vector<int> nums = {30, 10, 20};\n    std::sort(nums.begin(), nums.end()); // {10, 20, 30}\n    int maior = std::max(nums[0], nums[2]);\n\n    std::string msg = \"\";\n    if (msg.empty()) std::cout << maior << \"\\n\";\n    return 0;\n}",
+      "keyTakeaways": [
+        "`std::sort(c.begin(), c.end())` ordena containers contíguos em $O(n \\log n)$.",
+        "`std::max(a, b)` e `std::min(a, b)` comparam valores de forma legível e genérica.",
+        "`.empty()` é a forma idiomática e $O(1)$ de checar se containers ou strings estão vazios."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual cabeçalho devemos incluir em C++ para usar `std::sort`, `std::max` e `std::min`?",
+      "options": ["<iostream>", "<algorithm>", "<memory>", "<stdio.h>"],
+      "correctIndex": 1,
+      "explanation": "Os algoritmos genéricos como `std::sort`, `std::max` e `std::min` ficam declarados no cabeçalho `<algorithm>`."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código C++ para ordenar o vetor `notas` e encontrar o menor valor entre duas variáveis:",
+      "codeTemplate": "#include <algorithm>\nstd::{{blank}}(notas.begin(), notas.end());\nint menor = std::{{blank}}(a, b);",
+      "blanks": [
+        { "answer": "sort", "placeholder": "ordenar" },
+        { "answer": "min", "placeholder": "menor" }
+      ],
+      "options": ["sort", "min", "max", "empty", "order"],
+      "explanation": "`std::sort` ordena o intervalo definido por `.begin()` e `.end()`, e `std::min` retorna o menor entre dois valores."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a verificação idiomática para checar se a `std::string` `nome` não possui caracteres:",
+      "codeTemplate": "if (nome.{{blank}}()) {\n    std::cout << \"Vazio\\n\";\n}",
+      "blanks": [
+        { "answer": "empty", "placeholder": "método" }
+      ],
+      "options": ["empty", "isEmpty", "null", "zero"],
+      "explanation": "Em C++, containers e `std::string` oferecem o método `.empty()` retornando `bool`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O código abaixo tenta ordenar um `std::vector<int>`, mas falha ao passar os limites incorretos para `std::sort`. Clique na linha com bug:",
+      "lines": [
+        "#include <algorithm>",
+        "#include <vector>",
+        "std::vector<int> v = {5, 2, 9};",
+        "std::sort(v);"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "`std::sort` exige um par de iteradores de início e fim: `std::sort(v.begin(), v.end());`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva um programa em C++ (com `<iostream>`, `<algorithm>` e `<vector>`) que crie um `std::vector<int>` chamado `valores` com `{40, 10, 30}`, ordene-o em ordem crescente usando a biblioteca padrão, obtenha o maior elemento comparando o primeiro e o último ou usando `std::max`, e imprima esse maior valor caso o vetor não esteja vazio.",
+      "starterCode": "",
+      "requiredTokens": ["#include", "<algorithm>", "std::sort", ".begin()", ".end()", ".empty()", "std::max", "std::cout"],
+      "sampleSolution": "#include <algorithm>\n#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<int> valores = {40, 10, 30};\n    if (!valores.empty()) {\n        std::sort(valores.begin(), valores.end());\n        int maior = std::max(valores[0], valores[2]);\n        std::cout << maior << std::endl;\n    }\n    return 0;\n}",
+      "hint": "Verifique `!valores.empty()`, ordene com `std::sort(valores.begin(), valores.end())` e use `std::max`.",
+      "explanation": "Combinar `.empty()`, `std::sort` e `std::max` evita acessos inválidos e reutiliza algoritmos otimizados da STL."
+    }
+  ]
+}

@@ -1,44 +1,76 @@
 {
   "id": "cpp-raii-01",
-  "title": "Structs, Referências (&) e Smart Pointers (RAII)",
-  "description": "Domine passagem por referência em C++, structs e gerenciamento automático de memória com std::unique_ptr.",
+  "title": "Structs e Smart Pointers (RAII)",
+  "description": "Agrupe dados com struct e gerencie memória na Heap automaticamente com std::unique_ptr e RAII.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Referências (T&) e RAII com Smart Pointers",
-      "content": "Em C++, além de ponteiros brutos (T*), temos referências (T&), que funcionam como um apelido seguro e não-nulo para uma variável existente (evitando cópias caras). E para memória no Heap, o C++ moderno usa o idioma RAII (Resource Acquisition Is Initialization) com std::unique_ptr: a memória é liberada automaticamente assim que o ponteiro sai de escopo, sem precisar de 'delete'!",
-      "codeExample": "#include <memory>\n#include <string>\n\nstruct Sensor {\n    int id;\n};\n\n// Passagem por referência constante: zero cópia e seguro\nvoid lerSensor(const Sensor& s) {\n    // std::unique_ptr libera a memória automaticamente no fim do bloco\n    auto ptr = std::make_unique<Sensor>(Sensor{s.id});\n}",
+      "title": "Structs e RAII com std::unique_ptr",
+      "content": "Em C e C++, uma `struct` agrupa variáveis relacionadas sob um mesmo tipo (em C++, seus membros são `public` por padrão). Quando precisamos alocar dados dinamicamente na Heap sem vazar memória, o C++ moderno aplica o princípio **RAII** (Resource Acquisition Is Initialization): o recurso pertence a um objeto na Stack que o libera automaticamente ao sair de escopo. Com `<memory>`, `std::make_unique<T>(...)` cria um `std::unique_ptr<T>` (ponteiro de posse exclusiva) sem precisar chamar `delete` manualmente, e acessamos seus membros com `->`.",
+      "codeExample": "#include <iostream>\n#include <memory>\n#include <string>\n\nstruct Servidor {\n    std::string host;\n    int porta;\n};\n\nint main() {\n    auto srv = std::make_unique<Servidor>(\"localhost\", 8080);\n    std::cout << srv->host << \":\" << srv->porta << \"\\n\";\n    return 0; // srv libera a memória automaticamente aqui!\n}",
       "keyTakeaways": [
-        "Use 'const Tipo&' em parâmetros de funções para evitar copiar objetos grandes sem permitir alterações.",
-        "Evite 'new' e 'delete' manuais em C++ moderno; prefira 'std::make_unique<T>()'.",
-        "Vazar memória (memory leak) acontece quando alocamos com 'new' e esquecemos o 'delete' antes da função terminar."
+        "`struct` define um tipo composto cujos campos são acessados com `.` (ou `->` via ponteiro/smart pointer).",
+        "RAII vincula o tempo de vida da memória alocada ao escopo da variável na Stack.",
+        "`std::make_unique<T>()` cria um `std::unique_ptr<T>` com posse única e liberação automática."
       ]
     },
     {
-      "type": "spot_the_bug",
-      "prompt": "A função abaixo aloca um buffer na Heap em C++, mas causa um vazamento de memória (Memory Leak) quando ocorre um retorno antecipado. Clique na linha que inicia essa alocação insegura:",
-      "lines": [
-        "void processarDados(int tamanho) {",
-        "    int* buffer = new int[tamanho];",
-        "    if (tamanho < 10) return;",
-        "    delete[] buffer;",
-        "}"
+      "type": "multiple_choice",
+      "prompt": "Qual é o principal benefício de usar `std::unique_ptr` com `std::make_unique` em vez de ponteiros crus (`new`/`delete`)?",
+      "options": [
+        "Permite que múltiplos ponteiros compartilhem e liberem o mesmo objeto livremente",
+        "Libera a memória automaticamente quando o smart pointer sai de escopo (RAII), evitando memory leaks",
+        "Aloca o objeto diretamente na Stack em vez da Heap",
+        "Dispensa a necessidade de incluir qualquer cabeçalho"
       ],
-      "buggyLineIndex": 1,
-      "explanation": "Alocar manualmente com 'new int[tamanho]' na linha 2 faz com que o 'return' da linha 3 pule o 'delete[]', vazando memória. Usar std::vector<int> ou std::unique_ptr resolve isso via RAII."
+      "correctIndex": 1,
+      "explanation": "O `std::unique_ptr` aplica RAII: seu destrutor libera automaticamente o recurso ao sair do escopo, mesmo se houver retornos antecipados ou exceções."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o parâmetro em C++ para receber a std::string por referência constante (sem copiar) e criar um unique_ptr:",
-      "codeTemplate": "void registrar({{blank}} std::string{{blank}} msg) {\n    auto p = std::{{blank}}<int>(42);\n}",
+      "prompt": "Complete a definição da `struct` e a criação segura de um `unique_ptr` em C++:",
+      "codeTemplate": "#include <memory>\n{{blank}} Usuario { int id; };\nauto u = std::{{blank}}<Usuario>();",
       "blanks": [
-        { "answer": "const", "placeholder": "modificador" },
-        { "answer": "&", "placeholder": "referência" },
-        { "answer": "make_unique", "placeholder": "factory" }
+        { "answer": "struct", "placeholder": "palavra-chave" },
+        { "answer": "make_unique", "placeholder": "fábrica" }
       ],
-      "options": ["const", "&", "make_unique", "*", "new", "shared"],
-      "explanation": "'const std::string&' passa por referência constante sem cópia, e 'std::make_unique<T>()' aloca um unique_ptr com segurança."
+      "options": ["struct", "make_unique", "unique_ptr", "class", "new"],
+      "explanation": "Definimos o tipo composto com `struct` e instanciamos o ponteiro exclusivo usando `std::make_unique<Usuario>()`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "A função abaixo aloca um array na Heap manualmente, mas causa vazamento de memória (Memory Leak) em um dos caminhos de execução. Clique na linha responsável pelo problema:",
+      "lines": [
+        "void processar(bool erro) {",
+        "    int* buffer = new int[100];",
+        "    if (erro) return;",
+        "    delete[] buffer;",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "O `return` antecipado quando `erro` é verdadeiro sai da função antes de executar `delete[] buffer;`. Com `std::unique_ptr`, a liberação seria automática."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para definir uma `struct Ponto`, receber por `const Ponto&` e instanciá-la com `std::make_unique`:",
+      "blocks": [
+        "struct Ponto { int x; int y; };",
+        "void exibir(const Ponto& p) { std::cout << p.x << \",\" << p.y; }",
+        "auto ptr = std::make_unique<Ponto>(3, 4);",
+        "exibir(*ptr);"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "Declaramos `Ponto`, definimos a função com `const Ponto&` (sem cópia), criamos `ptr` na Heap via `make_unique` e passamos `*ptr`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Em C++, defina uma `struct` chamada `Sensor` com um campo inteiro `id` e um campo decimal `double temperatura`. Em seguida, na função `main`, aloque um `Sensor` dinamicamente usando smart pointer exclusivo (`<memory>`), atribua `id = 1` usando o operador seta e retorne `0`.",
+      "starterCode": "",
+      "requiredTokens": ["#include", "<memory>", "struct Sensor", "std::make_unique", "->", "return 0"],
+      "sampleSolution": "#include <memory>\n\nstruct Sensor {\n    int id;\n    double temperatura;\n};\n\nint main() {\n    auto s = std::make_unique<Sensor>();\n    s->id = 1;\n    s->temperatura = 24.5;\n    return 0;\n}",
+      "hint": "Inclua `<memory>`, defina `struct Sensor` com os dois campos e use `std::make_unique<Sensor>()` + `s->id = 1;` dentro de `main()`.",
+      "explanation": "`std::make_unique<Sensor>()` aloca na Heap com posse exclusiva e `->` acessa os campos através do smart pointer."
     }
   ]
 }

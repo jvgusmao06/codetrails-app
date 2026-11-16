@@ -1,14 +1,14 @@
 {
   "id": "go-nativas-02",
   "title": "Funções Nativas Built-in (make, len, cap, delete) e Desafio Go",
-  "description": "Domine todas as funções nativas built-in do Go e suas 25 palavras reservadas escrevendo código Go do zero.",
+  "description": "Domine as funções nativas built-in do Go para alocar, medir e remover elementos em slices e maps.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Funções Built-in e Palavras Reservadas do Go",
-      "content": "O Go possui funções nativas embutidas na própria linguagem (sem precisar de import): 'len(x)' retorna o tamanho de strings, slices, maps e channels; 'cap(s)' retorna a capacidade alocada de um slice; 'make(tipo, tam)' inicializa slices, maps e channels na memória; 'append(s, item)' adiciona elementos; e 'delete(mapa, chave)' remove uma chave de um map.",
-      "codeExample": "// Inicializando map e slice pré-alocado com make()\nusuarios := make(map[string]int)\nusuarios[\"Ana\"] = 10\ndelete(usuarios, \"Ana\")\n\nbuffer := make([]int, 0, 100)\nfmt.Println(len(buffer), cap(buffer)) // 0 100",
+      "title": "Funções Built-in do Go: make, len, cap, append e delete",
+      "content": "O Go possui funções nativas embutidas na própria linguagem (sem precisar de import): 'len(x)' retorna o tamanho atual de strings, slices e maps; 'cap(s)' retorna a capacidade alocada na memória de um slice; 'make(tipo, tam, cap)' inicializa slices e maps na memória; 'append(s, item)' adiciona elementos a um slice; e 'delete(mapa, chave)' remove uma chave de um map.",
+      "codeExample": "// Inicializando map e slice pré-alocado com make()\nusuarios := make(map[string]int)\nusuarios[\"Ana\"] = 10\ndelete(usuarios, \"Ana\")\n\nbuffer := make([]int, 0, 100)\nbuffer = append(buffer, 42)\nfmt.Println(len(buffer), cap(buffer)) // 1 100",
       "keyTakeaways": [
         "Um map declarado apenas com 'var m map[string]int' é nil e causa panic ao inserir; use 'make(map[string]int)' ou 'map[string]int{}'.",
         "len(s) informa quantos itens existem agora no slice; cap(s) informa até quantos itens cabem antes de realocar memória.",
@@ -28,13 +28,48 @@
       "explanation": "make() inicializa o map, len() retorna a quantidade de chaves e delete() apaga uma chave do map."
     },
     {
+      "type": "multiple_choice",
+      "prompt": "Após criar o slice abaixo com make, o que 'len(s)' e 'cap(s)' retornam respectivamente?",
+      "codeSnippet": "s := make([]int, 2, 5)\nfmt.Println(len(s), cap(s))",
+      "options": [
+        "0 e 5",
+        "2 e 5",
+        "5 e 2",
+        "2 e 2"
+      ],
+      "correctIndex": 1,
+      "explanation": "O segundo argumento de make([]int, 2, 5) define o tamanho inicial (len = 2, preenchido com zero values) e o terceiro define a capacidade total alocada (cap = 5)."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código compila, mas gera panic em tempo de execução ao tentar inserir uma chave no map. Clique na linha responsável pelo problema:",
+      "lines": [
+        "var visitas map[string]int",
+        "visitas[\"home\"] = 1",
+        "fmt.Println(len(visitas))"
+      ],
+      "buggyLineIndex": 0,
+      "explanation": "Um map declarado com 'var visitas map[string]int' começa como nil e não aceita gravação. Inicialize-o com 'visitas := make(map[string]int)'."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para pré-alocar um slice com capacidade 4, adicionar um item com append e exibir tamanho e capacidade:",
+      "blocks": [
+        "fmt.Println(len(itens), cap(itens))",
+        "itens = append(itens, \"go\")",
+        "itens := make([]string, 0, 4)"
+      ],
+      "correctOrder": [2, 1, 0],
+      "explanation": "Primeiro alocamos o slice com make([]string, 0, 4), depois inserimos com append() e por fim consultamos len() e cap()."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva uma função Go 'func somar(a int, b int) int' do zero que retorne 'a + b' usando 'return':",
-      "starterCode": "// Escreva a função somar em Go abaixo:\n",
-      "requiredTokens": ["func", "somar", "int", "return", "+"],
-      "sampleSolution": "func somar(a int, b int) int {\n    return a + b\n}",
-      "hint": "Use: func somar(a int, b int) int { return a + b }",
-      "explanation": "Em Go declaramos funções com a palavra reservada 'func', os tipos vêm após o nome dos parâmetros e o tipo de retorno vem antes de '{'."
+      "prompt": "Desafio de Código: Crie um slice chamado 'fila' de strings com tamanho inicial 0 e capacidade 5 usando 'make'. Em seguida, adicione \"job1\" usando 'append' e imprima o tamanho e a capacidade do slice usando 'len', 'cap' e 'fmt.Println'.",
+      "starterCode": "",
+      "requiredTokens": ["fila", "make", "[]string", "append", "len", "cap", "fmt.Println"],
+      "sampleSolution": "fila := make([]string, 0, 5)\nfila = append(fila, \"job1\")\nfmt.Println(len(fila), cap(fila))",
+      "hint": "Use make([]string, 0, 5) para pré-alocar o slice, reatribua com append(fila, \"job1\") e passe len(fila) e cap(fila) ao fmt.Println.",
+      "explanation": "Pré-alocar a capacidade com make([]T, 0, cap) evita realocações de memória durante chamadas repetidas de append()."
     }
   ]
 }

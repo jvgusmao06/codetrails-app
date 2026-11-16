@@ -7,7 +7,7 @@
     {
       "type": "theory",
       "title": "Protegendo APIs REST com SecurityFilterChain",
-      "content": "No Spring Boot 3+, configuramos a segurança declarando um `@Bean` de **`SecurityFilterChain`**. Para APIs REST com **JWT**, desabilitamos sessões em memória usando **`SessionCreationPolicy.STATELESS`**, liberamos rotas públicas (como `/auth/login`) com `requestMatchers(...).permitAll()` e exigimos autenticação no resto (`anyRequest().authenticated()`). E senhas no banco são sempre salvas com **`BCryptPasswordEncoder`** (nunca em texto puro!).",
+      "content": "No Spring Boot 3+, configuramos a segurança declarando um `@Bean` de `SecurityFilterChain`. Para APIs REST com JWT, desabilitamos CSRF, definimos `SessionCreationPolicy.STATELESS`, liberamos rotas públicas (como `/auth/**`) com `requestMatchers(...).permitAll()` e exigimos autenticação no resto (`anyRequest().authenticated()`).\n\nSenhas no banco devem ser sempre salvas com `BCryptPasswordEncoder`, e métodos específicos podem ser restritos por perfil usando `@PreAuthorize(\"hasRole('ADMIN')\")`.",
       "codeExample": "@Bean\npublic SecurityFilterChain filterChain(HttpSecurity http) throws Exception {\n    return http\n        .csrf(csrf -> csrf.disable())\n        .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))\n        .authorizeHttpRequests(auth -> auth\n            .requestMatchers(\"/auth/**\").permitAll()\n            .anyRequest().authenticated()\n        )\n        .build();\n}",
       "keyTakeaways": [
         "APIs REST com JWT no header `Authorization: Bearer <token>` usam `SessionCreationPolicy.STATELESS`.",
@@ -28,12 +28,53 @@
       "explanation": "Com JWT, cada requisição carrega seu próprio token; o servidor não guarda sessão em memória (`STATELESS`)."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete a configuração de `SecurityFilterChain` para liberar `/auth/**` e exigir autenticação nas demais rotas em modo stateless:",
+      "codeTemplate": "return http\n    .csrf(csrf -> csrf.disable())\n    .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.{{blank}}))\n    .authorizeHttpRequests(auth -> auth\n        .requestMatchers(\"/auth/**\").{{blank}}()\n        .anyRequest().{{blank}}()\n    )\n    .build();",
+      "blanks": [
+        { "answer": "STATELESS", "placeholder": "política" },
+        { "answer": "permitAll", "placeholder": "liberar" },
+        { "answer": "authenticated", "placeholder": "exigir auth" }
+      ],
+      "options": ["STATELESS", "permitAll", "authenticated", "STATEFUL", "denyAll"],
+      "explanation": "`STATELESS` evita sessões em memória, `permitAll()` libera as rotas de login/registro e `authenticated()` protege todo o restante."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha com erro na ordem das regras de autorização do `SecurityFilterChain`:",
+      "lines": [
+        ".authorizeHttpRequests(auth -> auth",
+        "    .anyRequest().authenticated()",
+        "    .requestMatchers(\"/auth/**\").permitAll()",
+        ")"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "`anyRequest().authenticated()` deve ser sempre a última regra; colocá-la antes de `requestMatchers(\"/auth/**\").permitAll()` gera erro de configuração no Spring Security."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual anotação protege um método de serviço ou controller para permitir acesso apenas a usuários com perfil `ADMIN`?",
+      "options": [
+        "@PermitAll(\"ADMIN\")",
+        "@PreAuthorize(\"hasRole('ADMIN')\")",
+        "@BCryptRole(\"ADMIN\")",
+        "@Stateless(\"ADMIN\")"
+      ],
+      "correctIndex": 1,
+      "explanation": "`@PreAuthorize(\"hasRole('ADMIN')\")` avalia a permissão antes da execução do método."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Declare um `@Bean` em Java que retorne `new BCryptPasswordEncoder()` no método `public PasswordEncoder passwordEncoder()`:",
-      "starterCode": "// Declare o Bean PasswordEncoder:\n",
-      "requiredTokens": ["@Bean", "PasswordEncoder", "passwordEncoder()", "return new BCryptPasswordEncoder()"],
+      "prompt": "Declare um bean Spring chamado `passwordEncoder` que retorne uma instância de `PasswordEncoder` usando o algoritmo BCrypt para hash seguro de senhas.",
+      "starterCode": "",
+      "requiredTokens": [
+        "@Bean",
+        "PasswordEncoder",
+        "passwordEncoder()",
+        "BCryptPasswordEncoder"
+      ],
       "sampleSolution": "@Bean\npublic PasswordEncoder passwordEncoder() {\n    return new BCryptPasswordEncoder();\n}",
-      "hint": "Anote com `@Bean` e retorne `new BCryptPasswordEncoder();`.",
+      "hint": "Anote o método com `@Bean` e retorne `new BCryptPasswordEncoder();`.",
       "explanation": "Registrar `PasswordEncoder` como `@Bean` permite injetá-lo no seu serviço de cadastro e login."
     }
   ]

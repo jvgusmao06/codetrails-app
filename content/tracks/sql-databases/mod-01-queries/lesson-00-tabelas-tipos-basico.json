@@ -1,40 +1,85 @@
 {
   "id": "sql-basico-00",
-  "title": "Primeiros Passos: Tabelas, Tipos de Dados e Operadores SQL",
-  "description": "Comece do zero no SQL: entenda tabelas, colunas, linhas, tipos (INT, TEXT, NUMERIC, BOOLEAN, DATE) e operadores (AND, OR, IN, BETWEEN, LIKE).",
+  "title": "00. Tabelas, Tipos de Dados e Operadores SQL",
+  "description": "Entenda a estrutura de tabelas relacionais, os tipos de dados do PostgreSQL e os operadores de filtro IN, BETWEEN e LIKE.",
   "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "Como Dados São Organizados e Filtrados em SQL",
-      "content": "Em um banco relacional (como PostgreSQL), os dados vivem em Tabelas formadas por Colunas (com tipos fixos: INTEGER para inteiros, TEXT/VARCHAR para textos, NUMERIC para dinheiro exato, BOOLEAN para true/false e TIMESTAMP para datas) e Linhas (registros). Para filtrar linhas no WHERE, usamos palavras reservadas super expressivas: 'AND', 'OR', 'NOT', 'IN (lista)', 'BETWEEN min AND max' e 'LIKE' (busca textual com coringa '%').",
-      "codeExample": "SELECT nome, cargo, salario\nFROM funcionarios\nWHERE cargo IN ('Dev', 'QA')\n  AND salario BETWEEN 4000 AND 12000\n  AND nome LIKE 'Ana%';",
+      "title": "Tabelas, Tipos de Dados e Operadores de Filtro",
+      "content": "Em um banco de dados relacional (como o PostgreSQL), as informações são organizadas em **Tabelas**, onde cada **linha** é um registro e cada **coluna** possui um tipo de dado fixo:\n\n1. **Tipos de Dados Principais**:\n   - `INTEGER` (ou `INT`): números inteiros (ex: `42`).\n   - `TEXT` ou `VARCHAR`: textos, que em SQL usam **sempre aspas simples** (`'ativo'`), nunca aspas duplas.\n   - `NUMERIC`: valores decimais exatos, ideais para dinheiro (ex: `199.90`).\n   - `BOOLEAN`: valores lógicos `true` ou `false`.\n2. **Operadores Lógicos**: Combinamos condições com `AND` (ambas verdadeiras), `OR` (pelo menos uma verdadeira) e `NOT` (negação).\n3. **Operadores de Filtro (`IN`, `BETWEEN`, `LIKE`)**:\n   - `IN ('a', 'b')`: verifica se o valor está em uma lista.\n   - `BETWEEN 10 AND 20`: verifica intervalo **inclusivo** nas duas pontas (`>= 10 AND <= 20`).\n   - `LIKE 'Camisa%'`: busca padrões em texto, onde `%` representa qualquer sequência de caracteres.",
+      "codeExample": "-- Exemplos de expressões de filtro em SQL:\nstatus IN ('ativo', 'promo')\nAND preco BETWEEN 50 AND 200\nAND nome LIKE 'Notebook%'\nAND NOT bloqueado",
       "keyTakeaways": [
-        "Strings em SQL usam sempre aspas simples ('texto'), nunca aspas duplas!",
-        "BETWEEN 10 AND 20 é inclusivo nas duas pontas (equivale a >= 10 AND <= 20).",
-        "No operador LIKE, o símbolo '%' representa qualquer sequência de caracteres (ex: '%@gmail.com')."
+        "Textos literais em SQL usam sempre aspas simples ('texto').",
+        "Use INTEGER, TEXT/VARCHAR, NUMERIC (dinheiro) e BOOLEAN para tipar colunas.",
+        "BETWEEN é inclusivo; IN testa uma lista; LIKE usa '%' como curinga de texto."
       ]
     },
     {
+      "type": "multiple_choice",
+      "prompt": "Qual tipo de dado é mais recomendado em PostgreSQL para armazenar preços em dinheiro sem erros de arredondamento?",
+      "options": [
+        "TEXT",
+        "BOOLEAN",
+        "NUMERIC",
+        "INTEGER"
+      ],
+      "correctIndex": 2,
+      "explanation": "NUMERIC armazena decimais exatos, evitando imprecisões de ponto flutuante em cálculos financeiros."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "A condição SQL abaixo tenta filtrar produtos pela categoria e faixa de preço, mas usa aspas inválidas para texto literal. Qual linha tem o bug?",
+      "lines": [
+        "ativo = true",
+        "AND categoria = \"eletronicos\"",
+        "AND preco BETWEEN 100 AND 500"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Em SQL, strings literais devem usar aspas simples ('eletronicos'). Aspas duplas são reservadas para nomes de identificadores."
+    },
+    {
       "type": "fill_in_blank",
-      "prompt": "Complete a query SQL para buscar produtos cujo status esteja na lista ('ativo', 'promo') e cujo preço fique entre 50 e 200:",
-      "codeTemplate": "SELECT * FROM produtos\nWHERE status {{blank}} ('ativo', 'promo')\n  {{blank}} preco {{blank}} 50 AND 200;",
+      "prompt": "Complete a condição para aceitar apenas os status 'pago' ou 'enviado' e valores entre 50 e 200:",
+      "codeTemplate": "status {{blank}} ('pago', 'enviado')\nAND total {{blank}} 50 AND 200",
       "blanks": [
         { "answer": "IN", "placeholder": "lista" },
-        { "answer": "AND", "placeholder": "e lógico" },
         { "answer": "BETWEEN", "placeholder": "intervalo" }
       ],
-      "options": ["IN", "AND", "BETWEEN", "HAS", "&&", "RANGE"],
-      "explanation": "IN verifica se o valor pertence a um conjunto, AND combina condições e BETWEEN filtra um intervalo fechado."
+      "options": ["IN", "BETWEEN", "LIKE", "OR"],
+      "explanation": "IN verifica pertinência em uma lista de valores e BETWEEN verifica se o número está dentro do intervalo inclusivo."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "O que a expressão email LIKE '%@empresa.com' verifica em SQL?",
+      "options": [
+        "Emails que começam com '@empresa.com'",
+        "Emails que terminam exatamente com '@empresa.com'",
+        "Emails iguais ao texto '%@empresa.com'",
+        "Emails que não contêm '@'"
+      ],
+      "correctIndex": 1,
+      "explanation": "O curinga '%' no início significa qualquer sequência de caracteres antes de '@empresa.com'."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para montar uma condição lógica válida combinando booleano, faixa de preço e padrão de texto:",
+      "blocks": [
+        "AND nome LIKE 'Curso%'",
+        "ativo = true",
+        "AND preco BETWEEN 20 AND 150"
+      ],
+      "correctOrder": [1, 2, 0],
+      "explanation": "Começamos com a condição inicial (ativo = true) e encadeamos as demais condições com AND."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva do zero uma query SQL que selecione todas as colunas ('*') da tabela 'clientes' onde 'ativo = true':",
-      "starterCode": "-- Escreva sua primeira query SELECT abaixo:\n",
-      "requiredTokens": ["SELECT", "*", "FROM", "clientes", "WHERE", "ativo"],
-      "sampleSolution": "SELECT * FROM clientes WHERE ativo = true;",
-      "hint": "Use: SELECT * FROM clientes WHERE ativo = true;",
-      "explanation": "SELECT * retorna todas as colunas da tabela especificada após FROM que atendem à condição do WHERE."
+      "prompt": "Escreva uma expressão condicional SQL (apenas os filtros, combinados com AND) que exija: 'ativo' igual a verdadeiro, 'categoria' dentro da lista ('livros', 'cursos'), 'preco' entre 30 e 120 inclusive, e 'titulo' começando com 'SQL'.",
+      "starterCode": "",
+      "requiredTokens": ["ativo", "AND", "IN", "BETWEEN", "LIKE"],
+      "sampleSolution": "ativo = true\nAND categoria IN ('livros', 'cursos')\nAND preco BETWEEN 30 AND 120\nAND titulo LIKE 'SQL%'",
+      "hint": "Combine as quatro condições com AND, lembrando de usar aspas simples nos textos e '%' ao final do padrão de LIKE.",
+      "explanation": "A expressão integra BOOLEAN (= true), IN para lista, BETWEEN para intervalo inclusivo e LIKE com curinga '%' para prefixo."
     }
   ]
 }

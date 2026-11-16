@@ -1,40 +1,86 @@
 {
   "id": "sql-nativas-03",
-  "title": "Funções Nativas SQL (COALESCE, COUNT, SUM, CASE WHEN) e Desafio",
-  "description": "Domine as funções nativas e palavras reservadas mais importantes do SQL: agregações, COALESCE, UPPER/LOWER, DISTINCT e CASE WHEN.",
-  "xp": 40,
+  "title": "03. Funções Nativas SQL (COUNT, SUM, COALESCE, CASE WHEN)",
+  "description": "Agregue dados com COUNT, SUM e AVG, trate nulos com COALESCE e crie colunas condicionais com CASE WHEN ... END.",
+  "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Funções Nativas e Expressões Condicionais no SQL",
-      "content": "O SQL possui funções nativas essenciais em qualquer banco relacional: 'COUNT(*)', 'SUM()', 'AVG()', 'MIN()' e 'MAX()' agregam linhas; 'COALESCE(coluna, padrao)' substitui valores NULL pelo primeiro valor não-nulo; 'UPPER()' e 'LOWER()' normalizam textos; 'DISTINCT' remove linhas duplicadas; e a estrutura 'CASE WHEN condicao THEN valor ELSE outro END' funciona como o if/else dentro das queries.",
-      "codeExample": "SELECT\n  DISTINCT UPPER(nome) AS cliente,\n  COALESCE(telefone, 'Sem telefone') AS contato,\n  CASE\n    WHEN saldo >= 1000 THEN 'VIP'\n    ELSE 'Padrao'\n  END AS categoria\nFROM clientes;",
+      "title": "Funções de Agregação, COALESCE e CASE WHEN",
+      "content": "O SQL traz funções nativas poderosas para resumir e transformar dados diretamente no banco:\n\n1. **Agregação (`COUNT`, `SUM`, `AVG`)**: `COUNT(*)` conta todas as linhas (enquanto `COUNT(coluna)` ignora `NULL`); `SUM(col)` soma valores numéricos e `AVG(col)` calcula a média.\n2. **`COALESCE(valor, padrao)`**: Retorna o primeiro argumento que não seja `NULL`. É o padrão ideal para substituir nulos por `0` ou por um texto padrão.\n3. **`CASE WHEN ... THEN ... ELSE ... END`**: Cria lógica condicional (como um `if/else`) dentro do `SELECT`, e **sempre** deve terminar com `END`.",
+      "codeExample": "SELECT\n    COUNT(*) AS total_itens,\n    SUM(COALESCE(desconto, 0)) AS soma_descontos,\n    AVG(preco) AS media_preco\nFROM produtos;\n\nSELECT nome,\n    CASE WHEN estoque > 0 THEN 'Disponível' ELSE 'Esgotado' END AS status\nFROM produtos;",
       "keyTakeaways": [
-        "COALESCE(col, 'valor_padrao') é a forma padrão de trocar NULL por um valor legível ou zero.",
-        "CASE WHEN ... THEN ... ELSE ... END sempre deve ser fechado com a palavra reservada END.",
-        "COUNT(*) conta todas as linhas, enquanto COUNT(coluna) ignora linhas onde aquela coluna é NULL."
+        "COUNT(*) conta todas as linhas; SUM() e AVG() calculam soma e média.",
+        "COALESCE(col, padrao) substitui NULL por um valor seguro.",
+        "CASE WHEN condicao THEN valor ELSE outro END sempre fecha com END."
       ]
     },
     {
+      "type": "multiple_choice",
+      "prompt": "Qual é a diferença entre COUNT(*) e COUNT(telefone) em uma tabela de clientes?",
+      "options": [
+        "COUNT(*) conta apenas linhas sem NULL em nenhuma coluna",
+        "COUNT(*) conta todas as linhas; COUNT(telefone) ignora linhas onde telefone é NULL",
+        "COUNT(telefone) soma os números de telefone",
+        "Não existe diferença"
+      ],
+      "correctIndex": 1,
+      "explanation": "COUNT(*) conta todos os registros da tabela, enquanto COUNT(coluna) conta apenas os registros em que aquela coluna não é NULL."
+    },
+    {
       "type": "fill_in_blank",
-      "prompt": "Complete a consulta SQL usando COALESCE para substituir nulos por 0 e CASE WHEN ... END para classificar o estoque:",
-      "codeTemplate": "SELECT nome,\n  {{blank}}(desconto, 0) AS desc_final,\n  {{blank}} WHEN estoque > 0 THEN 'Disponivel' ELSE 'Esgotado' {{blank}} AS status\nFROM produtos;",
+      "prompt": "Complete a consulta usando COALESCE para trocar nulos por 0 e CASE WHEN para classificar o estoque:",
+      "codeTemplate": "SELECT nome,\n  {{blank}}(desconto, 0) AS desconto_real,\n  CASE WHEN estoque > 0 THEN 'Ok' ELSE 'Zero' {{blank}} AS situacao\nFROM produtos;",
       "blanks": [
-        { "answer": "COALESCE", "placeholder": "função nulo" },
-        { "answer": "CASE", "placeholder": "condicional" },
+        { "answer": "COALESCE", "placeholder": "tratar nulo" },
         { "answer": "END", "placeholder": "fechamento" }
       ],
-      "options": ["COALESCE", "CASE", "END", "IFNULL", "IF", "DONE"],
-      "explanation": "COALESCE retorna o primeiro argumento não-nulo e blocos condicionais em SQL começam com CASE e terminam com END."
+      "options": ["COALESCE", "IFNULL", "END", "ENDIF"],
+      "explanation": "COALESCE(desconto, 0) substitui NULL por 0, e toda expressão CASE WHEN precisa ser encerrada com END."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "A query abaixo tenta classificar pedidos por valor usando CASE WHEN, mas gera um erro de sintaxe. Qual linha tem o bug?",
+      "lines": [
+        "SELECT id,",
+        "  CASE WHEN total >= 500 THEN 'Alto'",
+        "       ELSE 'Normal' AS porte",
+        "FROM pedidos;"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Na linha 3 faltou fechar a expressão condicional com a palavra-chave END antes de 'AS porte'."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a query para calcular o total arrecadado (tratando frete nulo como 0) e a média dos pedidos:",
+      "codeTemplate": "SELECT\n  {{blank}}(total + {{blank}}(frete, 0)) AS faturamento,\n  {{blank}}(total) AS ticket_medio\nFROM pedidos\nWHERE status = 'pago';",
+      "blanks": [
+        { "answer": "SUM", "placeholder": "soma" },
+        { "answer": "COALESCE", "placeholder": "nulo->0" },
+        { "answer": "AVG", "placeholder": "média" }
+      ],
+      "options": ["SUM", "COUNT", "COALESCE", "AVG"],
+      "explanation": "SUM() soma o total mais o frete tratado com COALESCE(frete, 0), e AVG() calcula o ticket médio."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para contar quantos pedidos pagos existem e calcular a soma total:",
+      "blocks": [
+        "WHERE pago_em IS NOT NULL;",
+        "SELECT COUNT(*) AS qtd, SUM(valor) AS total",
+        "FROM faturas"
+      ],
+      "correctOrder": [1, 2, 0],
+      "explanation": "Combinamos SELECT com COUNT/SUM, FROM e WHERE ... IS NOT NULL."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva do zero uma query SQL que selecione 'nome' e 'preco' da tabela 'produtos' onde 'preco > 50':",
-      "starterCode": "-- Escreva sua consulta SELECT abaixo:\n",
-      "requiredTokens": ["SELECT", "nome", "preco", "FROM", "produtos", "WHERE", "50"],
-      "sampleSolution": "SELECT nome, preco FROM produtos WHERE preco > 50;",
-      "hint": "Use: SELECT nome, preco FROM produtos WHERE preco > 50;",
-      "explanation": "A estrutura fundamental de uma consulta SQL filtra colunas no SELECT, indica a tabela no FROM e aplica a condição lógica no WHERE."
+      "prompt": "Escreva uma query SQL na tabela 'produtos' que selecione a coluna 'nome', o 'preco' substituindo possíveis valores nulos por 0 usando COALESCE, e uma coluna condicional com CASE WHEN que retorne 'Caro' se preco >= 100 ou 'Acessível' caso contrário.",
+      "starterCode": "",
+      "requiredTokens": ["SELECT", "COALESCE", "CASE", "WHEN", "THEN", "ELSE", "END", "FROM", "produtos"],
+      "sampleSolution": "SELECT nome,\n  COALESCE(preco, 0) AS preco_final,\n  CASE WHEN preco >= 100 THEN 'Caro' ELSE 'Acessível' END AS faixa\nFROM produtos;",
+      "hint": "Use COALESCE(preco, 0) e CASE WHEN preco >= 100 THEN '...' ELSE '...' END dentro do SELECT.",
+      "explanation": "A consulta combina COALESCE para segurança contra nulos e CASE WHEN ... END para categorização inline."
     }
   ]
 }

@@ -2,17 +2,17 @@
   "id": "tauri-cmd-01",
   "title": "Tauri v2: #[tauri::command] e Ponte TypeScript <-> Rust",
   "description": "Entenda como o Tauri entrega binários de ~5 MB usando a WebView do sistema e comandos IPC tipados em Rust.",
-  "xp": 35,
+  "xp": 50,
   "steps": [
     {
       "type": "theory",
       "title": "Por que Tauri em vez de Electron?",
-      "content": "Enquanto o Electron empacota um navegador Chromium + Node.js inteiro em cada app (~150 MB), o **Tauri** usa a **WebView nativa do sistema operacional** + um backend compilado em **Rust** (~3–10 MB!). Para o TypeScript chamar uma função nativa em Rust (ler arquivos, usar SQLite, rodar código pesado), basta anotar a função Rust com **`#[tauri::command]`** e registrá-la em `tauri::generate_handler![...]`!",
-      "codeExample": "// No backend Rust (src-tauri/src/lib.rs):\n#[tauri::command]\nfn saudar(nome: &str) -> String {\n    format!(\"Olá, {}! Bem-vindo ao Rust.\", nome)\n}\n\n// No frontend TypeScript:\n// import { invoke } from '@tauri-apps/api/core';\n// const msg = await invoke('saudar', { nome: 'Ana' });",
+      "content": "Enquanto o Electron empacota um navegador Chromium + Node.js inteiro em cada app (~150 MB), o **Tauri** usa a **WebView nativa do sistema operacional** + um backend compilado em **Rust** (~3–10 MB). Para o frontend TypeScript chamar uma função nativa em Rust, anotamos a função Rust com **`#[tauri::command]`** e a registramos em `tauri::generate_handler![...]`.\n\nNo frontend, chamamos o comando de forma assíncrona com `await invoke('nome_do_comando', { arg })`. Comandos pesados ou de I/O devem usar `async fn` em Rust (e podem retornar `Result<T, String>`) para não travar a interface.",
+      "codeExample": "// No backend Rust (src-tauri/src/lib.rs):\n#[tauri::command]\nfn saudar(nome: &str) -> String {\n    format!(\"Olá, {}! Bem-vindo ao Rust.\", nome)\n}\n\n// Registro no Builder:\n// .invoke_handler(tauri::generate_handler![saudar])\n\n// No frontend TypeScript:\n// import { invoke } from '@tauri-apps/api/core';\n// const msg = await invoke('saudar', { nome: 'Ana' });",
       "keyTakeaways": [
-        "`#[tauri::command]` usa Serde por baixo dos panos para serializar argumentos e retornos (`Result<T, String>`) entre JS e Rust.",
-        "Use `async fn` em comandos Tauri pesados para não travar a thread principal da interface!",
-        "Permissões de arquivo/rede ficam isoladas por *Capabilities* seguras no Tauri v2."
+        "`#[tauri::command]` gera a ponte IPC serializando argumentos e retornos (`Result<T, String>`) via Serde entre JS e Rust.",
+        "Registre todos os comandos no builder usando `tauri::generate_handler![...]`.",
+        "Use `async fn` em comandos Tauri pesados para não travar a thread principal da interface e chame com `await invoke(...)` no frontend."
       ]
     },
     {
@@ -28,13 +28,49 @@
       "explanation": "`#[tauri::command]` gera a ponte IPC permitindo chamar a função via `invoke('nome_da_funcao', ...)` no frontend."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código TypeScript no frontend para chamar o comando Rust `saudar` passando o argumento `nome`:",
+      "codeTemplate": "import { {{blank}} } from \"@tauri-apps/api/core\";\nconst msg = {{blank}} invoke(\"saudar\", { nome: \"Ana\" });",
+      "blanks": [
+        { "answer": "invoke", "placeholder": "função IPC" },
+        { "answer": "await", "placeholder": "assíncrono" }
+      ],
+      "options": ["invoke", "await", "command", "sync"],
+      "explanation": "Chamadas IPC no Tauri são assíncronas (retornam Promise) e utilizam `await invoke('comando', { args })`."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Por que devemos preferir `async fn` em comandos Tauri que leem arquivos grandes ou fazem requisições de rede?",
+      "options": [
+        "Porque funções síncronas não aceitam argumentos &str",
+        "Para não bloquear a thread principal da WebView/interface gráfica enquanto a tarefa executa",
+        "Porque `tauri::generate_handler!` só aceita funções assíncronas",
+        "Para reduzir o tamanho final do binário em disco"
+      ],
+      "correctIndex": 1,
+      "explanation": "Comandos síncronos pesados travam a thread da UI; `async fn` permite que o Tauri execute a tarefa sem congelar a janela."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O comando `buscar_dados` foi criado corretamente, mas o frontend recebe erro informando que o comando não existe. Clique na linha responsável pela falha de registro:",
+      "lines": [
+        "#[tauri::command]",
+        "fn buscar_dados() -> String { \"ok\".into() }",
+        "tauri::Builder::default()",
+        "    .invoke_handler(tauri::generate_handler![])",
+        "    .run(tauri::generate_context!());"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Na linha 4, `buscar_dados` não foi listado dentro de `tauri::generate_handler![buscar_dados]`, então o Tauri não expõe o comando ao IPC."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva um comando Tauri `#[tauri::command]` chamado `fn somar(a: i32, b: i32) -> i32` que retorne `a + b`:",
-      "starterCode": "// Exponha a função somar para o frontend Tauri:\n",
+      "prompt": "Escreva um comando Tauri em Rust chamado `somar` que receba dois inteiros de 32 bits (`a` e `b`) e retorne a soma deles como inteiro de 32 bits, devidamente anotado para ser exposto ao frontend.",
+      "starterCode": "",
       "requiredTokens": ["#[tauri::command]", "fn somar(", "a: i32", "b: i32", "-> i32", "a + b"],
       "sampleSolution": "#[tauri::command]\nfn somar(a: i32, b: i32) -> i32 {\n    a + b\n}",
-      "hint": "Coloque `#[tauri::command]` acima de `fn somar(a: i32, b: i32) -> i32 { a + b }`.",
-      "explanation": "O valor retornado (`i32`) é automaticamente serializado em JSON para a Promise do `invoke()` no JavaScript."
+      "hint": "Anote a função com `#[tauri::command]` e defina os parâmetros tipados `i32` retornando a expressão `a + b`.",
+      "explanation": "O atributo `#[tauri::command]` expõe a função `somar` ao IPC e serializa automaticamente o retorno `i32` para a Promise do `invoke()`."
     }
   ]
 }

@@ -28,12 +28,49 @@
       "explanation": "Na linha 3, `time.sleep(5)` bloqueia a thread única do Event Loop dentro de `async def`. O correto é usar `await asyncio.sleep(5)` ou declarar a rota como `def` normal."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete a criação do `APIRouter` e o agendamento de uma tarefa em segundo plano com `BackgroundTasks`:",
+      "codeTemplate": "router = {{blank}}(prefix=\"/notificacoes\")\n\n@router.post(\"/enviar\")\nasync def notificar(email: str, bg: {{blank}}):\n    bg.{{blank}}(enviar_email, email)\n    return {\"status\": \"ok\"}",
+      "blanks": [
+        { "answer": "APIRouter", "placeholder": "roteador" },
+        { "answer": "BackgroundTasks", "placeholder": "tipo" },
+        { "answer": "add_task", "placeholder": "método" }
+      ],
+      "options": ["APIRouter", "BackgroundTasks", "add_task", "FastAPI", "run_async", "Thread"],
+      "explanation": "`APIRouter` modulariza as rotas e `bg.add_task(fn, arg)` agenda a execução após o envio da resposta HTTP."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Se você precisa chamar uma biblioteca síncrona bloqueante (como `requests.get`) em uma rota FastAPI, qual assinatura evita travar o Event Loop do servidor?",
+      "options": [
+        "Usar `async def` normalmente",
+        "Usar `def` comum (sem `async`), para o FastAPI executar em uma ThreadPool",
+        "Colocar a chamada dentro de `BaseModel`",
+        "Usar `APIRouter` sem `prefix`"
+      ],
+      "correctIndex": 1,
+      "explanation": "O FastAPI executa rotas declaradas com `def` comum em uma ThreadPool separada, preservando o Event Loop principal."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para criar um `APIRouter`, definir uma rota nele e conectá-lo ao `app`:",
+      "blocks": [
+        "@router.get(\"/\")",
+        "router = APIRouter(prefix=\"/pedidos\")",
+        "app.include_router(router)",
+        "def listar_pedidos():",
+        "    return []"
+      ],
+      "correctOrder": [1, 0, 3, 4, 2],
+      "explanation": "Primeiro criamos o `router`, registramos a rota `@router.get(\"/\")` e por fim conectamos com `app.include_router(router)`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie um `router = APIRouter(prefix=\"/pedidos\")` e conecte-o com `app.include_router(router)`:",
-      "starterCode": "from fastapi import APIRouter\n# Crie router e conecte em app:\n",
+      "prompt": "Desafio de Código: Instancie um roteador modular na variável `router` com o prefixo `\"/pedidos\"` e registre-o na aplicação principal `app`.",
+      "starterCode": "from fastapi import APIRouter\n",
       "requiredTokens": ["APIRouter(", "prefix=\"/pedidos\"", "app.include_router(router)"],
       "sampleSolution": "router = APIRouter(prefix=\"/pedidos\")\napp.include_router(router)",
-      "hint": "Use `router = APIRouter(prefix=\"/pedidos\")` e `app.include_router(router)`.",
+      "hint": "Crie o roteador com `APIRouter` passando `prefix=\"/pedidos\"` e conecte-o usando `include_router`.",
       "explanation": "`APIRouter` permite dividir rotas em arquivos como `routers/pedidos.py` e `routers/usuarios.py`."
     }
   ]

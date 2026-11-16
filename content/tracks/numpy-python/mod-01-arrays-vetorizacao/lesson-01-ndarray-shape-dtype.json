@@ -7,11 +7,12 @@
     {
       "type": "theory",
       "title": "Por que NumPy é a Base de Pandas, PyTorch e Scikit-Learn?",
-      "content": "Uma lista Python guarda ponteiros espalhados na RAM para objetos variados. Já um **`np.ndarray`** armazena todos os elementos do **mesmo tipo (`dtype`, ex: `float64`, `int32`)** lado a lado em blocos contíguos em C! Além de `np.array([1, 2, 3])`, usamos geradores nativos como `np.zeros((2, 3))`, `np.ones(5)`, `np.arange(0, 10, 2)` e `np.linspace(0, 1, 5)`.",
-      "codeExample": "import numpy as np\n\nmatriz = np.array([[1, 2, 3], [4, 5, 6]])\nprint(matriz.shape)  # (2, 3) -> 2 linhas, 3 colunas\nprint(matriz.dtype)  # int64\n\nzeros = np.zeros((3, 3))\nfaixa = np.arange(0, 10, 2)  # [0, 2, 4, 6, 8]",
+      "content": "Uma lista Python guarda ponteiros espalhados na RAM para objetos variados. Já um **`np.ndarray`** armazena todos os elementos do **mesmo tipo (`dtype`, ex: `float64`, `int32`)** lado a lado em blocos contíguos em C! Além de `np.array([1, 2, 3])`, usamos geradores nativos como `np.zeros((2, 3))`, `np.ones((2, 2))`, `np.arange(0, 10, 2)` e `np.linspace(0, 1, 5)`.",
+      "codeExample": "import numpy as np\n\nmatriz = np.array([[1, 2, 3], [4, 5, 6]])\nprint(matriz.shape)  # (2, 3) -> 2 linhas, 3 colunas\nprint(matriz.dtype)  # int64\nprint(matriz.ndim)   # 2\n\nzeros = np.zeros((3, 3))\nfaixa = np.arange(0, 10, 2)  # [0, 2, 4, 6, 8]",
       "keyTakeaways": [
         "`.shape` mostra as dimensões `(linhas, colunas)`; `.ndim` mostra o número de dimensões.",
-        "`np.zeros((l, c))` cria matriz de zeros; `np.linspace(inicio, fim, qtd)` gera `qtd` pontos igualmente espaçados.",
+        "`np.zeros((l, c))` e `np.ones((l, c))` recebem uma tupla com as dimensões.",
+        "`np.arange(inicio, fim, passo)` avança por passo; `np.linspace(inicio, fim, qtd)` gera `qtd` pontos igualmente espaçados.",
         "Todos os elementos de um `ndarray` compartilham o mesmo `dtype` para máxima velocidade de cache da CPU."
       ]
     },
@@ -28,12 +29,47 @@
       "explanation": "A matriz tem 2 linhas (eixo 0) e 3 colunas (eixo 1), portanto `.shape` é `(2, 3)`."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete os geradores NumPy para criar uma sequência de 0 a 8 de 2 em 2, um vetor com 5 pontos entre 0 e 1, e inspecionar o tipo dos dados:",
+      "codeTemplate": "pares = np.{{blank}}(0, 10, 2)\nintervalo = np.{{blank}}(0, 1, 5)\nprint(intervalo.{{blank}})",
+      "blanks": [
+        { "answer": "arange", "placeholder": "passo" },
+        { "answer": "linspace", "placeholder": "pontos" },
+        { "answer": "dtype", "placeholder": "tipo" }
+      ],
+      "options": ["arange", "linspace", "dtype", "shape", "zeros", "range"],
+      "explanation": "`np.arange` usa passo fixo, `np.linspace` divide o intervalo em N pontos iguais e `.dtype` retorna o tipo dos elementos."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha com erro ao tentar criar uma matriz 2x4 preenchida com zeros no NumPy:",
+      "lines": [
+        "import numpy as np",
+        "m = np.zeros(2, 4)",
+        "print(m.shape)",
+        "print(m.ndim)"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "`np.zeros` espera uma tupla de dimensões como primeiro argumento (`np.zeros((2, 4))`), pois o segundo parâmetro posicional é o `dtype`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para importar o NumPy, criar uma matriz 2x3 de uns e exibir seu formato e número de dimensões:",
+      "blocks": [
+        "print(mat.shape, mat.ndim)",
+        "import numpy as np",
+        "mat = np.ones((2, 3))"
+      ],
+      "correctOrder": [1, 2, 0],
+      "explanation": "Primeiro importamos `numpy as np`, depois criamos `mat` com `np.ones((2, 3))` e inspecionamos `.shape` e `.ndim`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie uma matriz `m` de zeros com 2 linhas e 4 colunas usando `np.zeros((2, 4))` e imprima `m.shape`:",
-      "starterCode": "import numpy as np\n# Crie m com np.zeros((2, 4)) e imprima m.shape:\n",
-      "requiredTokens": ["np.zeros((2, 4))", "print(", "m.shape"],
-      "sampleSolution": "m = np.zeros((2, 4))\nprint(m.shape)",
-      "hint": "Escreva: m = np.zeros((2, 4)) e print(m.shape)",
+      "prompt": "Desafio de Código: Importe o NumPy com o alias padrão `np`, crie uma matriz `m` preenchida com zeros de 2 linhas por 4 colunas e imprima o formato (shape) de `m`.",
+      "starterCode": "",
+      "requiredTokens": ["import numpy as np", "np.zeros((2, 4))", "print(", "m.shape"],
+      "sampleSolution": "import numpy as np\nm = np.zeros((2, 4))\nprint(m.shape)",
+      "hint": "Importe `numpy as np`, passe a tupla `(2, 4)` para `np.zeros(...)` e imprima `m.shape`.",
       "explanation": "Passar a tupla `(2, 4)` para `np.zeros` aloca instantaneamente uma matriz 2x4 preenchida com `0.0`."
     }
   ]

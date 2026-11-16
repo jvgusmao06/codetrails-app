@@ -2,17 +2,18 @@
   "id": "jpa-01",
   "title": "Entidades @Entity, JpaRepository e Query Methods",
   "description": "Mapeie tabelas em classes Java e gere consultas SQL automaticamente a partir do nome dos métodos.",
-  "xp": 35,
+  "xp": 40,
   "steps": [
     {
       "type": "theory",
       "title": "Persistência Declarativa com Spring Data JPA",
-      "content": "No Spring Data JPA, anotamos uma classe com '@Entity' e sua chave primária com '@Id @GeneratedValue'. Para acessar o banco, basta criar uma interface que estende 'JpaRepository<Entidade, TipoId>': o Spring gera automaticamente save(), findById(), findAll() e até queries personalizadas apenas lendo o nome do método (ex: findByEmailAndAtivoTrue)!",
+      "content": "No Spring Data JPA, anotamos uma classe com `@Entity` e sua chave primária com `@Id @GeneratedValue`. Para acessar o banco, basta criar uma interface que estende `JpaRepository<Entidade, TipoId>`: o Spring gera automaticamente `save()`, `findById()`, `findAll()` e até queries personalizadas apenas lendo o nome do método (ex: `findByEmail` ou `findByCategoriaOrderByPrecoAsc`).\n\nEm métodos de serviço que modificam o banco, usamos `@Transactional` para garantir atomicidade e rollback automático caso ocorra uma `RuntimeException`.",
       "codeExample": "@Entity\npublic class Cliente {\n    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)\n    private Long id;\n    private String email;\n    private boolean ativo;\n}\n\npublic interface ClienteRepository extends JpaRepository<Cliente, Long> {\n    Optional<Cliente> findByEmail(String email);\n    List<Cliente> findByAtivoTrue();\n}",
       "keyTakeaways": [
-        "Toda classe @Entity precisa de um campo anotado com @Id e um construtor padrão sem argumentos.",
-        "Estender JpaRepository<T, ID> entrega paginação, ordenação e CRUD completo sem escrever uma linha de implementação.",
-        "Use @Transactional em métodos de serviço que alteram múltiplas tabelas para garantir rollback automático em caso de RuntimeException."
+        "Toda classe `@Entity` precisa de um campo anotado com `@Id` e um construtor padrão sem argumentos.",
+        "Estender `JpaRepository<T, ID>` entrega paginação, ordenação e CRUD completo sem escrever uma linha de implementação.",
+        "Derived Queries seguem a convenção `findBy<Campo>` para gerar SQL automaticamente.",
+        "Use `@Transactional` em métodos de serviço que alteram dados para garantir rollback automático em caso de `RuntimeException`."
       ]
     },
     {
@@ -25,11 +26,11 @@
         { "answer": "JpaRepository", "placeholder": "interface base" }
       ],
       "options": ["@Entity", "@Id", "JpaRepository", "@Table", "@PrimaryKey", "CrudClass"],
-      "explanation": "@Entity mapeia a classe para uma tabela, @Id define a chave primária e JpaRepository<Produto, Long> fornece todas as operações de banco."
+      "explanation": "`@Entity` mapeia a classe para uma tabela, `@Id` define a chave primária e `JpaRepository<Produto, Long>` fornece todas as operações de banco."
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual assinatura de método em uma interface JpaRepository faz o Spring Data JPA gerar automaticamente uma busca por 'categoria' ordenada pelo 'preco' crescente?",
+      "prompt": "Qual assinatura de método em uma interface `JpaRepository` faz o Spring Data JPA gerar automaticamente uma busca por `categoria` ordenada pelo `preco` crescente?",
       "options": [
         "List<Produto> selectWhereCategoriaOrderPreco(String categoria);",
         "List<Produto> findByCategoriaOrderByPrecoAsc(String categoria);",
@@ -37,7 +38,44 @@
         "List<Produto> getCategoria_PrecoAsc(String categoria);"
       ],
       "correctIndex": 1,
-      "explanation": "As Derived Queries do Spring Data JPA seguem a convenção findBy<Propriedade>OrderBy<Propriedade>Asc/Desc."
+      "explanation": "As Derived Queries do Spring Data JPA seguem a convenção `findBy<Propriedade>OrderBy<Propriedade>Asc/Desc`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Encontre a linha que faz o Hibernate/JPA rejeitar a entidade `Pedido` na inicialização:",
+      "lines": [
+        "@Entity",
+        "public class Pedido {",
+        "    private Long id;",
+        "    private String cliente;",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Toda classe `@Entity` exige um campo anotado com `@Id` (linha 3) para identificar a chave primária da tabela."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para montar um método de serviço transacional que salva um cliente usando `JpaRepository`:",
+      "blocks": [
+        "    return clienteRepository.save(cliente);\n}",
+        "@Transactional",
+        "public Cliente cadastrar(Cliente cliente) {"
+      ],
+      "correctOrder": [1, 2, 0],
+      "explanation": "`@Transactional` decora o método de serviço que executa `clienteRepository.save(cliente)`, garantindo rollback em caso de exceção."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Declare uma interface de repositório chamada `PedidoRepository` para a entidade `Pedido` (chave primária `Long`), estendendo a interface base do Spring Data JPA, e adicione um método derivado que busque pedidos pelo campo `status` retornando uma lista.",
+      "starterCode": "",
+      "requiredTokens": [
+        "interface PedidoRepository",
+        "extends JpaRepository<Pedido, Long>",
+        "findByStatus("
+      ],
+      "sampleSolution": "public interface PedidoRepository extends JpaRepository<Pedido, Long> {\n    List<Pedido> findByStatus(String status);\n}",
+      "hint": "Estenda `JpaRepository<Pedido, Long>` e declare um método seguindo a convenção `findByStatus(String status)`.",
+      "explanation": "Ao estender `JpaRepository<Pedido, Long>` e declarar `findByStatus`, o Spring gera automaticamente o CRUD completo e a consulta filtrada por `status`."
     }
   ]
 }

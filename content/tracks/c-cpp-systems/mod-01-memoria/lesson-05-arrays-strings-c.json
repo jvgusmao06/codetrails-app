@@ -1,0 +1,76 @@
+{
+  "id": "cpp-arrays-strings-05",
+  "title": "Arrays Fixos, Strings em C (\\0) vs std::string em C++",
+  "description": "Entenda arrays contíguos, o terminador nulo '\\0' das C-strings e a segurança de std::string em C++.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Arrays Fixos, C-Strings com '\\0' e std::string Segura",
+      "content": "Um array em C/C++ armazena elementos do mesmo tipo em posições contíguas de memória (`int notas[3] = {7, 8, 9};`), acessados por índice a partir de `0`, mas não verifica limites automaticamente. Em C puro, não existe um tipo `string` nativo: uma string é um array de `char` terminado obrigatoriamente pelo caractere nulo **`'\\0'`** (por isso `\"Oi\"` exige pelo menos 3 bytes: `'O'`, `'i'`, `'\\0'`). Já em C++ moderno, incluímos `<string>` e usamos **`std::string`**, que gerencia a memória automaticamente, informa o tamanho com `.size()` e permite concatenar com `+` ou `+=` sem risco de buffer overflow.",
+      "codeExample": "#include <iostream>\n#include <string>\n\nint main() {\n    int portas[3] = {80, 443, 8080};\n    char sigla[4] = \"C++\"; // 'C', '+', '+', '\\0'\n\n    std::string nome = \"Ada\";\n    nome += \" Lovelace\";\n    std::cout << portas[0] << \" - \" << nome.size() << \"\\n\";\n    return 0;\n}",
+      "keyTakeaways": [
+        "Arrays fixos (`T arr[N]`) usam índices de `0` até `N - 1` e não checam limites.",
+        "Toda C-string (`char[]`) precisa de 1 byte extra para o terminador nulo `'\\0'`.",
+        "Em C++, `<string>` oferece `std::string` com `.size()` em O(1) e concatenação segura."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Quantos bytes (posições de `char`) no mínimo um array em C precisa ter para armazenar a string `\"C++\"`?",
+      "options": [
+        "3 bytes ('C', '+', '+')",
+        "4 bytes ('C', '+', '+', '\\0')",
+        "2 bytes",
+        "8 bytes"
+      ],
+      "correctIndex": 1,
+      "explanation": "Em C, toda string literal precisa de 1 byte extra ao final para o caractere terminador nulo '\\0'."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código C++ para criar uma `std::string`, concatenar um sobrenome e exibir o total de caracteres:",
+      "codeTemplate": "#include <string>\nstd::{{blank}} nome = \"Alan\";\nnome += \" Turing\";\nstd::cout << nome.{{blank}}() << \"\\n\";",
+      "blanks": [
+        { "answer": "string", "placeholder": "tipo" },
+        { "answer": "size", "placeholder": "método" }
+      ],
+      "options": ["string", "size", "length", "char", "strlen"],
+      "explanation": "Em C++, `std::string` representa strings seguras e `.size()` retorna a quantidade de caracteres."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O código abaixo declara um array de tamanho fixo `3`, mas comete um erro de acesso fora dos limites (Buffer Overflow). Clique na linha com bug:",
+      "lines": [
+        "int codigos[3] = {10, 20, 30};",
+        "for (int i = 0; i <= 3; i++) {",
+        "    std::cout << codigos[i] << \"\\n\";",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Um array de 3 elementos possui índices válidos 0, 1 e 2. Usar `i <= 3` tenta ler `codigos[3]`, invadindo memória fora do array."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para declarar um array de 3 inteiros e somar todos os seus elementos com um range-based `for`:",
+      "blocks": [
+        "int valores[3] = {5, 10, 15};",
+        "int total = 0;",
+        "for (const auto& v : valores) {",
+        "    total += v;",
+        "}"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "explanation": "Declaramos o array fixo `valores`, inicializamos `total = 0` e percorremos cada elemento com `const auto&`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva um programa em C++ (incluindo os cabeçalhos de fluxo e string) que crie uma `std::string` chamada `linguagem` com o valor `\"C++\"`, concatene `\" Moderno\"` nela, e imprima o texto final e o tamanho dela usando `.size()` via `std::cout`.",
+      "starterCode": "",
+      "requiredTokens": ["#include", "<iostream>", "<string>", "std::string", "linguagem", ".size()", "std::cout", "return 0"],
+      "sampleSolution": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string linguagem = \"C++\";\n    linguagem += \" Moderno\";\n    std::cout << linguagem << \" - \" << linguagem.size() << std::endl;\n    return 0;\n}",
+      "hint": "Inclua `<iostream>` e `<string>`, use `+=` para concatenar e `.size()` para obter o comprimento.",
+      "explanation": "`std::string` redimensiona seu buffer automaticamente na concatenação e mantém o tamanho atualizado em `.size()`."
+    }
+  ]
+}

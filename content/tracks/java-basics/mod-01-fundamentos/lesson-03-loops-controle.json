@@ -1,0 +1,87 @@
+{
+  "id": "java-loops-controle-03",
+  "title": "Loops (for, for-each, while) e Controle de Fluxo",
+  "description": "Domine os laços for clássico, enhanced for-each, while e as instruções break e continue em Java.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Laços de Repetição e Controle (break / continue)",
+      "content": "Em Java temos três laços principais: o `for` clássico (`for (int i = 0; i < n; i++)`), ideal quando precisamos do índice; o `for-each` (`for (String item : lista)`), que percorre arrays e coleções com segurança; e o `while (condicao)`, usado quando não sabemos previamente quantas repetições ocorrerão. Dentro de qualquer laço, `continue` pula para a próxima iteração e `break` encerra o laço imediatamente.",
+      "codeExample": "int[] codigos = {10, -1, 20, 999, 30};\n\nfor (int c : codigos) {\n    if (c < 0) continue; // pula negativos\n    if (c == 999) break; // encerra o loop\n    System.out.println(c);\n}\n\nint tentativas = 0;\nwhile (tentativas < 3) {\n    tentativas++;\n}",
+      "keyTakeaways": [
+        "No `for-each` do Java usa-se dois-pontos `:` -> `for (Tipo item : colecao)`.",
+        "`continue` interrompe apenas a iteração atual e avança para a próxima.",
+        "`break` sai imediatamente do laço mais interno."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o laço `for-each` para percorrer um array de nomes em Java e o `while` que executa enquanto `ativo` for verdadeiro:",
+      "codeTemplate": "for (String nome {{blank}} nomes) {\n    System.out.println(nome);\n}\n\n{{blank}} (ativo) {\n    ativo = false;\n}",
+      "blanks": [
+        { "answer": ":", "placeholder": "separador" },
+        { "answer": "while", "placeholder": "laço condicional" }
+      ],
+      "options": [":", "while", "in", "of", "until", "for"],
+      "explanation": "O `for-each` em Java separa a variável e a coleção com `:`, e repetições baseadas em condição booleana usam `while`."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é a diferença entre `break` e `continue` dentro de um laço `for` ou `while`?",
+      "options": [
+        "`break` pula apenas a iteração atual; `continue` encerra o programa",
+        "`break` encerra o laço por completo; `continue` pula o restante da iteração atual e vai para a próxima",
+        "Ambos encerram o laço imediatamente",
+        "`continue` só funciona em `while` e `break` só funciona em `for`"
+      ],
+      "correctIndex": 1,
+      "explanation": "`break` sai do laço imediatamente, enquanto `continue` apenas salta para a próxima iteração."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código tenta usar um `for-each` em Java, mas não compila. Clique na linha com o bug:",
+      "lines": [
+        "String[] frutas = {\"Maçã\", \"Uva\"};",
+        "for (String fruta in frutas) {",
+        "    System.out.println(fruta);",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Java não usa `in` no `for-each`; a sintaxe correta utiliza dois-pontos: `for (String fruta : frutas)`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para criar um loop `for` que imprime apenas números ímpares de 0 a 4 usando `continue`:",
+      "blocks": [
+        "for (int i = 0; i < 5; i++) {",
+        "    if (i % 2 == 0) continue;",
+        "    System.out.println(i);",
+        "}"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "Quando `i` é par, `continue` pula o `System.out.println(i)` e avança para o próximo `i`."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "O que será impresso pelo código: `for (int i = 1; i <= 5; i++) { if (i == 2) continue; if (i == 4) break; System.out.print(i); }`?",
+      "options": [
+        "12345",
+        "13",
+        "134",
+        "123"
+      ],
+      "correctIndex": 1,
+      "explanation": "Para `i=1` imprime 1; `i=2` sofre `continue`; `i=3` imprime 3; `i=4` sofre `break` e encerra o laço."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva um loop `for` em Java que percorra os inteiros de `0` até `4` e imprima cada número no console.",
+      "starterCode": "",
+      "requiredTokens": ["for", "int", "System.out.println"],
+      "sampleSolution": "for (int i = 0; i < 5; i++) {\n    System.out.println(i);\n}",
+      "hint": "Use um contador `int i` começando em `0`, com condição `i < 5` e incremento `i++`, imprimindo `i` com `System.out.println`.",
+      "explanation": "O loop `for` clássico em Java declara o contador tipado `int i = 0`, verifica `i < 5` e incrementa com `i++`."
+    }
+  ]
+}

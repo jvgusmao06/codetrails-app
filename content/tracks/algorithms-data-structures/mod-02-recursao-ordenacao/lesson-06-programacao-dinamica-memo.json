@@ -7,8 +7,8 @@
     {
       "type": "theory",
       "title": "Não Recalcule o Que Você Já Resolveu!",
-      "content": "Calcular Fibonacci recursivo ingênuo (`fib(n-1) + fib(n-2)`) recalcula os mesmos valores milhões de vezes, levando tempo exponencial **$O(2^n)$**! A **Programação Dinâmica (DP)** resolve isso guardando cada subproblema calculado:\n1. **Memoization (Top-Down)**: recursão + um dicionário `memo = {}` (cache) para retornar instantaneamente se `n in memo`.\n2. **Tabulation (Bottom-Up)**: um loop `for` preenchendo um array `dp` do menor caso (`dp[0]`, `dp[1]`) até `n` — reduzindo $O(2^n)$ para **$O(n)$**!",
-      "codeExample": "# Fibonacci com Memoization -> O(n) em vez de O(2^n)!\ndef fib(n, memo={}):\n    if n <= 1:\n        return n\n    if n in memo:\n        return memo[n]\n    memo[n] = fib(n - 1, memo) + fib(n - 2, memo)\n    return memo[n]",
+      "content": "Calcular Fibonacci recursivo ingênuo (`fib(n-1) + fib(n-2)`) recalcula os mesmos valores milhões de vezes, levando tempo exponencial **$O(2^n)$**! A **Programação Dinâmica (DP)** resolve isso guardando cada subproblema calculado:\n1. **Memoization (Top-Down)**: recursão + um dicionário `memo = {}` (cache) para retornar instantaneamente se `n in memo`.\n2. **Tabulation (Bottom-Up)**: um loop `for` preenchendo um array `dp` do menor caso (`dp[0]`, `dp[1]`) até `n` — reduzindo $O(2^n)$ para **$O(n)$** e evitando o risco de Stack Overflow!",
+      "codeExample": "# 1. Memoization (Top-Down)\ndef fib(n, memo={}):\n    if n <= 1: return n\n    if n in memo: return memo[n]\n    memo[n] = fib(n - 1, memo) + fib(n - 2, memo)\n    return memo[n]\n\n# 2. Tabulation (Bottom-Up)\ndef fib_tab(n):\n    if n <= 1: return n\n    dp = [0, 1]\n    for i in range(2, n + 1):\n        dp.append(dp[i - 1] + dp[i - 2])\n    return dp[n]",
       "keyTakeaways": [
         "DP se aplica quando há **subproblemas repetidos** e **subestrutura ótima**.",
         "Memoization = Recursão + Cache (`dict`); Tabulation = Loop iterativo + Array (`dp[]`).",
@@ -28,13 +28,63 @@
       "explanation": "Cada valor de `0` até `n` passa a ser calculado apenas uma única vez e armazenado no cache, caindo de $O(2^n)$ para $O(n)$."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete a implementação de Fibonacci com Memoization (Top-Down) para consultar e salvar no cache:",
+      "codeTemplate": "def fib(n, memo={}):\n    if n <= 1: return n\n    if n in {{blank}}:\n        return memo[n]\n    memo[n] = fib(n - 1, memo) + fib(n - 2, memo)\n    return {{blank}}[n]",
+      "blanks": [
+        { "answer": "memo", "placeholder": "cache" },
+        { "answer": "memo", "placeholder": "retorno" }
+      ],
+      "options": ["memo", "dp", "n", "fib", "cache"],
+      "explanation": "Verificamos se `n in memo` antes de fazer novas chamadas recursivas e retornamos `memo[n]` após calcular."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é uma vantagem prática da abordagem **Tabulation (Bottom-Up)** com loop sobre a **Memoization (Top-Down)** recursiva para valores muito grandes de `n`?",
+      "options": [
+        "Tabulation tem complexidade $O(1)$",
+        "Tabulation evita o risco de Stack Overflow por não empilhar chamadas recursivas na Call Stack",
+        "Tabulation não precisa armazenar nenhum valor",
+        "Memoization não funciona para Fibonacci"
+      ],
+      "correctIndex": 1,
+      "explanation": "Como Tabulation usa um laço `for` iterativo em vez de recursão, ela não consome a Call Stack e não sofre `RecursionError`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Esta função com Memoization continua levando tempo exponencial $O(2^n)$ porque nunca salva os resultados! Clique na linha com o erro:",
+      "lines": [
+        "def fib(n, memo={}):",
+        "    if n <= 1: return n",
+        "    if n in memo: return memo[n]",
+        "    res = fib(n - 1, memo) + fib(n - 2, memo)",
+        "    return res"
+      ],
+      "buggyLineIndex": 4,
+      "explanation": "Faltou armazenar `memo[n] = res` antes de retornar! Sem gravar no dicionário, `n in memo` nunca será verdadeiro."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para implementar Fibonacci usando Tabulation (Bottom-Up) em $O(n)$:",
+      "blocks": [
+        "def fib_tab(n):",
+        "    if n <= 1: return n",
+        "    dp = [0, 1]",
+        "    for i in range(2, n + 1):",
+        "        dp.append(dp[i - 1] + dp[i - 2])",
+        "    return dp[n]"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4, 5],
+      "explanation": "Tratamos os casos base `n <= 1`, inicializamos `dp = [0, 1]`, preenchemos até `n` e retornamos `dp[n]`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Complete a versão Bottom-Up (Tabulation) de Fibonacci criando `dp = [0, 1]` e um loop `for i in range(2, n + 1): dp.append(dp[i - 1] + dp[i - 2])`:",
-      "starterCode": "def fib_tab(n):\n    if n <= 1: return n\n    # Inicialize dp e o loop for:\n",
-      "requiredTokens": ["dp = [0, 1]", "for i in range(2, n + 1):", "dp.append", "dp[i - 1] + dp[i - 2]", "return dp[n]"],
-      "sampleSolution": "def fib_tab(n):\n    if n <= 1: return n\n    dp = [0, 1]\n    for i in range(2, n + 1):\n        dp.append(dp[i - 1] + dp[i - 2])\n    return dp[n]",
-      "hint": "Crie `dp = [0, 1]`, faça `for i in range(2, n + 1): dp.append(dp[i - 1] + dp[i - 2])` e `return dp[n]`.",
-      "explanation": "A abordagem Bottom-Up elimina inclusive o risco de Stack Overflow da recursão, rodando em $O(n)$!"
+      "prompt": "Desafio de Código: Implemente a função `fib_tab(n)` em Python utilizando a técnica Tabulation (Bottom-Up) com uma lista de programação dinâmica para calcular o n-ésimo número de Fibonacci em tempo $O(n)$.",
+      "starterCode": "",
+      "requiredTokens": ["def", "fib_tab", "for", "range", "return"],
+      "sampleSolution": "def fib_tab(n):\n    if n <= 1:\n        return n\n    dp = [0, 1]\n    for i in range(2, n + 1):\n        dp.append(dp[i - 1] + dp[i - 2])\n    return dp[n]",
+      "hint": "Trate `n <= 1` primeiro; depois crie uma lista com os dois primeiros termos e use um laço `for` de `2` até `n + 1` somando os dois anteriores.",
+      "explanation": "A abordagem Bottom-Up elimina o risco de Stack Overflow da recursão, rodando em tempo linear $O(n)$!"
     }
   ]
 }

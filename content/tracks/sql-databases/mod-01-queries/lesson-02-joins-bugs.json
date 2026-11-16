@@ -1,30 +1,86 @@
 {
   "id": "sql-joins-02",
-  "title": "INNER JOIN e Caça a Bugs em SQL",
-  "description": "Cruzando tabelas por chave estrangeira e evitando erros clássicos.",
-  "xp": 20,
+  "title": "02. INNER JOIN e Caça a Bugs com NULL",
+  "description": "Relacione tabelas com INNER JOIN ... ON, use apelidos (aliases) de tabela e evite a armadilha clássica de '= NULL'.",
+  "xp": 30,
   "steps": [
     {
       "type": "theory",
       "title": "Relacionando Tabelas com INNER JOIN e Cuidado com NULL",
-      "content": "Para combinar dados de duas tabelas (ex: pedidos e clientes), usamos INNER JOIN ... ON indicando quais colunas se conectam. Além disso, em SQL o valor NULL representa ausência de valor: nunca comparamos NULL usando '=', e sim 'IS NULL'.",
-      "codeExample": "SELECT u.nome, p.total\nFROM pedidos p\nINNER JOIN usuarios u ON p.usuario_id = u.id\nWHERE p.cancelado_em IS NULL;",
+      "content": "Bancos relacionais separam entidades em tabelas diferentes para evitar duplicação. Para juntar esses dados na consulta:\n\n1. **`INNER JOIN ... ON`**: Conecta duas tabelas retornando apenas as linhas que possuem correspondência em ambas, usando a condição em `ON` (ex: `INNER JOIN clientes ON pedidos.cliente_id = clientes.id`).\n2. **Apelidos (Aliases) de tabela**: Para evitar repetir nomes longos de tabelas e eliminar ambiguidade entre colunas com o mesmo nome (como `id`), damos apelidos curtos: `FROM pedidos p INNER JOIN clientes c ON p.cliente_id = c.id`.\n3. **Comparando `NULL` (`IS NULL` / `IS NOT NULL`)**: Em SQL, `NULL` significa ausência de valor (desconhecido). Qualquer comparação com `= NULL` ou `!= NULL` resulta em desconhecido (falso no `WHERE`). Use sempre `IS NULL` ou `IS NOT NULL`.",
+      "codeExample": "SELECT p.id, c.nome, p.total\nFROM pedidos p\nINNER JOIN clientes c ON p.cliente_id = c.id\nWHERE p.cancelado_em IS NULL;",
       "keyTakeaways": [
-        "INNER JOIN conecta duas tabelas usando a condição definida em ON.",
-        "Em SQL, comparações com NULL devem usar IS NULL ou IS NOT NULL (nunca '= NULL')."
+        "INNER JOIN ... ON combina linhas correspondentes entre duas tabelas.",
+        "Use apelidos (FROM pedidos p INNER JOIN clientes c) para qualificar colunas como p.id e c.nome.",
+        "Nunca use '= NULL' ou '!= NULL'; use sempre IS NULL ou IS NOT NULL."
       ]
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete a consulta para juntar a tabela 'pedidos' com 'clientes' usando INNER JOIN e ON:",
+      "codeTemplate": "SELECT p.id, c.nome\nFROM pedidos p\n{{blank}} clientes c {{blank}} p.cliente_id = c.id;",
+      "blanks": [
+        { "answer": "INNER JOIN", "placeholder": "junção" },
+        { "answer": "ON", "placeholder": "condição" }
+      ],
+      "options": ["INNER JOIN", "ON", "WHERE", "GROUP BY"],
+      "explanation": "INNER JOIN especifica a segunda tabela e ON define a chave de ligação entre elas."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Por que usamos apelidos como 'p' e 'c' (p.id, c.nome) em consultas com INNER JOIN?",
+      "options": [
+        "Para criptografar o nome das tabelas",
+        "Para deixar a query mais curta e evitar erro de coluna ambígua quando ambas têm 'id'",
+        "Porque o SQL proíbe usar o nome completo da tabela no SELECT",
+        "Para ordenar os resultados automaticamente"
+      ],
+      "correctIndex": 1,
+      "explanation": "Se duas tabelas têm uma coluna 'id', qualificar com p.id e c.id remove a ambiguidade e torna o código mais legível."
+    },
+    {
       "type": "spot_the_bug",
-      "prompt": "Toque na linha que contém um BUG lógico ao filtrar registros sem data de exclusão em SQL:",
+      "prompt": "Toque na linha que contém um BUG lógico clássico ao filtrar registros sem data de exclusão em SQL:",
       "lines": [
-        "SELECT id, email",
+        "SELECT id, nome",
         "FROM usuarios",
-        "WHERE deletado_em = NULL",
+        "WHERE deleted_at = NULL",
         "ORDER BY id ASC;"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Na linha 3, 'deletado_em = NULL' nunca retorna verdadeiro em SQL padrão (retorna UNKNOWN). O correto é 'WHERE deletado_em IS NULL'."
+      "explanation": "Em SQL, 'deleted_at = NULL' nunca retorna verdadeiro. A forma correta é 'WHERE deleted_at IS NULL'."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para unir 'matriculas' com 'alunos', filtrar apenas matrículas não canceladas e ordenar pelo nome do aluno:",
+      "blocks": [
+        "INNER JOIN alunos a ON m.aluno_id = a.id",
+        "ORDER BY a.nome ASC;",
+        "SELECT m.id, a.nome",
+        "WHERE m.cancelada_em IS NULL",
+        "FROM matriculas m"
+      ],
+      "correctOrder": [2, 4, 0, 3, 1],
+      "explanation": "Seguimos a ordem SELECT -> FROM -> INNER JOIN ... ON -> WHERE ... IS NULL -> ORDER BY."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a query que relaciona 'itens' e 'produtos', filtrando apenas itens cujo desconto não seja nulo:",
+      "codeTemplate": "SELECT i.id, pr.nome\nFROM itens i\nINNER JOIN produtos pr ON i.produto_id = pr.id\nWHERE i.desconto {{blank}};",
+      "blanks": [
+        { "answer": "IS NOT NULL", "placeholder": "não nulo" }
+      ],
+      "options": ["IS NOT NULL", "!= NULL", "IS NULL", "= NOT NULL"],
+      "explanation": "Para verificar que uma coluna possui valor preenchido em SQL, usamos IS NOT NULL."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva uma query SQL que selecione o 'id' de 'pedidos' (apelido p) e o 'nome' de 'clientes' (apelido c), conectando as duas tabelas via INNER JOIN pela coluna 'cliente_id' / 'id', e filtrando apenas pedidos onde 'entregue_em' não seja nulo.",
+      "starterCode": "",
+      "requiredTokens": ["SELECT", "FROM", "INNER JOIN", "ON", "WHERE", "IS NOT NULL"],
+      "sampleSolution": "SELECT p.id, c.nome\nFROM pedidos p\nINNER JOIN clientes c ON p.cliente_id = c.id\nWHERE p.entregue_em IS NOT NULL;",
+      "hint": "Use apelidos p e c, conecte com INNER JOIN clientes c ON p.cliente_id = c.id e teste p.entregue_em IS NOT NULL no WHERE.",
+      "explanation": "Combinamos apelidos de tabela, INNER JOIN ... ON para relacionar pedidos e clientes, e IS NOT NULL para filtrar valores preenchidos."
     }
   ]
 }

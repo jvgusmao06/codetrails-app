@@ -7,11 +7,11 @@
     {
       "type": "theory",
       "title": "Validação de Dados em Alta Velocidade (Core em Rust)",
-      "content": "O **Pydantic v2** (com núcleo reescrito em **Rust**!) é a biblioteca padrão para validação de dados em Python — usada por **FastAPI**, **OpenAI SDK**, **LangChain** e **Pydantic Settings**. Definimos schemas com `BaseModel`, adicionamos regras customizadas com **`@field_validator`** (que recebe `@classmethod`), carregamos dicionários com **`Model.model_validate(data)`** e exportamos com **`obj.model_dump()`**!",
+      "content": "O **Pydantic v2** (com núcleo reescrito em **Rust**!) é a biblioteca padrão para validação de dados em Python — usada por **FastAPI**, **OpenAI SDK**, **LangChain** e **Pydantic Settings**. Definimos schemas com `BaseModel` e `Field(...)`, adicionamos regras customizadas com **`@field_validator`** (acompanhado de `@classmethod`), carregamos dicionários com **`Model.model_validate(data)`** e exportamos com **`obj.model_dump()`**!",
       "codeExample": "from pydantic import BaseModel, Field, field_validator\n\nclass Usuario(BaseModel):\n    nome: str = Field(min_length=2)\n    email: str\n\n    @field_validator(\"email\")\n    @classmethod\n    def normalizar_email(cls, v: str) -> str:\n        if \"@\" not in v: raise ValueError(\"Email inválido\")\n        return v.strip().lower()\n\nu = Usuario.model_validate({\"nome\": \"Ana\", \"email\": \" ANA@DEV.COM \"})\nprint(u.model_dump())  # {'nome': 'Ana', 'email': 'ana@dev.com'}",
       "keyTakeaways": [
         "No Pydantic v2: `dict()` virou `.model_dump()`, `json()` virou `.model_dump_json()` e `parse_obj()` virou `.model_validate()`.",
-        "`@field_validator` deve ser acompanhado de `@classmethod` logo abaixo.",
+        "`@field_validator` deve ser acompanhado de `@classmethod` logo abaixo e sempre retornar o valor validado.",
         "Use `BaseSettings` (pacote `pydantic-settings`) para validar automaticamente variáveis de ambiente (`.env`)."
       ]
     },
@@ -28,12 +28,49 @@
       "explanation": "Na v2, todos os métodos do modelo ganharam prefixo `model_`: `.model_dump()`, `.model_dump_json()` e `.model_validate()`."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete o modelo Pydantic v2 com tamanho mínimo no campo `nome` e um validador customizado para `email`:",
+      "codeTemplate": "class Usuario(BaseModel):\n    nome: str = {{blank}}(min_length=2)\n    email: str\n\n    @{{blank}}(\"email\")\n    @{{blank}}\n    def validar_email(cls, v: str) -> str:\n        return v.strip().lower()",
+      "blanks": [
+        { "answer": "Field", "placeholder": "restricao" },
+        { "answer": "field_validator", "placeholder": "decorador" },
+        { "answer": "classmethod", "placeholder": "metodo" }
+      ],
+      "options": ["Field", "field_validator", "classmethod", "validator", "staticmethod", "Schema"],
+      "explanation": "`Field(min_length=2)` define restrições declarativas, e `@field_validator` no Pydantic v2 exige `@classmethod` logo abaixo."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha com erro neste validador Pydantic v2:",
+      "lines": [
+        "class Produto(BaseModel):",
+        "    nome: str",
+        "    @field_validator(\"nome\")",
+        "    def limpar_nome(cls, v: str) -> str:",
+        "        return v.strip()"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "No Pydantic v2, `@field_validator(\"nome\")` exige `@classmethod` imediatamente abaixo (entre o decorador e `def limpar_nome`)."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para definir um `BaseModel`, validar um dicionário de entrada e exportar o resultado:",
+      "blocks": [
+        "print(u.model_dump())",
+        "class Item(BaseModel):\n    nome: str",
+        "u = Item.model_validate({\"nome\": \"Teclado\"})",
+        "from pydantic import BaseModel"
+      ],
+      "correctOrder": [3, 1, 2, 0],
+      "explanation": "Importamos `BaseModel`, definimos a classe `Item`, validamos o dict com `Item.model_validate(...)` e serializamos com `.model_dump()`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Valide o dicionário `dados` usando `Pedido.model_validate(dados)` e converta de volta para dicionário com `pedido.model_dump()`:",
-      "starterCode": "# Valide dados com Pedido.model_validate e exporte com model_dump:\n",
+      "prompt": "Desafio de Código: Em Python com Pydantic v2, valide o dicionário `dados` usando o modelo `Pedido` e converta o objeto validado de volta para um dicionário Python na variável `saida`.",
+      "starterCode": "",
       "requiredTokens": ["Pedido.model_validate(dados)", ".model_dump()"],
       "sampleSolution": "pedido = Pedido.model_validate(dados)\nsaida = pedido.model_dump()",
-      "hint": "Use `pedido = Pedido.model_validate(dados)` e `saida = pedido.model_dump()`.",
+      "hint": "Chame `model_validate(dados)` na classe `Pedido` e depois invoque `model_dump()` na instância retornada.",
       "explanation": "`model_validate` valida e converte tipos na entrada, e `model_dump` devolve um `dict` limpo na saída."
     }
   ]

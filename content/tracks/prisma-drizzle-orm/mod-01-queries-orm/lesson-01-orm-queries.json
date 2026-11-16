@@ -16,6 +16,18 @@
       ]
     },
     {
+      "type": "multiple_choice",
+      "prompt": "Quando uma tabela tem 30 colunas mas o endpoint precisa retornar apenas `id` e `email`, qual opção do Prisma devemos usar para reduzir o tráfego de rede?",
+      "options": [
+        "take",
+        "select",
+        "include",
+        "groupBy"
+      ],
+      "correctIndex": 1,
+      "explanation": "`select: { id: true, email: true }` traz apenas as colunas necessárias do banco, evitando trafegar campos pesados desnecessariamente."
+    },
+    {
       "type": "spot_the_bug",
       "prompt": "Este código sofre do clássico problema de performance N+1 (executa 1 query para buscar autores e +N queries dentro do loop). Clique na linha que dispara as queries repetidas dentro do laço:",
       "lines": [
@@ -39,6 +51,28 @@
       ],
       "options": ["findMany", "where", "include", "selectAll", "filter", "join"],
       "explanation": "No Prisma Client usamos findMany(), 'where' para condições de filtro e 'include' para trazer tabelas relacionadas."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para montar uma consulta paginada no Prisma filtrando usuários ativos e trazendo seus posts:",
+      "blocks": [
+        "  include: { posts: true },",
+        "const usuarios = await prisma.user.findMany({",
+        "  take: 20,",
+        "  where: { ativo: true },",
+        "});"
+      ],
+      "correctOrder": [1, 3, 0, 2, 4],
+      "explanation": "Abrimos `prisma.user.findMany({`, configuramos `where`, `include` e `take`, e fechamos o objeto de opções."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Usando o Prisma Client (`prisma`), busque assincronamente na entidade `user` os usuários ativos (`ativo: true`), carregando seus `posts` relacionados em uma única operação e limitando o retorno a `10` registros.",
+      "starterCode": "",
+      "requiredTokens": ["await", "prisma.user.findMany(", "where:", "include:", "take:"],
+      "sampleSolution": "const usuarios = await prisma.user.findMany({\n  where: { ativo: true },\n  include: { posts: true },\n  take: 10,\n});",
+      "hint": "Chame `await prisma.user.findMany({ ... })` passando as chaves `where`, `include` e `take`.",
+      "explanation": "Combinar `where`, `include` e `take` garante consultas filtradas, paginadas e livres do problema N+1."
     }
   ]
 }

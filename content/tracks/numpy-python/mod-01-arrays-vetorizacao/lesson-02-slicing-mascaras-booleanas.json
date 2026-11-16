@@ -16,6 +16,18 @@
       ]
     },
     {
+      "type": "multiple_choice",
+      "prompt": "O que acontece se você criar `sub = arr[0:2]` no NumPy e depois alterar `sub[0] = 999`?",
+      "options": [
+        "`arr` permanece intacto porque slices sempre criam uma cópia independente",
+        "`arr[0]` também muda para `999`, pois o slice básico retorna uma *view* compartilhando a mesma memória",
+        "O NumPy lança `ReadOnlyArrayError`",
+        "O array `sub` é convertido em lista Python"
+      ],
+      "correctIndex": 1,
+      "explanation": "Slicing básico no NumPy cria uma *view* sem copiar dados. Se precisar modificar sem afetar o original, use `arr[0:2].copy()`."
+    },
+    {
       "type": "fill_in_blank",
       "prompt": "Complete o código NumPy para pegar toda a segunda coluna da matriz `m` e filtrar elementos positivos de `v`:",
       "codeTemplate": "col = m[{{blank}}, 1]\npositivos = v[v {{blank}} 0]",
@@ -27,12 +39,35 @@
       "explanation": "`:` significa todas as linhas no eixo 0, e `v > 0` cria a máscara booleana de filtragem."
     },
     {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha que gera `ValueError` ao tentar combinar duas condições booleanas em um array NumPy:",
+      "lines": [
+        "import numpy as np",
+        "a = np.array([2, 6, 8, 12])",
+        "filtro = a > 5 & a < 10",
+        "print(a[filtro])"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Em Python, `&` tem precedência maior que `>` e `<`. É obrigatório envolver cada comparação em parênteses: `(a > 5) & (a < 10)`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para extrair a segunda coluna de `mat` e classificar seus valores como `\"Alto\"` ou `\"Baixo\"` com `np.where`:",
+      "blocks": [
+        "classificacao = np.where(col > 5, \"Alto\", \"Baixo\")",
+        "mat = np.array([[1, 3], [2, 8]])",
+        "col = mat[:, 1]"
+      ],
+      "correctOrder": [1, 2, 0],
+      "explanation": "Criamos a matriz 2D, recortamos a segunda coluna com `mat[:, 1]` e aplicamos `np.where` sobre `col`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Usando `np.where`, crie `rotulos = np.where(idades >= 18, \"Maior\", \"Menor\")`:",
-      "starterCode": "import numpy as np\n# Classifique idades >= 18 com np.where:\n",
+      "prompt": "Desafio de Código: Em Python com NumPy, use a função condicional vetorizada para criar o array `rotulos` a partir do array `idades`: atribua `\"Maior\"` quando a idade for maior ou igual a `18` e `\"Menor\"` caso contrário.",
+      "starterCode": "",
       "requiredTokens": ["rotulos", "np.where(", "idades >= 18", "\"Maior\"", "\"Menor\""],
       "sampleSolution": "rotulos = np.where(idades >= 18, \"Maior\", \"Menor\")",
-      "hint": "Escreva: rotulos = np.where(idades >= 18, \"Maior\", \"Menor\")",
+      "hint": "Use `np.where(condicao, valor_verdadeiro, valor_falso)` atribuindo o resultado a `rotulos`.",
       "explanation": "`np.where` avalia a condição vetorizada em C para todos os elementos de uma vez."
     }
   ]

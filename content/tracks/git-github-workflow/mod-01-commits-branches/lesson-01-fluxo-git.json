@@ -1,19 +1,43 @@
 {
   "id": "git-flow-01",
   "title": "Do Working Directory ao Push",
-  "description": "A sequência exata de comandos para salvar e enviar alterações.",
-  "xp": 20,
+  "description": "A sequência exata de comandos para isolar uma branch, salvar alterações localmente e enviar ao repositório remoto.",
+  "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Os 3 Estágios do Git",
-      "content": "No Git, editar um arquivo não o salva imediatamente no histórico. Primeiro criamos ou isolamos uma branch (git checkout -b), depois adicionamos os arquivos modificados à área de preparação/Staging (git add), gravamos um snapshot com mensagem (git commit -m) e enviamos ao repositório remoto (git push).",
+      "title": "Os 3 Estágios do Git até o Servidor Remoto",
+      "content": "No Git, editar um arquivo não o salva imediatamente no histórico. Primeiro isolamos nosso trabalho em uma branch (`git checkout -b nome` ou `git switch -c nome`), depois adicionamos os arquivos modificados à **Staging Area** (`git add`), gravamos um snapshot com mensagem no repositório local (`git commit -m \"...\"`) e, por fim, enviamos os commits ao repositório remoto (`git push origin <branch>`).",
       "codeExample": "git checkout -b feat/nova-trilha\ngit add .\ngit commit -m \"feat: adiciona trilha de SQL\"\ngit push origin feat/nova-trilha",
       "keyTakeaways": [
-        "git add prepara os arquivos (Staging Area).",
-        "git commit grava o ponto na história local.",
-        "git push envia os commits locais para o servidor remoto (GitHub)."
+        "`git checkout -b` (ou `git switch -c`) cria e muda para uma nova branch isolada.",
+        "`git add` prepara os arquivos na Staging Area e `git commit -m` grava o ponto na história local.",
+        "`git push origin <branch>` envia os commits locais para o servidor remoto (GitHub)."
       ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é o papel da Staging Area (`git add`) no fluxo de trabalho do Git?",
+      "options": [
+        "Enviar os arquivos automaticamente para o GitHub",
+        "Selecionar exatamente quais alterações farão parte do próximo commit antes de gravá-lo",
+        "Apagar arquivos temporários do sistema",
+        "Criar uma nova branch remota"
+      ],
+      "correctIndex": 1,
+      "explanation": "A Staging Area funciona como uma área de preparação onde você escolhe quais modificações serão incluídas no próximo `git commit`."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o fluxo completo para criar a branch `feat/perfil`, gravar um commit e enviá-la ao remoto `origin`:",
+      "codeTemplate": "git checkout -b {{blank}}\ngit add .\ngit commit {{blank}} \"feat: pagina de perfil\"\ngit {{blank}} origin feat/perfil",
+      "blanks": [
+        { "answer": "feat/perfil", "placeholder": "nome da branch" },
+        { "answer": "-m", "placeholder": "flag mensagem" },
+        { "answer": "push", "placeholder": "enviar" }
+      ],
+      "options": ["feat/perfil", "-m", "push", "pull", "-a", "main"],
+      "explanation": "`git checkout -b feat/perfil` cria a branch, `-m` passa a mensagem do commit e `git push` envia para o servidor remoto."
     },
     {
       "type": "order_code",
@@ -25,7 +49,28 @@
         "git add ."
       ],
       "correctOrder": [1, 3, 0, 2],
-      "explanation": "Primeiro criamos a branch (checkout -b), preparamos os arquivos (add), criamos o commit (commit -m) e enviamos ao remoto (push)."
+      "explanation": "Primeiro criamos a branch (`checkout -b`), preparamos os arquivos (`add`), criamos o commit (`commit -m`) e enviamos ao remoto (`push`)."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Um desenvolvedor tentou publicar sua alteração no GitHub, mas nada novo apareceu no repositório remoto! Clique na linha onde está o erro de fluxo:",
+      "lines": [
+        "git checkout -b feat/pagamento",
+        "git add .",
+        "git push origin feat/pagamento",
+        "git commit -m \"feat: checkout\""
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Na linha 3, o `git push` foi executado ANTES do `git commit`! Sem commit gravado, não há nada novo para enviar ao remoto."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva a sequência de comandos Git para criar uma nova branch `feat/busca`, adicionar todas as alterações, registrar um commit com mensagem e enviar a branch para o remoto `origin`.",
+      "starterCode": "",
+      "requiredTokens": ["git", "feat/busca", "git add", "git commit", "-m", "git push", "origin"],
+      "sampleSolution": "git checkout -b feat/busca\ngit add .\ngit commit -m \"feat: adiciona busca\"\ngit push origin feat/busca",
+      "hint": "Comece criando a branch com `checkout -b` ou `switch -c`, depois prepare os arquivos, faça o commit com `-m` e finalize enviando para `origin`.",
+      "explanation": "Esse ciclo (branch -> add -> commit -> push) é a base diária de qualquer fluxo de desenvolvimento com Git e GitHub."
     }
   ]
 }

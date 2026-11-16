@@ -1,22 +1,23 @@
 {
   "id": "react-state-02",
   "title": "Estado Reativo com useState",
-  "description": "Atualizando a interface quando os dados mudam.",
-  "xp": 20,
+  "description": "Atualizando a interface quando os dados mudam e respondendo a cliques.",
+  "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Reatividade com o Hook useState",
-      "content": "Variáveis comuns não atualizam a tela quando mudam. Para que o React re-renderize a interface automaticamente após uma interação do usuário, guardamos o valor no hook useState(valorInicial).",
-      "codeExample": "const [contador, setContador] = useState(0);\n\n// Ao chamar setContador(contador + 1), o componente re-renderiza!",
+      "title": "Reatividade com o Hook useState e Eventos",
+      "content": "Variáveis comuns não atualizam a tela quando mudam. Para que o React re-renderize a interface automaticamente após uma interação do usuário, guardamos o valor no hook `useState(valorInicial)`, que retorna uma tupla `[valorAtual, funcaoAtualizadora]`. Para disparar a atualização quando o usuário clica em um botão, passamos uma função para a prop `onClick` chamando o setter.",
+      "codeExample": "import { useState } from \"react\";\n\nfunction Contador() {\n  const [contador, setContador] = useState(0);\n\n  return (\n    <button onClick={() => setContador(contador + 1)}>\n      Cliques: {contador}\n    </button>\n  );\n}",
       "keyTakeaways": [
-        "useState retorna uma tupla: [valorAtual, funcaoAtualizadora].",
-        "Chamar a função setter agenda uma nova renderização da UI."
+        "`useState(inicial)` retorna uma tupla: `[valorAtual, funcaoAtualizadora]`.",
+        "Chamar a função setter agenda uma nova renderização da UI.",
+        "Em JSX, eventos como `onClick` recebem uma função (ex: `() => setContador(...)`)."
       ]
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Inicialize um estado 'contador' começando em 0 usando o hook do React:",
+      "prompt": "Inicialize um estado `contador` começando em 0 usando o hook do React:",
       "codeTemplate": "const [contador, setContador] = {{blank}}(0);",
       "blanks": [
         {
@@ -25,11 +26,11 @@
         }
       ],
       "options": ["useState", "useEffect", "useRef", "createState"],
-      "explanation": "O hook useState retorna um par: o valor atual do estado e a função para atualizá-lo."
+      "explanation": "O hook `useState` retorna um par: o valor atual do estado e a função para atualizá-lo."
     },
     {
       "type": "multiple_choice",
-      "prompt": "O que acontece quando chamamos a função atualizadora do useState (ex: setContador(1))?",
+      "prompt": "O que acontece quando chamamos a função atualizadora do `useState` (ex: `setContador(1)`)?",
       "options": [
         "A página inteira recarrega no navegador",
         "O React agenda uma nova renderização do componente com o novo valor",
@@ -38,6 +39,60 @@
       ],
       "correctIndex": 1,
       "explanation": "Chamar a função setter notifica o React que o estado mudou, disparando a re-renderização do componente."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Conecte o clique do botão para incrementar o estado `pontos`:",
+      "codeTemplate": "<button {{blank}}={() => setPontos(pontos + 1)}>\n  Somar\n</button>",
+      "blanks": [
+        {
+          "answer": "onClick",
+          "placeholder": "evento"
+        }
+      ],
+      "options": ["onClick", "onclick", "onPress", "onChange"],
+      "explanation": "No React JSX, manipuladores de evento usam camelCase, como `onClick`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para montar um componente com estado reativo e botão de incremento:",
+      "blocks": [
+        "  return <button onClick={() => setQtd(qtd + 1)}>{qtd}</button>;",
+        "function Curtidas() {",
+        "}",
+        "  const [qtd, setQtd] = useState(0);"
+      ],
+      "correctOrder": [1, 3, 0, 2],
+      "explanation": "Declaramos o componente, inicializamos `useState(0)` no topo da função e retornamos o botão que chama `setQtd` no `onClick`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Encontre a linha que impede a interface de atualizar quando o botão é clicado:",
+      "lines": [
+        "function LikeButton() {",
+        "  const [likes, setLikes] = useState(0);",
+        "  function curtir() {",
+        "    likes = likes + 1;",
+        "  }",
+        "  return <button onClick={curtir}>{likes}</button>;",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Alterar a variável `likes` diretamente não dispara re-renderização (e gera erro em `const`). É obrigatório usar `setLikes(likes + 1)`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Crie um componente funcional `Contador` que importe `useState`, inicialize um estado numérico em `0` e retorne um `<button>` que exiba o valor atual e o incremente em 1 a cada clique.",
+      "starterCode": "",
+      "requiredTokens": [
+        "useState(0)",
+        "function Contador",
+        "onClick",
+        "<button"
+      ],
+      "sampleSolution": "import { useState } from \"react\";\n\nfunction Contador() {\n  const [count, setCount] = useState(0);\n  return (\n    <button onClick={() => setCount(count + 1)}>\n      {count}\n    </button>\n  );\n}",
+      "hint": "Declare `const [count, setCount] = useState(0);` dentro de `function Contador()` e retorne `<button onClick={() => setCount(count + 1)}>{count}</button>`.",
+      "explanation": "`useState(0)` mantém o valor entre renderizações e `onClick` chama o setter para atualizar a UI."
     }
   ]
 }

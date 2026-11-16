@@ -1,40 +1,88 @@
 {
   "id": "sql-constraints-fk-02",
-  "title": "Integridade de Dados: PRIMARY KEY, FOREIGN KEY, UNIQUE e CHECK",
-  "description": "Proteja seu banco contra dados inválidos ou órfãos usando chaves estrangeiras, ON DELETE CASCADE e restrições CHECK.",
+  "title": "08. Integridade: PRIMARY KEY, FOREIGN KEY, UNIQUE e CHECK",
+  "description": "Garanta dados consistentes no banco com restrições de chave primária, chave estrangeira (REFERENCES), unicidade (UNIQUE) e validação (CHECK).",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Garantindo Consistência no Próprio Banco de Dados",
-      "content": "Nunca confie apenas na validação do frontend! O PostgreSQL/SQL garante integridade diretamente na estrutura da tabela com **Constraints**:\n- **`PRIMARY KEY`**: identifica unicamente cada linha (`NOT NULL` + `UNIQUE`).\n- **`FOREIGN KEY ... REFERENCES outra_tabela(id)`**: impede criar um pedido para um `cliente_id` que não existe.\n- **`UNIQUE`**: garante que dois usuários não cadastrem o mesmo `email`.\n- **`CHECK (preco > 0)`**: rejeita valores inválidos automaticamente.",
-      "codeExample": "CREATE TABLE pedidos (\n    id SERIAL PRIMARY KEY,\n    cliente_id INT NOT NULL REFERENCES clientes(id) ON DELETE CASCADE,\n    total NUMERIC(10,2) NOT NULL CHECK (total >= 0),\n    codigo VARCHAR(20) UNIQUE\n);",
+      "title": "Garantindo Consistência com Constraints no Banco",
+      "content": "Nunca dependa apenas da validação do frontend! O SQL garante integridade diretamente na definição da tabela com **Constraints**:\n\n1. **`PRIMARY KEY`**: Identifica unicamente cada linha (equivale a `UNIQUE` + `NOT NULL`).\n2. **`FOREIGN KEY` (`REFERENCES`)**: Liga uma coluna à chave primária de outra tabela, impedindo registros órfãos (ex: `aluno_id INT REFERENCES alunos(id)`). Pode incluir `ON DELETE CASCADE` para apagar filhos automaticamente ao remover o pai.\n3. **`UNIQUE`**: Impede valores duplicados na coluna (ex: `email TEXT UNIQUE NOT NULL`) e cria um índice único automaticamente.\n4. **`CHECK`**: Impõe uma regra booleana que toda linha precisa satisfazer (ex: `CHECK (idade >= 18)` ou `CHECK (preco > 0)`).",
+      "codeExample": "CREATE TABLE alunos (\n    id SERIAL PRIMARY KEY,\n    email TEXT UNIQUE NOT NULL,\n    idade INT CHECK (idade >= 16)\n);\n\nCREATE TABLE matriculas (\n    id SERIAL PRIMARY KEY,\n    aluno_id INT NOT NULL REFERENCES alunos(id) ON DELETE CASCADE,\n    nota NUMERIC CHECK (nota >= 0 AND nota <= 10)\n);",
       "keyTakeaways": [
-        "`REFERENCES tabela(id)` cria uma chave estrangeira impedindo registros órfãos.",
-        "`ON DELETE CASCADE` apaga os pedidos filhos automaticamente se o cliente pai for excluído (use com cautela!).",
-        "`UNIQUE` cria automaticamente um índice único no PostgreSQL, acelerando buscas por aquela coluna."
+        "REFERENCES tabela(id) cria uma chave estrangeira impedindo referências a IDs inexistentes.",
+        "UNIQUE bloqueia duplicatas na coluna; NOT NULL proíbe valores nulos.",
+        "CHECK (condicao) valida regras de negócio diretamente no banco antes de aceitar INSERT/UPDATE."
       ]
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a definição da tabela `matriculas` garantindo chave primária, email único e idade mínima de 18 anos:",
-      "codeTemplate": "CREATE TABLE alunos (\n    id SERIAL {{blank}} KEY,\n    email VARCHAR(120) {{blank}} NOT NULL,\n    idade INT {{blank}} (idade >= 18)\n);",
+      "prompt": "Complete a definição da tabela 'alunos' garantindo chave primária, email único e idade mínima de 18 anos:",
+      "codeTemplate": "CREATE TABLE alunos (\n    id SERIAL {{blank}},\n    email TEXT {{blank}} NOT NULL,\n    idade INT {{blank}} (idade >= 18)\n);",
       "blanks": [
-        { "answer": "PRIMARY", "placeholder": "primária" },
+        { "answer": "PRIMARY KEY", "placeholder": "chave" },
         { "answer": "UNIQUE", "placeholder": "único" },
         { "answer": "CHECK", "placeholder": "validação" }
       ],
-      "options": ["PRIMARY", "UNIQUE", "CHECK", "FOREIGN", "DEFAULT"],
-      "explanation": "`PRIMARY KEY` identifica a linha, `UNIQUE` impede e-mails duplicados e `CHECK` valida regras numéricas/lógicas."
+      "options": ["PRIMARY KEY", "UNIQUE", "CHECK", "REFERENCES"],
+      "explanation": "PRIMARY KEY identifica a linha, UNIQUE proíbe emails repetidos e CHECK valida a regra idade >= 18."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "O que a constraint REFERENCES clientes(id) faz em uma coluna cliente_id da tabela pedidos?",
+      "options": [
+        "Copia todos os dados do cliente para a tabela pedidos",
+        "Impede inserir um pedido com um cliente_id que não exista na tabela clientes",
+        "Ordena os pedidos pelo id do cliente",
+        "Permite que cliente_id tenha valores duplicados apenas uma vez"
+      ],
+      "correctIndex": 1,
+      "explanation": "A chave estrangeira (REFERENCES) garante integridade referencial, bloqueando pedidos apontando para clientes inexistentes."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "A tabela abaixo tenta criar uma regra CHECK para impedir salários negativos, mas usa sintaxe inválida. Qual linha tem o bug?",
+      "lines": [
+        "CREATE TABLE cargos (",
+        "    id SERIAL PRIMARY KEY,",
+        "    salario NUMERIC VALIDATE (salario > 0)",
+        ");"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Em SQL não existe a palavra-chave VALIDATE; a constraint correta é CHECK (salario > 0)."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a tabela 'pedidos' com chave estrangeira para 'clientes' (removendo pedidos se o cliente for excluído) e valor positivo:",
+      "codeTemplate": "CREATE TABLE pedidos (\n    id SERIAL PRIMARY KEY,\n    cliente_id INT NOT NULL {{blank}} clientes(id) ON DELETE {{blank}},\n    valor NUMERIC {{blank}} (valor > 0)\n);",
+      "blanks": [
+        { "answer": "REFERENCES", "placeholder": "FK" },
+        { "answer": "CASCADE", "placeholder": "efeito" },
+        { "answer": "CHECK", "placeholder": "regra" }
+      ],
+      "options": ["REFERENCES", "CASCADE", "CHECK", "UNIQUE"],
+      "explanation": "REFERENCES cria a FK, ON DELETE CASCADE propaga a exclusão e CHECK (valor > 0) garante valores positivos."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para criar a tabela 'produtos' antes da tabela 'itens_pedido' que a referencia:",
+      "blocks": [
+        "    produto_id INT NOT NULL REFERENCES produtos(id)",
+        "CREATE TABLE produtos (id SERIAL PRIMARY KEY, sku TEXT UNIQUE);",
+        "CREATE TABLE itens_pedido (",
+        ");"
+      ],
+      "correctOrder": [1, 2, 0, 3],
+      "explanation": "A tabela referenciada (produtos) precisa existir antes da tabela que declara REFERENCES produtos(id)."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva um `CREATE TABLE itens` com `id SERIAL PRIMARY KEY`, `produto_id INT REFERENCES produtos(id)` e `qtd INT CHECK (qtd > 0)`: ",
-      "starterCode": "-- Crie a tabela itens com FOREIGN KEY e CHECK:\n",
-      "requiredTokens": ["CREATE TABLE", "itens", "PRIMARY KEY", "REFERENCES", "produtos(id)", "CHECK"],
-      "sampleSolution": "CREATE TABLE itens (\n    id SERIAL PRIMARY KEY,\n    produto_id INT REFERENCES produtos(id),\n    qtd INT CHECK (qtd > 0)\n);",
-      "hint": "Defina `CREATE TABLE itens (id SERIAL PRIMARY KEY, produto_id INT REFERENCES produtos(id), qtd INT CHECK (qtd > 0));`.",
-      "explanation": "Modelar constraints no DDL evita dados corrompidos mesmo que múltiplos serviços escrevam no mesmo banco."
+      "prompt": "Crie uma tabela chamada 'itens' com uma coluna 'id' chave primária autoincremental, uma coluna 'produto_id' inteira referenciando a coluna 'id' da tabela 'produtos', e uma coluna 'quantidade' inteira com restrição que exija valor maior que zero.",
+      "starterCode": "",
+      "requiredTokens": ["CREATE", "TABLE", "itens", "PRIMARY KEY", "REFERENCES", "produtos", "CHECK"],
+      "sampleSolution": "CREATE TABLE itens (\n    id SERIAL PRIMARY KEY,\n    produto_id INT NOT NULL REFERENCES produtos(id),\n    quantidade INT NOT NULL CHECK (quantidade > 0)\n);",
+      "hint": "Combine SERIAL PRIMARY KEY, REFERENCES produtos(id) e CHECK (quantidade > 0) dentro do CREATE TABLE itens.",
+      "explanation": "A definição aplica integridade de entidade (PRIMARY KEY), integridade referencial (REFERENCES) e regra de domínio (CHECK)."
     }
   ]
 }

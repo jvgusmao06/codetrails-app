@@ -8,11 +8,16 @@
       "type": "theory",
       "title": "Estado de servidor sem boilerplate",
       "content": "Em vez de controlar `useState`, `useEffect`, `isLoading` e `error` na mão, o **TanStack Query** gerencia dados remotos de forma declarativa:\n\n- `useQuery({ queryKey, queryFn })`: busca e armazena dados em cache pela `queryKey` (ex: `[\"users\", id]`).\n- `useMutation({ mutationFn, onSuccess })`: executa `POST`/`PUT`/`DELETE` e permite atualizar a UI.\n- `queryClient.invalidateQueries({ queryKey })`: marca o cache como obsoleto após uma mutação para refazer o fetch automaticamente.",
-      "codeExample": "import { useQuery, useMutation, useQueryClient } from \"@tanstack/react-query\";\n\ntype User = { id: number; name: string };\n\nconst { data, isPending } = useQuery<User[]>({\n  queryKey: [\"users\"],\n  queryFn: () => fetch(\"/api/users\").then((r) => r.json()),\n});\n\nconst queryClient = useQueryClient();\nconst createUser = useMutation({\n  mutationFn: (name: string) =>\n    fetch(\"/api/users\", { method: \"POST\", body: JSON.stringify({ name }) }),\n  onSuccess: () => queryClient.invalidateQueries({ queryKey: [\"users\"] }),\n});"
+      "codeExample": "import { useQuery, useMutation, useQueryClient } from \"@tanstack/react-query\";\n\ntype User = { id: number; name: string };\n\nconst { data, isPending } = useQuery<User[]>({\n  queryKey: [\"users\"],\n  queryFn: () => fetch(\"/api/users\").then((r) => r.json()),\n});\n\nconst queryClient = useQueryClient();\nconst createUser = useMutation({\n  mutationFn: (name: string) =>\n    fetch(\"/api/users\", { method: \"POST\", body: JSON.stringify({ name }) }),\n  onSuccess: () => queryClient.invalidateQueries({ queryKey: [\"users\"] }),\n});",
+      "keyTakeaways": [
+        "`useQuery` gerencia cache, loading (`isPending`) e refetch automático pela `queryKey`.",
+        "`useMutation` encapsula operações de escrita (`POST`/`PUT`/`DELETE`) com `mutationFn` e callbacks como `onSuccess`.",
+        "`queryClient.invalidateQueries({ queryKey })` força a atualização das queries ativas após uma mutação."
+      ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual método do QueryClient força o TanStack Query a marcar uma query em cache como obsoleta e refazer a requisição quando necessário?",
+      "prompt": "Qual método do `QueryClient` força o TanStack Query a marcar uma query em cache como obsoleta e refazer a requisição quando necessário?",
       "options": [
         "queryClient.invalidateQueries({ queryKey: [\"users\"] })",
         "queryClient.clearCache(\"users\")",
@@ -20,11 +25,11 @@
         "queryClient.deleteState([\"users\"])"
       ],
       "correctIndex": 0,
-      "explanation": "invalidateQueries marca as queries correspondentes à queryKey como stale e dispara refetch automático se estiverem ativas na tela."
+      "explanation": "`invalidateQueries` marca as queries correspondentes à `queryKey` como stale e dispara refetch automático se estiverem ativas na tela."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a chamada de useQuery tipada para buscar a lista de tarefas:",
+      "prompt": "Complete a chamada de `useQuery` tipada para buscar a lista de tarefas:",
       "codeTemplate": "const { data, isPending } = {{blank}}<Todo[]>({\n  {{blank}}: [\"todos\"],\n  {{blank}}: () => fetch(\"/api/todos\").then((r) => r.json()),\n});",
       "blanks": [
         { "answer": "useQuery" },
@@ -32,7 +37,32 @@
         { "answer": "queryFn" }
       ],
       "options": ["useQuery", "useMutation", "queryKey", "cacheKey", "queryFn", "fetchFn"],
-      "explanation": "useQuery recebe um objeto com queryKey (identificador único do cache) e queryFn (função que retorna uma Promise)."
+      "explanation": "`useQuery` recebe um objeto com `queryKey` (identificador único do cache) e `queryFn` (função que retorna uma Promise)."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a mutação para criar um usuário e invalidar o cache `[\"users\"]` após o sucesso:",
+      "codeTemplate": "const createUser = {{blank}}({\n  {{blank}}: (name: string) => fetch(\"/api/users\", { method: \"POST\", body: JSON.stringify({ name }) }),\n  {{blank}}: () => queryClient.invalidateQueries({ queryKey: [\"users\"] }),\n});",
+      "blanks": [
+        { "answer": "useMutation" },
+        { "answer": "mutationFn" },
+        { "answer": "onSuccess" }
+      ],
+      "options": ["useMutation", "useQuery", "mutationFn", "queryFn", "onSuccess", "onComplete"],
+      "explanation": "`useMutation` recebe `mutationFn` para executar a alteração no servidor e `onSuccess` para reagir quando a operação conclui."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para configurar o `queryClient`, criar uma mutação de exclusão e invalidar a lista em cache no `onSuccess`:",
+      "blocks": [
+        "const deleteTodo = useMutation({",
+        "const queryClient = useQueryClient();",
+        "  onSuccess: () => queryClient.invalidateQueries({ queryKey: [\"todos\"] }),",
+        "  mutationFn: (id: number) => fetch(`/api/todos/${id}`, { method: \"DELETE\" }),",
+        "});"
+      ],
+      "correctOrder": [1, 0, 3, 2, 4],
+      "explanation": "Primeiro obtemos `queryClient` com `useQueryClient()`, depois definimos `useMutation` com `mutationFn` e invalidamos `[\"todos\"]` em `onSuccess`."
     },
     {
       "type": "spot_the_bug",
@@ -47,21 +77,24 @@
         "});"
       ],
       "buggyLineIndex": 4,
-      "explanation": "No TanStack Query v5, invalidateQueries recebe um objeto de filtro com array: queryClient.invalidateQueries({ queryKey: [\"posts\"] })."
+      "explanation": "No TanStack Query v5, `invalidateQueries` recebe um objeto de filtro com array: `queryClient.invalidateQueries({ queryKey: [\"posts\"] })`."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma chamada useQuery<Product[]> com queryKey [\"products\"] e queryFn buscando de \"/api/products\".",
-      "starterCode": "import { useQuery } from \"@tanstack/react-query\";\n\ntype Product = { id: number; title: string };\n\n// Escreva const { data } = useQuery<Product[]>(...)",
+      "prompt": "Use o TanStack Query para buscar uma lista tipada de `Product[]` na chave de cache `[\"products\"]` a partir do endpoint `\"/api/products\"`, e em seguida configure uma mutação que envia um POST para criar um produto e invalida o cache de produtos ao concluir com sucesso.",
+      "starterCode": "",
       "requiredTokens": [
         "useQuery<Product[]>",
         "queryKey:",
         "[\"products\"]",
-        "queryFn:"
+        "queryFn:",
+        "useMutation",
+        "mutationFn:",
+        "invalidateQueries"
       ],
-      "sampleSolution": "import { useQuery } from \"@tanstack/react-query\";\n\ntype Product = { id: number; title: string };\n\nconst { data } = useQuery<Product[]>({\n  queryKey: [\"products\"],\n  queryFn: () => fetch(\"/api/products\").then((r) => r.json()),\n});",
-      "hint": "Passe { queryKey: [\"products\"], queryFn: () => fetch(\"/api/products\").then((r) => r.json()) } para useQuery<Product[]>().",
-      "explanation": "Passar o tipo genérico <Product[]> garante que data seja inferido como Product[] | undefined."
+      "sampleSolution": "import { useQuery, useMutation, useQueryClient } from \"@tanstack/react-query\";\n\ntype Product = { id: number; title: string };\n\nconst { data } = useQuery<Product[]>({\n  queryKey: [\"products\"],\n  queryFn: () => fetch(\"/api/products\").then((r) => r.json()),\n});\n\nconst queryClient = useQueryClient();\nconst createProduct = useMutation({\n  mutationFn: (title: string) =>\n    fetch(\"/api/products\", { method: \"POST\", body: JSON.stringify({ title }) }),\n  onSuccess: () => queryClient.invalidateQueries({ queryKey: [\"products\"] }),\n});",
+      "hint": "Combine `useQuery<Product[]>({ queryKey: [\"products\"], queryFn: ... })` com `useMutation({ mutationFn: ..., onSuccess: () => queryClient.invalidateQueries({ queryKey: [\"products\"] }) })`.",
+      "explanation": "Essa dupla mantém a lista de produtos tipada em cache e garante atualização automática da UI após novas criações."
     }
   ]
 }

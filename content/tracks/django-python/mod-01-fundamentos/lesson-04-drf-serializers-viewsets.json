@@ -7,12 +7,12 @@
     {
       "type": "theory",
       "title": "Construindo APIs Profissionais com DRF",
-      "content": "O **Django REST Framework (DRF)** é a extensão padrão para transformar projetos Django em APIs REST. O **`ModelSerializer`** converte instâncias de Model em JSON (e valida JSON recebido para salvar no banco). Já o **`ModelViewSet`** entrega todos os endpoints CRUD (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) em poucas linhas!",
-      "codeExample": "from rest_framework import serializers, viewsets\nfrom .models import Curso\n\nclass CursoSerializer(serializers.ModelSerializer):\n    class Meta:\n        model = Curso\n        fields = [\"id\", \"titulo\", \"ativo\"]\n\nclass CursoViewSet(viewsets.ModelViewSet):\n    queryset = Curso.objects.all()\n    serializer_class = CursoSerializer",
+      "content": "O **Django REST Framework (DRF)** é a extensão padrão para transformar projetos Django em APIs REST. O **`ModelSerializer`** converte instâncias de Model em JSON e valida dados recebidos antes de salvar (via `serializer.is_valid(raise_exception=True)`).\n\nJá o **`ModelViewSet`** entrega todos os endpoints CRUD (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) em poucas linhas, bastando definir `queryset` e `serializer_class`, e conectá-lo a um **`DefaultRouter()`** no `urls.py`.",
+      "codeExample": "from rest_framework import serializers, viewsets\nfrom rest_framework.routers import DefaultRouter\nfrom .models import Curso\n\nclass CursoSerializer(serializers.ModelSerializer):\n    class Meta:\n        model = Curso\n        fields = [\"id\", \"titulo\", \"ativo\"]\n\nclass CursoViewSet(viewsets.ModelViewSet):\n    queryset = Curso.objects.all()\n    serializer_class = CursoSerializer\n\nrouter = DefaultRouter()\nrouter.register(\"cursos\", CursoViewSet)",
       "keyTakeaways": [
         "Sempre liste explicitamente `fields = [...]` no `Meta` (evite `fields = '__all__'` em produção para não expor campos sensíveis).",
-        "`serializer.is_valid(raise_exception=True)` retorna HTTP 400 automaticamente com os erros de validação.",
-        "Conecte `ViewSet` com `DefaultRouter()` no `urls.py`."
+        "`serializer.is_valid(raise_exception=True)` valida os dados e retorna HTTP 400 automaticamente antes de `serializer.save()`.",
+        "Em `ModelViewSet`, defina `queryset` e `serializer_class`, e registre a rota com `DefaultRouter()`."
       ]
     },
     {
@@ -28,13 +28,57 @@
       "explanation": "Declarar uma lista explícita em `fields` garante controle rigoroso sobre o contrato público da sua API."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete o `ModelViewSet` e o registro automático de rotas com `DefaultRouter` no DRF:",
+      "codeTemplate": "class CursoViewSet(viewsets.{{blank}}):\n    {{blank}} = Curso.objects.all()\n    {{blank}} = CursoSerializer\n\nrouter = {{blank}}()\nrouter.register(\"cursos\", CursoViewSet)",
+      "blanks": [
+        { "answer": "ModelViewSet", "placeholder": "viewset" },
+        { "answer": "queryset", "placeholder": "consulta" },
+        { "answer": "serializer_class", "placeholder": "serializer" },
+        { "answer": "DefaultRouter", "placeholder": "roteador" }
+      ],
+      "options": ["ModelViewSet", "queryset", "serializer_class", "DefaultRouter", "APIView", "serializer"],
+      "explanation": "`ModelViewSet` exige `queryset` e `serializer_class`, e `DefaultRouter()` gera todas as rotas CRUD automaticamente."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este endpoint manual com DRF tenta salvar os dados enviados pelo cliente, mas pula uma etapa obrigatória de validação (o que gera AssertionError no DRF). Clique na linha com o problema:",
+      "lines": [
+        "def criar_curso(request):",
+        "    serializer = CursoSerializer(data=request.data)",
+        "    serializer.save()",
+        "    return Response(serializer.data, status=201)"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "No DRF, não é permitido chamar `serializer.save()` sem antes validar com `serializer.is_valid(raise_exception=True)`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para estruturar uma API REST completa com DRF do serializer até o roteador:",
+      "blocks": [
+        "router = DefaultRouter()\nrouter.register(\"cursos\", CursoViewSet)",
+        "class CursoViewSet(viewsets.ModelViewSet):\n    queryset = Curso.objects.all()\n    serializer_class = CursoSerializer",
+        "class CursoSerializer(serializers.ModelSerializer):\n    class Meta:\n        model = Curso\n        fields = [\"id\", \"titulo\"]"
+      ],
+      "correctOrder": [2, 1, 0],
+      "explanation": "Primeiro definimos `CursoSerializer`, depois `CursoViewSet` referenciando o serializer, e por fim registramos o viewset no `DefaultRouter`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie um `class TarefaSerializer(serializers.ModelSerializer):` com `class Meta:` definindo `model = Tarefa` e `fields = [\"id\", \"titulo\"]`:",
-      "starterCode": "# Crie TarefaSerializer herdando de serializers.ModelSerializer:\n",
-      "requiredTokens": ["class", "TarefaSerializer", "serializers.ModelSerializer", "class Meta:", "model = Tarefa", "fields"],
-      "sampleSolution": "class TarefaSerializer(serializers.ModelSerializer):\n    class Meta:\n        model = Tarefa\n        fields = [\"id\", \"titulo\"]",
-      "hint": "Defina `class TarefaSerializer(serializers.ModelSerializer):` com `class Meta:` dentro.",
-      "explanation": "`ModelSerializer` automatiza a conversão bidirecional entre objetos Django e JSON."
+      "prompt": "Crie o serializer `TarefaSerializer` para o model `Tarefa` expondo explicitamente os campos `\"id\"` e `\"titulo\"`. Em seguida, crie o viewset `TarefaViewSet` que consulta todos os registros de `Tarefa` usando esse serializer.",
+      "starterCode": "",
+      "requiredTokens": [
+        "class TarefaSerializer(serializers.ModelSerializer):",
+        "class Meta:",
+        "model = Tarefa",
+        "fields",
+        "class TarefaViewSet(viewsets.ModelViewSet):",
+        "queryset = Tarefa.objects.all()",
+        "serializer_class = TarefaSerializer"
+      ],
+      "sampleSolution": "class TarefaSerializer(serializers.ModelSerializer):\n    class Meta:\n        model = Tarefa\n        fields = [\"id\", \"titulo\"]\n\nclass TarefaViewSet(viewsets.ModelViewSet):\n    queryset = Tarefa.objects.all()\n    serializer_class = TarefaSerializer",
+      "hint": "Defina `TarefaSerializer` herdando de `serializers.ModelSerializer` com `class Meta:` e depois `TarefaViewSet` herdando de `viewsets.ModelViewSet` com `queryset` e `serializer_class`.",
+      "explanation": "A dupla `ModelSerializer` + `ModelViewSet` fornece serialização, validação e todos os endpoints CRUD padronizados no DRF."
     }
   ]
 }

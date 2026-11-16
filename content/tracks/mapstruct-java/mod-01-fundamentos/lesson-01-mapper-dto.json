@@ -28,12 +28,49 @@
       "explanation": "Ao gerar código na compilação (Annotation Processing), o MapStruct elimina reflection em runtime e detecta erros de mapeamento no build."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete o mapper MapStruct integrado ao Spring que renomeia o campo `nomeCompleto` da entidade para `nome` no DTO:",
+      "codeTemplate": "@Mapper({{blank}} = \"spring\")\npublic interface UsuarioMapper {\n    @Mapping({{blank}} = \"nomeCompleto\", {{blank}} = \"nome\")\n    UsuarioDto toDto(Usuario entity);\n}",
+      "blanks": [
+        { "answer": "componentModel", "placeholder": "modelo" },
+        { "answer": "source", "placeholder": "origem" },
+        { "answer": "target", "placeholder": "destino" }
+      ],
+      "options": ["componentModel", "source", "target", "from", "to", "springModel"],
+      "explanation": "`componentModel = \"spring\"` registra o bean no Spring, enquanto `@Mapping(source = ..., target = ...)` conecta campos com nomes diferentes."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Identifique o erro na declaração deste mapper MapStruct:",
+      "lines": [
+        "@Mapper(componentModel = \"spring\")",
+        "public class ProdutoMapper {",
+        "    ProdutoDto toDto(Produto entity);",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "O MapStruct gera a implementação concreta automaticamente apenas a partir de uma `interface` (ou classe abstrata), nunca de uma `class` concreta com método sem corpo."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para definir um mapper MapStruct com renomeação de campo e integração Spring:",
+      "blocks": [
+        "    UsuarioDto toDto(Usuario entity);",
+        "@Mapper(componentModel = \"spring\")",
+        "    @Mapping(source = \"nomeCompleto\", target = \"nome\")",
+        "public interface UsuarioMapper {",
+        "}"
+      ],
+      "correctOrder": [1, 3, 2, 0, 4],
+      "explanation": "A anotação `@Mapper` vai acima da interface, e `@Mapping` vai imediatamente acima da assinatura do método `toDto`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie uma interface `@Mapper(componentModel = \"spring\") public interface PedidoMapper` com o método `PedidoDto toDto(Pedido entity);`:",
-      "starterCode": "// Crie a interface PedidoMapper com MapStruct:\n",
+      "prompt": "Desafio de Código: Em Java com MapStruct, defina a interface pública `PedidoMapper` configurada para ser injetada pelo Spring, declarando um método `toDto` que converte `Pedido entity` para `PedidoDto`.",
+      "starterCode": "",
       "requiredTokens": ["@Mapper(componentModel = \"spring\")", "public interface PedidoMapper", "PedidoDto toDto(Pedido entity);"],
       "sampleSolution": "@Mapper(componentModel = \"spring\")\npublic interface PedidoMapper {\n    PedidoDto toDto(Pedido entity);\n}",
-      "hint": "Coloque `@Mapper(componentModel = \"spring\")` acima de `public interface PedidoMapper { PedidoDto toDto(Pedido entity); }`.",
+      "hint": "Anote `public interface PedidoMapper` com `@Mapper(componentModel = \"spring\")` e declare `PedidoDto toDto(Pedido entity);`.",
       "explanation": "O processador de anotações do MapStruct cria automaticamente a classe `PedidoMapperImpl` durante o `mvn compile` / `gradle build`."
     }
   ]

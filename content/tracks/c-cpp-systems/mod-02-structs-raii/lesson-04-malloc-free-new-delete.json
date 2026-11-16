@@ -1,0 +1,71 @@
+{
+  "id": "cpp-stack-heap-memoria-04",
+  "title": "Stack vs Heap: malloc/free (C) vs new/delete e RAII (C++)",
+  "description": "Entenda a diferença entre memória Stack e Heap, alocação manual em C/C++ e por que C++ moderno prefere RAII.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Memória Stack vs Heap e Alocação Dinâmica",
+      "content": "Variáveis locais comuns vivem na **Stack**: são muito rápidas e liberadas automaticamente ao fim da função. Quando precisamos de blocos maiores ou cujo tempo de vida ultrapasse a função, usamos a **Heap**.\n- Em **C puro** (`<stdlib.h>`): alocamos bytes brutos com `malloc(tamanho)` e liberamos com `free(ptr)` (nunca chame `free` duas vezes).\n- Em **C++ clássico**: usamos `new` (ou `new[]` para arrays) e `delete` (ou `delete[]`).\n- Em **C++ moderno**: evitamos `new`/`delete` manuais usando `std::unique_ptr` com `std::make_unique`, pois um esquecimento de `delete` causa **Memory Leak**.",
+      "codeExample": "// C puro:\n#include <stdlib.h>\nint* pC = (int*)malloc(sizeof(int));\n*pC = 42;\nfree(pC);\n\n// C++ moderno (RAII):\n#include <memory>\nauto pCpp = std::make_unique<int>(42); // sem delete manual!",
+      "keyTakeaways": [
+        "Stack tem alocação automática e rápida; Heap exige gerenciamento de tempo de vida.",
+        "Em C, `malloc` é pareado com `free`; em C++ clássico, `new` com `delete` (e `new[]` com `delete[]`).",
+        "Em C++ moderno, `std::make_unique` elimina memory leaks e double-free."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Em C puro, qual função libera um bloco de memória alocado anteriormente com `malloc()`?",
+      "options": ["delete", "free", "release", "clear"],
+      "correctIndex": 1,
+      "explanation": "Em C (`<stdlib.h>`), todo bloco obtido com `malloc()` ou `calloc()` deve ser liberado exatamente uma vez com `free()`."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o par de alocação e liberação manual em C++ clássico para um array dinâmico de 10 inteiros:",
+      "codeTemplate": "int* arr = {{blank}} int[10];\narr[0] = 5;\n{{blank}}[] arr;",
+      "blanks": [
+        { "answer": "new", "placeholder": "alocar" },
+        { "answer": "delete", "placeholder": "liberar" }
+      ],
+      "options": ["new", "delete", "malloc", "free"],
+      "explanation": "Em C++ clássico, `new T[N]` deve ser sempre pareado com `delete[]`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O código C abaixo aloca memória com `malloc`, mas causa um erro grave de memória (Double Free / uso após liberação). Clique na linha onde o bug ocorre:",
+      "lines": [
+        "int* p = (int*)malloc(sizeof(int));",
+        "*p = 10;",
+        "free(p);",
+        "free(p);"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Chamar `free(p)` uma segunda vez no mesmo ponteiro causa comportamento indefinido (Double Free). Após liberar, é boa prática atribuir `p = NULL;`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para alocar um inteiro na Heap em C com segurança (verificando se `malloc` não retornou nulo) e liberá-lo:",
+      "blocks": [
+        "int* p = (int*)malloc(sizeof(int));",
+        "if (p != NULL) {",
+        "    *p = 77;",
+        "    free(p);",
+        "}"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "explanation": "Alocamos com `malloc`, verificamos se `p != NULL`, usamos `*p` e liberamos com `free(p)`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva um programa em C++ moderno (com `<iostream>` e `<memory>`) que aloque um inteiro na Heap com valor `99` usando smart pointer exclusivo com RAII (sem `new` ou `delete` manuais), guarde em uma variável `numero` com inferência de tipo e imprima o valor apontado via `std::cout`.",
+      "starterCode": "",
+      "requiredTokens": ["#include", "<memory>", "<iostream>", "auto numero", "std::make_unique<int>", "*numero", "std::cout", "return 0"],
+      "sampleSolution": "#include <iostream>\n#include <memory>\n\nint main() {\n    auto numero = std::make_unique<int>(99);\n    std::cout << *numero << std::endl;\n    return 0;\n}",
+      "hint": "Use `auto numero = std::make_unique<int>(99);` e desreferencie com `*numero` no `std::cout`.",
+      "explanation": "`std::make_unique<int>(99)` aloca e inicializa o inteiro na Heap com liberação automática ao fim de `main()`."
+    }
+  ]
+}

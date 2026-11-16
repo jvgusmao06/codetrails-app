@@ -8,7 +8,7 @@
       "type": "theory",
       "title": "Criando Variáveis, Constantes e Condicionais em Go",
       "content": "Todo programa executável em Go começa com 'package main' e a função 'func main()'. Para criar variáveis, existem duas formas: 'var nome string = \"Go\"' (explícita, válida dentro e fora de funções) ou o operador curto 'nome := \"Go\"' (inferência de tipo, válido apenas dentro de funções). Se você declarar 'var idade int' sem valor, o Go atribui automaticamente o 'Zero Value' seguro (0 para números, \"\" para string, false para bool). Em condicionais 'if' e 'switch', não usamos parênteses ao redor da condição, e o 'switch' do Go não precisa de 'break' em cada case!",
-      "codeExample": "package main\nimport \"fmt\"\n\nconst Versao = \"1.22\"\n\nfunc main() {\n    var saldo int          // Zero value = 0\n    ativo := true          // Inferência curta (bool)\n\n    if ativo && saldo == 0 {\n        fmt.Println(\"Conta nova na versão\", Versao)\n    }\n}",
+      "codeExample": "package main\nimport \"fmt\"\n\nconst Versao = \"1.22\"\n\nfunc main() {\n    var saldo int          // Zero value = 0\n    ativo := true          // Inferência curta (bool)\n\n    if ativo && saldo == 0 {\n        fmt.Println(\"Conta nova na versão\", Versao)\n    }\n\n    switch saldo {\n    case 0:\n        fmt.Println(\"Sem saldo\")\n    default:\n        fmt.Println(\"Saldo disponível\")\n    }\n}",
       "keyTakeaways": [
         "Use ':=' para criar e inicializar variáveis rapidamente dentro de funções; use '=' para alterar uma variável que já existe.",
         "Go não possui variáveis 'não inicializadas' com lixo de memória: toda variável recebe seu Zero Value (0, \"\", false ou nil).",
@@ -28,12 +28,63 @@
       "explanation": "'const' define constantes em tempo de compilação, 'var' declara variáveis explicitamente e ':=' declara e infere o tipo."
     },
     {
+      "type": "multiple_choice",
+      "prompt": "Qual será o valor impresso ao declarar 'var ativo bool' e 'var nome string' sem inicializá-las em Go?",
+      "codeSnippet": "var ativo bool\nvar nome string\nfmt.Println(ativo, nome)",
+      "options": [
+        "Erro de compilação por variáveis não inicializadas",
+        "undefined e null",
+        "false e \"\" (string vazia)",
+        "0 e nil"
+      ],
+      "correctIndex": 2,
+      "explanation": "Em Go, toda variável declarada sem valor inicial recebe seu Zero Value seguro: false para bool, \"\" para string e 0 para tipos numéricos."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o bloco switch em Go sem usar parênteses nem 'break':",
+      "codeTemplate": "perfil := \"admin\"\n{{blank}} perfil {\n{{blank}} \"admin\":\n    fmt.Println(\"Acesso total\")\n{{blank}}:\n    fmt.Println(\"Acesso padrão\")\n}",
+      "blanks": [
+        { "answer": "switch", "placeholder": "condicional" },
+        { "answer": "case", "placeholder": "caso" },
+        { "answer": "default", "placeholder": "padrão" }
+      ],
+      "options": ["switch", "case", "default", "if", "else", "break"],
+      "explanation": "Em Go, 'switch' não usa parênteses e cada 'case' encerra automaticamente sem precisar de 'break'."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Encontre a linha com erro ao tentar atualizar uma variável já declarada dentro de uma função:",
+      "lines": [
+        "func main() {",
+        "    pontos := 10",
+        "    if pontos >= 10 {",
+        "        pontos := 20",
+        "    }",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Dentro do bloco 'if', 'pontos := 20' cria uma nova variável local (shadowing) em vez de atualizar a variável externa. Para reatribuir, use '=' (pontos = 20)."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene as linhas para formar um programa Go completo que declara uma variável com zero value e usa um condicional if:",
+      "blocks": [
+        "func main() {",
+        "package main",
+        "    var tentativas int\n    if tentativas == 0 {\n        fmt.Println(\"Primeira tentativa\")\n    }\n}",
+        "import \"fmt\""
+      ],
+      "correctOrder": [1, 3, 0, 2],
+      "explanation": "Todo arquivo executável em Go começa com 'package main', seguido de 'import' e da função 'func main()'."
+    },
+    {
       "type": "write_code",
-      "prompt": "Escreva do zero em Go a criação de uma variável 'pontos' com valor 10 usando ':=' e um 'if pontos >= 10' que chame 'fmt.Println(pontos)':",
-      "starterCode": "// Crie a variável pontos e o bloco if abaixo:\n",
-      "requiredTokens": ["pontos", ":=", "10", "if", "fmt.Println"],
-      "sampleSolution": "pontos := 10\nif pontos >= 10 {\n    fmt.Println(pontos)\n}",
-      "hint": "Escreva: pontos := 10 na primeira linha e if pontos >= 10 { fmt.Println(pontos) } abaixo.",
+      "prompt": "Desafio de Código: Declare uma constante chamada 'Limite' com valor 10, crie uma variável 'pontos' com valor 10 usando inferência curta e escreva uma condicional 'if' verificando se 'pontos' é maior ou igual a 'Limite' para imprimir uma mensagem com 'fmt.Println'.",
+      "starterCode": "",
+      "requiredTokens": ["const", "Limite", "pontos", ":=", "if", "fmt.Println"],
+      "sampleSolution": "const Limite = 10\npontos := 10\nif pontos >= Limite {\n    fmt.Println(pontos)\n}",
+      "hint": "Combine 'const', ':=' para a variável e um bloco 'if' com chaves '{}' chamando 'fmt.Println'.",
       "explanation": "Em Go não colocamos parênteses na condição do if, mas as chaves '{ }' são sempre obrigatórias."
     }
   ]

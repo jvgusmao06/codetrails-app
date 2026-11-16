@@ -1,44 +1,86 @@
 {
   "id": "py-sets-tuplas-lambda-04",
-  "title": "10. Tuplas, Sets e Lambda",
-  "description": "Domine coleções imutáveis (tuple), conjuntos sem duplicatas (set), funções anônimas (lambda) e funções nativas como zip() e sorted().",
+  "title": "11. Tuplas, Sets e Lambda",
+  "description": "Use tuplas imutáveis para dados fixos, sets para eliminar duplicatas e funções anônimas lambda para ordenações customizadas.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Tuplas, Sets e Funções Nativas de Alta Produtividade",
-      "content": "Além de listas e dicionários, Python tem duas estruturas essenciais: **Tuplas `(10, 20)`** são sequências *imutáveis* (ótimas para coordenadas ou retornos múltiplos) e **Sets `{1, 2, 3}`** armazenam apenas elementos *únicos* com busca em $O(1)$ (`in` instantâneo!). Além disso, `lambda x: x * 2` cria funções rápidas em uma linha para passar em `sorted(lista, key=lambda ...)` e `zip(nomes, notas)` emparelha duas listas elemento a elemento.",
-      "codeExample": "coordenada = (-23.5, -46.6)       # Tupla imutável\ntags = set([\"py\", \"web\", \"py\"])   # {'py', 'web'} (sem duplicatas!)\n\nusuarios = [(\"Ana\", 30), (\"Bia\", 22)]\nordenado = sorted(usuarios, key=lambda u: u[1])  # [('Bia', 22), ('Ana', 30)]\n\nfor nome, nota in zip([\"Ana\", \"Bia\"], [9, 10]):\n    print(nome, nota)",
+      "title": "Tuplas, Sets e Funções Anônimas (lambda)",
+      "content": "Além de listas e dicionários, Python oferece estruturas e funções concisas muito usadas no dia a dia:\n\n1. **Tuplas `(a, b)`**: São sequências **imutáveis** criadas com parênteses. Ideais para coordenadas ou retornos múltiplos que não devem ser alterados.\n2. **Sets `set()` / `{1, 2}`**: Conjuntos não ordenados que **eliminam duplicatas automaticamente** e permitem checagem `x in meu_set` em `O(1)`. **Atenção**: `{}` vazio cria um `dict`, então para criar um set vazio use sempre `set()`.\n3. **Funções `lambda`**: São funções anônimas de uma única expressão: `lambda x: x * 2`. São muito usadas como argumento `key=` em `sorted(lista, key=lambda item: item[\"nota\"])`.",
+      "codeExample": "coordenada = (10, 20)        # tupla imutável\nvazio = set()                # set vazio\nunicos = set([1, 2, 2, 3])   # {1, 2, 3}\n\nprodutos = [(\"Mouse\", 80), (\"Teclado\", 150), (\"Cabo\", 25)]\npor_preco = sorted(produtos, key=lambda p: p[1])",
       "keyTakeaways": [
-        "Tupla `(...)` é imutável; Set `{...}` elimina duplicatas automaticamente e cria `set()` quando vazio (`{}` vazio é dict!).",
-        "`sorted(lista, key=lambda item: ...)` retorna uma nova lista ordenada sem modificar a original.",
-        "`zip(lista_a, lista_b)` combina duas listas em pares para percorrer juntas no `for`."
+        "Tuplas (...) são imutáveis; tentar alterar um índice gera TypeError.",
+        "Sets eliminam duplicatas automaticamente; um set vazio é criado com set(), nunca {}.",
+        "lambda argumentos: expressao cria funções curtas, muito úteis no parâmetro key= de sorted()."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual expressão cria um conjunto (Set) vazio em Python para armazenar itens únicos?",
+      "prompt": "Qual expressão cria um conjunto (Set) VAZIO em Python?",
       "options": [
         "{}",
-        "set()",
         "[]",
+        "set()",
         "()"
       ],
+      "correctIndex": 2,
+      "explanation": "Em Python, {} cria um dicionário vazio. Para criar um conjunto (Set) vazio, é obrigatório usar set()."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O código tenta modificar o primeiro valor de uma tupla, mas gera um TypeError. Qual linha causa o erro?",
+      "lines": [
+        "ponto = (10, 20)",
+        "ponto[0] = 99",
+        "print(ponto)"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Tuplas são imutáveis em Python; não é possível reatribuir elementos após a criação."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código para ordenar a lista de tuplas (nome, pontos) pelo segundo item usando lambda:",
+      "codeTemplate": "ranking = [(\"Ana\", 50), (\"Lia\", 90), (\"Gui\", 70)]\nordenado = sorted(ranking, key={{blank}} item: item[{{blank}}])",
+      "blanks": [
+        { "answer": "lambda", "placeholder": "função anônima" },
+        { "answer": "1", "placeholder": "índice" }
+      ],
+      "options": ["lambda", "def", "1", "0"],
+      "explanation": "Usamos 'lambda item: item[1]' para indicar que a ordenação deve comparar o segundo elemento (pontos) de cada tupla."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual será o resultado de len(set([4, 4, 2, 9, 2])) em Python?",
+      "options": [
+        "5",
+        "3",
+        "2",
+        "9"
+      ],
       "correctIndex": 1,
-      "explanation": "Em Python, `{}` vazio cria um dicionário (`dict`). Para criar um conjunto vazio, é obrigatório usar `set()`."
+      "explanation": "set([4, 4, 2, 9, 2]) remove as duplicatas e guarda {2, 4, 9}, que possui tamanho 3."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para remover duplicatas de uma lista de tags usando set() e ordenar o resultado:",
+      "blocks": [
+        "unicas = set(tags)",
+        "print(ordenadas)",
+        "tags = [\"py\", \"sql\", \"py\", \"git\"]",
+        "ordenadas = sorted(unicas)"
+      ],
+      "correctOrder": [2, 0, 3, 1],
+      "explanation": "Primeiro definimos a lista, convertemos para set para remover duplicatas, ordenamos com sorted() e imprimimos."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Dada a lista `nums = [1, 2, 2, 3, 3]`, crie uma variável `unicos = set(nums)` e retorne ou imprima `sorted(unicos)`:",
-      "starterCode": "nums = [1, 2, 2, 3, 3]\n# Crie unicos com set() e ordene com sorted():\n",
-      "requiredTokens": [
-        "unicos",
-        "set(",
-        "sorted("
-      ],
-      "sampleSolution": "nums = [1, 2, 2, 3, 3]\nunicos = set(nums)\nprint(sorted(unicos))",
-      "hint": "Escreva: unicos = set(nums) e print(sorted(unicos)).",
-      "explanation": "Combinar `set()` e `sorted()` é o idioma clássico em Python para remover duplicatas e ordenar em duas chamadas nativas."
+      "prompt": "Escreva uma função 'organizar_pares' que receba uma lista de tuplas no formato (nome, nota), ordene os itens pela nota usando sorted() e lambda, e retorne a nova lista ordenada.",
+      "starterCode": "",
+      "requiredTokens": ["def", "organizar_pares", "sorted", "lambda", "return"],
+      "sampleSolution": "def organizar_pares(pares: list[tuple[str, float]]) -> list[tuple[str, float]]:\n    return sorted(pares, key=lambda item: item[1])",
+      "hint": "Passe o argumento nomeado key= com uma função lambda que acesse o índice 1 da tupla.",
+      "explanation": "Combinamos def, tuplas, sorted() e lambda para ordenar estruturas compostas sem alterar a lista original."
     }
   ]
 }

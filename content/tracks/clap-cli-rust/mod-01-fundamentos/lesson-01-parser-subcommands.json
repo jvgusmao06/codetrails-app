@@ -7,10 +7,11 @@
     {
       "type": "theory",
       "title": "CLIs Profissionais em 10 Linhas com Clap",
-      "content": "O **Clap** (*Command Line Argument Parser*) é a biblioteca padrão para criar CLIs em Rust (como `cargo`, `ripgrep` e `deno`). Usando `#[derive(Parser)]`, cada campo da sua struct vira um argumento ou flag! Comentários doc (`///`) viram automaticamente a documentação do `--help`!",
+      "content": "O **Clap** (*Command Line Argument Parser*) é a biblioteca padrão para criar CLIs em Rust (como `cargo`, `ripgrep` e `deno`). Usando `#[derive(Parser)]`, cada campo da sua struct vira um argumento ou flag! Comentários doc (`///`) viram automaticamente a documentação do `--help`!\n\nCom `#[arg(short, long)]`, o Clap cria flags curtas e longas, e `default_value_t` define valores padrão tipados. No `main()`, basta chamar `Args::parse()`. Para subcomandos estilo `git commit`, usamos um `enum` com `#[derive(Subcommand)]`.",
       "codeExample": "use clap::Parser;\n\n#[derive(Parser)]\n#[command(version, about = \"Minha CLI rápida\")]\nstruct Args {\n    /// Nome do arquivo de entrada\n    #[arg(short, long)]\n    input: String,\n\n    #[arg(short, long, default_value_t = 1)]\n    vezes: u8,\n}\n\nlet args = Args::parse();",
       "keyTakeaways": [
         "`#[arg(short, long)]` gera automaticamente a flag curta `-i` e a longa `--input`!",
+        "Use `default_value_t = ...` dentro de `#[arg(...)]` para definir valores padrão sem usar `Option`.",
         "Use um `enum Comandos` com `#[derive(Subcommand)]` para criar subcomandos estilo `git commit` / `git push`.",
         "Use `Args::parse()` no `main()` — se o usuário errar uma flag, o Clap imprime ajuda amigável e encerra com código de erro."
       ]
@@ -28,12 +29,52 @@
       "explanation": "`short` usa a primeira letra do campo (`-p`) e `long` usa o nome completo (`--porta`)."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete a definição da struct Clap com valor padrão e realize o parse dos argumentos:",
+      "codeTemplate": "use clap::Parser;\n\n#[derive({{blank}})]\nstruct Args {\n    #[arg(short, long, {{blank}} = 3)]\n    tentativas: u8,\n}\n\nlet args = Args::{{blank}}();",
+      "blanks": [
+        { "answer": "Parser", "placeholder": "derive" },
+        { "answer": "default_value_t", "placeholder": "padrao" },
+        { "answer": "parse", "placeholder": "metodo" }
+      ],
+      "options": ["Parser", "default_value_t", "parse", "Subcommand", "default", "build"],
+      "explanation": "`#[derive(Parser)]` gera o parser, `default_value_t` define o valor padrão tipado e `Args::parse()` lê os argumentos da CLI."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha com erro nesta definição de CLI com subcomandos no Clap:",
+      "lines": [
+        "use clap::{Parser, Subcommand};",
+        "#[derive(Parser)]",
+        "struct Cli {",
+        "    #[command(subcommand)]",
+        "    cmd: Comandos,",
+        "}",
+        "enum Comandos { Init, Build }",
+        "let cli = Cli::parse();"
+      ],
+      "buggyLineIndex": 6,
+      "explanation": "O `enum Comandos` precisa da macro `#[derive(Subcommand)]` para poder ser usado com `#[command(subcommand)]`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para importar o Clap, definir a struct de argumentos com flag e fazer o parse:",
+      "blocks": [
+        "let args = Args::parse();",
+        "use clap::Parser;",
+        "struct Args { #[arg(short, long)] verbose: bool }",
+        "#[derive(Parser)]"
+      ],
+      "correctOrder": [1, 3, 2, 0],
+      "explanation": "Importamos `clap::Parser`, aplicamos `#[derive(Parser)]` acima de `struct Args` e então chamamos `Args::parse()`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Defina uma struct `Cli` com `#[derive(Parser)]`, campo `#[arg(short, long)] nome: String` e leia os argumentos com `let cli = Cli::parse();`:",
-      "starterCode": "use clap::Parser;\n// Crie struct Cli e chame Cli::parse():\n",
-      "requiredTokens": ["#[derive(Parser)]", "struct Cli", "#[arg(short, long)]", "nome: String", "Cli::parse()"],
-      "sampleSolution": "#[derive(Parser)]\nstruct Cli {\n    #[arg(short, long)]\n    nome: String,\n}\nlet cli = Cli::parse();",
-      "hint": "Anote `struct Cli` com `#[derive(Parser)]`, adicione `#[arg(short, long)] nome: String` e chame `Cli::parse()`.",
+      "prompt": "Desafio de Código: Em Rust com Clap, importe o trait de parser, defina uma struct chamada `Cli` derivada como parser contendo o campo `nome: String` aceitando flag curta e longa, e faça o parse dos argumentos para a variável `cli`.",
+      "starterCode": "",
+      "requiredTokens": ["use clap::Parser;", "#[derive(Parser)]", "struct Cli", "#[arg(short, long)]", "nome: String", "Cli::parse()"],
+      "sampleSolution": "use clap::Parser;\n\n#[derive(Parser)]\nstruct Cli {\n    #[arg(short, long)]\n    nome: String,\n}\nlet cli = Cli::parse();",
+      "hint": "Use `use clap::Parser;`, anote `struct Cli` com `#[derive(Parser)]`, adicione `#[arg(short, long)]` acima de `nome: String` e chame `Cli::parse()`.",
       "explanation": "O Clap valida os argumentos e popula a struct `Cli` já tipada no `main()`."
     }
   ]

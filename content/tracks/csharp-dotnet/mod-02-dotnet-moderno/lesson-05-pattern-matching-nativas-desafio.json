@@ -1,18 +1,18 @@
 {
   "id": "csharp-pattern-nativas-05",
   "title": "Pattern Matching (is / switch), APIs Nativas (.NET) e Desafio Final",
-  "description": "Use Pattern Matching moderno (is not null, faixas numéricas), string.Join, Math, DateTime e escreva código C# do zero.",
+  "description": "Use Pattern Matching moderno (is not null, faixas numéricas), string.Join, Math, DateTime.UtcNow, Guid.NewGuid e escreva código C# do zero.",
   "xp": 45,
   "steps": [
     {
       "type": "theory",
       "title": "Pattern Matching Poderoso e Funções Nativas do .NET",
-      "content": "O C# moderno tem um dos sistemas de **Pattern Matching** mais expressivos entre linguagens OOP: testamos nulidade com **`if (user is not null)`**, checamos tipos e já extraímos a variável com **`if (obj is string s)`**, e combinamos faixas no `switch` (`>= 18 and <= 65 => \"Adulto\"`)! E na biblioteca nativa, contamos com **`string.Join(\", \", lista)`**, **`Math.Max/Round`**, **`DateTime.UtcNow`** e **`Guid.NewGuid()`**.",
-      "codeExample": "object entrada = \"CodeTrails\";\nif (entrada is string texto && texto.Length > 3) {\n    Console.WriteLine(texto.ToUpper());\n}\n\nint nota = 85;\nstring conceito = nota switch {\n    >= 90 => \"A\",\n    >= 70 => \"B\",\n    _     => \"C\"\n};\n\nvar csv = string.Join(\", \", new[] { \"C#\", \".NET\", \"LINQ\" });",
+      "content": "O C# moderno tem um dos sistemas de **Pattern Matching** mais expressivos: testamos nulidade com **`is null`** / **`is not null`**, checamos tipos e já extraímos a variável com **`if (obj is string s)`**, e combinamos faixas no `switch` usando **`and`** / **`or`** (`>= 18 and <= 65 => \"Adulto\"`)! E na biblioteca nativa, contamos com **`string.Join(\", \", lista)`**, **`Math.Max` / `Math.Round`**, **`DateTime.UtcNow`** e **`Guid.NewGuid()`**.",
+      "codeExample": "object? entrada = \"CodeTrails\";\nif (entrada is not null && entrada is string texto) {\n    Console.WriteLine(texto.ToUpper());\n}\n\nint nota = 85;\nstring conceito = nota switch {\n    >= 90 => \"A\",\n    >= 70 and < 90 => \"B\",\n    _ => \"C\"\n};\n\nvar id = Guid.NewGuid();\nvar agora = DateTime.UtcNow;\nvar max = Math.Max(10, 20);\nvar csv = string.Join(\", \", new[] { \"C#\", \".NET\", \"LINQ\" });",
       "keyTakeaways": [
-        "`is null` e `is not null` não podem ser sobrecarregados por `operator ==`, sendo sempre a checagem mais segura!",
-        "Em servidores/APIs, prefira sempre `DateTimeOffset.UtcNow` ou `DateTime.UtcNow` (nunca `DateTime.Now` local do servidor).",
-        "`string.Join(\", \", lista)` une coleções sem criar lixo de concatenações em loop."
+        "`is null` e `is not null` não podem ser sobrecarregados por `operator ==`, sendo sempre a checagem mais segura.",
+        "Em padrões relacionais no `switch`, combinamos condições com `and` e `or` (nunca `&&` ou `||`).",
+        "Em servidores/APIs, prefira sempre `DateTimeOffset.UtcNow` ou `DateTime.UtcNow` (nunca `DateTime.Now` local do servidor), e use `string.Join(\", \", lista)` para unir coleções."
       ]
     },
     {
@@ -28,13 +28,62 @@
       "explanation": "O Type Pattern `if (resposta is string txt)` testa o tipo em runtime e faz o cast seguro para `txt` no mesmo passo."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código usando `is not null`, padrão relacional com `and` e `string.Join`:",
+      "codeTemplate": "if (usuario {{blank}} null) {\n    string faixa = idade switch {\n        >= 18 {{blank}} <= 65 => \"Adulto\",\n        _ => \"Outro\"\n    };\n    var linha = string.{{blank}}(\", \", new[] { usuario, faixa });\n}",
+      "blanks": [
+        { "answer": "is not", "placeholder": "não nulo" },
+        { "answer": "and", "placeholder": "operador de padrão" },
+        { "answer": "Join", "placeholder": "unir strings" }
+      ],
+      "options": ["is not", "and", "Join", "!=", "&&", "Concat"],
+      "explanation": "`is not null` valida não-nulidade sem depender de `!=`, `and` combina padrões relacionais e `string.Join` une coleções com separador."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este padrão relacional em uma `switch` expression não compila porque usa um operador booleano comum em vez do combinador de padrão do C#. Clique na linha inválida:",
+      "lines": [
+        "string ClassificarNota(int nota) => nota switch {",
+        "    >= 90 => \"Excelente\",",
+        "    >= 70 && < 90 => \"Bom\",",
+        "    _ => \"Precisa melhorar\"",
+        "};"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Na linha 3, dentro de pattern matching devemos usar a palavra-chave `and` (`>= 70 and < 90`), e não `&&`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para gerar um `Guid`, capturar o horário UTC, arredondar um valor com `Math.Round` e unir tudo com `string.Join`:",
+      "blocks": [
+        "var id = Guid.NewGuid();",
+        "var timestamp = DateTime.UtcNow;",
+        "var total = Math.Round(19.987m, 2);",
+        "var log = string.Join(\" | \", new[] { id.ToString(), timestamp.ToString(\"O\"), total.ToString() });"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "Geramos os três valores com as APIs nativas (`Guid.NewGuid()`, `DateTime.UtcNow`, `Math.Round`) antes de juntá-los com `string.Join`."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Em um serviço backend distribuído em nuvem, qual chamada nativa do .NET é recomendada para registrar o instante atual em logs e banco de dados?",
+      "options": [
+        "DateTime.Now",
+        "DateTime.UtcNow",
+        "DateTime.Today.ToString()",
+        "TimeZoneInfo.Local"
+      ],
+      "correctIndex": 1,
+      "explanation": "`DateTime.UtcNow` (ou `DateTimeOffset.UtcNow`) evita bugs de fuso horário e horário de verão entre servidores."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio Final C#: Escreva uma função `static string Classificar(int idade)` que use `switch` expression retornando `>= 18 => \"Maior\"` e `_ => \"Menor\"`, e junte uma lista com `string.Join(\", \", itens)`:",
-      "starterCode": "// Implemente Classificar(int idade) com switch e use string.Join:\n",
-      "requiredTokens": ["string Classificar(int idade)", "idade switch", ">= 18", "\"Maior\"", "_ =>", "\"Menor\"", "string.Join("],
-      "sampleSolution": "static string Classificar(int idade) => idade switch {\n    >= 18 => \"Maior\",\n    _ => \"Menor\"\n};\nvar resumo = string.Join(\", \", new[] { Classificar(20), Classificar(15) });",
-      "hint": "Combine `idade switch { >= 18 => \"Maior\", _ => \"Menor\" }` com `string.Join(\", \", ...)`.",
-      "explanation": "Expression-bodied members (`=>`) + Relational Patterns deixam regras de negócio em C# limpas e sem boilerplate."
+      "prompt": "Desafio Final C#: Crie um método estático `Classificar` que receba `int idade` e use uma `switch` expression com padrões relacionais para retornar `\"Adulto\"` entre 18 e 65 (inclusive), `\"Idoso\"` acima de 65 e `\"Menor\"` nos demais casos. Em seguida, gere um identificador único com `Guid.NewGuid()` e junte duas classificações em uma string separada por `\", \"` usando `string.Join`.",
+      "starterCode": "",
+      "requiredTokens": ["static string Classificar(int idade)", "switch", "and", "\"Adulto\"", "\"Menor\"", "Guid.NewGuid()", "string.Join("],
+      "sampleSolution": "static string Classificar(int idade) => idade switch {\n    >= 18 and <= 65 => \"Adulto\",\n    > 65 => \"Idoso\",\n    _ => \"Menor\"\n};\n\nvar id = Guid.NewGuid();\nvar resumo = string.Join(\", \", new[] { Classificar(25), Classificar(15) });",
+      "hint": "Use `idade switch { >= 18 and <= 65 => \"Adulto\", > 65 => \"Idoso\", _ => \"Menor\" }`, `Guid.NewGuid()` e `string.Join(\", \", ...)`.",
+      "explanation": "Expression-bodied members (`=>`), Relational Patterns (`and`) e APIs nativas (`Guid.NewGuid`, `string.Join`) deixam regras de negócio em C# limpas e expressivas."
     }
   ]
 }

@@ -1,0 +1,92 @@
+{
+  "id": "java-static-final-06",
+  "title": "Modificadores static e final",
+  "description": "Entenda membros de classe com static e imutabilidade/bloqueio de herança com final.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Membros de Classe (static) e Constantes/Bloqueios (final)",
+      "content": "Em Java, **`static`** associa um atributo ou método à **classe** em vez de a uma instância específica, permitindo chamar `Classe.metodo()` sem precisar usar `new`. Já **`final`** tem três usos principais: em uma variável, impede que ela seja reatribuída (combinada com `static`, cria constantes como `public static final int MAX = 3;`); em um método, impede que subclasses o sobrescrevam (`@Override`); e em uma classe, impede que ela seja herdada (`extends`).",
+      "codeExample": "public class Config {\n    public static final int MAX_TENTATIVAS = 3;\n\n    public static int dobrar(int valor) {\n        return valor * 2;\n    }\n}\n\n// Uso sem instanciar:\nint resultado = Config.dobrar(Config.MAX_TENTATIVAS);",
+      "keyTakeaways": [
+        "`static` pertence à classe e pode ser acessado diretamente via `NomeDaClasse.membro`.",
+        "`final` em variáveis impede reatribuição; `static final` é o padrão para constantes em Java.",
+        "`final` em classes impede `extends`, e em métodos impede `@Override`."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a declaração de uma constante de classe em Java para o limite máximo de tentativas:",
+      "codeTemplate": "public {{blank}} {{blank}} int MAX_TENTATIVAS = 3;",
+      "blanks": [
+        { "answer": "static", "placeholder": "da classe" },
+        { "answer": "final", "placeholder": "constante" }
+      ],
+      "options": ["static", "final", "const", "readonly", "var"],
+      "explanation": "Em Java não se usa `const` para declarar constantes: o padrão para constantes de classe é `static final`."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Como invocamos um método `public static void log(String msg)` declarado na classe `Logger`?",
+      "options": [
+        "Apenas criando `new Logger().log(\"oi\")`",
+        "Diretamente pela classe: `Logger.log(\"oi\");`",
+        "Usando `super.log(\"oi\")`",
+        "Métodos `static` só podem ser chamados dentro de `private`"
+      ],
+      "correctIndex": 1,
+      "explanation": "Métodos `static` pertencem à classe e podem ser chamados diretamente com `Logger.log(...)` sem instanciar um objeto."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código tenta modificar uma variável declarada com `final`. Clique na linha com o bug:",
+      "lines": [
+        "public class App {",
+        "    public static void main(String[] args) {",
+        "        final int limite = 10;",
+        "        limite = 20;",
+        "        System.out.println(limite);",
+        "    }",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Uma variável marcada como `final` só pode receber valor uma vez; tentar `limite = 20;` gera erro de compilação."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para montar uma classe utilitária `Taxa` com uma constante `static final` e um método `static`:",
+      "blocks": [
+        "public class Taxa {",
+        "    public static final double PERCENTUAL = 0.1;",
+        "    public static double calcular(double valor) {",
+        "        return valor * PERCENTUAL;",
+        "    }",
+        "}"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4, 5],
+      "explanation": "Um método `static` pode acessar diretamente constantes `static final` da mesma classe sem precisar de instância."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "O que acontece se uma classe `Sub` tentar fazer `extends Base` quando `Base` foi declarada como `public final class Base`?",
+      "options": [
+        "Compila normalmente, mas os métodos de `Base` viram `private`",
+        "O compilador acusa erro, pois uma classe `final` não pode ser herdada",
+        "A classe `Sub` herda apenas os atributos `static`",
+        "O Java ignora o `final` se `Sub` usar `@Override`"
+      ],
+      "correctIndex": 1,
+      "explanation": "Declarar uma classe como `final` (como ocorre com `String` no JDK) impede que qualquer outra classe a estenda com `extends`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Crie uma classe `Matematica` contendo uma constante pública `PI` com valor `3.14` (do tipo `double`, acessível pela classe e imutável) e um método público e estático `dobro` que receba um `double x` e retorne `x * 2`.",
+      "starterCode": "",
+      "requiredTokens": ["class", "Matematica", "static", "final", "double", "PI", "return"],
+      "sampleSolution": "public class Matematica {\n    public static final double PI = 3.14;\n\n    public static double dobro(double x) {\n        return x * 2;\n    }\n}",
+      "hint": "Use `public static final double PI = 3.14;` para a constante e `public static double dobro(double x)` para o método.",
+      "explanation": "Combinamos `static final` para definir uma constante de classe e `static` para expor um método utilitário sem necessidade de `new`."
+    }
+  ]
+}

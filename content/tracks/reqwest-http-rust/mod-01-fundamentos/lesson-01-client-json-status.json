@@ -7,7 +7,7 @@
     {
       "type": "theory",
       "title": "Consumindo APIs REST com Reqwest + Serde",
-      "content": "O **Reqwest** é o cliente HTTP padrão em Rust. Em vez de chamar `reqwest::get(url)` toda vez (o que cria um novo pool de conexões e handshake TLS do zero!), crie e reaproveite um único **`reqwest::Client::new()`**. E lembre: assim como `fetch()` no JS, um status `404` ou `500` não vira `Err` sozinho — chame **`.error_for_status()?`** antes de `.json::<MeuTipo>().await?`!",
+      "content": "O **Reqwest** é o cliente HTTP padrão em Rust. Em vez de chamar `reqwest::get(url)` toda vez (o que cria um novo pool de conexões e handshake TLS do zero!), crie e reaproveite um único **`reqwest::Client::new()`** (ou configure timeout com `Client::builder().timeout(...)`). E lembre: assim como `fetch()` no JS, um status `404` ou `500` não vira `Err` sozinho — chame **`.error_for_status()?`** antes de **`.json::<MeuTipo>().await?`**!",
       "codeExample": "let client = reqwest::Client::new();\n\nlet dado: Post = client\n    .get(\"https://api.exemplo.com/posts/1\")\n    .send()\n    .await?\n    .error_for_status()?\n    .json::<Post>()\n    .await?;",
       "keyTakeaways": [
         "Reutilize uma instância de `reqwest::Client` (ele usa `Arc` internamente e é barato de clonar!) para manter connection pooling Keep-Alive.",
@@ -28,13 +28,61 @@
       "explanation": "`reqwest::Client` mantém um pool interno de conexões reutilizáveis (`Keep-Alive`), acelerando drasticamente requisições repetidas."
     },
     {
+      "type": "multiple_choice",
+      "prompt": "O que acontece se você chamar `.json::<Post>().await?` sem chamar `.error_for_status()?` quando a API responde com HTTP 404 ou 500?",
+      "options": [
+        "O Reqwest converte 404 em `Err` automaticamente antes do `.json()`",
+        "O Reqwest tenta desserializar o corpo de erro como `Post`, gerando um erro confuso de parsing em vez de tratar o status HTTP",
+        "O programa entra em loop infinito",
+        "O Reqwest retorna `None` silenciosamente"
+      ],
+      "correctIndex": 1,
+      "explanation": "Respostas 4xx/5xx ainda são `Ok(Response)` após `.send().await?`. `.error_for_status()?` garante que status de erro virem `Err` antes da desserialização."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Configure um `Client` com timeout de 10 segundos e valide o status HTTP antes de ler o JSON:",
+      "codeTemplate": "let client = reqwest::Client::{{blank}}()\n    .timeout(Duration::from_secs(10))\n    .build()?;\nlet res = client.get(url).send().await?.{{blank}}()?;",
+      "blanks": [
+        { "answer": "builder", "placeholder": "construtor" },
+        { "answer": "error_for_status", "placeholder": "validar status" }
+      ],
+      "options": ["builder", "new", "error_for_status", "check_status"],
+      "explanation": "`Client::builder()` permite definir opções como timeout, e `.error_for_status()?` converte falhas HTTP em `Err`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene a sequência correta de chamadas encadeadas para fazer um GET seguro e desserializar um `Post`:",
+      "blocks": [
+        "    .json::<Post>().await?;",
+        "let post = client.get(url)",
+        "    .error_for_status()?",
+        "    .send().await?"
+      ],
+      "correctOrder": [1, 3, 2, 0],
+      "explanation": "Primeiro montamos o GET (`client.get(url)`), enviamos (`.send().await?`), validamos o status HTTP (`.error_for_status()?`) e só então fazemos o parse JSON (`.json::<Post>().await?`)."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Encontre a linha onde um status HTTP 500 passa despercebido antes da desserialização JSON:",
+      "lines": [
+        "let client = reqwest::Client::new();",
+        "let user: User = client",
+        "    .get(\"https://api.exemplo.com/user/1\")",
+        "    .send().await?",
+        "    .json::<User>().await?;"
+      ],
+      "buggyLineIndex": 4,
+      "explanation": "Faltou chamar `.error_for_status()?` entre `.send().await?` e `.json::<User>().await?` para rejeitar respostas 4xx/5xx."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Usando `client`, faça um GET em `url`, valide o status com `.error_for_status()?` e converta com `.json::<User>().await?`:",
-      "starterCode": "// Faça a chamada GET com client, error_for_status()? e json::<User>():\n",
-      "requiredTokens": ["client.get(", ".send().await?", ".error_for_status()?", ".json::<User>().await?"],
-      "sampleSolution": "let user = client.get(url)\n    .send().await?\n    .error_for_status()?\n    .json::<User>().await?;",
-      "hint": "Encadeie `.send().await?.error_for_status()?.json::<User>().await?`.",
-      "explanation": "O operador `?` em cada etapa garante tratamento limpo de erros de rede, status HTTP e JSON inválido."
+      "prompt": "Crie um cliente HTTP reutilizável do Reqwest, faça uma requisição GET para `url`, garanta que códigos de status de erro HTTP sejam convertidos em `Err` e desserializa a resposta JSON para uma variável `user` do tipo `User`.",
+      "starterCode": "",
+      "requiredTokens": ["reqwest::Client::new()", ".get(url)", ".send().await?", ".error_for_status()?", ".json::<User>().await?"],
+      "sampleSolution": "let client = reqwest::Client::new();\nlet user = client.get(url)\n    .send().await?\n    .error_for_status()?\n    .json::<User>().await?;",
+      "hint": "Instancie `reqwest::Client::new()`, chame `.get(url).send().await?`, valide com `.error_for_status()?` e finalize com `.json::<User>().await?`.",
+      "explanation": "Reaproveitar `reqwest::Client` mantém o pool Keep-Alive e o encadeamento com `?` trata erros de rede, status HTTP e JSON."
     }
   ]
 }

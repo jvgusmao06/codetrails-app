@@ -1,0 +1,76 @@
+{
+  "id": "cpp-funcoes-referencia-06",
+  "title": "Funções: Passagem por Valor, Ponteiro (*) e Referência (const T&)",
+  "description": "Defina funções com retorno e domine passagem por valor, ponteiro (*) e referência (T& e const T&).",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Funções: Valor vs Ponteiro (*) vs Referência (&) em C++",
+      "content": "Funções em C e C++ declaram o tipo de retorno antes do nome (ou `void` quando não retornam valor) e usam `return` para devolver o resultado. Por padrão, os argumentos são passados **por valor** (uma cópia na Stack): alterar o parâmetro dentro da função não afeta a variável original. Para modificar o original ou evitar copiar objetos grandes como `std::string`:\n1. **Ponteiro (`int* p`)**: recebe um endereço (`&x`), exige `*p` para alterar e pode ser `nullptr`.\n2. **Referência (`int& r`)**: cria um apelido direto para a variável original (nunca é nulo e dispensa `*`).\n3. **Referência Constante (`const std::string& s`)**: evita cópias pesadas (zero overhead) e impede modificações acidentais.",
+      "codeExample": "int quadrado(int n) {\n    return n * n;\n}\n\nvoid dobrar(int& n) {\n    n *= 2; // altera a variável original!\n}\n\nvoid imprimir(const std::string& texto) {\n    std::cout << texto << \"\\n\";\n}",
+      "keyTakeaways": [
+        "Funções retornam valores com `return` ou usam `void` quando não há retorno.",
+        "Passagem por valor copia tipos pequenos (`int`, `double`); use `T&` para modificar o argumento original.",
+        "Use `const T&` para ler objetos grandes (`std::string`, `std::vector`) sem cópia e com segurança."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual forma de passagem de parâmetro em C++ evita copiar uma `std::string` grande e garante que a função NÃO possa modificá-la?",
+      "options": [
+        "std::string texto",
+        "std::string* texto",
+        "std::string& texto",
+        "const std::string& texto"
+      ],
+      "correctIndex": 3,
+      "explanation": "`const std::string&` passa apenas a referência (sem cópia) e o qualificador `const` bloqueia qualquer alteração."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a assinatura da função C++ para ler uma `std::string` sem copiá-la e sem permitir modificações:",
+      "codeTemplate": "void logar({{blank}} std::string{{blank}} msg) {\n    std::cout << msg;\n}",
+      "blanks": [
+        { "answer": "const", "placeholder": "imutável" },
+        { "answer": "&", "placeholder": "referência" }
+      ],
+      "options": ["const", "&", "*", "mut", "var"],
+      "explanation": "`const std::string&` é o padrão idiomático de C++ para passagem eficiente somente-leitura."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "A função abaixo deveria dobrar o valor da variável original `saldo`, mas quando `main` imprime `saldo`, o valor continua `10`. Clique na linha com bug:",
+      "lines": [
+        "void dobrar(int x) {",
+        "    x = x * 2;",
+        "}",
+        "int main() { int saldo = 10; dobrar(saldo); return 0; }"
+      ],
+      "buggyLineIndex": 0,
+      "explanation": "O parâmetro `int x` recebe uma cópia por valor. Para alterar `saldo`, a assinatura deve usar referência: `void dobrar(int& x)`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para definir uma função que soma 10 via ponteiro (verificando `nullptr`) e chamá-la:",
+      "blocks": [
+        "void somarDez(int* p) {",
+        "    if (p != nullptr) *p += 10;",
+        "}",
+        "int valor = 5;",
+        "somarDez(&valor);"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "explanation": "Definimos `somarDez(int* p)` protegida contra `nullptr`, criamos `valor` e passamos seu endereço `&valor`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva uma função `incrementar` em C++ que não retorne valor, receba um inteiro por referência e some `1` diretamente na variável recebida, e outra função `quadrado` que receba um inteiro por valor e retorne seu quadrado.",
+      "starterCode": "",
+      "requiredTokens": ["void", "incrementar", "int&", "+= 1", "int quadrado", "return"],
+      "sampleSolution": "void incrementar(int& x) {\n    x += 1;\n}\n\nint quadrado(int n) {\n    return n * n;\n}",
+      "hint": "Use `int&` no parâmetro de `incrementar` para alterar o original e `return n * n;` em `quadrado`.",
+      "explanation": "A passagem por referência (`int&`) altera o argumento original sem retorno, enquanto a passagem por valor com `return` devolve um novo resultado."
+    }
+  ]
+}

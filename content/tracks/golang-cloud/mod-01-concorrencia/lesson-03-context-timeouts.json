@@ -16,6 +16,29 @@
       ]
     },
     {
+      "type": "multiple_choice",
+      "prompt": "Qual é a convenção idiomática do Go para receber um `context.Context` em funções que fazem I/O (rede ou banco de dados)?",
+      "options": [
+        "Passar `ctx context.Context` sempre como o primeiro parâmetro da função",
+        "Armazenar `ctx` em uma variável global do pacote",
+        "Passar `ctx` sempre como último retorno da função",
+        "Criar um novo `context.Background()` dentro de cada helper sem receber parâmetro"
+      ],
+      "correctIndex": 0,
+      "explanation": "Por convenção da biblioteca padrão e da comunidade Go, `ctx context.Context` é sempre o primeiro parâmetro para propagar cancelamentos e deadlines pela árvore de chamadas."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o `select` para detectar quando o contexto expirou e imprimir o motivo do cancelamento:",
+      "codeTemplate": "select {\ncase res := <-ch:\n    fmt.Println(res)\ncase <-ctx.{{blank}}():\n    fmt.Println(\"Erro:\", ctx.{{blank}}())\n}",
+      "blanks": [
+        { "answer": "Done", "placeholder": "canal" },
+        { "answer": "Err", "placeholder": "motivo" }
+      ],
+      "options": ["Done", "Err", "Cancel", "Timeout", "Close", "Stop"],
+      "explanation": "`ctx.Done()` fecha quando o prazo expira ou é cancelado, e `ctx.Err()` retorna o erro correspondente (ex: `context.DeadlineExceeded`)."
+    },
+    {
       "type": "spot_the_bug",
       "prompt": "Este código cria um contexto com timeout de 3 segundos, mas esquece uma boa prática crítica que pode vazar memória/timers se a operação terminar antes dos 3s. Clique na linha onde falta algo logo após a criação:",
       "lines": [
@@ -28,13 +51,24 @@
       "explanation": "Após criar `ctx, cancel := context.WithTimeout(...)`, é obrigatório chamar `defer cancel()` na linha seguinte para liberar o timer interno assim que `buscar` retornar."
     },
     {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para criar um contexto com timeout de 2 segundos, garantir a limpeza e aguardar o cancelamento no `select`:",
+      "blocks": [
+        "select {\ncase <-ctx.Done():\n    fmt.Println(ctx.Err())\n}",
+        "defer cancel()",
+        "ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)"
+      ],
+      "correctOrder": [2, 1, 0],
+      "explanation": "Criamos o contexto com `WithTimeout`, registramos `defer cancel()` imediatamente e usamos `select` com `<-ctx.Done()`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie um contexto com timeout usando `context.WithTimeout(context.Background(), 5*time.Second)` e garanta a limpeza com `defer cancel()`:",
-      "starterCode": "// Crie ctx, cancel com WithTimeout e defer cancel():\n",
-      "requiredTokens": ["ctx", "cancel", "context.WithTimeout", "context.Background()", "defer cancel()"],
-      "sampleSolution": "ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)\ndefer cancel()",
-      "hint": "Use `ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)` e `defer cancel()`.",
-      "explanation": "Esse padrão de duas linhas protege chamadas HTTP e queries SQL contra travamentos infinitos."
+      "prompt": "Desafio de Código: Crie um contexto com timeout de `5*time.Second` a partir de `context.Background()` usando `context.WithTimeout`, garanta o cancelamento com `defer cancel()`, e escreva um bloco `select` que aguarde `<-ctx.Done()` e imprima `ctx.Err()` com `fmt.Println`.",
+      "starterCode": "",
+      "requiredTokens": ["context.WithTimeout", "context.Background()", "defer cancel()", "select", "<-ctx.Done()", "ctx.Err()", "fmt.Println"],
+      "sampleSolution": "ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)\ndefer cancel()\nselect {\ncase <-ctx.Done():\n    fmt.Println(ctx.Err())\n}",
+      "hint": "Receba `ctx, cancel` de `context.WithTimeout`, coloque `defer cancel()` na linha seguinte e use `case <-ctx.Done():` dentro de `select`.",
+      "explanation": "Esse padrão protege chamadas HTTP e queries SQL contra travamentos infinitos e evita vazamento de timers."
     }
   ]
 }

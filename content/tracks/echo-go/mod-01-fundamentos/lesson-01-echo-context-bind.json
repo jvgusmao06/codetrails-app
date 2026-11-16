@@ -7,8 +7,13 @@
     {
       "type": "theory",
       "title": "Minimalismo e extensibilidade com Echo",
-      "content": "O **Echo** (`github.com/labstack/echo/v4`) é um dos frameworks web mais maduros do ecossistema Go, usando `net/http` padrão com roteador de alocação zero:\n\n- `e := echo.New()` cria a instância.\n- Handlers recebem `c echo.Context` (interface, sem ponteiro!) e retornam `error`.\n- `c.Bind(&dto)` faz parse automático do corpo JSON/query/form para sua struct.\n- `c.JSON(http.StatusOK, data)` envia a resposta com o status code explícito.",
-      "codeExample": "e := echo.New()\n\ne.POST(\"/orders\", func(c echo.Context) error {\n    var req CreateOrderReq\n    if err := c.Bind(&req); err != nil {\n        return c.JSON(http.StatusBadRequest, map[string]string{\"error\": err.Error()})\n    }\n    return c.JSON(http.StatusCreated, req)\n})"
+      "content": "O **Echo** (`github.com/labstack/echo/v4`) é um dos frameworks web mais maduros do ecossistema Go, usando `net/http` padrão com roteador de alocação zero:\n\n- `e := echo.New()` cria a instância.\n- Handlers recebem `c echo.Context` (interface, sem ponteiro!) e retornam `error`.\n- `c.Param(\"id\")` extrai parâmetros de rota definidos como `\"/users/:id\"`.\n- `c.Bind(&dto)` faz parse automático do corpo JSON/query/form para sua struct (exige ponteiro `&`).\n- `c.JSON(http.StatusOK, data)` envia a resposta com o status code explícito.",
+      "codeExample": "e := echo.New()\n\ne.GET(\"/users/:id\", func(c echo.Context) error {\n    id := c.Param(\"id\")\n    return c.JSON(http.StatusOK, map[string]string{\"id\": id})\n})\n\ne.POST(\"/orders\", func(c echo.Context) error {\n    var req CreateOrderReq\n    if err := c.Bind(&req); err != nil {\n        return c.JSON(http.StatusBadRequest, map[string]string{\"error\": err.Error()})\n    }\n    return c.JSON(http.StatusCreated, req)\n})",
+      "keyTakeaways": [
+        "`echo.New()` inicializa o servidor e handlers recebem `c echo.Context` (sem `*`) retornando `error`.",
+        "Use `c.Param(\"nome\")` no singular para ler parâmetros de rota como `\"/users/:id\"`.",
+        "`c.Bind(&structVar)` precisa de um ponteiro (`&`) para preencher os campos da struct."
+      ]
     },
     {
       "type": "multiple_choice",
@@ -51,17 +56,18 @@
     },
     {
       "type": "write_code",
-      "prompt": "Registre uma rota e.GET(\"/users/:id\", ...) no Echo que lê c.Param(\"id\") e retorna c.JSON(http.StatusOK, map[string]string{\"id\": id}).",
-      "starterCode": "e := echo.New()\n// Registre e.GET(\"/users/:id\", ...)",
+      "prompt": "Crie uma instância do Echo e registre uma rota GET para \"/users/:id\" que leia o parâmetro de rota id e retorne status 200 com um JSON contendo esse id.",
+      "starterCode": "",
       "requiredTokens": [
-        "e.GET(\"/users/:id\"",
+        "echo.New()",
+        ".GET(\"/users/:id\"",
         "echo.Context",
         "c.Param(\"id\")",
         "c.JSON("
       ],
       "sampleSolution": "e := echo.New()\ne.GET(\"/users/:id\", func(c echo.Context) error {\n    id := c.Param(\"id\")\n    return c.JSON(http.StatusOK, map[string]string{\"id\": id})\n})",
-      "hint": "Em Echo, o método para ler parâmetro de rota é c.Param(\"id\") (no singular).",
-      "explanation": "Diferente do Fiber (c.Params), o Echo usa c.Param(\"nome\") para parâmetros de caminho."
+      "hint": "Inicialize com echo.New(), registre a rota GET recebendo c echo.Context, extraia o parâmetro com c.Param(\"id\") e retorne com c.JSON(http.StatusOK, ...).",
+      "explanation": "Diferente do Fiber (c.Params), o Echo usa c.Param(\"nome\") para parâmetros de caminho e retorna c.JSON(status, payload)."
     }
   ]
 }

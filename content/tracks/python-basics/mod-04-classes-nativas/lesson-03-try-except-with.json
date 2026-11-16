@@ -1,65 +1,88 @@
 {
   "id": "py-erros-with-03",
-  "title": "09. Erros (try/except) e with",
-  "description": "Evite que seu programa quebre com exceções usando try/except, lance erros com raise e feche arquivos automaticamente com with.",
+  "title": "10. Erros (try/except) e with",
+  "description": "Trate exceções específicas com try/except/finally, dispare validações com raise e gerencie arquivos com segurança usando with.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
       "title": "Capturando Exceções e Gerenciando Recursos com 'with'",
-      "content": "Em Python, erros em tempo de execução geram **exceções** (como `ValueError`, `ZeroDivisionError`, `KeyError`). Usamos `try:` para tentar um bloco arriscado, `except TipoErro:` para tratar a falha sem travar o programa, `finally:` para código que sempre roda, e `raise` para disparar um erro intencional. Para abrir arquivos ou conexões com segurança, usamos `with open(...) as f:`, que fecha o arquivo automaticamente ao sair do bloco!",
-      "codeExample": "def dividir(a: float, b: float) -> float:\n    if b == 0:\n        raise ValueError(\"Divisor não pode ser zero\")\n    return a / b\n\ntry:\n    resultado = dividir(10, 0)\nexcept ValueError as erro:\n    print(\"Erro capturado:\", erro)\nfinally:\n    print(\"Operação finalizada\")",
+      "content": "Em Python, falhas em tempo de execução geram **exceções** (como `ValueError`, `ZeroDivisionError`, `FileNotFoundError`).\n\n1. **`try` / `except` / `finally`**: Colocamos o código arriscado em `try:`, capturamos o erro específico com `except TipoErro:` e usamos `finally:` para código que deve rodar **sempre** (com ou sem erro).\n2. **`raise`**: Usamos `raise ValueError(\"mensagem\")` para interromper a função imediatamente quando uma regra de negócio é violada.\n3. **Gerenciador de contexto (`with`)**: Para abrir arquivos ou conexões, usamos `with open(\"dados.txt\", \"r\") as f:`. Ao sair do bloco indentado, o Python fecha o arquivo automaticamente, mesmo se ocorrer uma exceção.",
+      "codeExample": "def sacar(valor: float) -> float:\n    if valor <= 0:\n        raise ValueError(\"Valor inválido\")\n    return valor\n\ntry:\n    numero = int(\"abc\")\nexcept ValueError:\n    print(\"Texto não é um número válido.\")\nfinally:\n    print(\"Tentativa finalizada.\")\n\nwith open(\"log.txt\", \"r\") as arquivo:\n    conteudo = arquivo.read()",
       "keyTakeaways": [
-        "Sempre capture exceções específicas (`except ValueError:`) em vez de `except:` genérico.",
-        "`raise ValueError('msg')` interrompe a função imediatamente sinalizando um erro de validação.",
-        "`with open('dados.txt', 'r') as f:` garante que `f.close()` será chamado mesmo se ocorrer um erro dentro do bloco."
+        "Capture sempre exceções específicas (except ValueError:) em vez de except: genérico.",
+        "finally executa sempre; raise TipoErro('msg') dispara uma exceção manualmente.",
+        "with open(...) as f: garante o fechamento automático do arquivo ao final do bloco."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Complete o bloco de tratamento de erros em Python para tentar converter um texto, capturar ValueError e sempre executar a limpeza final:",
-      "codeTemplate": "{{blank}}:\n    idade = int(\"abc\")\n{{blank}} ValueError:\n    print(\"Número inválido\")\n{{blank}}:\n    print(\"Fim\")",
-      "blanks": [
-        {
-          "answer": "try",
-          "placeholder": "tentar"
-        },
-        {
-          "answer": "except",
-          "placeholder": "capturar"
-        },
-        {
-          "answer": "finally",
-          "placeholder": "sempre"
-        }
-      ],
+      "type": "multiple_choice",
+      "prompt": "Qual palavra-chave garante que um bloco de limpeza seja executado SEMPRE após try/except, ocorrendo erro ou não?",
       "options": [
-        "try",
-        "except",
+        "always",
         "finally",
-        "catch",
-        "throw",
-        "else"
+        "ensure",
+        "after"
       ],
-      "explanation": "Python usa try / except / finally (diferente de Java/JS que usam try / catch / finally)."
+      "correctIndex": 1,
+      "explanation": "O bloco finally é sempre executado ao término do try/except, independentemente de uma exceção ter sido lançada."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o bloco de tratamento de erro para tentar converter uma string e capturar ValueError:",
+      "codeTemplate": "{{blank}}:\n    idade = int(\"vinte\")\n{{blank}} ValueError:\n    print(\"Digite apenas números\")\n{{blank}}:\n    print(\"Fim da validação\")",
+      "blanks": [
+        { "answer": "try", "placeholder": "tentar" },
+        { "answer": "except", "placeholder": "capturar" },
+        { "answer": "finally", "placeholder": "sempre" }
+      ],
+      "options": ["try", "catch", "except", "finally"],
+      "explanation": "Em Python usamos try, except TipoErro e finally (não existe catch)."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código para abrir o arquivo 'notas.txt' em modo leitura garantindo o fechamento automático:",
+      "codeTemplate": "{{blank}} open(\"notas.txt\", \"r\") {{blank}} f:\n    texto = f.read()",
+      "blanks": [
+        { "answer": "with", "placeholder": "contexto" },
+        { "answer": "as", "placeholder": "apelido" }
+      ],
+      "options": ["with", "using", "as", "in"],
+      "explanation": "A instrução 'with open(...) as f:' cria um gerenciador de contexto que fecha o arquivo automaticamente."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "A função tenta lançar uma exceção quando o preço é negativo, mas usa uma palavra-chave inválida em Python. Qual linha tem o bug?",
+      "lines": [
+        "def definir_preco(valor: float):",
+        "    if valor < 0:",
+        "        throw ValueError(\"Preço negativo\")",
+        "    return valor"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Em Python não existe 'throw'; para disparar uma exceção usamos 'raise ValueError(...)'."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para tentar ler um arquivo com segurança e tratar o caso de arquivo inexistente:",
+      "blocks": [
+        "    print(\"Arquivo não encontrado.\")",
+        "try:",
+        "    with open(\"config.json\", \"r\") as f:",
+        "except FileNotFoundError:",
+        "        dados = f.read()"
+      ],
+      "correctOrder": [1, 2, 4, 3, 0],
+      "explanation": "O bloco 'with open(...)' fica dentro do 'try:', e o 'except FileNotFoundError:' captura a ausência do arquivo."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva uma função `validar_idade(idade)` que dispare `raise ValueError(\"Invalida\")` se `idade < 0` e retorne `idade` caso contrário:",
-      "starterCode": "# Valide idade negativa com raise ValueError:\n",
-      "requiredTokens": [
-        "def",
-        "validar_idade",
-        "if",
-        "<",
-        "0",
-        "raise",
-        "ValueError",
-        "return"
-      ],
-      "sampleSolution": "def validar_idade(idade):\n    if idade < 0:\n        raise ValueError(\"Invalida\")\n    return idade",
-      "hint": "Use 'if idade < 0: raise ValueError(\"Invalida\")' e depois 'return idade'.",
-      "explanation": "Usar 'raise' para falhar cedo (fail-fast) protege suas funções contra entradas inválidas."
+      "prompt": "Escreva uma função 'validar_idade' que receba um número 'idade'. Se idade for menor que 0, dispare um ValueError usando raise; caso contrário, retorne a própria idade.",
+      "starterCode": "",
+      "requiredTokens": ["def", "validar_idade", "if", "raise", "ValueError", "return"],
+      "sampleSolution": "def validar_idade(idade: int) -> int:\n    if idade < 0:\n        raise ValueError(\"Idade inválida\")\n    return idade",
+      "hint": "Dentro da função, teste se idade < 0 com if e use 'raise ValueError(...)' antes do return final.",
+      "explanation": "Usamos def, condicional if e raise ValueError(...) para validar a entrada antes de retorná-la."
     }
   ]
 }

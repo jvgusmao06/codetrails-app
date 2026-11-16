@@ -1,40 +1,86 @@
 {
-  "id": "java-heranca-interfaces-05",
-  "title": "Herança (extends), Interfaces (implements) e @Override",
-  "description": "Modele contratos com interface, compartilhe comportamento com extends/super e garanta segurança com a anotação @Override.",
+  "id": "java-colecoes-list-map-03",
+  "title": "Coleções: ArrayList, HashMap, HashSet e Generics",
+  "description": "Armazene listas dinâmicas com ArrayList, pares chave-valor em O(1) com HashMap e conjuntos únicos com HashSet.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Polimorfismo com interface, implements e extends",
-      "content": "Em Java, uma classe pode herdar de apenas **uma** classe pai usando **`extends`** (e chamar o construtor/método do pai com `super`), mas pode implementar **várias** interfaces usando **`implements`**. Na arquitetura moderna, preferimos `interface` (contratos de comportamento) em vez de heranças profundas. Sempre que sobrescrever um método da interface ou classe pai, anote com **`@Override`** para o compilador validar a assinatura.",
-      "codeExample": "interface Notificavel {\n    void enviar(String msg);\n}\n\nclass EmailService implements Notificavel {\n    @Override\n    public void enviar(String msg) {\n        System.out.println(\"Email: \" + msg);\n    }\n}",
+      "title": "ArrayList, HashMap, HashSet e Generics no pacote java.util",
+      "content": "Arrays fixos (`int[]`) não crescem de tamanho. No dia a dia em Java, usamos a Collections Framework com **Generics `<Tipo>`** (exigindo classes wrapper como `Integer` e `Double`, já que Generics não aceitam primitivos como `int`):\n- **`List<String> nomes = new ArrayList<>()`**: lista dinâmica indexada.\n- **`Map<String, Integer> estoque = new HashMap<>()`**: dicionário chave -> valor com busca $O(1)$ e método `.getOrDefault(chave, padrao)`.\n- **`Set<String> tags = new HashSet<>()`**: conjunto que elimina duplicatas automaticamente.",
+      "codeExample": "import java.util.*;\n\nList<String> linguagens = new ArrayList<>();\nlinguagens.add(\"Java\");\n\nMap<String, Integer> pontos = new HashMap<>();\npontos.put(\"Ana\", 100);\nint p = pontos.getOrDefault(\"Bia\", 0); // 0\n\nSet<String> tags = new HashSet<>();\ntags.add(\"backend\");\ntags.add(\"backend\"); // ignorado (sem duplicatas)",
       "keyTakeaways": [
-        "`extends` herda de uma classe; `implements` cumpre o contrato de uma ou mais `interface`s.",
-        "`@Override` faz o compilador dar erro se você digitar o nome ou parâmetros do método errado.",
-        "`abstract class` não pode ser instanciada diretamente com `new` — serve apenas de base para subclasses."
+        "Programe voltado para a interface: `List<String> x = new ArrayList<>();`, `Map<K, V> m = new HashMap<>();` e `Set<T> s = new HashSet<>();`.",
+        "Generics em Java exigem tipos de referência (`List<Integer>`, nunca `List<int>`).",
+        "`map.getOrDefault(chave, padrao)` evita `null` quando a chave ainda não existe no `HashMap`."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Complete o código Java para que `PixPagamento` cumpra o contrato da interface `Pagamento` e sobrescreva o método `pagar`:",
-      "codeTemplate": "{{blank}} Pagamento { void pagar(double valor); }\n\nclass PixPagamento {{blank}} Pagamento {\n    {{blank}}\n    public void pagar(double valor) {}\n}",
-      "blanks": [
-        { "answer": "interface", "placeholder": "contrato" },
-        { "answer": "implements", "placeholder": "implementa" },
-        { "answer": "@Override", "placeholder": "anotação" }
+      "type": "multiple_choice",
+      "prompt": "Qual declaração de lista dinâmica de números inteiros é válida em Java?",
+      "options": [
+        "List<int> nums = new ArrayList<>();",
+        "List<Integer> nums = new ArrayList<>();",
+        "ArrayList<int> nums = new List<>();",
+        "List[] nums = new ArrayList();"
       ],
-      "options": ["interface", "implements", "@Override", "extends", "trait", "super"],
-      "explanation": "Interfaces são definidas com `interface`, adotadas com `implements` e seus métodos implementados levam `@Override`."
+      "correctIndex": 1,
+      "explanation": "Generics em Java não aceitam tipos primitivos (`int`), exigindo a classe Wrapper (`Integer`). Além disso, `List` é interface e `ArrayList` é a implementação."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código para criar um conjunto sem duplicatas com `HashSet` e consultar um `HashMap` com valor padrão seguro:",
+      "codeTemplate": "Set<String> tags = new {{blank}}<>();\nint score = pontos.{{blank}}(\"Ana\", 0);",
+      "blanks": [
+        { "answer": "HashSet", "placeholder": "implementação Set" },
+        { "answer": "getOrDefault", "placeholder": "leitura segura" }
+      ],
+      "options": ["HashSet", "getOrDefault", "Set", "getOrNull", "ArrayList", "contains"],
+      "explanation": "`HashSet` implementa `Set` sem permitir elementos repetidos, e `getOrDefault(chave, padrao)` retorna o valor padrão quando a chave não existe."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código tenta criar uma lista dinâmica de textos, mas falha na compilação. Clique na linha com o bug:",
+      "lines": [
+        "import java.util.*;",
+        "List<String> nomes = new List<>();",
+        "nomes.add(\"Duke\");"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "`List` é uma `interface` e não pode ser instanciada diretamente com `new List<>()`. O correto é `new ArrayList<>()`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para criar um `HashMap`, inserir a pontuação de `\"Ana\"` e consultar `\"Bia\"` com valor padrão `0`:",
+      "blocks": [
+        "Map<String, Integer> pontos = new HashMap<>();",
+        "pontos.put(\"Ana\", 100);",
+        "int p = pontos.getOrDefault(\"Bia\", 0);",
+        "System.out.println(p);"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "Instanciamos o `HashMap`, inserimos com `.put(...)` e lemos com `.getOrDefault(...)` para evitar retorno `null`."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual será o valor de `tags.size()` após adicionar `\"Java\"`, `\"Python\"` e `\"Java\"` em um `Set<String> tags = new HashSet<>();`?",
+      "options": [
+        "3",
+        "2",
+        "1",
+        "Lança exceção por elemento duplicado"
+      ],
+      "correctIndex": 1,
+      "explanation": "`HashSet` descarta silenciosamente elementos duplicados (`.add(\"Java\")` retorna `false` na segunda vez), mantendo tamanho `2`."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Defina uma `interface Autenticavel` com o método `boolean login(String senha);`:",
-      "starterCode": "// Crie a interface Autenticavel abaixo:\n",
-      "requiredTokens": ["interface", "Autenticavel", "boolean", "login", "String"],
-      "sampleSolution": "interface Autenticavel {\n    boolean login(String senha);\n}",
-      "hint": "Use: interface Autenticavel { boolean login(String senha); }",
-      "explanation": "Métodos declarados em uma `interface` são implicitamente públicos e abstratos, definindo apenas a assinatura."
+      "prompt": "Crie um `Map` com chaves `String` e valores `Integer` chamado `idades` (instanciado como `HashMap`) e insira a chave `\"Joao\"` com o valor `25`.",
+      "starterCode": "",
+      "requiredTokens": ["Map<String, Integer>", "idades", "HashMap", ".put(", "\"Joao\"", "25"],
+      "sampleSolution": "Map<String, Integer> idades = new HashMap<>();\nidades.put(\"Joao\", 25);",
+      "hint": "Declare `Map<String, Integer> idades = new HashMap<>();` e use `.put(\"Joao\", 25)`.",
+      "explanation": "O operador diamante `<>` infere os tipos `<String, Integer>` automaticamente no `new HashMap<>()`."
     }
   ]
 }

@@ -1,17 +1,18 @@
 {
   "id": "pytorch-nn-module-02",
   "title": "Construindo Redes Neurais com nn.Module, nn.Linear e nn.ReLU",
-  "description": "Estruture camadas neurais herdando de nn.Module e implementando o método forward(self, x).",
+  "description": "Estruture camadas neurais herdando de nn.Module, implementando forward(self, x) ou empilhando camadas com nn.Sequential.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Anatomia de uma Rede Neural em PyTorch (nn.Module)",
-      "content": "Toda arquitetura em PyTorch (de um MLP simples até um Transformer/LLM) herda de **`nn.Module`**. No `__init__`, declaramos as camadas (ex: `nn.Linear(entrada, saida)` e ativações como `nn.ReLU()`). No método **`forward(self, x)`**, conectamos o fluxo dos dados. **Dica:** para inferência, chamamos `modelo(x)` (nunca `modelo.forward(x)` direto), pois `__call__` aciona hooks internos do PyTorch!",
-      "codeExample": "import torch.nn as nn\n\nclass RedeSimples(nn.Module):\n    def __init__(self):\n        super().__init__()\n        self.camada1 = nn.Linear(10, 64)\n        self.relu = nn.ReLU()\n        self.saida = nn.Linear(64, 2)\n\n    def forward(self, x):\n        return self.saida(self.relu(self.camada1(x)))",
+      "title": "Anatomia de uma Rede Neural em PyTorch (nn.Module e nn.Sequential)",
+      "content": "Toda arquitetura em PyTorch (de um MLP simples até um Transformer/LLM) herda de **`nn.Module`**. No `__init__`, chamamos `super().__init__()` e declaramos as camadas (ex: `nn.Linear(entrada, saida)` e ativações não-lineares como `nn.ReLU()`). No método **`forward(self, x)`**, conectamos o fluxo dos dados. Para inferência, chamamos `modelo(x)` (nunca `modelo.forward(x)` direto), pois `__call__` aciona hooks internos do PyTorch.\n\nQuando a rede é apenas uma sequência linear de camadas (uma saída entrando direto na próxima), podemos usar o atalho **`nn.Sequential(...)`** sem precisar escrever uma classe completa!",
+      "codeExample": "import torch.nn as nn\n\nclass RedeSimples(nn.Module):\n    def __init__(self):\n        super().__init__()\n        self.camada1 = nn.Linear(10, 64)\n        self.relu = nn.ReLU()\n        self.saida = nn.Linear(64, 2)\n\n    def forward(self, x):\n        return self.saida(self.relu(self.camada1(x)))\n\n# Alternativa concisa para fluxos lineares:\nmodelo_seq = nn.Sequential(\n    nn.Linear(10, 64),\n    nn.ReLU(),\n    nn.Linear(64, 2)\n)",
       "keyTakeaways": [
         "Sempre chame `super().__init__()` dentro do `__init__` de um `nn.Module`.",
         "Sem funções de ativação não-lineares (`nn.ReLU`, `nn.GELU`), empilhar várias `nn.Linear` equivale a uma única transformação linear!",
+        "`nn.Sequential(...)` empilha camadas em ordem automática sem precisar escrever uma classe `nn.Module`.",
         "`model.parameters()` lista automaticamente todos os pesos treináveis registrados no `nn.Module`."
       ]
     },
@@ -28,12 +29,51 @@
       "explanation": "Herdamos de `nn.Module`, chamamos `super().__init__()` e implementamos `forward(self, x)`."
     },
     {
+      "type": "multiple_choice",
+      "prompt": "Por que adicionamos `nn.ReLU()` entre duas camadas `nn.Linear` em uma rede neural?",
+      "options": [
+        "Para reduzir o tamanho do arquivo salvo em disco",
+        "Para introduzir não-linearidade; sem ela, várias camadas lineares equivalem a uma única transformação linear",
+        "Para converter tensores para listas Python",
+        "Para substituir o método `forward()`"
+      ],
+      "correctIndex": 1,
+      "explanation": "Sem ativações não-lineares como `nn.ReLU()`, a composição de múltiplas camadas lineares continua sendo apenas uma função linear."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Ao instanciar `Rede()`, o PyTorch lança `AttributeError` dizendo que não é possível atribuir módulos antes de inicializar a classe pai. Clique na linha onde falta a chamada obrigatória:",
+      "lines": [
+        "class Rede(nn.Module):",
+        "    def __init__(self):",
+        "        self.camada = nn.Linear(4, 2)",
+        "    def forward(self, x):",
+        "        return self.camada(x)"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Dentro de `__init__` de qualquer `nn.Module`, é obrigatório chamar `super().__init__()` antes de registrar camadas como `self.camada`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para construir uma rede neural completa com `nn.Module`, `nn.Linear`, `nn.ReLU` e `forward`:",
+      "blocks": [
+        "    def forward(self, x):",
+        "        super().__init__()",
+        "class MLP(nn.Module):",
+        "        return self.fc2(self.relu(self.fc1(x)))",
+        "    def __init__(self):",
+        "        self.fc1, self.relu, self.fc2 = nn.Linear(4, 8), nn.ReLU(), nn.Linear(8, 1)"
+      ],
+      "correctOrder": [2, 4, 1, 5, 0, 3],
+      "explanation": "Declaramos a classe herdando de `nn.Module`, definimos `__init__` com `super().__init__()` e as camadas, e implementamos `forward(self, x)`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie uma rede sequencial usando `nn.Sequential(nn.Linear(8, 16), nn.ReLU(), nn.Linear(16, 1))` e salve em `modelo`:",
-      "starterCode": "import torch.nn as nn\n# Crie modelo com nn.Sequential:\n",
+      "prompt": "Desafio de Código: Construa uma rede sequencial armazenada na variável `modelo` que receba 8 entradas, passe por uma camada linear para 16 neurônios, aplique ativação ReLU e finalize em uma camada linear para 1 saída.",
+      "starterCode": "import torch.nn as nn\n",
       "requiredTokens": ["modelo", "nn.Sequential(", "nn.Linear(8, 16)", "nn.ReLU()", "nn.Linear(16, 1)"],
       "sampleSolution": "modelo = nn.Sequential(\n    nn.Linear(8, 16),\n    nn.ReLU(),\n    nn.Linear(16, 1)\n)",
-      "hint": "Passe as 3 camadas em ordem dentro de `nn.Sequential(...)`.",
+      "hint": "Atribua a `modelo` uma instância de `nn.Sequential` contendo as três camadas na ordem indicada.",
       "explanation": "`nn.Sequential` é perfeito para empilhar camadas lineares sem precisar escrever uma classe completa."
     }
   ]

@@ -1,0 +1,87 @@
+{
+  "id": "py-funcoes-01",
+  "title": "06. Funções (def), Type Hints e Valores Padrão",
+  "description": "Crie funções reutilizáveis com def e return, documente tipos com Type Hints e evite a armadilha de argumentos padrão mutáveis.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Funções (def), Type Hints e Armadilha do Padrão Mutável",
+      "content": "Funções permitem encapsular lógica reutilizável:\n\n1. **Definindo com `def` e `return`**: Escrevemos `def nome(parametro):` e devolvemos o resultado com `return valor`.\n2. **Type Hints**: Em Python moderno, anotamos os tipos dos parâmetros e do retorno para clareza e checagem estática: `def somar(a: int, b: int) -> int:`.\n3. **Parâmetros padrão e a armadilha mutável**: Podemos definir valores padrão como `def saudar(nome: str = \"Visitante\") -> str:`. **Atenção**: nunca use um objeto mutável (como `lista = []` ou `dados = {}`) como valor padrão! O Python cria esse objeto apenas uma vez na definição da função, fazendo chamadas diferentes compartilharem a mesma lista. O padrão seguro é usar `None` e criar `[]` dentro da função (`if lista is None: lista = []`).",
+      "codeExample": "def dobrar(x: int = 1) -> int:\n    return x * 2\n\n# Padrão seguro para parâmetro opcional mutável:\ndef adicionar_item(item: str, lista: list[str] | None = None) -> list[str]:\n    if lista is None:\n        lista = []\n    lista.append(item)\n    return lista",
+      "keyTakeaways": [
+        "Use 'def nome(param: tipo) -> retorno:' e 'return' para devolver valores.",
+        "Type Hints documentam tipos esperados sem mudar a execução dinâmica.",
+        "Nunca use [] ou {} como valor padrão; use None e inicialize dentro da função."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual palavra-chave define uma função em Python e qual devolve um resultado para quem a chamou?",
+      "options": [
+        "function e output",
+        "def e return",
+        "func e yield",
+        "fn e send"
+      ],
+      "correctIndex": 1,
+      "explanation": "Em Python usamos 'def' para declarar a função e 'return' para devolver o valor calculado."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a função com Type Hints para receber dois inteiros e retornar um inteiro:",
+      "codeTemplate": "{{blank}} multiplicar(a: int, b: int) {{blank}} int:\n    {{blank}} a * b",
+      "blanks": [
+        { "answer": "def", "placeholder": "palavra-chave" },
+        { "answer": "->", "placeholder": "seta de retorno" },
+        { "answer": "return", "placeholder": "devolver" }
+      ],
+      "options": ["def", "func", "->", ":", "return"],
+      "explanation": "Type Hints de retorno usam '-> tipo:' antes do bloco, e 'return' devolve o produto."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Esta função usa uma lista mutável como valor padrão, fazendo chamadas diferentes compartilharem a mesma lista. Qual linha contém o bug?",
+      "lines": [
+        "def registrar(item, historico=[]):",
+        "    historico.append(item)",
+        "    return historico"
+      ],
+      "buggyLineIndex": 0,
+      "explanation": "Na linha 1, 'historico=[]' é avaliado apenas uma vez quando a função é definida. Use 'historico=None' e inicialize dentro da função."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para implementar corretamente o padrão seguro com None em uma função:",
+      "blocks": [
+        "    if itens is None:",
+        "def incluir(valor: int, itens: list[int] | None = None) -> list[int]:",
+        "        itens = []",
+        "    return itens",
+        "    itens.append(valor)"
+      ],
+      "correctOrder": [1, 0, 2, 4, 3],
+      "explanation": "Primeiro declaramos a função com '= None', verificamos 'if itens is None:' para criar uma nova lista, adicionamos o valor e retornamos."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a função com valor padrão seguro e condicional para retornar uma mensagem formatada:",
+      "codeTemplate": "def boas_vindas(nome: str = {{blank}}) -> str:\n    if nome == \"Admin\":\n        return \"Acesso root\"\n    return {{blank}}\"Olá, {nome}\"",
+      "blanks": [
+        { "answer": "\"Visitante\"", "placeholder": "padrão" },
+        { "answer": "f", "placeholder": "prefixo" }
+      ],
+      "options": ["\"Visitante\"", "[]", "f", "s"],
+      "explanation": "Strings são imutáveis, então \"Visitante\" é seguro como valor padrão, e a f-string interpola {nome}."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva uma função chamada 'calcular_desconto' com Type Hints que receba 'preco' (float) e um parâmetro opcional 'taxa' (float) com valor padrão 0.1, retornando o valor do preço multiplicado por (1 - taxa).",
+      "starterCode": "",
+      "requiredTokens": ["def", "calcular_desconto", "float", "return"],
+      "sampleSolution": "def calcular_desconto(preco: float, taxa: float = 0.1) -> float:\n    return preco * (1 - taxa)",
+      "hint": "Declare 'def calcular_desconto(preco: float, taxa: float = 0.1) -> float:' e retorne o cálculo com return.",
+      "explanation": "A função combina def, Type Hints nos parâmetros e no retorno (-> float), parâmetro com valor padrão numérico e return."
+    }
+  ]
+}

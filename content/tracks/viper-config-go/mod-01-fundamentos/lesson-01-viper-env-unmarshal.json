@@ -7,8 +7,13 @@
     {
       "type": "theory",
       "title": "Configuração unificada em aplicações Go",
-      "content": "O **Viper** (`github.com/spf13/viper`) resolve a leitura de configurações de forma padronizada seguindo precedência (flags > env > arquivo > defaults):\n\n- `viper.SetDefault(\"port\", 8080)` define valores padrão.\n- `viper.SetConfigName(\"config\")` + `viper.AddConfigPath(\".\")` + `viper.ReadInConfig()` lê `config.yaml` / `config.json`.\n- `viper.AutomaticEnv()` sobrescreve chaves automaticamente por variáveis de ambiente.\n- `viper.Unmarshal(&cfg)` popula uma struct Go tipada.",
-      "codeExample": "type Config struct {\n    Port int    `mapstructure:\"port\"`\n    DSN  string `mapstructure:\"dsn\"`\n}\n\nviper.SetDefault(\"port\", 8080)\nviper.SetConfigName(\"config\")\nviper.AddConfigPath(\".\")\nviper.AutomaticEnv()\n_ = viper.ReadInConfig()\n\nvar cfg Config\n_ = viper.Unmarshal(&cfg)"
+      "content": "O **Viper** (`github.com/spf13/viper`) resolve a leitura de configurações de forma padronizada seguindo precedência (flags > env > arquivo > defaults):\n\n- `viper.SetDefault(\"port\", 8080)` define valores padrão.\n- `viper.SetConfigName(\"config\")` + `viper.AddConfigPath(\".\")` + `viper.ReadInConfig()` lê `config.yaml` / `config.json`.\n- `viper.AutomaticEnv()` sobrescreve chaves automaticamente por variáveis de ambiente.\n- `viper.Unmarshal(&cfg)` popula uma struct Go tipada usando a tag `mapstructure:\"chave\"`.",
+      "codeExample": "type Config struct {\n    Port int    `mapstructure:\"port\"`\n    DSN  string `mapstructure:\"dsn\"`\n}\n\nviper.SetDefault(\"port\", 8080)\nviper.SetConfigName(\"config\")\nviper.AddConfigPath(\".\")\nviper.AutomaticEnv()\n_ = viper.ReadInConfig()\n\nvar cfg Config\n_ = viper.Unmarshal(&cfg)",
+      "keyTakeaways": [
+        "Use a tag `mapstructure:\"chave\"` nos campos da struct que receberá os dados do Viper.",
+        "`viper.AutomaticEnv()` permite sobrescrever valores de arquivo e defaults por variáveis de ambiente.",
+        "Passe sempre um ponteiro (`&cfg`) para `viper.Unmarshal(&cfg)`."
+      ]
     },
     {
       "type": "multiple_choice",
@@ -20,7 +25,7 @@
         "`yaml_only:\"nome_chave\"`"
       ],
       "correctIndex": 0,
-      "explanation": "Internamente o Viper usa a biblioteca mapstructure, por isso os campos da struct usam a tag `mapstructure:\"chave\"`."
+      "explanation": "Internamente o Viper usa a biblioteca `mapstructure`, por isso os campos da struct usam a tag `mapstructure:\"chave\"`."
     },
     {
       "type": "fill_in_blank",
@@ -32,11 +37,23 @@
         { "answer": "Unmarshal" }
       ],
       "options": ["AutomaticEnv", "LoadEnv", "ReadInConfig", "ParseFile", "Unmarshal", "Decode"],
-      "explanation": "AutomaticEnv habilita leitura automática de env vars, ReadInConfig lê o arquivo configurado e Unmarshal preenche a struct."
+      "explanation": "`AutomaticEnv` habilita leitura automática de env vars, `ReadInConfig` lê o arquivo configurado e `Unmarshal` preenche a struct."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene as etapas para definir um valor padrão, ler o arquivo de configuração, habilitar variáveis de ambiente e preencher a struct `cfg`:",
+      "blocks": [
+        "_ = viper.Unmarshal(&cfg)",
+        "viper.SetDefault(\"port\", 8080)",
+        "viper.AutomaticEnv()",
+        "_ = viper.ReadInConfig()"
+      ],
+      "correctOrder": [1, 3, 2, 0],
+      "explanation": "Definimos defaults com `SetDefault`, carregamos o arquivo com `ReadInConfig`, ativamos `AutomaticEnv` e populamos `&cfg` com `Unmarshal`."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Encontre a linha com erro ao tentar popular a struct Config com Viper:",
+      "prompt": "Encontre a linha com erro ao tentar popular a struct `Config` com Viper:",
       "lines": [
         "viper.SetDefault(\"port\", 8080)",
         "viper.AutomaticEnv()",
@@ -44,19 +61,20 @@
         "err := viper.Unmarshal(cfg)"
       ],
       "buggyLineIndex": 3,
-      "explanation": "Assim como json.Unmarshal, viper.Unmarshal precisa de um ponteiro (&cfg) para preencher os campos da struct."
+      "explanation": "Assim como `json.Unmarshal`, `viper.Unmarshal` precisa de um ponteiro (`&cfg`) para preencher os campos da struct."
     },
     {
       "type": "write_code",
-      "prompt": "Configure o Viper com `viper.SetDefault(\"port\", 3000)`, ative `viper.AutomaticEnv()` e preencha `var cfg Config` com `viper.Unmarshal(&cfg)`.",
-      "starterCode": "type Config struct {\n    Port int `mapstructure:\"port\"`\n}\n\nfunc loadConfig() Config {\n    // Configure o Viper e retorne cfg\n}",
+      "prompt": "Implemente a função `loadConfig` que define a porta padrão `3000`, habilita a leitura automática de variáveis de ambiente no Viper, faz o Unmarshal para uma struct `Config` (com campo `Port` mapeado para `port`) e retorna `cfg`.",
+      "starterCode": "",
       "requiredTokens": [
+        "mapstructure:\"port\"",
         "viper.SetDefault(",
         "viper.AutomaticEnv()",
         "viper.Unmarshal(&cfg)"
       ],
       "sampleSolution": "type Config struct {\n    Port int `mapstructure:\"port\"`\n}\n\nfunc loadConfig() Config {\n    viper.SetDefault(\"port\", 3000)\n    viper.AutomaticEnv()\n    var cfg Config\n    _ = viper.Unmarshal(&cfg)\n    return cfg\n}",
-      "hint": "Defina o padrão com viper.SetDefault(\"port\", 3000), chame viper.AutomaticEnv() e popule cfg com viper.Unmarshal(&cfg).",
+      "hint": "Declare `type Config struct { Port int `mapstructure:\"port\"` }`, use `viper.SetDefault(\"port\", 3000)`, `viper.AutomaticEnv()` e `viper.Unmarshal(&cfg)`.",
       "explanation": "Essa combinação permite rodar localmente com valores default e em produção apenas injetando variáveis de ambiente."
     }
   ]

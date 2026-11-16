@@ -1,17 +1,18 @@
 {
   "id": "zod-schema-01",
   "title": "Criando Schemas com Zod",
-  "description": "Validando objetos e inferindo tipos TypeScript.",
-  "xp": 20,
+  "description": "Validando objetos em runtime com parse/safeParse e inferindo tipos TypeScript.",
+  "xp": 30,
   "steps": [
     {
       "type": "theory",
       "title": "Validação Runtime + Inferência Estática com Zod",
-      "content": "O TypeScript valida tipos apenas durante a compilação — quando lemos um arquivo JSON ou uma API externa em tempo de execução, precisamos garantir que os dados realmente seguem o formato esperado. O Zod resolve isso permitindo criar um schema com z.object() e extrair o tipo TypeScript automaticamente com z.infer.",
-      "codeExample": "import { z } from \"zod\";\n\nconst LicaoSchema = z.object({\n  titulo: z.string(),\n  xp: z.number(),\n});\n\ntype Licao = z.infer<typeof LicaoSchema>;",
+      "content": "O TypeScript valida tipos apenas durante a compilação — quando lemos um JSON ou resposta de API em tempo de execução, precisamos garantir que os dados realmente seguem o formato esperado. O **Zod** permite definir um schema com `z.object({ campo: z.string(), ... })` e extrair o tipo TypeScript automaticamente com `z.infer<typeof Schema>`. Para validar dados recebidos, usamos `Schema.parse(dados)` (que lança exceção se inválido) ou `Schema.safeParse(dados)` (que retorna `{ success, data | error }` sem lançar exceção).",
+      "codeExample": "import { z } from \"zod\";\n\nconst LicaoSchema = z.object({\n  titulo: z.string(),\n  xp: z.number(),\n});\n\ntype Licao = z.infer<typeof LicaoSchema>;\n\nconst licao = LicaoSchema.parse({ titulo: \"Intro\", xp: 20 });\nconst resultado = LicaoSchema.safeParse({ titulo: \"Intro\" });",
       "keyTakeaways": [
-        "z.object() define a estrutura esperada de um objeto JSON.",
-        "z.infer<typeof Schema> extrai o tipo estático sem duplicar código."
+        "`z.object()` define a estrutura esperada de um objeto com tipos como `z.string()` e `z.number()`.",
+        "`z.infer<typeof Schema>` extrai o tipo estático sem duplicar código.",
+        "`.parse(dados)` retorna os dados validados ou lança erro; `.safeParse(dados)` retorna um objeto com `success: boolean`."
       ]
     },
     {
@@ -29,7 +30,7 @@
         }
       ],
       "options": ["object", "number", "interface", "int"],
-      "explanation": "z.object() cria um validador de objeto e z.number() valida valores numéricos em tempo de execução."
+      "explanation": "`z.object()` cria um validador de objeto e `z.number()` valida valores numéricos em tempo de execução."
     },
     {
       "type": "multiple_choice",
@@ -42,7 +43,58 @@
         "O Zod não suporta TypeScript"
       ],
       "correctIndex": 1,
-      "explanation": "Com z.infer<typeof Schema>, o Zod gera o tipo estático automaticamente sem que você precise duplicar definições."
+      "explanation": "Com `z.infer<typeof Schema>`, o Zod gera o tipo estático automaticamente sem que você precise duplicar definições."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual método do Zod valida um dado sem lançar exceção em caso de erro, retornando `{ success: false, error }`?",
+      "options": [
+        "Schema.parse(dados)",
+        "Schema.tryParse(dados)",
+        "Schema.safeParse(dados)",
+        "Schema.validate(dados)"
+      ],
+      "correctIndex": 2,
+      "explanation": "`.safeParse()` nunca lança exceção de validação; ele retorna um resultado discriminado com `success: true/false`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para importar o Zod, definir o schema de usuário, inferir o tipo e validar um objeto de entrada:",
+      "blocks": [
+        "type User = z.infer<typeof UserSchema>;",
+        "import { z } from \"zod\";",
+        "const user = UserSchema.parse(entrada);",
+        "const UserSchema = z.object({ nome: z.string(), idade: z.number() });"
+      ],
+      "correctOrder": [1, 3, 0, 2],
+      "explanation": "Primeiro importamos `z`, depois criamos `UserSchema`, extraímos `type User` com `z.infer` e validamos `entrada` com `.parse()`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Encontre a linha com erro ao tentar inferir o tipo TypeScript a partir do schema Zod:",
+      "lines": [
+        "import { z } from \"zod\";",
+        "const ProdutoSchema = z.object({ preco: z.number() });",
+        "type Produto = z.infer<ProdutoSchema>;",
+        "const ok = ProdutoSchema.safeParse({ preco: 10 });"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "`ProdutoSchema` é um valor JavaScript em runtime; no nível de tipos do TypeScript é obrigatório usar `typeof ProdutoSchema` dentro de `z.infer<...>`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Importe o Zod, defina um schema `UsuarioSchema` para um objeto com `nome` (texto) e `idade` (número), extraia o tipo `Usuario` por inferência e valide o objeto `{ nome: \"Ana\", idade: 25 }` usando validação segura sem exceções.",
+      "starterCode": "",
+      "requiredTokens": [
+        "z.object(",
+        "z.string()",
+        "z.number()",
+        "z.infer<typeof UsuarioSchema>",
+        ".safeParse("
+      ],
+      "sampleSolution": "import { z } from \"zod\";\n\nconst UsuarioSchema = z.object({\n  nome: z.string(),\n  idade: z.number(),\n});\n\ntype Usuario = z.infer<typeof UsuarioSchema>;\n\nconst resultado = UsuarioSchema.safeParse({ nome: \"Ana\", idade: 25 });",
+      "hint": "Use `z.object({ nome: z.string(), idade: z.number() })`, `type Usuario = z.infer<typeof UsuarioSchema>` e `UsuarioSchema.safeParse(...)`.",
+      "explanation": "Essa estrutura garante validação em runtime com `.safeParse()` e tipagem estática automática via `z.infer`."
     }
   ]
 }

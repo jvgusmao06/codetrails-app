@@ -1,40 +1,83 @@
 {
   "id": "sql-views-explain-03",
-  "title": "Performance na Prática: CREATE VIEW, EXPLAIN ANALYZE e Seq Scan vs Index Scan",
-  "description": "Encapsule relatórios com Views e aprenda a diagnosticar queries lentas usando EXPLAIN ANALYZE no PostgreSQL.",
+  "title": "09. Views, EXPLAIN ANALYZE e Otimização",
+  "description": "Encapsule consultas reutilizáveis com CREATE VIEW, diagnostique gargalos com EXPLAIN ANALYZE e entenda Seq Scan vs Index Scan.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Diagnosticando Gargalos com EXPLAIN ANALYZE",
-      "content": "Quando uma query fica lenta em produção, rodamos **`EXPLAIN ANALYZE SELECT ...`** no PostgreSQL para ver o plano de execução real! Se aparecer **`Seq Scan`** (varredura sequencial da tabela inteira) em uma tabela de milhões de linhas filtrada por `WHERE email = ...`, falta um **`CREATE INDEX`** naquela coluna para transformar em **`Index Scan`**. Já **`CREATE VIEW`** salva uma query complexa como uma tabela virtual reutilizável.",
-      "codeExample": "-- Cria um índice B-Tree para acelerar buscas por email\nCREATE INDEX idx_usuarios_email ON usuarios(email);\n\n-- Verifica se o PostgreSQL está usando Index Scan ou Seq Scan\nEXPLAIN ANALYZE\nSELECT id, nome FROM usuarios WHERE email = 'ana@dev.com';\n\n-- Salva uma consulta como View reutilizável\nCREATE VIEW vw_resumo_vendas AS\nSELECT categoria, COUNT(*) AS qtd FROM vendas GROUP BY categoria;",
+      "title": "CREATE VIEW, EXPLAIN ANALYZE e Seq Scan vs Index Scan",
+      "content": "Em bancos em produção, legibilidade e performance caminham juntas:\n\n1. **`CREATE VIEW`**: Salva uma consulta `SELECT` com um nome reutilizável, funcionando como uma tabela virtual: `CREATE VIEW clientes_ativos AS SELECT id, nome FROM clientes WHERE ativo = true;`.\n2. **`EXPLAIN ANALYZE`**: Mostra o plano de execução real e o tempo gasto pelo PostgreSQL para rodar uma query.\n3. **`Seq Scan` vs `Index Scan`**: `Seq Scan` lê a tabela inteira linha por linha (lento em milhões de registros); `Index Scan` vai direto aos registros usando um índice criado com `CREATE INDEX`.\n4. **Evite `SELECT *` em produção**: Selecionar apenas as colunas necessárias reduz tráfego de rede e permite *Index-Only Scans*.",
+      "codeExample": "CREATE VIEW pedidos_recentes AS\nSELECT id, cliente_id, total\nFROM pedidos\nWHERE total > 100;\n\nCREATE INDEX idx_pedidos_cliente ON pedidos(cliente_id);\n\nEXPLAIN ANALYZE\nSELECT id, total FROM pedidos WHERE cliente_id = 10;",
       "keyTakeaways": [
-        "`Seq Scan` lê a tabela linha por linha; `Index Scan` vai direto aos registros desejados via índice.",
-        "Evite `SELECT *` em produção — selecione apenas as colunas necessárias para reduzir tráfego de rede e disco.",
-        "Não crie índices em excesso: índices aceleram `SELECT`, mas deixam `INSERT`/`UPDATE` um pouco mais lentos."
+        "CREATE VIEW nome AS SELECT ... encapsula consultas complexas sem duplicar dados.",
+        "EXPLAIN ANALYZE revela se a query está fazendo Seq Scan (varredura total) ou Index Scan.",
+        "Evite SELECT * em produção e indexe colunas frequentemente filtradas no WHERE."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Ao rodar `EXPLAIN ANALYZE` em uma tabela com 5 milhões de linhas filtrada por `WHERE cpf = '...'`, você vê `Seq Scan` levando 1.200ms. O que resolve o gargalo?",
+      "prompt": "Ao rodar EXPLAIN ANALYZE em uma tabela com 5 milhões de linhas filtrada por WHERE cpf = '...', você vê Seq Scan levando 1200ms. Qual é a melhor correção?",
       "options": [
-        "Trocar WHERE por HAVING",
-        "Criar um índice na coluna `cpf` com `CREATE INDEX` para ativar `Index Scan`",
-        "Adicionar ORDER BY cpf DESC",
-        "Converter a tabela em VIEW"
+        "Trocar SELECT por SELECT *",
+        "Criar um índice na coluna cpf com CREATE INDEX para habilitar Index Scan",
+        "Remover a cláusula WHERE",
+        "Converter a query em uma VIEW"
       ],
       "correctIndex": 1,
-      "explanation": "Um índice (`CREATE INDEX`) permite que o banco localize o `cpf` em $O(\\log n)$ via `Index Scan` em vez de varrer 5 milhões de linhas."
+      "explanation": "Um índice na coluna filtrada permite que o banco substitua o Seq Scan por um Index Scan muito mais rápido."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o comando para criar uma View chamada 'usuarios_ativos' selecionando apenas id e nome:",
+      "codeTemplate": "{{blank}} VIEW usuarios_ativos {{blank}}\nSELECT id, nome\nFROM usuarios\nWHERE ativo = true;",
+      "blanks": [
+        { "answer": "CREATE", "placeholder": "criar" },
+        { "answer": "AS", "placeholder": "como" }
+      ],
+      "options": ["CREATE", "INSERT", "AS", "ON"],
+      "explanation": "A sintaxe padrão de criação de View é CREATE VIEW nome AS SELECT ..."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o comando para inspecionar o plano de execução real de uma consulta filtrada por email:",
+      "codeTemplate": "{{blank}} ANALYZE\nSELECT id, nome FROM usuarios WHERE email = 'ana@dev.io';",
+      "blanks": [
+        { "answer": "EXPLAIN", "placeholder": "analisar" }
+      ],
+      "options": ["EXPLAIN", "DESCRIBE", "SHOW", "DEBUG"],
+      "explanation": "No PostgreSQL, EXPLAIN ANALYZE executa a consulta e exibe o plano de execução e tempos reais."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "A equipe quer otimizar o tráfego de rede e evitar buscar colunas desnecessárias, mas a query abaixo ainda comete uma má prática de produção. Qual linha deve ser melhorada?",
+      "lines": [
+        "EXPLAIN ANALYZE",
+        "SELECT *",
+        "FROM pedidos",
+        "WHERE cliente_id = 10;"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Usar 'SELECT *' traz todas as colunas da tabela, aumentando I/O e tráfego de rede e impedindo otimizações como Index-Only Scan."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os comandos para indexar a coluna 'cliente_id' de 'pedidos' e em seguida verificar o plano de execução:",
+      "blocks": [
+        "EXPLAIN ANALYZE SELECT id, total FROM pedidos WHERE cliente_id = 10;",
+        "CREATE INDEX idx_pedidos_cliente ON pedidos(cliente_id);"
+      ],
+      "correctOrder": [1, 0],
+      "explanation": "Primeiro criamos o índice com CREATE INDEX e depois rodamos EXPLAIN ANALYZE para confirmar o uso do Index Scan."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva o comando para criar um índice chamado `idx_pedidos_cliente` na coluna `cliente_id` da tabela `pedidos` e depois rode `EXPLAIN ANALYZE` em um `SELECT * FROM pedidos WHERE cliente_id = 10;`:",
-      "starterCode": "-- 1. Crie o índice idx_pedidos_cliente\n-- 2. Analise a query com EXPLAIN ANALYZE\n",
-      "requiredTokens": ["CREATE INDEX", "idx_pedidos_cliente", "ON pedidos", "cliente_id", "EXPLAIN ANALYZE", "SELECT"],
-      "sampleSolution": "CREATE INDEX idx_pedidos_cliente ON pedidos(cliente_id);\nEXPLAIN ANALYZE SELECT * FROM pedidos WHERE cliente_id = 10;",
-      "hint": "Use `CREATE INDEX idx_pedidos_cliente ON pedidos(cliente_id);` e `EXPLAIN ANALYZE SELECT * FROM pedidos WHERE cliente_id = 10;`.",
-      "explanation": "Sempre meça antes e depois com `EXPLAIN ANALYZE` para comprovar que o índice reduziu o tempo de execução."
+      "prompt": "Escreva os comandos SQL para: 1) criar um índice chamado 'idx_pedidos_cliente' na coluna 'cliente_id' da tabela 'pedidos', e 2) analisar com EXPLAIN ANALYZE uma consulta que selecione apenas 'id' e 'total' de 'pedidos' filtrando por 'cliente_id = 10'.",
+      "starterCode": "",
+      "requiredTokens": ["CREATE", "INDEX", "ON", "pedidos", "EXPLAIN", "ANALYZE", "SELECT", "WHERE"],
+      "sampleSolution": "CREATE INDEX idx_pedidos_cliente ON pedidos(cliente_id);\n\nEXPLAIN ANALYZE\nSELECT id, total\nFROM pedidos\nWHERE cliente_id = 10;",
+      "hint": "Crie o índice com CREATE INDEX ... ON pedidos(cliente_id); e depois execute EXPLAIN ANALYZE SELECT id, total FROM pedidos WHERE cliente_id = 10;.",
+      "explanation": "Combinamos indexação com CREATE INDEX, seleção explícita de colunas (evitando SELECT *) e diagnóstico com EXPLAIN ANALYZE."
     }
   ]
 }

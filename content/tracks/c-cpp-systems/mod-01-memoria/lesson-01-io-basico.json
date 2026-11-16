@@ -2,21 +2,30 @@
   "id": "cpp-io-01",
   "title": "Entrada e Saída em C e C++",
   "description": "Usando printf da stdio.h e std::cout da iostream.",
-  "xp": 15,
+  "xp": 25,
   "steps": [
     {
       "type": "theory",
       "title": "Fluxos de Saída em C (printf) e C++ (std::cout)",
-      "content": "Na linguagem C clássica, incluímos <stdio.h> e usamos a função printf() com especificadores de formato como %d (inteiro) ou %s (string). Já em C++, incluímos <iostream> e enviamos dados diretamente para o fluxo std::cout usando o operador <<.",
-      "codeExample": "// Em C:\nint porta = 8080;\nprintf(\"Porta: %d\\n\", porta);\n\n// Em C++:\nstd::cout << \"Sistema Online!\" << std::endl;",
+      "content": "Todo programa em C ou C++ começa pela função `main()`, que retorna `0` ao sistema operacional quando termina com sucesso. Na linguagem C clássica, incluímos `<stdio.h>` e usamos `printf()` com especificadores de formato: `%d` para inteiros (`int`), `%f` para decimais (`float`/`double`) e `%s` para strings. Já em C++, incluímos `<iostream>` e enviamos dados para o fluxo `std::cout` encadeando o operador `<<`, podendo finalizar a linha com `std::endl` ou `\"\\n\"`.",
+      "codeExample": "// Em C:\n#include <stdio.h>\nint main() {\n    int porta = 8080;\n    printf(\"Porta: %d\\n\", porta);\n    return 0;\n}\n\n// Em C++:\n#include <iostream>\nint main() {\n    std::cout << \"Sistema Online!\" << std::endl;\n    return 0;\n}",
       "keyTakeaways": [
-        "Em C++, std::cout << envia dados para a saída padrão.",
-        "Em C, printf usa %d para números inteiros (int) e %f para decimais."
+        "Em C, <stdio.h> fornece printf() com especificadores %d (int), %f (decimal) e %s (string).",
+        "Em C++, <iostream> fornece std::cout com o operador de inserção <<.",
+        "A função main() retorna 0 para indicar execução bem-sucedida."
       ]
     },
     {
+      "type": "multiple_choice",
+      "prompt": "Na linguagem C, qual especificador de formato usamos dentro de `printf()` para imprimir um número inteiro (`int`)?",
+      "codeSnippet": "int porta = 8080;\nprintf(\"Porta ativa!\", porta);",
+      "options": ["%s", "%d", "%f", "%c"],
+      "correctIndex": 1,
+      "explanation": "O especificador %d formata um valor inteiro decimal com sinal na função printf()."
+    },
+    {
       "type": "fill_in_blank",
-      "prompt": "Em C++, envie a string para a saída padrão usando o operador de fluxo:",
+      "prompt": "Em C++, complete o comando para enviar a mensagem para a saída padrão:",
       "codeTemplate": "#include <iostream>\n\nint main() {\n  std::{{blank}} << \"Sistema Online!\" << std::endl;\n  return 0;\n}",
       "blanks": [
         {
@@ -29,11 +38,45 @@
     },
     {
       "type": "multiple_choice",
-      "prompt": "Na linguagem C, qual especificador de formato usamos dentro de printf() para imprimir um número inteiro (int)?",
-      "codeSnippet": "int porta = 8080;\nprintf(\"Porta: %d\\n\", porta);",
-      "options": ["%s", "%d", "%f", "%c"],
+      "prompt": "Qual cabeçalho devemos incluir para utilizar `printf()` em C?",
+      "options": ["<iostream>", "<stdio.h>", "<string>", "<vector>"],
       "correctIndex": 1,
-      "explanation": "O especificador %d (ou %i) formata um valor inteiro decimal com sinal na função printf."
+      "explanation": "A função printf() pertence à biblioteca padrão de entrada e saída de C, declarada em <stdio.h>."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O programa C++ abaixo deveria imprimir um texto usando `std::cout`, mas não compila. Clique na linha com erro:",
+      "lines": [
+        "#include <iostream>",
+        "int main() {",
+        "  std::cout >> \"Iniciando servidor\" << std::endl;",
+        "  return 0;",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "std::cout utiliza o operador de inserção << (setas para a esquerda), e não >> (que é usado para entrada com std::cin)."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para montar um programa C completo que declara um inteiro e o imprime com `printf()`:",
+      "blocks": [
+        "#include <stdio.h>",
+        "int main() {",
+        "  int nivel = 5;",
+        "  printf(\"Nivel: %d\\n\", nivel);",
+        "  return 0;\n}"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "explanation": "Primeiro incluímos <stdio.h>, abrimos main(), declaramos a variável, imprimimos com %d e retornamos 0."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva um programa completo em C++ que inclua o cabeçalho de fluxos padrão, defina a função principal, crie uma variável inteira `porta` com valor `3000` e exiba o texto `\"Porta: \"` seguido do valor da variável e quebra de linha usando a saída padrão de C++.",
+      "starterCode": "",
+      "requiredTokens": ["#include", "<iostream>", "int main", "std::cout", "<<", "porta", "return 0"],
+      "sampleSolution": "#include <iostream>\n\nint main() {\n    int porta = 3000;\n    std::cout << \"Porta: \" << porta << std::endl;\n    return 0;\n}",
+      "hint": "Inclua <iostream>, declare int porta = 3000; dentro de int main() e encadeie << em std::cout antes de return 0;.",
+      "explanation": "Em C++, std::cout aceita múltiplos operandos encadeados com <<, imprimindo texto literal e variáveis na mesma instrução."
     }
   ]
 }

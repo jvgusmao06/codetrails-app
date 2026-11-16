@@ -2,12 +2,12 @@
   "id": "git-cherry-pick-tags-04",
   "title": "git cherry-pick e Tags de Versão (git tag / Releases SemVer)",
   "description": "Copie um único commit cirúrgico de outra branch com cherry-pick e marque releases de produção (v1.0.0) com tags.",
-  "xp": 35,
+  "xp": 40,
   "steps": [
     {
       "type": "theory",
       "title": "Cirurgia com cherry-pick e Marcos de Versão com git tag",
-      "content": "Precisa trazer **apenas um commit específico** de correção (`hotfix`) de outra branch sem mesclar o resto da branch? Use **`git cherry-pick <hash>`** — o Git copia somente aquele commit para a sua branch atual! Já para marcar versões oficiais lançadas em produção (Semantic Versioning: `v1.2.0`), usamos **`git tag -a v1.2.0 -m \"Release 1.2.0\"`** e enviamos ao GitHub com `git push --tags`.",
+      "content": "Precisa trazer **apenas um commit específico** de correção (`hotfix`) de outra branch sem mesclar o resto da branch? Use **`git cherry-pick <hash>`** — o Git copia somente aquele commit para a sua branch atual! Já para marcar versões oficiais lançadas em produção (Semantic Versioning: `v1.2.0`), usamos **`git tag -a v1.2.0 -m \"Release 1.2.0\"`** e enviamos ao GitHub com `git push --tags` (pois o `git push` comum não envia tags).",
       "codeExample": "# Aplicar apenas o commit a1b2c3d na branch atual\ngit switch main\ngit cherry-pick a1b2c3d\n\n# Criar tag anotada de versão e enviar ao servidor\ngit tag -a v1.0.0 -m \"Versão inicial em produção\"\ngit push origin --tags",
       "keyTakeaways": [
         "`git cherry-pick <hash>` aplica as alterações de um único commit em qualquer branch.",
@@ -28,13 +28,47 @@
       "explanation": "`git cherry-pick <hash>` copia pontualmente um único commit para a branch onde você está."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete os comandos para criar uma tag anotada `v2.1.0` e enviá-la ao servidor remoto:",
+      "codeTemplate": "git tag {{blank}} v2.1.0 -m \"Release 2.1.0\"\ngit push origin {{blank}}",
+      "blanks": [
+        { "answer": "-a", "placeholder": "anotada" },
+        { "answer": "--tags", "placeholder": "enviar tags" }
+      ],
+      "options": ["-a", "--tags", "-m", "--amend", "-d"],
+      "explanation": "A flag `-a` cria uma tag anotada completa e `--tags` instrui o `git push` a enviar as tags locais para o remoto."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "A equipe criou a tag de release `v1.5.0`, mas o pipeline de deploy no GitHub nunca disparou porque a tag não foi enviada ao servidor! Clique na linha insuficiente:",
+      "lines": [
+        "git switch main",
+        "git tag -a v1.5.0 -m \"Release 1.5\"",
+        "git push origin main"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "`git push origin main` envia apenas commits da branch `main`, não envia tags. É necessário rodar `git push --tags` (ou `git push origin v1.5.0`)."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os comandos para voltar à `main`, aplicar um commit cirúrgico de hotfix (`d4e5f6a`), criar a tag `v1.0.1` e publicar as tags:",
+      "blocks": [
+        "git switch main",
+        "git cherry-pick d4e5f6a",
+        "git tag -a v1.0.1 -m \"Hotfix\"",
+        "git push --tags"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "Entramos na `main`, copiamos o hotfix com `cherry-pick`, marcamos a versão com `git tag -a` e enviamos com `git push --tags`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie uma tag anotada `v1.0.0` com mensagem `\"Release 1.0\"` e envie as tags para o remoto (`git push --tags`):",
-      "starterCode": "# 1. Crie a tag anotada v1.0.0\n# 2. Envie as tags para o remoto\n",
+      "prompt": "Desafio de Código: Escreva os comandos Git para criar uma tag anotada chamada `v1.0.0` com uma mensagem de release e enviar todas as tags locais para o repositório remoto.",
+      "starterCode": "",
       "requiredTokens": ["git tag", "-a", "v1.0.0", "-m", "git push", "--tags"],
       "sampleSolution": "git tag -a v1.0.0 -m \"Release 1.0\"\ngit push --tags",
-      "hint": "Use `git tag -a v1.0.0 -m \"Release 1.0\"` e `git push --tags`.",
-      "explanation": "Tags versionadas permitem fazer rollback exato para qualquer release anterior em produção."
+      "hint": "Use `git tag` com as flags de tag anotada e mensagem, e na linha seguinte faça o push especificando o envio de tags.",
+      "explanation": "Tags versionadas permitem fazer rollback exato para qualquer release anterior em produção e automatizar publicações."
     }
   ]
 }

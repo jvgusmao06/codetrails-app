@@ -1,18 +1,18 @@
 {
   "id": "mockito-verify-01",
   "title": "Mockito Avançado: @InjectMocks, verify() e ArgumentCaptor",
-  "description": "Valide não só o retorno, mas quantas vezes e com quais argumentos um método dependente foi chamado.",
-  "xp": 35,
+  "description": "Injete mocks com @InjectMocks e valide não só o retorno, mas quantas vezes e com quais argumentos um método dependente foi chamado.",
+  "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Verificando Comportamentos com verify() no Mockito",
-      "content": "Além de simular retornos com `when(repo.buscar(1)).thenReturn(...)`, o **Mockito** permite garantir que efeitos colaterais realmente aconteceram (ex: um e-mail foi enviado exatamente 1 vez, ou nunca foi enviado em caso de erro!). Usamos **`verify(mock, times(1)).metodo(...)`** ou **`verify(mock, never()).metodo(...)`**, e **`ArgumentCaptor`** para inspecionar o objeto exato passado ao mock.",
-      "codeExample": "@ExtendWith(MockitoExtension.class)\nclass PedidoServiceTest {\n    @Mock EmailClient emailClient;\n    @InjectMocks PedidoService service;\n\n    @Test\n    void naoEnviaEmailSeFalhar() {\n        verify(emailClient, never()).enviar(anyString());\n    }\n}",
+      "title": "Injeção com @InjectMocks, verify() e ArgumentCaptor",
+      "content": "Com `@ExtendWith(MockitoExtension.class)`, anotamos dependências com **`@Mock`** e a classe testada com **`@InjectMocks`**, que recebe os mocks automaticamente! Além de simular retornos com `when(...).thenReturn(...)`, o Mockito permite garantir que efeitos colaterais aconteceram usando **`verify(mock, times(1)).metodo(...)`** ou **`verify(mock, never()).metodo(...)`**. E quando precisamos inspecionar o objeto exato passado ao mock, usamos **`ArgumentCaptor`**!",
+      "codeExample": "@ExtendWith(MockitoExtension.class)\nclass PedidoServiceTest {\n    @Mock EmailClient emailClient;\n    @InjectMocks PedidoService service;\n\n    @Test\n    void capturaEmailEnviado() {\n        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);\n        service.confirmar(\"ana@dev.com\");\n        verify(emailClient, times(1)).enviar(captor.capture());\n        assertEquals(\"ana@dev.com\", captor.getValue());\n    }\n}",
       "keyTakeaways": [
-        "`@InjectMocks` cria a classe testada injetando automaticamente todos os `@Mock` da classe de teste.",
+        "`@InjectMocks` instancia a classe testada injetando automaticamente todos os `@Mock` declarados na classe de teste.",
         "`verify(mock, times(1))` ou `verify(mock, never())` testa efeitos colaterais sem precisar de banco ou SMTP real.",
-        "Use `ArgumentMatchers.any()` (ou `eq(...)` se misturar com valores fixos) nos stubs e verifys."
+        "`ArgumentCaptor` captura o argumento real passado ao mock via `captor.capture()` para validá-lo com `captor.getValue()`."
       ]
     },
     {
@@ -28,12 +28,62 @@
       "explanation": "`never()` (equivalente a `times(0)`) falha o teste se o método tiver sido invocado uma ou mais vezes."
     },
     {
+      "type": "multiple_choice",
+      "prompt": "Ao usar `@ExtendWith(MockitoExtension.class)`, qual é a diferença entre `@Mock` e `@InjectMocks`?",
+      "options": [
+        "`@Mock` cria um dublê simulado da dependência; `@InjectMocks` cria a instância real da classe testada e injeta os `@Mock` nela",
+        "`@InjectMocks` cria o banco de dados real",
+        "Ambos fazem exatamente a mesma coisa",
+        "`@Mock` só funciona em métodos estáticos"
+      ],
+      "correctIndex": 0,
+      "explanation": "`@Mock` cria objetos falsos controláveis e `@InjectMocks` monta o objeto sob teste injetando esses mocks."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o teste usando `ArgumentCaptor` para capturar e ler o `Pedido` enviado ao `repo.salvar(...)`:",
+      "codeTemplate": "ArgumentCaptor<Pedido> captor = ArgumentCaptor.{{blank}}(Pedido.class);\nservice.criarPedido();\nverify(repo).salvar(captor.{{blank}}());\nPedido salvo = captor.{{blank}}();",
+      "blanks": [
+        { "answer": "forClass", "placeholder": "criar captor" },
+        { "answer": "capture", "placeholder": "capturar" },
+        { "answer": "getValue", "placeholder": "obter valor" }
+      ],
+      "options": ["forClass", "capture", "getValue", "create", "verify", "get"],
+      "explanation": "`ArgumentCaptor.forClass(Tipo.class)` cria o capturador, `captor.capture()` intercepta o argumento no `verify()` e `captor.getValue()` retorna o valor capturado."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este stub do Mockito lança `InvalidUseOfMatchersException` em tempo de execução ao misturar *matcher* com valor literal! Clique na linha com o bug:",
+      "lines": [
+        "@Test",
+        "void buscaComFiltro() {",
+        "    when(repo.buscar(anyString(), 10)).thenReturn(List.of());",
+        "    service.listar(\"ativos\", 10);",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "No Mockito, se um argumento usa matcher (`anyString()`), TODOS os argumentos da chamada devem usar matchers (ex: `eq(10)` em vez de `10`)."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos de uma classe de teste Mockito usando `@Mock`, `@InjectMocks`, `when` e `verify`:",
+      "blocks": [
+        "@Mock Repo repo;",
+        "@InjectMocks Service service;",
+        "when(repo.ativo()).thenReturn(true);",
+        "service.executar();",
+        "verify(repo, times(1)).ativo();"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "explanation": "Declaramos os mocks e a classe sob teste com `@InjectMocks`, configuramos o stub com `when`, executamos a ação e validamos com `verify`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Configure um stub com `when(repo.buscar(1L)).thenReturn(Optional.of(user));` e depois verifique `verify(repo, times(1)).buscar(1L);`:",
-      "starterCode": "// Configure when().thenReturn() e verify():\n",
-      "requiredTokens": ["when(repo.buscar(1L))", ".thenReturn(", "verify(repo, times(1))", ".buscar(1L)"],
+      "prompt": "Desafio de Código: Escreva o trecho em Java/Mockito que configura um stub para `repo.buscar(1L)` retornar `Optional.of(user)` e, em seguida, verifica se `repo.buscar(1L)` foi chamado exatamente 1 vez.",
+      "starterCode": "",
+      "requiredTokens": ["when(", "repo.buscar(1L)", ".thenReturn(", "verify(", "times(1)"],
       "sampleSolution": "when(repo.buscar(1L)).thenReturn(Optional.of(user));\nverify(repo, times(1)).buscar(1L);",
-      "hint": "Use `when(repo.buscar(1L)).thenReturn(Optional.of(user));` e `verify(repo, times(1)).buscar(1L);`.",
+      "hint": "Use `when(...).thenReturn(...)` para definir o retorno do repositório e `verify(mock, times(1))` para validar a chamada.",
       "explanation": "Combinar `when` (Arrange) e `verify` (Assert) torna testes de regras de negócio extremamente confiáveis."
     }
   ]

@@ -1,46 +1,86 @@
 {
   "id": "py-nativas-02",
-  "title": "08. Funções Nativas (len, sum, map)",
-  "description": "Domine as funções nativas mais importantes do Python: len, enumerate, zip, sum, min, max, sorted e isinstance.",
+  "title": "09. Funções Nativas (len, sum, map)",
+  "description": "Processe sequências com elegância usando len(), sum(), min(), max(), sorted(), enumerate() e map().",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "As Funções Nativas (Built-in) Essenciais do Python",
-      "content": "O Python já traz dezenas de funções nativas prontas sem precisar de 'import': 'len(seq)' retorna o tamanho, 'sum(nums)' soma todos os itens, 'min()' e 'max()' encontram extremos, 'sorted(seq)' devolve uma nova lista ordenada, 'enumerate(seq)' entrega pares (índice, valor) no loop for, e 'zip(a, b)' combina duas listas elemento a elemento.",
-      "codeExample": "precos = [40, 10, 30]\nprint(len(precos))      # 3\nprint(sum(precos))      # 80\nprint(sorted(precos))   # [10, 30, 40]\n\n# enumerate evita criar contadores manuais\nfor indice, valor in enumerate(precos):\n    print(f\"Posição {indice}: R$ {valor}\")",
+      "title": "Funções Nativas (Built-in) Essenciais do Python",
+      "content": "O Python já traz funções embutidas rápidas (implementadas em C) que dispensam qualquer `import`:\n\n1. **`len()`, `sum()`, `min()` e `max()`**: `len(seq)` retorna a quantidade de itens; `sum(nums)` soma os valores; `min(nums)` e `max(nums)` encontram o menor e o maior elemento.\n2. **`sorted(seq)`**: Devolve uma **nova** lista ordenada sem modificar a lista original (diferente de `lista.sort()`, que altera no lugar).\n3. **`enumerate(seq)`**: Permite iterar obtendo índice e valor ao mesmo tempo: `for i, item in enumerate(lista):`.\n4. **`map(funcao, seq)`**: Aplica uma função a cada elemento de uma sequência e retorna um iterador (que podemos converter em lista com `list(map(...))`).",
+      "codeExample": "notas = [7.0, 9.5, 6.0]\nmedia = sum(notas) / len(notas)\nordenadas = sorted(notas)       # [6.0, 7.0, 9.5]\n\nfor i, nota in enumerate(notas):\n    print(i, nota)\n\ndef dobrar(x):\n    return x * 2\ndobros = list(map(dobrar, [1, 2, 3]))  # [2, 4, 6]",
       "keyTakeaways": [
-        "Prefira 'for i, item in enumerate(lista):' em vez de 'for i in range(len(lista)):'.",
-        "'sorted(lista)' cria uma nova lista ordenada sem alterar a original (diferente de 'lista.sort()').",
-        "'sum()', 'min()' e 'max()' operam em tempo linear O(n) implementados em C."
+        "len(), sum(), min() e max() resumem coleções sem precisar escrever loops manuais.",
+        "sorted(lista) cria uma nova lista ordenada mantendo a original intacta.",
+        "enumerate() entrega (índice, valor) no for; map(fn, seq) aplica fn a cada item."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual função nativa do Python permite iterar sobre uma lista obtendo simultaneamente o índice e o valor em cada volta do loop for?",
+      "prompt": "Qual função nativa permite iterar sobre uma lista obtendo simultaneamente o índice e o valor em cada volta?",
       "options": [
-        "zip(lista)",
-        "enumerate(lista)",
-        "range(lista)",
-        "len(lista)"
+        "range()",
+        "enumerate()",
+        "len()",
+        "sorted()"
       ],
       "correctIndex": 1,
-      "explanation": "enumerate(lista) gera tuplas (indice, valor), tornando o loop limpo e pythônico."
+      "explanation": "enumerate(lista) gera pares (indice, elemento) diretamente no loop for."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código para calcular a soma, o tamanho e o maior valor da lista 'pontos':",
+      "codeTemplate": "pontos = [10, 25, 15]\ntotal = {{blank}}(pontos)\nqtd = {{blank}}(pontos)\nrecorde = {{blank}}(pontos)",
+      "blanks": [
+        { "answer": "sum", "placeholder": "soma" },
+        { "answer": "len", "placeholder": "tamanho" },
+        { "answer": "max", "placeholder": "maior" }
+      ],
+      "options": ["sum", "len", "max", "min"],
+      "explanation": "sum() soma os números, len() conta os elementos e max() encontra o maior."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual a diferença entre lista.sort() e sorted(lista) em Python?",
+      "options": [
+        "sorted() altera a lista original e sort() cria uma nova",
+        "sort() altera a lista original no lugar; sorted() retorna uma nova lista ordenada",
+        "sorted() só funciona com strings",
+        "Não há diferença"
+      ],
+      "correctIndex": 1,
+      "explanation": "sorted(lista) preserva a lista original e devolve uma nova lista ordenada."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código para aplicar a função 'para_maiuscula' a todos os nomes usando map() e converter o resultado em lista:",
+      "codeTemplate": "def para_maiuscula(s: str) -> str:\n    return s.upper()\n\nnomes = [\"ana\", \"bia\"]\nresultado = {{blank}}({{blank}}(para_maiuscula, nomes))",
+      "blanks": [
+        { "answer": "list", "placeholder": "conversão" },
+        { "answer": "map", "placeholder": "função" }
+      ],
+      "options": ["list", "map", "filter", "sorted"],
+      "explanation": "map(funcao, iteravel) aplica a função a cada item e list(...) materializa o iterador em uma lista."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O código tenta mostrar o menor e o maior preço ordenados, mas comete um erro comum com sorted(). Qual linha tem o bug?",
+      "lines": [
+        "precos = [50, 20, 80]",
+        "ordenados = precos.sort()",
+        "print(\"Menor:\", ordenados[0])"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "O método .sort() altera a lista no lugar e retorna None, causando TypeError ao indexar ordenados[0]. Use sorted(precos)."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva uma função 'media(notas)' em Python que retorne a soma das notas dividida pela quantidade de notas usando as funções nativas 'sum' e 'len':",
-      "starterCode": "# Escreva a função media(notas) do zero:\n",
-      "requiredTokens": [
-        "def",
-        "media",
-        "return",
-        "sum(",
-        "len("
-      ],
-      "sampleSolution": "def media(notas):\n    return sum(notas) / len(notas)",
-      "hint": "Defina 'def media(notas):' e na linha seguinte retorne 'sum(notas) / len(notas)'.",
-      "explanation": "Combinar as funções nativas sum() e len() permite calcular a média aritmética em uma única expressão clara."
+      "prompt": "Escreva uma função 'resumo_notas' que receba uma lista de números, calcule a média aritmética usando funções nativas de soma e contagem, e retorne uma lista com os valores originais ordenados em ordem crescente usando sorted().",
+      "starterCode": "",
+      "requiredTokens": ["def", "resumo_notas", "sum", "len", "sorted", "return"],
+      "sampleSolution": "def resumo_notas(notas: list[float]) -> tuple[float, list[float]]:\n    media = sum(notas) / len(notas)\n    return media, sorted(notas)",
+      "hint": "Use sum(notas) / len(notas) para a média e sorted(notas) para obter a nova lista ordenada.",
+      "explanation": "Combinamos sum(), len() e sorted() dentro de uma função para resumir e ordenar dados sem alterar a lista original."
     }
   ]
 }

@@ -1,65 +1,87 @@
 {
   "id": "py-loops-03",
-  "title": "05. Loops (for e while)",
-  "description": "Domine repetições em Python com for/in, range(), while e as palavras reservadas break, continue e pass.",
+  "title": "05. Loops (for, range e while)",
+  "description": "Repita tarefas com for, gere sequências com range(), controle repetições condicionais com while e use break/continue.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Laços de Repetição e Controle de Loop em Python",
-      "content": "Em Python, o loop 'for' itera diretamente sobre qualquer sequência (listas, strings, dicionários) ou sobre intervalos numéricos gerados pela função nativa 'range(inicio, fim, passo)'. Já o 'while' repete enquanto uma condição booleana for True. Para controlar o fluxo interno, usamos três palavras reservadas fundamentais: 'break' (interrompe o loop imediatamente), 'continue' (pula para a próxima iteração) e 'pass' (bloco vazio temporário).",
-      "codeExample": "# range(0, 10, 2) gera: 0, 2, 4, 6, 8 (o limite final 10 não entra)\nfor n in range(5):\n    if n == 2:\n        continue  # Pula o número 2\n    if n == 4:\n        break     # Encerra o loop ao chegar no 4\n    print(n)\n\ncontador = 3\nwhile contador > 0:\n    contador -= 1",
+      "title": "Laços for, range(), while, break e continue",
+      "content": "Em Python temos duas formas principais de repetição:\n\n1. **Loop `for` e `range()`**: O `for item in sequencia:` percorre diretamente listas ou strings. Quando precisamos contar números, usamos `range(n)` (gera de `0` até `n - 1`) ou `range(inicio, fim)` (de `inicio` até `fim - 1`).\n2. **Loop `while`**: Repete um bloco **enquanto** uma condição booleana for verdadeira (`while contador < 3:`). Lembre-se de atualizar a variável de controle dentro do laço para evitar loops infinitos.\n3. **`break` e `continue`**: `break` interrompe o loop imediatamente e sai dele; `continue` pula o restante da iteração atual e vai direto para a próxima volta.",
+      "codeExample": "for i in range(1, 5):\n    if i == 2:\n        continue  # pula o 2\n    if i == 4:\n        break     # encerra no 4\n    print(i)      # imprime 1 e 3\n\ntentativas = 0\nwhile tentativas < 2:\n    print(\"Tentativa\", tentativas)\n    tentativas += 1",
       "keyTakeaways": [
-        "range(n) começa em 0 e para em n - 1 (ex: range(3) produz 0, 1, 2).",
-        "'break' sai do laço inteiro; 'continue' ignora apenas o restante da volta atual.",
-        "'pass' é uma instrução nula usada quando a sintaxe exige um bloco indentado que você ainda vai implementar."
+        "for x in lista percorre itens diretamente; range(n) gera 0 até n - 1.",
+        "while condicao: repete enquanto a condição for True.",
+        "break encerra o laço; continue pula apenas a iteração atual."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Complete o loop Python para percorrer os números de 0 a 9, pular os números negativos com continue e parar tudo se encontrar 99:",
-      "codeTemplate": "for x {{blank}} {{blank}}(10):\n    if x < 0:\n        {{blank}}\n    if x == 99:\n        {{blank}}",
-      "blanks": [
-        {
-          "answer": "in",
-          "placeholder": "operador"
-        },
-        {
-          "answer": "range",
-          "placeholder": "gerador"
-        },
-        {
-          "answer": "continue",
-          "placeholder": "pular volta"
-        },
-        {
-          "answer": "break",
-          "placeholder": "encerrar"
-        }
-      ],
+      "type": "multiple_choice",
+      "prompt": "Quais números são gerados por range(3) em Python?",
       "options": [
-        "in",
-        "range",
-        "continue",
-        "break",
-        "of",
-        "stop"
+        "1, 2, 3",
+        "0, 1, 2, 3",
+        "0, 1, 2",
+        "0, 1"
       ],
-      "explanation": "Em Python usamos 'for x in range(10):', 'continue' para pular a iteração atual e 'break' para encerrar o laço."
+      "correctIndex": 2,
+      "explanation": "range(n) começa em 0 por padrão e para antes de n (n - 1), portanto range(3) produz 0, 1 e 2."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o loop while para contar de 0 até 2 sem entrar em loop infinito:",
+      "codeTemplate": "contador = 0\n{{blank}} contador < 3:\n    print(contador)\n    contador {{blank}} 1",
+      "blanks": [
+        { "answer": "while", "placeholder": "laço" },
+        { "answer": "+=", "placeholder": "incremento" }
+      ],
+      "options": ["while", "for", "+=", "=="],
+      "explanation": "Usamos 'while' para repetir enquanto contador < 3 e 'contador += 1' para avançar a cada volta."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o loop para pular valores negativos e interromper o laço se encontrar 99:",
+      "codeTemplate": "for n in [5, -1, 10, 99, 20]:\n    if n < 0:\n        {{blank}}\n    if n == 99:\n        {{blank}}\n    print(n)",
+      "blanks": [
+        { "answer": "continue", "placeholder": "pular" },
+        { "answer": "break", "placeholder": "parar" }
+      ],
+      "options": ["continue", "break", "pass", "return"],
+      "explanation": "'continue' pula para a próxima iteração quando n < 0, e 'break' encerra o loop ao encontrar 99."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O loop while abaixo deveria imprimir 0, 1, 2, mas entra em loop infinito. Qual linha precisa ser corrigida ou está faltando?",
+      "lines": [
+        "i = 0",
+        "while i < 3:",
+        "    print(i)",
+        "    i = 0"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Na linha 4, 'i = 0' reinicia o contador em toda volta em vez de incrementá-lo (i += 1), mantendo i < 3 para sempre."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para percorrer os números de 0 a 4 e imprimir apenas os pares maiores que zero:",
+      "blocks": [
+        "    if num == 0:",
+        "        continue",
+        "for num in range(5):",
+        "    if num % 2 == 0:",
+        "        print(num)"
+      ],
+      "correctOrder": [2, 0, 1, 3, 4],
+      "explanation": "Primeiro abrimos o for com range(5), pulamos o 0 com continue e só então imprimimos os números pares."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva do zero um loop 'for' em Python que percorra 'range(5)' e imprima cada número usando 'print':",
-      "starterCode": "# Escreva seu loop for abaixo:\n",
-      "requiredTokens": [
-        "for",
-        "in",
-        "range(5)",
-        "print"
-      ],
-      "sampleSolution": "for i in range(5):\n    print(i)",
-      "hint": "Use: for i in range(5): na primeira linha e print(i) indentado na segunda.",
-      "explanation": "O laço 'for i in range(5):' percorre os valores de 0 a 4 e executa 'print(i)' em cada repetição."
+      "prompt": "Escreva um loop que percorra os números de 0 a 5 usando range(), pule o número 2 com continue e imprima os demais valores.",
+      "starterCode": "",
+      "requiredTokens": ["for", "range", "continue", "print"],
+      "sampleSolution": "for n in range(6):\n    if n == 2:\n        continue\n    print(n)",
+      "hint": "Lembre-se que range(6) gera de 0 a 5. Use if dentro do for para chamar continue quando o valor for 2.",
+      "explanation": "Combinamos for, range(6), condicional if e continue para filtrar a iteração indesejada."
     }
   ]
 }

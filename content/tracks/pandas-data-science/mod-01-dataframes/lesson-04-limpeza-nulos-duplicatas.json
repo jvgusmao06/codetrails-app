@@ -16,6 +16,18 @@
       ]
     },
     {
+      "type": "multiple_choice",
+      "prompt": "Qual comando retorna a contagem de valores ausentes (`NaN`) em cada coluna do DataFrame `df`?",
+      "options": [
+        "df.dropna().count()",
+        "df.isna().sum()",
+        "df.fillna(0)",
+        "df.drop_duplicates()"
+      ],
+      "correctIndex": 1,
+      "explanation": "`df.isna()` gera uma máscara booleana de nulos e `.sum()` soma os `True` (1) por coluna."
+    },
+    {
       "type": "fill_in_blank",
       "prompt": "Complete a limpeza do DataFrame substituindo nulos na coluna `idade` pela mediana e removendo linhas duplicadas:",
       "codeTemplate": "df[\"idade\"] = df[\"idade\"].{{blank}}(df[\"idade\"].median())\ndf = df.{{blank}}()",
@@ -27,12 +39,35 @@
       "explanation": "`.fillna(valor)` preenche células `NaN` e `.drop_duplicates()` remove linhas repetidas."
     },
     {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha que transforma `df` em `None` por misturar atribuição com `inplace=True`:",
+      "lines": [
+        "print(df.isna().sum())",
+        "df[\"nota\"] = df[\"nota\"].fillna(0)",
+        "df = df.dropna(subset=[\"email\"], inplace=True)",
+        "df[\"nota\"] = df[\"nota\"].astype(float)"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Quando `inplace=True` é passado, `dropna` altera o DataFrame no lugar e retorna `None`. Atribuir `df = ...` sobrescreve `df` com `None`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para auditar nulos, preencher `preco` nulo com `0`, converter para `float` e remover duplicatas:",
+      "blocks": [
+        "df = df.drop_duplicates(subset=[\"id\"])",
+        "print(df.isna().sum())",
+        "df[\"preco\"] = df[\"preco\"].fillna(0).astype(float)"
+      ],
+      "correctOrder": [1, 2, 0],
+      "explanation": "Primeiro auditamos nulos com `isna().sum()`, depois preenchemos e convertemos `preco` com `fillna(0).astype(float)` e por fim removemos duplicatas."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Preencha valores nulos da coluna `df[\"bonus\"]` com `0` usando `.fillna(0)` e remova linhas com `email` nulo usando `.dropna(subset=[\"email\"])`:",
-      "starterCode": "# Limpe bonus e email no DataFrame df:\n",
+      "prompt": "Desafio de Código: No DataFrame `df`, preencha os valores ausentes da coluna `\"bonus\"` com `0` e, em seguida, remova todas as linhas onde a coluna `\"email\"` é nula.",
+      "starterCode": "",
       "requiredTokens": ["df[\"bonus\"]", ".fillna(0)", "df.dropna(", "subset=[\"email\"]"],
       "sampleSolution": "df[\"bonus\"] = df[\"bonus\"].fillna(0)\ndf = df.dropna(subset=[\"email\"])",
-      "hint": "Use `df[\"bonus\"] = df[\"bonus\"].fillna(0)` e `df = df.dropna(subset=[\"email\"])`.",
+      "hint": "Atribua `df[\"bonus\"].fillna(0)` de volta à coluna e depois atualize `df` com `df.dropna(subset=[\"email\"])`.",
       "explanation": "Combinar `fillna` para valores numéricos opcionais e `dropna(subset=...)` para chaves obrigatórias é rotina padrão de ETL."
     }
   ]

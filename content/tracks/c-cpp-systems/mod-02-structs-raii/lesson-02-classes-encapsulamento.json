@@ -1,0 +1,78 @@
+{
+  "id": "cpp-classes-02",
+  "title": "Classes C++, Visibilidade e Métodos const",
+  "description": "Encapsule estado com class, public/private, construtores e métodos somente-leitura (const).",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Classes vs Structs, Encapsulamento e Métodos const",
+      "content": "Em C++, `struct` e `class` são quase idênticos, mas há uma diferença fundamental de visibilidade padrão: em uma `struct`, membros são `public` por padrão; em uma `class`, membros são `private` por padrão. Usamos `private:` para proteger o estado interno contra alterações inválidas e `public:` para expor construtores (que inicializam o objeto) e métodos. Métodos que apenas leem dados sem modificar o objeto devem ser marcados com `const` após os parênteses, permitindo que sejam chamados até em referências `const T&`.",
+      "codeExample": "class Conta {\nprivate:\n    double saldo;\npublic:\n    Conta(double inicial) : saldo(inicial) {}\n    double getSaldo() const { return saldo; }\n    void depositar(double valor) { saldo += valor; }\n};",
+      "keyTakeaways": [
+        "Em `class`, a visibilidade padrão é `private`; em `struct`, é `public`.",
+        "Construtores inicializam os atributos privados no momento da criação do objeto.",
+        "Métodos marcados com `const` garantem que o estado do objeto não será modificado."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é a diferença padrão entre as palavras reservadas `struct` e `class` em C++?",
+      "options": [
+        "`struct` não pode ter métodos nem construtores",
+        "Em `struct`, membros são `public` por padrão; em `class`, membros são `private` por padrão",
+        "`class` sempre aloca na Heap e `struct` sempre na Stack",
+        "Não existe nenhuma diferença de visibilidade entre elas"
+      ],
+      "correctIndex": 1,
+      "explanation": "Em C++, tanto `struct` quanto `class` suportam métodos e construtores; a diferença é que `class` oculta membros como `private` por padrão."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a classe C++ ocultando o campo `pin`, expondo o construtor e marcando o getter como somente-leitura:",
+      "codeTemplate": "class Cofre {\n{{blank}}:\n    int pin;\n{{blank}}:\n    Cofre(int p) : pin(p) {}\n    int getPin() {{blank}} { return pin; }\n};",
+      "blanks": [
+        { "answer": "private", "placeholder": "oculto" },
+        { "answer": "public", "placeholder": "visível" },
+        { "answer": "const", "placeholder": "somente leitura" }
+      ],
+      "options": ["private", "public", "const", "static", "void"],
+      "explanation": "`private` protege o atributo `pin`, `public` expõe a interface e `const` garante que `getPin()` não altera o objeto."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O código abaixo tenta chamar um método em uma referência `const Conta&`, mas falha na compilação. Clique na linha com bug:",
+      "lines": [
+        "class Conta {",
+        "    int saldo = 100;",
+        "public:",
+        "    int getSaldo() { return saldo; }",
+        "};",
+        "void mostrar(const Conta& c) { std::cout << c.getSaldo(); }"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Um objeto `const Conta&` só pode chamar métodos declarados como `const`. Faltou `const` em `int getSaldo() const`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para definir uma classe `Ponto` encapsulada com construtor e método `const`:",
+      "blocks": [
+        "class Ponto {\nprivate:\n    int x;",
+        "public:\n    Ponto(int xVal) : x(xVal) {}",
+        "    int getX() const { return x; }",
+        "};"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "Primeiro declaramos o atributo privado `x`, depois o bloco `public:` com construtor e getter `const`, e fechamos a classe com `};`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Crie uma `class` em C++ chamada `Sensor` com um atributo inteiro privado `valor`, um construtor público que inicialize esse atributo, e um método público somente-leitura `getValor` que retorne o inteiro armazenado.",
+      "starterCode": "",
+      "requiredTokens": ["class Sensor", "private:", "public:", "getValor", "const", "return"],
+      "sampleSolution": "class Sensor {\nprivate:\n    int valor;\npublic:\n    Sensor(int v) : valor(v) {}\n    int getValor() const {\n        return valor;\n    }\n};",
+      "hint": "Declare `private: int valor;`, depois `public:` com o construtor `Sensor(int v)` e `int getValor() const`.",
+      "explanation": "O encapsulamento com `private:` e `public:` impede acesso direto inválido, enquanto `const` no getter permite uso em referências constantes."
+    }
+  ]
+}

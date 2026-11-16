@@ -28,12 +28,47 @@
       "explanation": "`:many` instrui o `sqlc` a gerar uma função Go retornando `([]Modelo, error)`."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete a query `sqlc` que busca um único usuário por ID e a chamada Go gerada usando `context.Context`:",
+      "codeTemplate": "-- name: BuscarUsuario :{{blank}}\nSELECT id, nome FROM usuarios WHERE id = $1;\n\n// Em Go:\nuser, err := queries.BuscarUsuario({{blank}}, 42)",
+      "blanks": [
+        { "answer": "one", "placeholder": "retorno" },
+        { "answer": "ctx", "placeholder": "contexto" }
+      ],
+      "options": ["one", "many", "exec", "ctx", "nil"],
+      "explanation": "`:one` gera uma função que retorna uma única struct, e o primeiro argumento das funções geradas pelo `sqlc` é sempre o `ctx`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha com erro ao usar o GORM para preencher o slice `users`:",
+      "lines": [
+        "var users []Usuario",
+        "result := db.Where(\"ativo = ?\", true).Find(users)",
+        "if result.Error != nil {",
+        "    return result.Error",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "No GORM, `.Find(&users)` exige o ponteiro `&users` para conseguir popular o slice com os registros retornados do banco."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para definir uma query `:exec` no `sqlc` e executá-la em Go:",
+      "blocks": [
+        "err := queries.DesativarUsuario(ctx, 42)",
+        "-- name: DesativarUsuario :exec",
+        "UPDATE usuarios SET ativo = false WHERE id = $1;"
+      ],
+      "correctOrder": [1, 2, 0],
+      "explanation": "Primeiro anotamos a query com `-- name: ... :exec`, escrevemos o SQL correspondente e depois chamamos a função gerada passando `ctx` e o parâmetro."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva a anotação `sqlc` `-- name: ListarAtivos :many` seguida da query `SELECT id, nome FROM usuarios WHERE ativo = true;`:",
-      "starterCode": "-- Escreva a query anotada para sqlc:\n",
+      "prompt": "Desafio de Código: Escreva um bloco SQL anotado para o `sqlc` definindo a consulta `ListarAtivos` (retornando múltiplos registros) que seleciona `id` e `nome` da tabela `usuarios` onde `ativo = true`.",
+      "starterCode": "",
       "requiredTokens": ["-- name:", "ListarAtivos", ":many", "SELECT", "FROM usuarios"],
       "sampleSolution": "-- name: ListarAtivos :many\nSELECT id, nome FROM usuarios WHERE ativo = true;",
-      "hint": "Coloque `-- name: ListarAtivos :many` na primeira linha e o `SELECT` na segunda.",
+      "hint": "Use o comentário especial `-- name: ListarAtivos :many` acima da instrução `SELECT id, nome FROM usuarios WHERE ativo = true;`.",
       "explanation": "O comentário `-- name: NomeFuncao :many` é tudo o que o `sqlc` precisa para gerar a função Go tipada."
     }
   ]

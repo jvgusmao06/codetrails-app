@@ -2,12 +2,12 @@
   "id": "gtest-01",
   "title": "GoogleTest: TEST(Suite, Nome), EXPECT_EQ vs ASSERT_EQ",
   "description": "Valide funções C++ com a biblioteca padrão de testes da Google integrada ao CMake.",
-  "xp": 35,
+  "xp": 40,
   "steps": [
     {
       "type": "theory",
       "title": "Testes Unitários em C++ com GoogleTest",
-      "content": "O **GoogleTest (GTest)** é o framework de testes mais adotado em projetos C++ profissionais. Criamos testes com a macro **`TEST(NomeDaSuite, NomeDoTeste)`** e verificamos resultados com duas famílias de macros:\n- **`EXPECT_EQ(a, b)`**: falha não-fatal (marca o erro, mas continua testando as linhas seguintes).\n- **`ASSERT_EQ(a, b)`**: falha fatal (aborta o teste imediatamente — ideal para checar se um ponteiro não é `nullptr` antes de usá-lo!).",
+      "content": "O **GoogleTest (GTest)** é o framework de testes mais adotado em projetos C++ profissionais. Criamos testes com a macro **`TEST(NomeDaSuite, NomeDoTeste)`** e verificamos resultados com duas famílias de macros:\n- **`EXPECT_EQ(a, b)` / `EXPECT_NE(a, b)`**: falha não-fatal (marca o erro, mas continua testando as linhas seguintes).\n- **`ASSERT_EQ(a, b)` / `ASSERT_NE(a, b)`**: falha fatal (aborta a função de teste imediatamente — ideal para checar se um ponteiro não é `nullptr` antes de dereferenciá-lo!).",
       "codeExample": "#include <gtest/gtest.h>\n\nint somar(int a, int b) { return a + b; }\n\nTEST(MatematicaTest, SomaPositivos) {\n    EXPECT_EQ(somar(2, 3), 5);\n    EXPECT_NE(somar(2, 3), 0);\n}",
       "keyTakeaways": [
         "Use `EXPECT_*` na maioria dos casos para ver todas as falhas de uma vez.",
@@ -28,12 +28,49 @@
       "explanation": "`ASSERT_*` gera falha fatal (retorna da função de teste); `EXPECT_*` gera falha não-fatal."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete o teste GoogleTest para garantir de forma fatal que `ptr` não é nulo e depois verificar se `ptr->id` vale `10`:",
+      "codeTemplate": "{{blank}}(UsuarioTest, CarregaId) {\n    Usuario* ptr = buscarUsuario(10);\n    {{blank}}(ptr, nullptr);\n    EXPECT_EQ(ptr->id, 10);\n}",
+      "blanks": [
+        { "answer": "TEST", "placeholder": "macro teste" },
+        { "answer": "ASSERT_NE", "placeholder": "checagem fatal" }
+      ],
+      "options": ["TEST", "ASSERT_NE", "EXPECT_NE", "ASSERT_EQ", "IT"],
+      "explanation": "`TEST(Suite, Nome)` define o caso de teste, e `ASSERT_NE(ptr, nullptr)` aborta imediatamente se o ponteiro for nulo, evitando segmentation fault na linha seguinte."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este teste pode causar *Segmentation Fault* (crash) quando `buscar()` retorna `nullptr`, porque a linha seguinte dereferencia o ponteiro mesmo após a falha! Clique na linha inadequada:",
+      "lines": [
+        "TEST(RepoTest, BuscaItem) {",
+        "    Item* ptr = buscar(99);",
+        "    EXPECT_NE(ptr, nullptr);",
+        "    EXPECT_EQ(ptr->codigo, 99);",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "`EXPECT_NE` não interrompe o teste quando falha; como `ptr->codigo` na linha seguinte dereferencia `ptr`, o correto é usar `ASSERT_NE(ptr, nullptr)`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para montar um arquivo de teste C++ completo com GoogleTest:",
+      "blocks": [
+        "#include <gtest/gtest.h>",
+        "int dobro(int x) { return x * 2; }",
+        "TEST(CalcTest, DobroPositivo) {",
+        "    EXPECT_EQ(dobro(5), 10);",
+        "}"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "explanation": "Incluímos `<gtest/gtest.h>`, definimos (ou incluímos) a função testada e declaramos o bloco `TEST(...)` com `EXPECT_EQ`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva um teste GTest `TEST(CalcTest, Dobro)` que valide `EXPECT_EQ(dobro(4), 8);`:",
-      "starterCode": "// Escreva o teste GoogleTest abaixo:\n",
+      "prompt": "Desafio de Código: Escreva um caso de teste GoogleTest na suíte `CalcTest` com nome `Dobro` que valide de forma não-fatal que `dobro(4)` é igual a `8`.",
+      "starterCode": "",
       "requiredTokens": ["TEST(", "CalcTest", "Dobro", "EXPECT_EQ", "dobro(4)", "8"],
       "sampleSolution": "TEST(CalcTest, Dobro) {\n    EXPECT_EQ(dobro(4), 8);\n}",
-      "hint": "Use `TEST(CalcTest, Dobro) { EXPECT_EQ(dobro(4), 8); }`.",
+      "hint": "Use a macro `TEST` passando a suíte e o nome do caso de teste, e dentro verifique a igualdade com a macro `EXPECT_*` apropriada.",
       "explanation": "A macro `TEST(Suite, Caso)` registra automaticamente o teste para o runner do GoogleTest."
     }
   ]

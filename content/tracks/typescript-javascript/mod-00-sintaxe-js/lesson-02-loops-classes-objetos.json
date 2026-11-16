@@ -1,41 +1,88 @@
 {
   "id": "ts-loops-classes-02",
-  "title": "Loops (for..of, while), Classes, Objetos e Palavras Reservadas",
-  "description": "Domine for...of, while, break, continue, classes (class, constructor, this, new) e typeof em JS/TS.",
+  "title": "02. Loops (for..of, while), Classes e Objetos",
+  "description": "Percorra coleções com for...of, repita com while, crie classes com constructor e this, e diferencie null de undefined.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Loops, Classes e Palavras Reservadas no JS/TS",
-      "content": "Para percorrer valores de um array ou string em JS/TS moderno, usamos 'for (const item of lista)' (enquanto 'for...in' percorre apenas chaves). Na orientação a objetos, a palavra reservada 'class' define um molde com o método especial 'constructor()', 'this' aponta para a instância criada com 'new', e 'typeof' inspeciona o tipo primitivo em tempo de execução.",
-      "codeExample": "class Carrinho {\n  itens: string[] = [];\n\n  constructor( itemInicial: string) {\n    this.itens.push(itemInicial);\n  }\n\n  listar(): void {\n    for (const item of this.itens) {\n      if (typeof item === \"string\") console.log(item);\n    }\n  }\n}\nconst meu = new Carrinho(\"Notebook\");",
+      "title": "Loops (for...of, while), Classes e null vs undefined",
+      "content": "Vamos dominar estruturas de repetição e orientação a objetos no JS/TS:\n\n1. **Loops `for...of` e `while`**: Use `for (const item of lista)` para percorrer valores de um array (suporta `break` e `continue`). Use `while (condicao)` quando não souber de antemão quantas repetições serão necessárias.\n2. **Classes, `constructor` e `this`**: Declaramos classes com `class Nome {}`, inicializamos propriedades no método obrigatório `constructor(...)` usando `this.prop = valor`, e instanciamos com `new Nome(...)`.\n3. **`undefined` vs `null`**: `undefined` indica uma variável declarada mas ainda sem valor atribuído; `null` representa uma ausência intencional de valor.",
+      "codeExample": "class Produto {\n  nome: string;\n  constructor(nome: string) {\n    this.nome = nome;\n  }\n}\n\nconst lista = [new Produto(\"Mouse\"), new Produto(\"Teclado\")];\nfor (const item of lista) {\n  console.log(item.nome);\n}\n\nlet tentativas = 0;\nwhile (tentativas < 2) {\n  tentativas++;\n}",
       "keyTakeaways": [
-        "Use 'for (const valor of array)' para iterar sobre elementos; permite usar 'break' e 'continue' normalmente.",
-        "O método construtor em JS/TS chama-se sempre 'constructor' (e não o nome da classe).",
-        "Diferencie 'undefined' (variável declarada mas sem valor) de 'null' (ausência intencional atribuída)."
+        "for (const x of array) percorre valores diretamente; while repete enquanto a condição for true.",
+        "Em JS/TS o método construtor chama-se sempre constructor e usa this para acessar a instância.",
+        "undefined é valor não inicializado; null é ausência intencional."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Complete a classe TypeScript com constructor, this e um loop for...of sobre a lista:",
-      "codeTemplate": "{{blank}} Equipe {\n  membros: string[];\n  {{blank}}(nomes: string[]) {\n    {{blank}}.membros = nomes;\n  }\n}\nfor (const m {{blank}} equipe.membros) {\n  console.log(m);\n}",
-      "blanks": [
-        { "answer": "class", "placeholder": "molde" },
-        { "answer": "constructor", "placeholder": "inicializador" },
-        { "answer": "this", "placeholder": "instância" },
-        { "answer": "of", "placeholder": "iterador" }
+      "type": "multiple_choice",
+      "prompt": "Qual é a diferença entre undefined e null em JavaScript/TypeScript?",
+      "options": [
+        "undefined é usado apenas em números; null apenas em strings",
+        "undefined indica ausência de atribuição/inicialização; null representa ausência intencional de valor",
+        "null gera erro de compilação no TypeScript sempre",
+        "São exatamente sinônimos intercambiáveis"
       ],
-      "options": ["class", "constructor", "this", "of", "in", "self"],
-      "explanation": "Em JS/TS usamos 'class', 'constructor', 'this' para acessar propriedades do objeto e 'for...of' para valores de um iterável."
+      "correctIndex": 1,
+      "explanation": "Variáveis declaradas sem valor começam como undefined; atribuímos null quando queremos marcar explicitamente que está vazio."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o loop for...of para percorrer os valores do array e o loop while para contar até 3:",
+      "codeTemplate": "for (const nota {{blank}} [8, 9, 10]) {\n  console.log(nota);\n}\n\nlet i = 0;\n{{blank}} (i < 3) {\n  i++;\n}",
+      "blanks": [
+        { "answer": "of", "placeholder": "iterador" },
+        { "answer": "while", "placeholder": "laço" }
+      ],
+      "options": ["of", "in", "while", "until"],
+      "explanation": "for...of percorre os valores do array (for...in percorreria índices/chaves), e while repete enquanto i < 3."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a classe TypeScript declarando o construtor e atribuindo a propriedade na instância:",
+      "codeTemplate": "class Usuario {\n  nome: string;\n  {{blank}}(nome: string) {\n    {{blank}}.nome = nome;\n  }\n}",
+      "blanks": [
+        { "answer": "constructor", "placeholder": "construtor" },
+        { "answer": "this", "placeholder": "instância" }
+      ],
+      "options": ["constructor", "__init__", "this", "self"],
+      "explanation": "Em JS/TS o construtor chama-se constructor e a referência à instância atual é this."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O loop while abaixo deveria rodar 3 vezes, mas entra em loop infinito. Qual linha tem o bug?",
+      "lines": [
+        "let passo = 0;",
+        "while (passo < 3) {",
+        "  console.log(passo);",
+        "  passo = 0;",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Na linha 4, 'passo = 0' reinicia o contador em vez de incrementá-lo (passo++), mantendo passo < 3 para sempre."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para definir a classe Item, instanciar um array de itens e percorrê-lo com for...of:",
+      "blocks": [
+        "const itens = [new Item(\"Livro\"), new Item(\"Caneta\")];",
+        "class Item { nome: string; constructor(nome: string) { this.nome = nome; } }",
+        "for (const it of itens) {",
+        "  console.log(it.nome);",
+        "}"
+      ],
+      "correctOrder": [1, 0, 2, 3, 4],
+      "explanation": "Primeiro declaramos a classe Item, depois criamos instâncias com new e percorremos com for...of."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva do zero uma classe chamada 'Produto' com um 'constructor(nome: string)' que salve 'this.nome = nome':",
-      "starterCode": "class Produto {\n  nome: string;\n  // Escreva o constructor abaixo:\n\n}",
-      "requiredTokens": ["class", "Produto", "constructor", "this.nome"],
-      "sampleSolution": "class Produto {\n  nome: string;\n  constructor(nome: string) {\n    this.nome = nome;\n  }\n}",
-      "hint": "Dentro da classe, escreva: constructor(nome: string) { this.nome = nome; }",
-      "explanation": "O constructor inicializa as propriedades da instância através da palavra reservada 'this'."
+      "prompt": "Crie uma classe chamada 'Produto' com uma propriedade 'nome' (string) inicializada no construtor e um método 'exibir' que retorne o nome. Depois instancie um array com dois produtos e percorra-o com for...of.",
+      "starterCode": "",
+      "requiredTokens": ["class", "Produto", "constructor", "this", "new", "for", "of"],
+      "sampleSolution": "class Produto {\n  nome: string;\n  constructor(nome: string) {\n    this.nome = nome;\n  }\n  exibir(): string {\n    return this.nome;\n  }\n}\n\nconst lista = [new Produto(\"Mouse\"), new Produto(\"Teclado\")];\nfor (const p of lista) {\n  console.log(p.exibir());\n}",
+      "hint": "Defina 'class Produto' com 'constructor(nome: string)' salvando em 'this.nome', crie instâncias com 'new Produto(...)' e itere com 'for (const p of lista)'.",
+      "explanation": "Combinamos criação de classe, constructor, this, instanciação com new e iteração com for...of."
     }
   ]
 }

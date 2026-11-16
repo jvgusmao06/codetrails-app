@@ -7,8 +7,13 @@
     {
       "type": "theory",
       "title": "APIs velozes com ergonomia Express em Go",
-      "content": "O **Fiber** é construído sobre o `fasthttp` e oferece uma API familiar para quem vem de Node/Express, mas com a velocidade de Go:\n\n- `app := fiber.New()` inicializa a aplicação.\n- Handlers recebem `c *fiber.Ctx` e retornam `error`.\n- `c.Params(\"id\")` lê parâmetros de rota (`\"/users/:id\"`).\n- `c.Status(201).JSON(payload)` serializa e envia a resposta JSON.",
-      "codeExample": "package main\n\nimport \"github.com/gofiber/fiber/v2\"\n\nfunc main() {\n    app := fiber.New()\n\n    app.Get(\"/users/:id\", func(c *fiber.Ctx) error {\n        id := c.Params(\"id\")\n        return c.JSON(fiber.Map{\"id\": id, \"status\": \"ok\"})\n    })\n\n    app.Listen(\":3000\")\n}"
+      "content": "O **Fiber** é construído sobre o `fasthttp` e oferece uma API familiar para quem vem de Node/Express, mas com a velocidade de Go:\n\n- `app := fiber.New()` inicializa a aplicação.\n- Handlers recebem `c *fiber.Ctx` e retornam `error`.\n- `c.Params(\"id\")` lê parâmetros de rota (`\"/users/:id\"`).\n- `c.BodyParser(&dto)` faz parse do corpo JSON para uma struct.\n- `c.Status(201).JSON(payload)` ou `c.JSON(fiber.Map{...})` serializa e envia a resposta JSON.",
+      "codeExample": "package main\n\nimport \"github.com/gofiber/fiber/v2\"\n\nfunc main() {\n    app := fiber.New()\n\n    app.Get(\"/users/:id\", func(c *fiber.Ctx) error {\n        id := c.Params(\"id\")\n        return c.JSON(fiber.Map{\"id\": id, \"status\": \"ok\"})\n    })\n\n    app.Listen(\":3000\")\n}",
+      "keyTakeaways": [
+        "Todo handler Fiber tem a assinatura `func(c *fiber.Ctx) error` e deve retornar um `error` (ou `nil` via `c.JSON(...)`).",
+        "Use `c.Params(\"nome\")` no plural para extrair parâmetros da URL.",
+        "`fiber.Map` funciona como atalho para `map[string]interface{}` ao montar respostas JSON rápidas."
+      ]
     },
     {
       "type": "multiple_choice",
@@ -51,16 +56,18 @@
     },
     {
       "type": "write_code",
-      "prompt": "Escreva um handler Fiber na rota GET \"/health\" que retorne HTTP 200 com JSON {\"status\": \"up\"} usando c.JSON(fiber.Map{...}).",
-      "starterCode": "app := fiber.New()\n// Registre a rota /health abaixo",
+      "prompt": "Crie uma aplicação Fiber e registre uma rota GET para \"/health\" que retorne um JSON com a chave \"status\" e valor \"up\".",
+      "starterCode": "",
       "requiredTokens": [
-        "app.Get(\"/health\"",
+        "fiber.New()",
+        ".Get(\"/health\"",
         "*fiber.Ctx",
-        "c.JSON(fiber.Map{"
+        "c.JSON(",
+        "fiber.Map"
       ],
       "sampleSolution": "app := fiber.New()\napp.Get(\"/health\", func(c *fiber.Ctx) error {\n    return c.JSON(fiber.Map{\"status\": \"up\"})\n})",
-      "hint": "Use app.Get(\"/health\", func(c *fiber.Ctx) error { return c.JSON(fiber.Map{\"status\": \"up\"}) }).",
-      "explanation": "fiber.Map é um atalho para map[string]interface{} ideal para payloads JSON rápidos."
+      "hint": "Inicialize com fiber.New(), registre a rota com .Get(\"/health\", ...) recebendo c *fiber.Ctx e retorne c.JSON(fiber.Map{\"status\": \"up\"}).",
+      "explanation": "fiber.Map é um atalho para map[string]interface{} ideal para payloads JSON rápidos no retorno de handlers."
     }
   ]
 }

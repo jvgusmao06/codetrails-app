@@ -7,13 +7,25 @@
     {
       "type": "theory",
       "title": "Os Primeiros 4 Comandos ao Abrir Qualquer Dataset",
-      "content": "Todo projeto de Data Science começa carregando uma tabela com **`pd.read_csv(\"dados.csv\")`** (ou `read_parquet`, `read_excel`). Antes de qualquer gráfico ou modelo, todo analista roda 4 inspeções:\n- **`df.head(5)`**: mostra as 5 primeiras linhas.\n- **`df.shape`**: tupla `(linhas, colunas)`.\n- **`df.info()`**: mostra tipos (`int64`, `float64`, `object`) e quantos valores **não-nulos** existem.\n- **`df.describe()`**: estatísticas resumidas (média, desvio padrão, mínimo, máximo, quartis) das colunas numéricas.",
+      "content": "Todo projeto de Data Science começa carregando uma tabela com **`pd.read_csv(\"dados.csv\")`** (ou `read_parquet`, `read_excel`). Antes de qualquer gráfico ou modelo, todo analista roda 4 inspeções:\n- **`df.head(5)`**: mostra as 5 primeiras linhas.\n- **`df.shape`**: tupla `(linhas, colunas)` (atributo, sem parênteses!).\n- **`df.info()`**: mostra tipos (`int64`, `float64`, `object`) e quantos valores **não-nulos** existem.\n- **`df.describe()`**: estatísticas resumidas (média, desvio padrão, mínimo, máximo, quartis) das colunas numéricas.",
       "codeExample": "import pandas as pd\n\ndf = pd.read_csv(\"vendas.csv\")\nprint(df.shape)      # ex: (10000, 6)\nprint(df.head(3))    # 3 primeiras linhas\ndf.info()            # Tipos e valores ausentes\nprint(df.describe()) # Média, min, max, quartis",
       "keyTakeaways": [
         "Use `df.info()` logo no início para descobrir colunas com tipos errados (ex: preço salvo como texto `object`) ou muitos nulos.",
-        "`df.shape` é um atributo (sem parênteses), enquanto `df.head()` e `df.describe()` são métodos.",
+        "`df.shape` é um atributo (sem parênteses), enquanto `df.head()`, `df.info()` e `df.describe()` são métodos.",
         "Para colunas de texto/categóricas, use `df[\"categoria\"].value_counts()` para contar frequências."
       ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual comando abaixo exibe a quantidade de valores não-nulos e os tipos (`dtypes`) de cada coluna de um DataFrame?",
+      "options": [
+        "df.shape",
+        "df.head(5)",
+        "df.info()",
+        "df.describe()"
+      ],
+      "correctIndex": 2,
+      "explanation": "`df.info()` imprime o resumo estrutural completo: número de entradas, nomes das colunas, contagem de não-nulos e `dtype` de cada coluna."
     },
     {
       "type": "fill_in_blank",
@@ -28,12 +40,35 @@
       "explanation": "`pd.read_csv()` carrega o CSV, `.head()` mostra as primeiras linhas e `.describe()` calcula estatísticas descritivas."
     },
     {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha que gera `TypeError: 'tuple' object is not callable` ao inspecionar o DataFrame:",
+      "lines": [
+        "import pandas as pd",
+        "df = pd.read_csv(\"vendas.csv\")",
+        "print(df.shape())",
+        "print(df[\"categoria\"].value_counts())"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "`df.shape` é um atributo (uma tupla `(linhas, colunas)`), e não um método — portanto deve ser acessado sem parênteses."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para carregar o CSV, auditar os tipos/nulos e contar a frequência da coluna `categoria`:",
+      "blocks": [
+        "print(df[\"categoria\"].value_counts())",
+        "df = pd.read_csv(\"vendas.csv\")",
+        "df.info()"
+      ],
+      "correctOrder": [1, 2, 0],
+      "explanation": "Carregamos o DataFrame com `pd.read_csv`, inspecionamos os tipos/nulos com `df.info()` e contamos categorias com `.value_counts()`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Carregue `\"pedidos.csv\"` em `df` com `pd.read_csv` e imprima `df.info()`:",
-      "starterCode": "import pandas as pd\n# Leia pedidos.csv e chame df.info():\n",
-      "requiredTokens": ["pd.read_csv", "\"pedidos.csv\"", "df.info()"],
-      "sampleSolution": "df = pd.read_csv(\"pedidos.csv\")\ndf.info()",
-      "hint": "Escreva: df = pd.read_csv(\"pedidos.csv\") e df.info()",
+      "prompt": "Desafio de Código: Importe o Pandas com o alias `pd`, carregue o arquivo `\"pedidos.csv\"` na variável `df` e exiba o resumo de tipos e valores não-nulos das colunas.",
+      "starterCode": "",
+      "requiredTokens": ["import pandas as pd", "pd.read_csv", "\"pedidos.csv\"", "df.info()"],
+      "sampleSolution": "import pandas as pd\ndf = pd.read_csv(\"pedidos.csv\")\ndf.info()",
+      "hint": "Use `import pandas as pd`, carregue o arquivo com `pd.read_csv(\"pedidos.csv\")` e chame `df.info()`.",
       "explanation": "`df.info()` é a maneira mais rápida de auditar schema e nulos em um DataFrame."
     }
   ]

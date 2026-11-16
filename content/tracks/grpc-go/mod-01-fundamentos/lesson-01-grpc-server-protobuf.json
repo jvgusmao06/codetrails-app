@@ -7,8 +7,13 @@
     {
       "type": "theory",
       "title": "Comunicação binária entre microsserviços",
-      "content": "O **gRPC** usa **HTTP/2** e **Protocol Buffers (Protobuf)** em formato binário, sendo muito mais rápido e fortemente tipado que JSON/REST para comunicação interna entre serviços Go.\n\nNo servidor:\n1. Sua struct embute `pb.Unimplemented<Nome>Server` (garante compatibilidade futura).\n2. Cada método RPC recebe `(ctx context.Context, req *pb.MeuRequest)` e retorna `(*pb.MinhaResponse, error)`.\n3. Crie `s := grpc.NewServer()`, registre com `pb.Register...Server(s, &server{})` e chame `s.Serve(lis)`.",
-      "codeExample": "type server struct {\n    pb.UnimplementedGreeterServer\n}\n\nfunc (s *server) SayHello(ctx context.Context, req *pb.HelloRequest) (*pb.HelloReply, error) {\n    return &pb.HelloReply{Message: \"Olá \" + req.GetName()}, nil\n}\n\nlis, _ := net.Listen(\"tcp\", \":50051\")\ns := grpc.NewServer()\npb.RegisterGreeterServer(s, &server{})\ns.Serve(lis)"
+      "content": "O **gRPC** usa **HTTP/2** e **Protocol Buffers (Protobuf)** em formato binário, sendo muito mais rápido e fortemente tipado que JSON/REST para comunicação interna entre serviços Go.\n\nNo servidor:\n1. Sua struct embute `pb.Unimplemented<Nome>Server` (garante compatibilidade futura).\n2. Cada método RPC recebe `(ctx context.Context, req *pb.MeuRequest)` e retorna `(*pb.MinhaResponse, error)`.\n3. Crie o listener `net.Listen(\"tcp\", \":50051\")`, instancie `s := grpc.NewServer()`, registre com `pb.Register...Server(s, &server{})` e chame `s.Serve(lis)`.",
+      "codeExample": "type server struct {\n    pb.UnimplementedGreeterServer\n}\n\nfunc (s *server) SayHello(ctx context.Context, req *pb.HelloRequest) (*pb.HelloReply, error) {\n    return &pb.HelloReply{Message: \"Olá \" + req.GetName()}, nil\n}\n\nlis, _ := net.Listen(\"tcp\", \":50051\")\ns := grpc.NewServer()\npb.RegisterGreeterServer(s, &server{})\ns.Serve(lis)",
+      "keyTakeaways": [
+        "Embutir `pb.Unimplemented<Servico>Server` garante forward-compatibility ao adicionar novos RPCs no `.proto`.",
+        "Métodos RPC sempre recebem `context.Context` e um ponteiro para a mensagem de request, retornando ponteiro da resposta e `error`.",
+        "A ordem do servidor é: `net.Listen` -> `grpc.NewServer()` -> `pb.Register...Server` -> `s.Serve(lis)`."
+      ]
     },
     {
       "type": "multiple_choice",
@@ -47,16 +52,18 @@
     },
     {
       "type": "write_code",
-      "prompt": "Implemente o método `GetStatus(ctx context.Context, req *pb.StatusReq) (*pb.StatusRes, error)` em `type healthSrv struct` retornando `&pb.StatusRes{Ok: true}, nil`.",
-      "starterCode": "type healthSrv struct {\n    pb.UnimplementedHealthServer\n}\n\n// Escreva o método GetStatus abaixo",
+      "prompt": "Defina a struct `healthSrv` embutindo `pb.UnimplementedHealthServer` e implemente o método RPC `GetStatus` que recebe `context.Context` e um ponteiro para `pb.StatusReq`, retornando um ponteiro para `pb.StatusRes` com o campo `Ok` verdadeiro.",
+      "starterCode": "",
       "requiredTokens": [
+        "pb.UnimplementedHealthServer",
         "(s *healthSrv) GetStatus(",
         "context.Context",
         "*pb.StatusReq",
-        "*pb.StatusRes"
+        "*pb.StatusRes",
+        "Ok: true"
       ],
       "sampleSolution": "type healthSrv struct {\n    pb.UnimplementedHealthServer\n}\n\nfunc (s *healthSrv) GetStatus(ctx context.Context, req *pb.StatusReq) (*pb.StatusRes, error) {\n    return &pb.StatusRes{Ok: true}, nil\n}",
-      "hint": "A assinatura deve ser func (s *healthSrv) GetStatus(ctx context.Context, req *pb.StatusReq) (*pb.StatusRes, error).",
+      "hint": "Embuta pb.UnimplementedHealthServer na struct healthSrv e declare o método recebendo (ctx context.Context, req *pb.StatusReq) e retornando (*pb.StatusRes, error).",
       "explanation": "Métodos RPC sempre recebem context.Context para propagar cancelamentos e timeouts entre serviços."
     }
   ]

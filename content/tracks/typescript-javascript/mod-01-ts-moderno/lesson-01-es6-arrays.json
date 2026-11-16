@@ -1,43 +1,83 @@
 {
   "id": "ts-es6-01",
-  "title": "JavaScript Moderno (ES6+)",
-  "description": "Const/let, arrow functions e transformação de listas com map.",
-  "xp": 15,
+  "title": "04. Métodos de Array (.map, .filter e .find)",
+  "description": "Transforme, filtre e localize elementos em arrays de forma declarativa com .map(), .filter() e .find().",
+  "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "Imutabilidade com const e Transformação com .map()",
-      "content": "No JavaScript moderno (ES6+), preferimos 'const' para declarar variáveis cuja referência não será reatribuída, e 'let' apenas quando o valor precisar mudar. Para transformar listas sem mutar o array original, usamos o método .map() combinado com arrow functions (=>).",
-      "codeExample": "const nums = [1, 2, 3];\nconst dobro = nums.map(n => n * 2); // [2, 4, 6]",
+      "title": "Transformação e Busca com .map(), .filter() e .find()",
+      "content": "No JS/TS moderno, evitamos loops imperativos com `push` quando queremos transformar ou filtrar arrays:\n\n1. **`.map(fn)`**: Aplica a função a cada elemento e retorna um **novo array** do mesmo tamanho com os valores transformados.\n2. **`.filter(fn)`**: Retorna um **novo array** contendo apenas os itens para os quais a função retornou `true`.\n3. **`.find(fn)`**: Retorna o **primeiro elemento** que satisfaz a condição (ou `undefined` se nenhum atender), parando a busca assim que encontra.",
+      "codeExample": "const nums = [1, 2, 3, 4];\nconst dobros = nums.map((n) => n * 2);        // [2, 4, 6, 8]\nconst pares = nums.filter((n) => n % 2 === 0); // [2, 4]\nconst maior = nums.find((n) => n > 2);         // 3",
       "keyTakeaways": [
-        "const impede reatribuição da variável; let permite reatribuição.",
-        ".map() aplica uma função a cada item e retorna um novo array."
+        ".map() transforma cada item mantendo o tamanho do array sem mutar o original.",
+        ".filter() seleciona todos os itens que passam no teste booleano.",
+        ".find() devolve apenas o primeiro item encontrado (ou undefined)."
       ]
     },
     {
       "type": "fill_in_blank",
       "prompt": "Use o método de array que transforma cada item em um novo array com os valores dobrados:",
-      "codeTemplate": "const nums = [1, 2, 3];\nconst dobro = nums.{{blank}}(n => n * 2);",
+      "codeTemplate": "const valores = [5, 10, 15];\nconst dobrados = valores.{{blank}}((n) => n * 2);",
       "blanks": [
-        {
-          "answer": "map",
-          "placeholder": "método"
-        }
+        { "answer": "map", "placeholder": "método" }
       ],
-      "options": ["map", "filter", "forEach", "reduce"],
-      "explanation": "O método .map() aplica uma função a cada elemento e retorna um novo array do mesmo tamanho."
+      "options": ["map", "filter", "find", "forEach"],
+      "explanation": ".map() aplica a função de transformação a cada item e devolve o novo array resultante."
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual a diferença entre declarar uma variável com 'const' ou 'let' em JavaScript?",
+      "prompt": "Qual método devemos usar quando queremos obter APENAS o primeiro usuário com id === 42 de um array?",
       "options": [
-        "'const' tem escopo global e 'let' tem escopo de função",
-        "'const' impede que a referência da variável seja reatribuída, enquanto 'let' permite reatribuição",
-        "'const' só aceita números e strings",
-        "Não há diferença em tempo de execução"
+        ".map()",
+        ".filter()",
+        ".find()",
+        ".join()"
       ],
-      "correctIndex": 1,
-      "explanation": "Variáveis declaradas com 'const' não podem sofrer nova atribuição com '=', garantindo maior previsibilidade."
+      "correctIndex": 2,
+      "explanation": ".find() retorna o primeiro objeto que satisfaz a condição (ou undefined), enquanto .filter() sempre retorna um array."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código para manter apenas os produtos com estoque maior que zero:",
+      "codeTemplate": "const disponiveis = produtos.{{blank}}((p) => p.estoque > 0);",
+      "blanks": [
+        { "answer": "filter", "placeholder": "método" }
+      ],
+      "options": ["filter", "map", "find", "every"],
+      "explanation": ".filter() cria um novo array contendo somente os elementos cuja função de callback retorna true."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O código abaixo tenta filtrar os números maiores que 10, mas o callback do filter não retorna nada. Qual linha tem o bug?",
+      "lines": [
+        "const nums = [5, 12, 20];",
+        "const altos = nums.filter((n) => {",
+        "  n > 10;",
+        "});"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Quando usamos chaves { } em uma arrow function, o retorno não é mais implícito: falta 'return n > 10;' (ou remover as chaves)."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para filtrar pedidos pagos e depois extrair apenas os seus IDs com .map():",
+      "blocks": [
+        "  .map((p) => p.id);",
+        "const idsPagos = pedidos",
+        "  .filter((p) => p.pago === true)"
+      ],
+      "correctOrder": [1, 2, 0],
+      "explanation": "Encadeamos .filter() para selecionar os pagos e .map() para extrair apenas a propriedade id."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Dado um array de objetos 'alunos' (com propriedades 'nome' e 'nota'), crie uma constante 'nomesAprovados' filtrando apenas quem tem nota maior ou igual a 7 e transformando o resultado em um array contendo somente os nomes.",
+      "starterCode": "",
+      "requiredTokens": ["const", "nomesAprovados", "filter", "map", "nota", "nome"],
+      "sampleSolution": "const nomesAprovados = alunos\n  .filter((a) => a.nota >= 7)\n  .map((a) => a.nome);",
+      "hint": "Encadeie .filter(...) para verificar a nota >= 7 e .map(...) para retornar apenas a propriedade nome.",
+      "explanation": "Combinamos .filter() e .map() com arrow functions para filtrar e projetar dados sem mutar o array original."
     }
   ]
 }

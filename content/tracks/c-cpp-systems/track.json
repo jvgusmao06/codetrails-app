@@ -9,26 +9,28 @@
   "modules": [
     {
       "id": "mod-01-memoria",
-      "title": "Módulo 1: Variáveis, Ponteiros, Loops e Palavras Reservadas",
-      "description": "Manipule dados em baixo nível com printf, std::cout, ponteiros, sizeof, nullptr e loops.",
+      "title": "Módulo 1: Variáveis, Ponteiros, Loops e Funções",
+      "description": "Manipule dados em baixo nível com printf, std::cout, ponteiros, const, sizeof, nullptr, loops, strings e funções.",
       "lessons": [
         "lesson-01-io-basico",
         "lesson-02-ponteiros",
-        "lesson-03-variaveis-loops-keywords",
-        "lesson-04-arrays-strings-c",
-        "lesson-05-funcoes-passagem-referencia"
+        "lesson-03-keywords-const-nullptr",
+        "lesson-04-loops-controle",
+        "lesson-05-arrays-strings-c",
+        "lesson-06-funcoes-passagem-referencia"
       ]
     },
     {
       "id": "mod-02-structs-raii",
-      "title": "Módulo 2: Structs, Classes, Smart Pointers e Funções Nativas",
-      "description": "Use referências, std::unique_ptr, classes public/private e algoritmos nativos.",
+      "title": "Módulo 2: Structs, Classes, Smart Pointers e STL",
+      "description": "Use structs, std::unique_ptr (RAII), classes, algoritmos nativos, memória dinâmica, STL e templates.",
       "lessons": [
         "lesson-01-structs-smart-pointers",
-        "lesson-02-classes-funcoes-nativas-desafio",
-        "lesson-03-malloc-free-new-delete",
-        "lesson-04-vector-map-auto-range-for",
-        "lesson-05-templates-enum-class-macros"
+        "lesson-02-classes-encapsulamento",
+        "lesson-03-algoritmos-stdlib",
+        "lesson-04-malloc-free-new-delete",
+        "lesson-05-vector-map-auto-range-for",
+        "lesson-06-templates-enum-class-macros"
       ]
     }
   ]

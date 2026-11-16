@@ -8,7 +8,7 @@
       "type": "theory",
       "title": "Generics, encoding/json e testing sem Dependências Externas",
       "content": "Desde o Go 1.18, podemos escrever funções e tipos genéricos com colchetes **`[T any]`** ou **`[T comparable]`**. Para APIs REST, a biblioteca padrão **`encoding/json`** usa **Struct Tags** (`json:\"nome\"`) para mapear campos em Maiúscula para chaves JSON em minúscula. E para testes, o Go já vem com o pacote **`testing`**: qualquer função `func TestXxx(t *testing.T)` em arquivos `*_test.go` roda direto com `go test ./...`!",
-      "codeExample": "type Produto struct {\n    ID    int    `json:\"id\"`\n    Preco float64 `json:\"preco\"`\n}\n\nfunc Primeiro[T any](itens []T) (T, bool) {\n    var zero T\n    if len(itens) == 0 { return zero, false }\n    return itens[0], true\n}",
+      "codeExample": "type Produto struct {\n    ID    int     `json:\"id\"`\n    Preco float64 `json:\"preco\"`\n}\n\nfunc Primeiro[T any](itens []T) (T, bool) {\n    var zero T\n    if len(itens) == 0 { return zero, false }\n    return itens[0], true\n}",
       "keyTakeaways": [
         "Generics em Go usam colchetes: `func Nome[T comparable](a, b T) bool`.",
         "Struct tags (`json:\"campo,omitempty\"`) controlam o nome e omissão de campos ao serializar com `json.Marshal`.",
@@ -28,13 +28,48 @@
       "explanation": "Por convenção da ferramenta `go test`, arquivos devem terminar em `_test.go` e funções de teste devem começar com `Test` recebendo `(t *testing.T)`."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete o struct com a tag JSON para o campo `Nome` e serialize-o com `encoding/json`:",
+      "codeTemplate": "type Usuario struct {\n    Nome string `{{blank}}:\"nome\"`\n}\ndados, err := {{blank}}.{{blank}}(Usuario{Nome: \"Ana\"})",
+      "blanks": [
+        { "answer": "json", "placeholder": "tag" },
+        { "answer": "json", "placeholder": "pacote" },
+        { "answer": "Marshal", "placeholder": "função" }
+      ],
+      "options": ["json", "Marshal", "Encode", "xml", "Stringify", "fmt"],
+      "explanation": "Struct tags de `encoding/json` usam a chave `json:\"nome\"` entre crases e `json.Marshal` converte o struct em `[]byte`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Ao serializar este struct para JSON com `json.Marshal`, o resultado sai `{}` (vazio). Clique na linha com o problema:",
+      "lines": [
+        "type Item struct {",
+        "    titulo string `json:\"titulo\"`",
+        "}",
+        "dados, _ := json.Marshal(Item{titulo: \"Livro\"})"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "O pacote `encoding/json` só consegue enxergar e serializar campos exportados (inicial Maiúscula). O campo deve ser `Titulo string`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para escrever uma função genérica `Igual` com `[T comparable]` e testá-la com `*testing.T`:",
+      "blocks": [
+        "func TestIgual(t *testing.T) {\n    if !Igual(10, 10) {\n        t.Fatal(\"esperava true\")\n    }\n}",
+        "func Igual[T comparable](a, b T) bool {",
+        "    return a == b\n}"
+      ],
+      "correctOrder": [1, 2, 0],
+      "explanation": "Primeiro definimos a função genérica `Igual[T comparable]` e depois o teste unitário `TestIgual(t *testing.T)` que a valida."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva uma função genérica em Go `func Igual[T comparable](a, b T) bool` que retorne `a == b`:",
-      "starterCode": "// Implemente a função genérica Igual:\n",
-      "requiredTokens": ["func", "Igual", "[T comparable]", "bool", "return", "a == b"],
-      "sampleSolution": "func Igual[T comparable](a, b T) bool {\n    return a == b\n}",
-      "hint": "Use `func Igual[T comparable](a, b T) bool { return a == b }`.",
-      "explanation": "A constraint `comparable` garante em compilação que o tipo `T` suporta os operadores `==` e `!=`."
+      "prompt": "Desafio de Código: Defina um struct 'Pedido' com os campos exportados 'ID int' (com struct tag JSON \"id\") e 'Total float64' (com struct tag JSON \"total\"). Em seguida, escreva uma função genérica 'Primeiro' com parâmetro de tipo '[T any]' que receba 'itens []T' e retorne '(T, bool)': se 'len(itens) == 0', retorne o zero value de T e 'false'; caso contrário retorne 'itens[0]' e 'true'.",
+      "starterCode": "",
+      "requiredTokens": ["type", "Pedido", "struct", "json:\"id\"", "json:\"total\"", "func", "Primeiro", "[T any]", "bool", "return"],
+      "sampleSolution": "type Pedido struct {\n    ID    int     `json:\"id\"`\n    Total float64 `json:\"total\"`\n}\n\nfunc Primeiro[T any](itens []T) (T, bool) {\n    var zero T\n    if len(itens) == 0 {\n        return zero, false\n    }\n    return itens[0], true\n}",
+      "hint": "Use crases (`...`) para as tags `json:\"id\"` e `json:\"total\"` no struct `Pedido`, e declare `var zero T` dentro de `Primeiro[T any]` para retornar em caso de slice vazio.",
+      "explanation": "Combinar struct tags JSON em campos exportados com funções genéricas `[T any]` permite construir APIs e utilitários reutilizáveis em Go."
     }
   ]
 }

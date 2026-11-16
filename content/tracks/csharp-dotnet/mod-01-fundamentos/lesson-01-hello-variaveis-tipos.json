@@ -7,13 +7,25 @@
     {
       "type": "theory",
       "title": "Criando Variáveis e Exibindo Saída em C# Moderno",
-      "content": "No C# moderno (.NET 8+), você não precisa mais escrever `class Program { static void Main() {} }` só para começar — o **Top-level statement** permite programar direto! Os principais tipos são **`int`**, **`double`**, **`decimal`** (obrigatório para dinheiro!), **`bool`** e **`string`**. Usamos **`var`** para inferência estática de tipo, **`const`** para constantes e **`$\"...{var}\"`** para interpolar strings com clareza.",
-      "codeExample": "const string Versao = \"8.0\";\nstring nome = \"Ana\";\nvar idade = 25;             // Compilador infere int\ndecimal preco = 19.90m;     // Sufixo 'm' para decimal financeiro\nbool ativo = true;\n\nConsole.WriteLine($\"Olá {nome}, versão {Versao}, R$ {preco}\");",
+      "content": "No C# moderno (.NET 8+), você não precisa mais escrever `class Program { static void Main() {} }` só para começar — o **Top-level statement** permite programar direto! Os principais tipos são **`int`**, **`double`**, **`decimal`** (obrigatório para dinheiro, usando sufixo `m`), **`bool`** e **`string`**. Usamos **`var`** para inferência estática de tipo, **`const`** para constantes imutáveis em compilação e **`$\"...{var}\"`** para interpolar strings com `Console.WriteLine`.",
+      "codeExample": "const string Versao = \"8.0\";\nstring nome = \"Ana\";\nvar idade = 25;             // Compilador infere int\ndecimal preco = 19.90m;     // Sufixo 'm' para decimal financeiro\nbool ativo = true;\n\nConsole.WriteLine($\"Olá {nome}, versão {Versao}, ativo: {ativo}, R$ {preco}\");",
       "keyTakeaways": [
         "`var` em C# continua sendo **100% fortemente tipado** — o tipo é fixado pelo compilador na inicialização.",
         "Para valores financeiros (preços, saldos), use sempre `decimal` (sufixo `m`) em vez de `double` para evitar erros de arredondamento.",
         "Prefixar strings com `$` permite inserir expressões diretamente dentro de `{}`."
       ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual tipo numérico e sufixo devem ser usados em C# para armazenar preços e saldos financeiros sem erros de arredondamento binário?",
+      "options": [
+        "double com sufixo d",
+        "float com sufixo f",
+        "decimal com sufixo m",
+        "var sem sufixo"
+      ],
+      "correctIndex": 2,
+      "explanation": "`decimal` (ex: `19.90m`) usa representação decimal de alta precisão, evitando imprecisões de ponto flutuante binário (`float`/`double`)."
     },
     {
       "type": "fill_in_blank",
@@ -28,13 +40,49 @@
       "explanation": "`const` define constante em compilação, `decimal` garante precisão monetária e `$\"...\"` ativa interpolação."
     },
     {
+      "type": "spot_the_bug",
+      "prompt": "Este código C# não compila porque tenta alterar um valor imutável. Clique na linha com erro:",
+      "lines": [
+        "const int Limite = 100;",
+        "var nome = \"CodeTrails\";",
+        "Limite = 200;",
+        "Console.WriteLine($\"{nome}: {Limite}\");"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Na linha 3, `Limite` foi declarado com `const`, portanto seu valor não pode ser reatribuído após a declaração."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para criar um programa top-level válido que declara uma constante, um preço e exibe a saída interpolada:",
+      "blocks": [
+        "const string Moeda = \"BRL\";",
+        "var item = \"Mouse\";",
+        "decimal preco = 89.90m;",
+        "Console.WriteLine($\"{item}: {Moeda} {preco}\");"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "Em top-level statements, declaramos as constantes e variáveis antes de usá-las no `Console.WriteLine` com interpolação `$`."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Analisando `var ativo = true;` seguido de `ativo = \"sim\";`, o que acontece em C#?",
+      "options": [
+        "Funciona normalmente porque `var` é tipagem dinâmica",
+        "Erro de compilação, pois `var` fixou `ativo` como `bool` na inicialização",
+        "Converte `\"sim\"` automaticamente para `true`",
+        "Lança exceção apenas em tempo de execução"
+      ],
+      "correctIndex": 1,
+      "explanation": "`var` realiza inferência estática de tipo em tempo de compilação: `ativo` é `bool` e não aceita `string`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Em C#, declare `var linguagem = \"C#\";` e imprima usando `Console.WriteLine($\"Estudando {linguagem}\");`:",
-      "starterCode": "// Crie var linguagem e imprima com Console.WriteLine:\n",
-      "requiredTokens": ["var", "linguagem", "\"C#\"", "Console.WriteLine", "$\""],
-      "sampleSolution": "var linguagem = \"C#\";\nConsole.WriteLine($\"Estudando {linguagem}\");",
-      "hint": "Escreva `var linguagem = \"C#\";` e `Console.WriteLine($\"Estudando {linguagem}\");`.",
-      "explanation": "Top-level statements + `var` + `$\"...\"` tornam o C# moderno tão conciso quanto Python ou TypeScript."
+      "prompt": "Desafio de Código: Em top-level statements, declare uma constante inteira `Taxa` com valor `5`, uma variável `preco` do tipo `decimal` com valor `29.90m`, uma variável `produto` usando `var` com o texto `\"Teclado\"`, e imprima tudo em uma frase interpolada com `Console.WriteLine`.",
+      "starterCode": "",
+      "requiredTokens": ["const int Taxa", "decimal", "29.90m", "var", "Console.WriteLine", "$\""],
+      "sampleSolution": "const int Taxa = 5;\ndecimal preco = 29.90m;\nvar produto = \"Teclado\";\nConsole.WriteLine($\"Produto: {produto}, Preço: {preco}, Taxa: {Taxa}%\");",
+      "hint": "Combine `const int`, `decimal` com sufixo `m`, `var` para inferência de string e `Console.WriteLine($\"...\")`.",
+      "explanation": "Top-level statements + `const`, `decimal`, `var` e interpolação `$\"...\"` formam a base concisa e fortemente tipada do C# moderno."
     }
   ]
 }

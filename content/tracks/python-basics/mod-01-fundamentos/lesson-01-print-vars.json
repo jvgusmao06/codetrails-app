@@ -1,18 +1,18 @@
 {
   "id": "py-vars-01",
   "title": "01. Variáveis e print()",
-  "description": "Exibindo mensagens no terminal e criando variáveis.",
-  "xp": 15,
+  "description": "Aprenda a exibir mensagens no console com print(), criar strings entre aspas e armazenar dados em variáveis.",
+  "xp": 20,
   "steps": [
     {
       "type": "theory",
       "title": "Como o Python Exibe Dados e Cria Variáveis",
-      "content": "Diferente de linguagens verbosas, o Python foi desenhado para ser lido quase como inglês ou português estruturado. Para mostrar qualquer informação no terminal, chamamos a função nativa print(). Já para guardar um valor na memória (uma variável), basta escolher um nome e usar o sinal de atribuição '=' — sem precisar declarar o tipo antes.",
-      "codeExample": "# Exibindo uma mensagem na tela\nprint(\"Olá, Dev!\")\n\n# Criando variáveis (tipagem dinâmica)\nlinguagem = \"Python\"\nnivel = 5",
+      "content": "Diferente de linguagens verbosas, o Python foi desenhado para ser lido de forma simples e direta.\n\n1. **Saída com `print()`**: Para mostrar qualquer texto ou número no terminal, chamamos a função nativa `print(valor)`. Textos (chamados de **strings**) devem ficar sempre entre aspas simples (`'...'`) ou duplas (`\"...\"`).\n2. **Variáveis**: Para guardar um valor na memória, basta escrever `nome = valor`, sem precisar de palavras como `var`, `let` ou `int`. Por convenção em Python (PEP 8), usamos letras minúsculas e underline (`snake_case`), como `pontuacao_maxima = 100`.\n3. **Múltiplos argumentos no `print()`**: Você pode passar vários valores separados por vírgula, como `print(\"Nível:\", nivel)` — o Python adiciona um espaço automaticamente entre eles.",
+      "codeExample": "nome = \"Ada\"\nidade = 28\nprint(\"Olá, mundo!\")\nprint(\"Usuária:\", nome, \"Idade:\", idade)",
       "keyTakeaways": [
-        "print() envia textos ou números para a saída padrão (console).",
-        "Textos (strings) ficam sempre entre aspas simples ou duplas.",
-        "Variáveis são criadas diretamente com nome = valor, sem usar var, let ou int."
+        "print() envia textos, números ou variáveis para o console.",
+        "Strings (textos) precisam estar entre aspas simples ou duplas.",
+        "Variáveis são criadas diretamente com nome = valor (sem var ou let)."
       ]
     },
     {
@@ -25,59 +25,61 @@
         "System.out.println()"
       ],
       "correctIndex": 1,
-      "explanation": "Em Python, a função nativa print() envia texto ou valores diretamente para a saída padrão."
+      "explanation": "Em Python, a função embutida print() exibe mensagens e valores no console."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para imprimir 'Olá, Dev!' no console:",
-      "codeTemplate": "{{blank}}(\"Olá, Dev!\")",
+      "prompt": "Complete o código para exibir o texto 'Olá, Dev!' no console:",
+      "codeTemplate": "{{blank}}({{blank}})",
       "blanks": [
-        {
-          "answer": "print",
-          "placeholder": "função"
-        }
+        { "answer": "print", "placeholder": "função" },
+        { "answer": "'Olá, Dev!'", "placeholder": "texto entre aspas" }
       ],
-      "options": [
-        "print",
-        "log",
-        "write",
-        "show"
-      ],
-      "explanation": "Basta chamar print() passando a string entre parênteses."
+      "options": ["print", "echo", "'Olá, Dev!'", "Olá, Dev!"],
+      "explanation": "Chamamos print() passando a string entre aspas simples ou duplas."
     },
     {
       "type": "multiple_choice",
-      "prompt": "Como declaramos uma variável chamada 'nivel' com valor 5 em Python?",
+      "prompt": "Como declaramos corretamente uma variável chamada 'nivel' com o valor inteiro 5 em Python?",
       "options": [
         "let nivel = 5",
-        "int nivel = 5;",
+        "int nivel = 5",
         "nivel = 5",
         "var nivel := 5"
       ],
       "correctIndex": 2,
-      "explanation": "Python possui tipagem dinâmica: você atribui diretamente com '=' sem precisar de palavras-chave como let, var ou int."
+      "explanation": "Python usa tipagem dinâmica e não utiliza palavras-chave como var, let ou int para declarar variáveis."
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Crie a variável 'linguagem' atribuindo o texto \"Python\":",
-      "codeTemplate": "{{blank}} = \"{{blank}}\"",
-      "blanks": [
-        {
-          "answer": "linguagem",
-          "placeholder": "variável"
-        },
-        {
-          "answer": "Python",
-          "placeholder": "valor"
-        }
+      "type": "spot_the_bug",
+      "prompt": "O código abaixo tenta guardar um texto em uma variável e exibi-lo, mas gera um erro. Qual linha tem o bug?",
+      "lines": [
+        "linguagem = Python",
+        "versao = 3",
+        "print(linguagem, versao)"
       ],
-      "options": [
-        "linguagem",
-        "Python",
-        "const",
-        "var"
+      "buggyLineIndex": 0,
+      "explanation": "Na linha 1, Python está sem aspas, então o interpretador procura uma variável chamada Python em vez de criar uma string."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para criar a variável 'curso', definir a variável 'modulo' e imprimir ambos juntos:",
+      "blocks": [
+        "print(\"Curso:\", curso, \"Módulo:\", modulo)",
+        "modulo = 1",
+        "curso = \"Python\""
       ],
-      "explanation": "O identificador fica à esquerda do sinal '=' e o valor entre aspas fica à direita."
+      "correctOrder": [2, 1, 0],
+      "explanation": "Primeiro declaramos as variáveis curso e modulo; só depois podemos passá-las ao print()."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Crie uma variável chamada 'linguagem' com o texto \"Python\" e uma variável 'ano' com o número 2026. Em seguida, exiba as duas variáveis usando print().",
+      "starterCode": "",
+      "requiredTokens": ["linguagem", "ano", "print"],
+      "sampleSolution": "linguagem = \"Python\"\nano = 2026\nprint(linguagem, ano)",
+      "hint": "Atribua cada variável com '=' (lembrando das aspas na string) e depois chame print(linguagem, ano).",
+      "explanation": "Em Python não precisamos declarar tipos: linguagem recebe uma string entre aspas, ano recebe um inteiro e print() aceita ambos separados por vírgula."
     }
   ]
 }

@@ -2,22 +2,22 @@
   "id": "unity-mono-01",
   "title": "Unity C#: MonoBehaviour, Update vs FixedUpdate e [SerializeField]",
   "description": "Domine o ciclo de vida de scripts na Unity e evite chamar GetComponent dentro do Update().",
-  "xp": 35,
+  "xp": 50,
   "steps": [
     {
       "type": "theory",
       "title": "Ciclo de Vida de Scripts na Unity",
-      "content": "Na **Unity**, todo script anexado a um `GameObject` herda de **`MonoBehaviour`**. Três métodos controlam tudo:\n- **`Awake()` / `Start()`**: rodam uma vez na inicialização (ótimo para fazer cache de `GetComponent<Rigidbody>()`!).\n- **`Update()`**: roda a cada frame visual — multiplique movimentos por **`Time.deltaTime`**!\n- **`FixedUpdate()`**: roda em intervalo fixo de física — use aqui para `rb.AddForce(...)`!\nE para expor um campo no Inspector sem torná-lo `public`, use **`[SerializeField] private float velocidade = 5f;`**!",
-      "codeExample": "using UnityEngine;\n\npublic class Jogador : MonoBehaviour {\n    [SerializeField] private float velocidade = 6f;\n    private Rigidbody _rb;\n\n    void Awake() => _rb = GetComponent<Rigidbody>(); // Cache fora do Update!\n\n    void Update() {\n        transform.Translate(Vector3.forward * velocidade * Time.deltaTime);\n    }\n}",
+      "content": "Na **Unity**, todo script anexado a um `GameObject` herda de **`MonoBehaviour`**. Três métodos controlam o comportamento:\n- **`Awake()` / `Start()`**: rodam uma vez na inicialização — ideal para fazer cache de `GetComponent<Rigidbody>()`.\n- **`Update()`**: roda a cada frame visual — multiplique movimentos por **`Time.deltaTime`** para manter velocidade independente do FPS.\n- **`FixedUpdate()`**: roda em intervalo fixo de física — use aqui para aplicar forças com `Rigidbody`.\n\nPara expor um campo no Inspector sem quebrar o encapsulamento com `public`, use **`[SerializeField] private`**.",
+      "codeExample": "using UnityEngine;\n\npublic class Jogador : MonoBehaviour {\n    [SerializeField] private float velocidade = 6f;\n    private Rigidbody _rb;\n\n    void Awake() => _rb = GetComponent<Rigidbody>();\n\n    void Update() {\n        transform.Translate(Vector3.forward * velocidade * Time.deltaTime);\n    }\n\n    void FixedUpdate() {\n        _rb.AddForce(Vector3.up * 2f);\n    }\n}",
       "keyTakeaways": [
-        "NUNCA chame `GetComponent<T>()` ou `GameObject.Find()` dentro de `Update()` — faça cache no `Awake()`/`Start()`!",
+        "NUNCA chame `GetComponent<T>()` dentro de `Update()` — faça cache no `Awake()` ou `Start()`.",
         "Use `[SerializeField] private` em vez de `public` para manter encapsulamento e ainda editar no Inspector.",
-        "Use `FixedUpdate()` para física (`Rigidbody`) e `Update()` para leitura de Input e câmera."
+        "Multiplique movimentos no `Update()` por `Time.deltaTime` e use `FixedUpdate()` para física (`Rigidbody`)."
       ]
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este script Unity causa queda de FPS em cenas grandes porque busca o componente na árvore toda a cada frame (60+ vezes por segundo). Clique na linha ineficiente:",
+      "prompt": "Este script Unity causa queda de FPS em cenas grandes porque busca o componente na árvore toda a cada frame. Clique na linha ineficiente:",
       "lines": [
         "void Update() {",
         "    var rb = GetComponent<Rigidbody>();",
@@ -28,13 +28,50 @@
       "explanation": "Na linha 2, `GetComponent<Rigidbody>()` está sendo chamado dentro de `Update()`! Faça cache de `_rb` em `Awake()` e aplique forças em `FixedUpdate()`."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Exponha o campo privado `velocidade` no Inspector da Unity mantendo o encapsulamento e faça o cache do `Rigidbody` na inicialização:",
+      "codeTemplate": "[{{blank}}] private float velocidade = 5f;\nprivate Rigidbody _rb;\nvoid {{blank}}() => _rb = GetComponent<Rigidbody>();",
+      "blanks": [
+        { "answer": "SerializeField", "placeholder": "atributo" },
+        { "answer": "Awake", "placeholder": "ciclo inicial" }
+      ],
+      "options": ["SerializeField", "Awake", "Update", "Public"],
+      "explanation": "`[SerializeField]` expõe campos `private` no Inspector e `Awake()` executa uma única vez na inicialização."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual método do ciclo de vida do `MonoBehaviour` deve ser usado para aplicar forças contínuas em um `Rigidbody`?",
+      "options": [
+        "Update()",
+        "FixedUpdate()",
+        "OnGUI()",
+        "Awake()"
+      ],
+      "correctIndex": 1,
+      "explanation": "`FixedUpdate()` é executado em passos de tempo fixos sincronizados com o motor de física da Unity."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene as linhas de um script `MonoBehaviour` bem estruturado com cache de componente e movimento independente de FPS:",
+      "blocks": [
+        "public class Nave : MonoBehaviour {",
+        "    [SerializeField] private float speed = 8f;",
+        "    private Rigidbody _rb;",
+        "    void Awake() { _rb = GetComponent<Rigidbody>(); }",
+        "    void Update() { transform.Translate(Vector3.forward * speed * Time.deltaTime); }",
+        "}"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4, 5],
+      "explanation": "Declaramos a classe herdando de `MonoBehaviour`, os campos (`[SerializeField] private` e cache), o cache em `Awake()` e o movimento com `Time.deltaTime` em `Update()`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie uma classe `public class Inimigo : MonoBehaviour` com `[SerializeField] private int vida = 100;` e um `void Update()` usando `Time.deltaTime`:",
-      "starterCode": "// Crie o script MonoBehaviour Inimigo:\n",
+      "prompt": "Crie uma classe `Inimigo` pública que herde de `MonoBehaviour`, possua um campo privado inteiro `vida` inicializado em `100` e visível no Inspector, e implemente `Update()` movendo o objeto com `transform.Translate` multiplicado por `Time.deltaTime`.",
+      "starterCode": "",
       "requiredTokens": ["public class Inimigo : MonoBehaviour", "[SerializeField]", "private int vida", "void Update()", "Time.deltaTime"],
       "sampleSolution": "public class Inimigo : MonoBehaviour {\n    [SerializeField] private int vida = 100;\n    void Update() {\n        transform.Translate(Vector3.right * Time.deltaTime);\n    }\n}",
-      "hint": "Use `public class Inimigo : MonoBehaviour`, `[SerializeField] private int vida = 100;` e `Time.deltaTime` no `Update()`.",
-      "explanation": "Essa estrutura limpa é a base de qualquer componente reutilizável em jogos Unity."
+      "hint": "Herde de `MonoBehaviour`, use `[SerializeField] private int vida = 100;` e multiplique o vetor de movimento por `Time.deltaTime` dentro de `void Update()`.",
+      "explanation": "Essa estrutura combina herança de `MonoBehaviour`, encapsulamento com `[SerializeField]` e movimentação independente de taxa de quadros via `Time.deltaTime`."
     }
   ]
 }

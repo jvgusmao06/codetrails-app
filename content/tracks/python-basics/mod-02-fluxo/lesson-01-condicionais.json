@@ -1,49 +1,88 @@
 {
   "id": "py-flow-01",
   "title": "03. Condicionais (if, elif e else)",
-  "description": "Tomando decisões baseadas em condições lógicas.",
-  "xp": 20,
+  "description": "Tome decisões no código usando if, elif, else, operadores de comparação e indentação obrigatória.",
+  "xp": 25,
   "steps": [
     {
       "type": "theory",
       "title": "Tomada de Decisão e Indentação Obrigatória",
-      "content": "Na maioria das linguagens usamos chaves { } para delimitar um bloco condicional. O Python usa dois-pontos (:) no final da condição e indentação (recuo com 4 espaços) para saber quais linhas pertencem ao if, elif ou else.",
-      "codeExample": "nota = 8\n\nif nota >= 7:\n    print(\"Aprovado\")\nelif nota >= 5:\n    print(\"Recuperação\")\nelse:\n    print(\"Reprovado\")",
+      "content": "Na maioria das linguagens usamos chaves `{ }` para delimitar um bloco condicional. O Python usa **dois-pontos (`:`)** ao final da condição e **indentação** (recuo de 4 espaços) para definir quais linhas pertencem ao bloco.\n\n1. **`if` e comparações**: Testamos condições com operadores como `==` (igual), `!=` (diferente), `>`, `>=`, `<`, `<=`. Ex: `if nota >= 7:`.\n2. **`elif`**: Abreviação oficial de *else if* em Python. Permite testar novas condições em sequência quando a anterior for falsa.\n3. **`else`**: Bloco executado quando nenhuma das condições anteriores (`if` e `elif`) foi satisfeita.",
+      "codeExample": "nota = 8.5\n\nif nota >= 9:\n    print(\"Excelente\")\nelif nota >= 7:\n    print(\"Aprovado\")\nelse:\n    print(\"Recuperação\")",
       "keyTakeaways": [
-        "Toda condição if, elif ou else termina com dois-pontos (:).",
-        "O recuo (indentação) define o bloco de código em vez de { }.",
-        "'elif' é a abreviação oficial de 'else if' no Python."
+        "Toda linha com if, elif ou else termina obrigatoriamente com dois-pontos (:).",
+        "O recuo (indentação de 4 espaços) delimita o bloco em vez de { }.",
+        "elif testa condições alternativas; else trata o caso padrão quando todas falham."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Como o Python delimita o bloco de código dentro de um 'if'?",
+      "prompt": "Como o Python delimita o bloco de código que pertence a um 'if'?",
       "options": [
-        "Usando chaves { }",
-        "Usando dois-pontos (:) e indentação (espaços)",
-        "Com as palavras begin e end",
-        "Com parênteses obrigatórios"
+        "Com chaves { }",
+        "Com begin e end",
+        "Com dois-pontos (:) e indentação (recuo)",
+        "Com parênteses ( )"
       ],
-      "correctIndex": 1,
-      "explanation": "Python utiliza dois-pontos ':' no final da condição e indentação consistente para definir o bloco."
+      "correctIndex": 2,
+      "explanation": "Em Python, blocos de código são abertos por dois-pontos (:) e definidos pelo recuo consistente (geralmente 4 espaços)."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a estrutura condicional para testar uma segunda condição:",
-      "codeTemplate": "if nota >= 7:\n    print(\"Aprovado\")\n{{blank}} nota >= 5:\n    print(\"Recuperação\")\nelse:\n    print(\"Reprovado\")",
+      "prompt": "Complete a estrutura condicional para testar uma segunda condição quando a primeira falhar:",
+      "codeTemplate": "if idade >= 18:\n    print(\"Adulto\")\n{{blank}} idade >= 13{{blank}}\n    print(\"Adolescente\")\n{{blank}}:\n    print(\"Criança\")",
       "blanks": [
-        {
-          "answer": "elif",
-          "placeholder": "senão se"
-        }
+        { "answer": "elif", "placeholder": "senão se" },
+        { "answer": ":", "placeholder": "delimitador" },
+        { "answer": "else", "placeholder": "senão" }
       ],
-      "options": [
-        "elif",
-        "else if",
-        "elseif",
-        "when"
+      "options": ["elif", "else if", ":", ";", "else"],
+      "explanation": "Em Python usamos 'elif' para testar outra condição, sempre com ':' no final, e 'else:' para o caso restante."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O código abaixo verifica se o usuário é administrador, mas tem um erro de sintaxe. Qual linha está errada?",
+      "lines": [
+        "perfil = \"admin\"",
+        "if perfil = \"admin\":",
+        "    print(\"Acesso total\")"
       ],
-      "explanation": "Em Python, 'else if' é abreviado para a palavra-chave 'elif'."
+      "buggyLineIndex": 1,
+      "explanation": "Na linha 2 foi usado '=' (atribuição) em vez de '==' (comparação de igualdade)."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para classificar uma temperatura como Quente (>= 30), Agradável (>= 20) ou Frio:",
+      "blocks": [
+        "    print(\"Frio\")",
+        "if temp >= 30:",
+        "else:",
+        "    print(\"Quente\")",
+        "elif temp >= 20:",
+        "    print(\"Agradável\")"
+      ],
+      "correctOrder": [1, 3, 4, 5, 2, 0],
+      "explanation": "A ordem lógica testa primeiro >= 30 (if), depois >= 20 (elif) e por fim o caso restante (else)."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código usando variável, comparação e f-string dentro do bloco condicional:",
+      "codeTemplate": "saldo = 150\nif saldo {{blank}} 100:\n    print({{blank}}\"Saldo suficiente: {saldo}\")",
+      "blanks": [
+        { "answer": ">=", "placeholder": "operador" },
+        { "answer": "f", "placeholder": "prefixo" }
+      ],
+      "options": [">=", "=>", "f", "s"],
+      "explanation": "O operador 'maior ou igual' é '>=', e o prefixo 'f' permite interpolar {saldo} na mensagem."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Crie uma variável 'pontos' com um valor numérico e escreva uma estrutura com if, elif e else: imprima \"Ouro\" se pontos >= 90, \"Prata\" se pontos >= 70, e \"Bronze\" caso contrário.",
+      "starterCode": "",
+      "requiredTokens": ["pontos", "if", "elif", "else", "print"],
+      "sampleSolution": "pontos = 85\nif pontos >= 90:\n    print(\"Ouro\")\nelif pontos >= 70:\n    print(\"Prata\")\nelse:\n    print(\"Bronze\")",
+      "hint": "Lembre-se dos dois-pontos (:) ao final de if, elif e else, e da indentação de 4 espaços antes de cada print.",
+      "explanation": "Encadeamos condições da mais restritiva (>= 90) para a mais geral (>= 70) e finalizamos com else."
     }
   ]
 }

@@ -1,18 +1,19 @@
 {
   "id": "csharp-interfaces-records-05",
   "title": "Interfaces (I...), Herança (:), virtual/override, Records e Structs",
-  "description": "Modele contratos com interfaces (prefixo I por convenção), DTOs imutáveis em 1 linha com record e structs de valor.",
+  "description": "Modele contratos com interfaces (prefixo I), polimorfismo com virtual/override, DTOs imutáveis com record e tipos de valor com struct.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Interfaces, Override Explícito e Records em 1 Linha",
-      "content": "Em C#, tanto herança quanto implementação de interface usam dois-pontos **`:`** (e por convenção interfaces começam com **`I`**, como `IPagamento`). Para sobrescrever um método de uma classe pai, o pai precisa marcar como **`virtual`** e o filho precisa escrever explicitamente **`override`** (evitando sobrescritas acidentais!). E para DTOs imutáveis com igualdade por valor automática, usamos **`public record UsuarioDto(int Id, string Nome);`**!",
-      "codeExample": "public interface IRepositorio {\n    void Salvar(string dado);\n}\n\npublic class SqlRepositorio : IRepositorio {\n    public void Salvar(string dado) => Console.WriteLine(dado);\n}\n\n// DTO imutável completo com igualdade por valor em 1 linha!\npublic record PedidoDto(int Id, decimal Total);",
+      "title": "Interfaces, virtual/override, Records e Structs",
+      "content": "Em C#, tanto herança quanto implementação de interface usam dois-pontos **`:`** (interfaces começam com **`I`**, como `INotificador`). Para sobrescrever um método de uma classe pai, o pai deve marcá-lo como **`virtual`** e o filho precisa usar **`override`** (evitando sobrescritas acidentais!). Para DTOs imutáveis com igualdade por valor automática, usamos **`record`** (`public record UsuarioDto(int Id, string Nome);`). Já para tipos leves copiados por valor (sem herança, ideais para coordenadas ou valores pequenos), usamos **`struct`** (`public struct Ponto(int X, int Y);` ou `readonly struct`).",
+      "codeExample": "public interface IRepositorio {\n    void Salvar(string dado);\n}\n\npublic class BaseServico {\n    public virtual void Executar() => Console.WriteLine(\"Base\");\n}\n\npublic class SqlServico : BaseServico, IRepositorio {\n    public override void Executar() => Console.WriteLine(\"SQL\");\n    public void Salvar(string dado) => Console.WriteLine(dado);\n}\n\npublic record PedidoDto(int Id, decimal Total);\npublic struct Ponto(int X, int Y);",
       "keyTakeaways": [
         "Por convenção .NET, toda interface começa com `I` (`IEnumerable`, `IDisposable`, `IUserService`).",
         "Em C#, métodos NÃO são virtuais por padrão — exija `virtual` no pai e `override` no filho para polimorfismo.",
-        "`record` compara objetos pelo **conteúdo dos campos** (value equality), não pelo endereço de memória!"
+        "`record` é um tipo de referência otimizado para dados imutáveis com igualdade por valor (compara campos, não endereço).",
+        "`struct` é um **value type** (copiado por valor, não suporta herança de classes), ideal para estruturas pequenas como coordenadas ou métricas."
       ]
     },
     {
@@ -27,13 +28,64 @@
       "explanation": "`record` cria DTOs imutáveis concisos e `:` é usado tanto para estender classes quanto implementar interfaces em C#."
     },
     {
+      "type": "multiple_choice",
+      "prompt": "Em C#, o que é obrigatório para que uma classe filha consiga sobrescrever corretamente um método da classe pai com polimorfismo?",
+      "options": [
+        "Basta declarar um método com o mesmo nome na classe filha",
+        "Marcar o método na classe pai com `virtual` e na classe filha com `override`",
+        "Usar `static` no pai e `new` no filho",
+        "Converter a classe pai para `struct`"
+      ],
+      "correctIndex": 1,
+      "explanation": "Em C#, métodos são selados por padrão: é necessário `virtual` (ou `abstract`) na base e `override` explícito na derivada."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual afirmação descreve corretamente a diferença de um `struct` em C# em relação a uma `class`?",
+      "options": [
+        "`struct` suporta herança múltipla de classes",
+        "`struct` é um **value type** (copiado por valor na atribuição) e não pode herdar de outra classe ou struct",
+        "`struct` sempre é alocado exclusivamente no heap gerenciado como referência",
+        "`struct` não pode implementar interfaces"
+      ],
+      "correctIndex": 1,
+      "explanation": "`struct` é um tipo de valor (value type) — copiar uma variável `struct` cria uma cópia independente dos dados, e `struct` só pode implementar interfaces (nunca herdar de classes)."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código falha ao compilar porque tenta sobrescrever um método que não foi liberado para polimorfismo na classe pai. Clique na linha responsável pelo problema:",
+      "lines": [
+        "public class Animal {",
+        "    public void EmitirSom() => Console.WriteLine(\"...\");",
+        "}",
+        "public class Cachorro : Animal {",
+        "    public override void EmitirSom() => Console.WriteLine(\"Au\");",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Na linha 2, `EmitirSom()` em `Animal` não foi marcado como `virtual`, portanto `Cachorro` não pode usar `override`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para declarar um contrato `IImprimivel`, uma `struct` que o implementa e um `record` para DTO:",
+      "blocks": [
+        "public interface IImprimivel { string Formatar(); }",
+        "public struct Coordenada(int X, int Y) : IImprimivel {",
+        "    public string Formatar() => $\"({X}, {Y})\";",
+        "}",
+        "public record RotaDto(string Nome, Coordenada Origem);"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "explanation": "Mesmo sendo um value type, `struct` pode implementar interfaces com `:`, e um `record` pode compor `Coordenada` como propriedade."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie uma `public interface IPagamento` com `bool Pagar(decimal valor);` e um `public record ReciboDto(int Id, decimal Valor);`:",
-      "starterCode": "// Crie IPagamento e ReciboDto:\n",
-      "requiredTokens": ["public interface IPagamento", "bool Pagar(decimal valor);", "public record ReciboDto("],
-      "sampleSolution": "public interface IPagamento {\n    bool Pagar(decimal valor);\n}\npublic record ReciboDto(int Id, decimal Valor);",
-      "hint": "Defina `public interface IPagamento { bool Pagar(decimal valor); }` e `public record ReciboDto(int Id, decimal Valor);`.",
-      "explanation": "Combinar interfaces (`I*`) para serviços e `record` para dados/DTOs é o núcleo da arquitetura limpa no .NET."
+      "prompt": "Desafio de Código: Defina uma interface `INotificador` com o método `void Enviar(string msg);`, uma classe base `CanalBase` com um método `virtual` chamado `Registrar()` sem retorno, uma classe `EmailCanal` que herde de `CanalBase`, implemente `INotificador` e sobrescreva `Registrar()` com `override`, além de um `record` `AlertaDto(string Titulo, int Nivel)` e um `struct` `Ponto(int X, int Y)`.",
+      "starterCode": "",
+      "requiredTokens": ["interface INotificador", "virtual", "override", ": CanalBase", "record AlertaDto", "struct Ponto"],
+      "sampleSolution": "public interface INotificador {\n    void Enviar(string msg);\n}\n\npublic class CanalBase {\n    public virtual void Registrar() => Console.WriteLine(\"Base\");\n}\n\npublic class EmailCanal : CanalBase, INotificador {\n    public override void Registrar() => Console.WriteLine(\"Email\");\n    public void Enviar(string msg) => Console.WriteLine(msg);\n}\n\npublic record AlertaDto(string Titulo, int Nivel);\npublic struct Ponto(int X, int Y);",
+      "hint": "Use `:` para herdar `CanalBase` e implementar `INotificador` na mesma linha (`: CanalBase, INotificador`), `virtual`/`override` em `Registrar()`, e declare `record AlertaDto` e `struct Ponto`.",
+      "explanation": "Combinar interfaces (`I*`), polimorfismo explícito (`virtual`/`override`), `record` para DTOs e `struct` para tipos de valor leves é idiomático no .NET."
     }
   ]
 }

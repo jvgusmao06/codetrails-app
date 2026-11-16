@@ -28,12 +28,50 @@
       "explanation": "Parâmetros simples que não estão na string da rota (`/cursos/{curso_id}`) são automaticamente tratados como Query Params."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete a rota com tipagem inteira no Path Parameter e lançamento de erro 404 com `HTTPException`:",
+      "codeTemplate": "@app.get(\"/produtos/{produto_id}\")\nasync def buscar_produto(produto_id: {{blank}}, completo: bool = False):\n    if produto_id <= 0:\n        {{blank}} {{blank}}(status_code=404, detail=\"Não encontrado\")\n    return {\"id\": produto_id, \"completo\": completo}",
+      "blanks": [
+        { "answer": "int", "placeholder": "tipo" },
+        { "answer": "raise", "placeholder": "palavra-chave" },
+        { "answer": "HTTPException", "placeholder": "exceção" }
+      ],
+      "options": ["int", "raise", "HTTPException", "return", "str", "Error"],
+      "explanation": "Tipar `produto_id: int` valida o Path Parameter, e `raise HTTPException(status_code=404, ...)` interrompe a rota com erro 404."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Quando `livro_id` é inválido, esta rota não interrompe com status 404 corretamente porque usa o comando errado para a exceção. Clique na linha com o bug:",
+      "lines": [
+        "@app.get(\"/livros/{livro_id}\")",
+        "async def ler_livro(livro_id: int):",
+        "    if livro_id <= 0:",
+        "        return HTTPException(status_code=404, detail=\"Livro não encontrado\")",
+        "    return {\"id\": livro_id}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Na linha 4, `HTTPException` é uma exceção e deve ser lançada com `raise HTTPException(...)`, nunca retornada com `return`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para criar uma rota com Path Parameter, Query Parameter opcional e validação 404:",
+      "blocks": [
+        "    if user_id < 1:",
+        "@app.get(\"/usuarios/{user_id}\")",
+        "        raise HTTPException(status_code=404, detail=\"Não encontrado\")",
+        "async def ler_usuario(user_id: int, ativo: bool = True):",
+        "    return {\"id\": user_id, \"ativo\": ativo}"
+      ],
+      "correctOrder": [1, 3, 0, 2, 4],
+      "explanation": "Definimos o decorator com `{user_id}`, a assinatura com `user_id: int` e `ativo: bool = True`, a checagem com `raise HTTPException` e o retorno final."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Dentro de uma verificação `if not usuario:`, lance `raise HTTPException(status_code=404, detail=\"Nao encontrado\")`:",
-      "starterCode": "# Lance HTTPException 404 se usuario for falso/None:\n",
+      "prompt": "Desafio de Código: Escreva uma verificação condicional para a variável `usuario`: caso ela seja falsa ou `None`, lance uma exceção HTTP do FastAPI com código 404 e uma mensagem no campo `detail`.",
+      "starterCode": "",
       "requiredTokens": ["if not usuario:", "raise", "HTTPException", "status_code=404", "detail="],
-      "sampleSolution": "if not usuario:\n    raise HTTPException(status_code=404, detail=\"Nao encontrado\")",
-      "hint": "Use `if not usuario: raise HTTPException(status_code=404, detail=\"Nao encontrado\")`.",
+      "sampleSolution": "if not usuario:\n    raise HTTPException(status_code=404, detail=\"Não encontrado\")",
+      "hint": "Combine uma checagem `if not usuario` com `raise HTTPException` passando `status_code` e `detail`.",
       "explanation": "Lançar `HTTPException` torna o fluxo da rota limpo com *early return*."
     }
   ]

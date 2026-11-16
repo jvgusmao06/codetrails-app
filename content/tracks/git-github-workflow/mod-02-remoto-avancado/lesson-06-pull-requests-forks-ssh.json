@@ -1,19 +1,42 @@
 {
   "id": "git-pr-forks-opensource-06",
-  "title": "Colaboração Open Source: Fork, Upstream, Pull Request e Code Review",
-  "description": "Aprenda o fluxo completo para contribuir em projetos open-source no GitHub usando fork, remote upstream e Pull Requests.",
-  "xp": 40,
+  "title": "Colaboração Open Source: Fork, Upstream, Pull Request e SSH",
+  "description": "Aprenda a autenticar com chaves SSH e domine o fluxo completo para contribuir em projetos open-source no GitHub usando fork, remote upstream e Pull Requests.",
+  "xp": 45,
   "steps": [
     {
       "type": "theory",
-      "title": "Como Contribuir em Projetos Open Source via Fork + PR",
-      "content": "Quando você quer contribuir para um repositório que não é seu no GitHub, você não tem permissão de `push` direto nele. O fluxo padrão é:\n1. Clicar em **Fork** no GitHub (cria uma cópia na sua conta).\n2. Clonar o seu fork (`origin`) e adicionar o projeto original como **`upstream`** (`git remote add upstream <url-original>`).\n3. Criar uma branch (`git switch -c fix/doc`), commitar e dar `git push -u origin fix/doc`.\n4. Abrir um **Pull Request (PR)** no GitHub para os mantenedores revisarem (Code Review) e aprovarem o merge!",
-      "codeExample": "git clone https://github.com/SEU_USER/projeto.git\ncd projeto\ngit remote add upstream https://github.com/ORG/projeto.git\n\n# Sincronizar sua main com o projeto original\ngit fetch upstream\ngit merge upstream/main\n\n# Criar branch para sua contribuição\ngit switch -c feat/nova-trilha",
+      "title": "Autenticação SSH e Contribuição Open Source via Fork + PR",
+      "content": "Para enviar código ao GitHub com segurança sem digitar senha a cada `push`, configuramos uma **chave SSH** moderna (`ssh-keygen -t ed25519`), adicionamos a chave pública (`.pub`) no GitHub e usamos URLs SSH (`git@github.com:org/projeto.git`).\n\nQuando você quer contribuir para um repositório que não é seu no GitHub, você não tem permissão de `push` direto nele. O fluxo padrão é:\n1. Clicar em **Fork** no GitHub (cria uma cópia na sua conta).\n2. Clonar o seu fork (`origin`) e adicionar o projeto original como **`upstream`** (`git remote add upstream <url-original>`).\n3. Criar uma branch dedicada (`git switch -c fix/doc`), commitar e dar `git push -u origin fix/doc`.\n4. Abrir um **Pull Request (PR)** no GitHub para os mantenedores revisarem (Code Review) e aprovarem o merge!",
+      "codeExample": "# Gerar chave SSH segura (Ed25519)\nssh-keygen -t ed25519 -C \"voce@email.com\"\n\n# Clonar seu fork via SSH e configurar o upstream\ngit clone git@github.com:SEU_USER/projeto.git\ncd projeto\ngit remote add upstream git@github.com:ORG/projeto.git\n\n# Sincronizar sua main com o projeto original\ngit fetch upstream\ngit merge upstream/main\n\n# Criar branch para sua contribuição\ngit switch -c feat/nova-trilha",
       "keyTakeaways": [
+        "Chaves SSH (`ed25519`) autenticam seu computador no GitHub de forma criptográfica sem precisar de senha em cada push.",
         "`origin` aponta para o SEU fork; `upstream` aponta para o repositório ORIGINAL.",
-        "Nunca faça alterações direto na `main` do seu fork — crie sempre uma branch dedicada para cada Pull Request.",
-        "Mantenha PRs pequenos e focados em um único problema para facilitar o Code Review."
+        "Nunca faça alterações direto na `main` do seu fork — crie sempre uma branch dedicada para cada Pull Request."
       ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é a principal vantagem de configurar uma chave SSH (`ssh-keygen -t ed25519`) e clonar repositórios usando `git@github.com:...`?",
+      "options": [
+        "Permite fazer push direto na branch `main` de qualquer projeto sem Pull Request",
+        "Autentica sua máquina de forma criptográfica e segura sem precisar digitar usuário/token a cada operação remota",
+        "Substitui a necessidade de criar commits",
+        "Ignora automaticamente arquivos `.env`"
+      ],
+      "correctIndex": 1,
+      "explanation": "A autenticação por par de chaves SSH (pública no GitHub, privada na sua máquina) garante conexões seguras e práticas com o servidor remoto."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete os comandos para gerar uma chave SSH Ed25519 e cadastrar o repositório original como remoto `upstream`:",
+      "codeTemplate": "ssh-keygen -t {{blank}} -C \"dev@exemplo.com\"\ngit remote add {{blank}} git@github.com:org/repo.git",
+      "blanks": [
+        { "answer": "ed25519", "placeholder": "algoritmo SSH" },
+        { "answer": "upstream", "placeholder": "nome do remoto" }
+      ],
+      "options": ["ed25519", "upstream", "origin", "rsa1024", "fork"],
+      "explanation": "`ed25519` é o algoritmo SSH recomendado atualmente, e `upstream` é a convenção para apontar ao repositório original do fork."
     },
     {
       "type": "order_code",
@@ -27,13 +50,25 @@
       "explanation": "Primeiro buscamos as novidades do `upstream`, atualizamos nossa `main` com `merge upstream/main`, e só então criamos a nova branch limpa."
     },
     {
+      "type": "spot_the_bug",
+      "prompt": "Ao tentar enviar uma contribuição open-source, o desenvolvedor recebeu erro de permissão (`Permission denied`) porque tentou enviar direto para o repositório original! Clique na linha com o erro:",
+      "lines": [
+        "git switch -c fix/typo",
+        "git add README.md",
+        "git commit -m \"docs: corrige typo\"",
+        "git push -u upstream fix/typo"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Você não tem permissão de escrita no `upstream` (repositório original). O push deve ser feito para o SEU fork (`origin`), e depois você abre o Pull Request no GitHub."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Adicione o repositório remoto `upstream` apontando para `https://github.com/org/app.git` e envie sua branch `feat/docs` para `origin` com `-u`:",
-      "starterCode": "# 1. Adicione o remote upstream\n# 2. Envie feat/docs para origin com -u\n",
+      "prompt": "Desafio de Código: Escreva os comandos Git para adicionar o repositório remoto `upstream` apontando para `https://github.com/org/app.git` e, em seguida, enviar sua branch `feat/docs` para o remoto `origin` já configurando o rastreamento (`-u`).",
+      "starterCode": "",
       "requiredTokens": ["git remote add", "upstream", "git push", "-u", "origin", "feat/docs"],
       "sampleSolution": "git remote add upstream https://github.com/org/app.git\ngit push -u origin feat/docs",
-      "hint": "Use `git remote add upstream https://github.com/org/app.git` e `git push -u origin feat/docs`.",
-      "explanation": "Com `origin` e `upstream` configurados, você mantém seu fork sempre atualizado com o projeto principal."
+      "hint": "Primeiro cadastre o novo remoto chamado `upstream` com a URL informada; na linha seguinte faça o push da branch para `origin` com a flag de tracking.",
+      "explanation": "Com `origin` e `upstream` configurados, você mantém seu fork sempre atualizado com o projeto principal e envia branches prontas para Pull Request."
     }
   ]
 }

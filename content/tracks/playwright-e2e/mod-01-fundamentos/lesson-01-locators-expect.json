@@ -1,13 +1,13 @@
 {
   "id": "pw-locators-01",
   "title": "Playwright: Locators Acessíveis (getByRole) e Auto-Waiting",
-  "description": "Teste fluxos completos de usuário sem `sleep()` usando locators semânticos e web-first assertions.",
-  "xp": 35,
+  "description": "Teste fluxos completos de usuário sem `sleep()` usando locators semânticos, BrowserContext isolado e web-first assertions.",
+  "xp": 40,
   "steps": [
     {
       "type": "theory",
       "title": "Testes E2E Confiáveis com Playwright",
-      "content": "Diferente de ferramentas antigas que exigiam `sleep(3000)` e quebravam aleatoriamente, o **Playwright** possui **auto-waiting**: ele espera o botão aparecer e ficar clicável antes de clicar! A melhor prática é selecionar elementos pelo papel acessível (**`page.getByRole('button', { name: 'Entrar' })`**) em vez de classes CSS frágeis, e validar com asserções assíncronas (`await expect(locator).toBeVisible()`).",
+      "content": "Diferente de ferramentas antigas que exigiam `sleep(3000)` e quebravam aleatoriamente, o **Playwright** possui **auto-waiting**: ele espera o botão aparecer e ficar clicável antes de clicar! A melhor prática é selecionar elementos por locators semânticos e acessíveis — **`getByRole`**, **`getByLabel`** e **`getByText`** — em vez de classes CSS frágeis, e validar com asserções assíncronas (`await expect(locator).toBeVisible()`). Além disso, cada `test(...)` roda em um **`BrowserContext`** isolado (cookies e `localStorage` zerados).",
       "codeExample": "import { test, expect } from \"@playwright/test\";\n\ntest(\"usuário faz login\", async ({ page }) => {\n  await page.goto(\"/login\");\n  await page.getByLabel(\"Email\").fill(\"ana@dev.com\");\n  await page.getByRole(\"button\", { name: \"Entrar\" }).click();\n  await expect(page.getByText(\"Bem-vinda\")).toBeVisible();\n});",
       "keyTakeaways": [
         "Prefira `getByRole`, `getByLabel` e `getByText` — além de estáveis, testam a acessibilidade da UI.",
@@ -28,12 +28,61 @@
       "explanation": "`page.goto` abre a URL, `getByRole` localiza pelo papel ARIA e `toBeVisible()` aguarda o elemento aparecer."
     },
     {
+      "type": "multiple_choice",
+      "prompt": "Para preencher um campo `<label for=\"email\">E-mail</label><input id=\"email\" />` e depois checar a mensagem de boas-vindas na tela, quais locators do Playwright são mais recomendados?",
+      "options": [
+        "`getByLabel(\"E-mail\")` e `getByText(...)`",
+        "`locator(\"div > form > input:nth-child(2)\")`",
+        "`waitForTimeout(3000)`",
+        "`document.getElementById(\"email\")`"
+      ],
+      "correctIndex": 0,
+      "explanation": "`getByLabel` localiza campos pelo texto da `<label>` associada e `getByText` encontra textos visíveis, mantendo o teste resiliente a mudanças de CSS."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Por que um teste Playwright não herda cookies ou `localStorage` do teste anterior?",
+      "options": [
+        "Porque o Playwright reinicia o sistema operacional a cada teste",
+        "Porque cada `test(...)` recebe sua `page` dentro de um `BrowserContext` isolado",
+        "Porque o Playwright bloqueia cookies por padrão",
+        "Porque o navegador roda sem JavaScript"
+      ],
+      "correctIndex": 1,
+      "explanation": "O `BrowserContext` funciona como um perfil anônimo instantâneo para cada teste, garantindo independência total entre casos."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este teste E2E usa uma má prática que deixa a suíte lenta e propensa a falhas intermitentes (*flaky*)! Clique na linha problemática:",
+      "lines": [
+        "test(\"carrega dashboard\", async ({ page }) => {",
+        "  await page.goto(\"/dashboard\");",
+        "  await page.waitForTimeout(3000);",
+        "  await expect(page.getByRole(\"heading\")).toBeVisible();",
+        "});"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Usar `waitForTimeout(3000)` trava o teste por 3 segundos fixos mesmo se a página carregar em 50ms, e falha se demorar 3.1s. O `await expect(...).toBeVisible()` já faz auto-waiting inteligente."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os passos de um teste E2E completo de login no Playwright:",
+      "blocks": [
+        "await page.goto(\"/login\");",
+        "await page.getByLabel(\"Email\").fill(\"ana@dev.com\");",
+        "await page.getByRole(\"button\", { name: \"Entrar\" }).click();",
+        "await expect(page.getByText(\"Bem-vinda\")).toBeVisible();"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "Primeiro navegamos para a página, preenchemos o campo pelo label, clicamos no botão pelo papel acessível e validamos o texto resultante."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva um teste `test(\"abre home\", async ({ page }) => { ... })` que abra `\"/\"` com `await page.goto(\"/\")` e verifique `await expect(page.getByRole(\"heading\")).toBeVisible();`:",
-      "starterCode": "// Escreva o teste Playwright abaixo:\n",
-      "requiredTokens": ["test(", "async ({ page })", "page.goto", "expect(", "getByRole", "toBeVisible()"],
+      "prompt": "Desafio de Código: Escreva um teste Playwright assíncrono chamado `\"abre home\"` que navegue para `\"/\"` e verifique se o elemento de cabeçalho (`heading`) está visível na tela.",
+      "starterCode": "",
+      "requiredTokens": ["test(", "async", "page", "goto", "expect(", "getByRole", "toBeVisible"],
       "sampleSolution": "test(\"abre home\", async ({ page }) => {\n  await page.goto(\"/\");\n  await expect(page.getByRole(\"heading\")).toBeVisible();\n});",
-      "hint": "Use `test(\"abre home\", async ({ page }) => { await page.goto(\"/\"); await expect(page.getByRole(\"heading\")).toBeVisible(); });`.",
+      "hint": "Declare `test(\"abre home\", async ({ page }) => { ... })`, navegue com `await page.goto(\"/\")` e use `await expect(page.getByRole(\"heading\")).toBeVisible()`.",
       "explanation": "Asserções `await expect(locator)...` são a chave para testes E2E rápidos e sem falsos negativos."
     }
   ]

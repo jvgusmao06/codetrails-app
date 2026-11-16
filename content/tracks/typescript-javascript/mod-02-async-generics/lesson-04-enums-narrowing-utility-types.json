@@ -1,39 +1,85 @@
 {
   "id": "ts-narrowing-utility-types-04",
-  "title": "Type Narrowing (typeof/in) e Utility Types (Partial, Pick, Omit, Record)",
-  "description": "Escreva TypeScript profissional estreitando tipos union com typeof/in e transformando interfaces com Utility Types nativos.",
+  "title": "10. Enums, Type Narrowing e Utility Types",
+  "description": "Modele conjuntos nomeados com enum, estreite tipos union com typeof e in, e derive tipos sem duplicação com Partial, Pick, Omit e Record.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Type Narrowing e Utility Types Nativos do TypeScript",
-      "content": "Quando uma variável tem tipo `string | number`, o TypeScript exige **Type Narrowing** (`typeof x === 'string'`) antes de permitir métodos como `.toUpperCase()`. Além disso, em vez de duplicar interfaces para formulários de criação ou atualização, o TS oferece **Utility Types** embutidos:\n- **`Partial<T>`**: torna todas as propriedades opcionais (`?`).\n- **`Pick<T, 'a' | 'b'>`**: seleciona apenas algumas chaves.\n- **`Omit<T, 'id'>`**: remove chaves específicas.\n- **`Record<K, V>`**: cria um dicionário tipado.",
-      "codeExample": "interface User { id: number; nome: string; senha: string; }\n\ntype CriarUser = Omit<User, \"id\">;        // { nome, senha }\ntype AtualizarUser = Partial<CriarUser>;   // { nome?: string; senha?: string }\ntype PublicUser = Pick<User, \"id\" | \"nome\">;\n\nfunction formatar(v: string | number) {\n  return typeof v === \"string\" ? v.toUpperCase() : v.toFixed(2);\n}",
+      "title": "Enums, Type Narrowing e Utility Types do TypeScript",
+      "content": "Recursos avançados de tipagem tornam o TypeScript expressivo e livre de duplicação:\n\n1. **`enum`**: Define um conjunto nomeado de constantes (ex: `enum StatusPedido { Pago = \"PAGO\", Cancelado = \"CANCELADO\" }`).\n2. **Type Narrowing (`typeof` e `in`)**: Quando uma variável aceita múltiplos tipos (`string | number` ou união de interfaces), usamos `if (typeof x === \"string\")` ou `if (\"chave\" in obj)` para o compilador estreitar o tipo com segurança.\n3. **Utility Types**: Transformam tipos existentes sem repetir código:\n   - `Partial<T>`: torna todas as propriedades opcionais (ideal para `update`).\n   - `Pick<T, \"a\" | \"b\">`: seleciona apenas as chaves escolhidas.\n   - `Omit<T, \"senha\">`: remove chaves sensíveis ou desnecessárias.\n   - `Record<K, V>`: cria um dicionário mapeando chaves `K` para valores `V`.",
+      "codeExample": "enum Cargo { Admin = \"ADMIN\", User = \"USER\" }\n\nfunction formatar(v: string | number): string {\n  if (typeof v === \"string\") return v.toUpperCase();\n  return v.toFixed(2);\n}\n\ninterface Usuario { id: number; nome: string; senha: string; }\ntype UsuarioPublico = Omit<Usuario, \"senha\">;\ntype UsuarioUpdate = Partial<UsuarioPublico>;\ntype ResumoUsuario = Pick<Usuario, \"id\" | \"nome\">;\ntype MapaCargos = Record<string, Cargo>;",
       "keyTakeaways": [
-        "`typeof`, `instanceof` e `'chave' in obj` fazem o compilador estreitar (narrow) tipos union com segurança.",
-        "`Omit<T, 'id'>` e `Pick<T, 'a'>` evitam duplicação de tipos em DTOs de API.",
-        "`Partial<T>` é o padrão para funções de `update(id, dados: Partial<User>)`."
+        "enum agrupa constantes nomeadas em um tipo único.",
+        "typeof e 'prop' in obj fazem Type Narrowing em Union Types.",
+        "Partial, Pick, Omit e Record derivam novos tipos a partir de interfaces existentes."
       ]
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete os Utility Types para tornar todos os campos de `Produto` opcionais e criar uma versão sem o campo `'id'`:",
-      "codeTemplate": "type ProdutoPatch = {{blank}}<Produto>;\ntype NovoProduto = {{blank}}<Produto, \"id\">;",
+      "prompt": "Complete o enum e o Type Narrowing com typeof para tratar strings em maiúsculo:",
+      "codeTemplate": "{{blank}} Ambiente { Dev = \"DEV\", Prod = \"PROD\" }\n\nfunction normalizar(val: string | number) {\n  if ({{blank}} val === \"string\") {\n    return val.toUpperCase();\n  }\n  return String(val);\n}",
+      "blanks": [
+        { "answer": "enum", "placeholder": "enumeração" },
+        { "answer": "typeof", "placeholder": "checagem de tipo" }
+      ],
+      "options": ["enum", "type", "typeof", "in"],
+      "explanation": "Declaramos constantes nomeadas com enum e estreitamos 'string | number' com typeof val === 'string'."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete os Utility Types para tornar todos os campos de Produto opcionais e criar uma versão sem o campo 'id':",
+      "codeTemplate": "interface Produto { id: number; nome: string; preco: number; }\ntype ProdutoUpdate = {{blank}}<Produto>;\ntype NovoProduto = {{blank}}<Produto, \"id\">;",
       "blanks": [
         { "answer": "Partial", "placeholder": "opcional" },
         { "answer": "Omit", "placeholder": "remover" }
       ],
-      "options": ["Partial", "Omit", "Pick", "Record", "Readonly"],
-      "explanation": "`Partial<T>` torna todas as propriedades opcionais e `Omit<T, K>` remove a propriedade K do tipo."
+      "options": ["Partial", "Omit", "Pick", "Record"],
+      "explanation": "Partial<T> torna todas as propriedades opcionais e Omit<T, K> remove a chave especificada."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual Utility Type cria um tipo de objeto que mapeia chaves de um tipo K para valores de um tipo V (ex: dicionário de notas por aluno)?",
+      "options": [
+        "Pick<K, V>",
+        "Omit<K, V>",
+        "Record<K, V>",
+        "Partial<K>"
+      ],
+      "correctIndex": 2,
+      "explanation": "Record<K, V> constrói um tipo de objeto cujas chaves são do tipo K e os valores são do tipo V."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "A função tenta chamar .toUpperCase() em um parâmetro 'string | number' sem fazer Type Narrowing antes. Qual linha causa erro de compilação no TypeScript?",
+      "lines": [
+        "function gritar(entrada: string | number) {",
+        "  return entrada.toUpperCase();",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "O método .toUpperCase() não existe em number; é necessário estreitar o tipo antes com 'if (typeof entrada === \"string\")'."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para fazer Type Narrowing usando o operador 'in' entre duas interfaces:",
+      "blocks": [
+        "function ler(item: { url: string } | { texto: string }) {",
+        "  if (\"url\" in item) return item.url;",
+        "  return item.texto;",
+        "}"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "explanation": "O operador 'in' verifica se a propriedade existe no objeto, permitindo ao TypeScript distinguir os membros da união."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie um `type UsuarioPublico = Omit<Usuario, \"senha\">;` e um `type UsuarioUpdate = Partial<UsuarioPublico>;`:",
-      "starterCode": "interface Usuario { id: string; nome: string; senha: string; }\n// Crie UsuarioPublico e UsuarioUpdate:\n",
-      "requiredTokens": ["type", "UsuarioPublico", "Omit", "\"senha\"", "UsuarioUpdate", "Partial"],
-      "sampleSolution": "type UsuarioPublico = Omit<Usuario, \"senha\">;\ntype UsuarioUpdate = Partial<UsuarioPublico>;",
-      "hint": "Use `type UsuarioPublico = Omit<Usuario, \"senha\">;` e `type UsuarioUpdate = Partial<UsuarioPublico>;`.",
-      "explanation": "Combinar `Omit` e `Partial` garante que dados sensíveis como `senha` nunca vazem e que atualizações parciais sejam seguras."
+      "prompt": "Dada uma interface 'Usuario' com 'id' (number), 'nome' (string) e 'senha' (string), crie um type 'UsuarioPublico' que remova o campo 'senha' e um type 'UsuarioUpdate' que torne todos os campos de 'UsuarioPublico' opcionais, utilizando Utility Types.",
+      "starterCode": "",
+      "requiredTokens": ["interface", "Usuario", "type", "UsuarioPublico", "Omit", "UsuarioUpdate", "Partial"],
+      "sampleSolution": "interface Usuario {\n  id: number;\n  nome: string;\n  senha: string;\n}\n\ntype UsuarioPublico = Omit<Usuario, \"senha\">;\ntype UsuarioUpdate = Partial<UsuarioPublico>;",
+      "hint": "Defina a interface Usuario, use Omit<Usuario, ...> para UsuarioPublico e Partial<UsuarioPublico> para UsuarioUpdate.",
+      "explanation": "Combinamos interface, type alias e composição de Utility Types (Omit e Partial) para modelar DTOs seguros."
     }
   ]
 }

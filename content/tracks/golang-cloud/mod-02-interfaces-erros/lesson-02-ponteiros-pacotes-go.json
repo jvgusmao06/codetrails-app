@@ -7,7 +7,7 @@
     {
       "type": "theory",
       "title": "Ponteiros sem Aritmética e Visibilidade por Maiúsculas",
-      "content": "Go possui ponteiros para compartilhar memória sem copiar structs grandes: '&x' obtém o endereço de memória de 'x', e '*p' acessa ou altera o valor guardado naquele endereço. Porém, diferente de C, o Go proíbe aritmética de ponteiros (como p++), eliminando invasões de memória! Além disso, Go não tem as palavras 'public' ou 'private': qualquer função, struct ou variável que começa com Letra Maiúscula é pública (exportada), e com letra minúscula é privada ao pacote.",
+      "content": "Go possui ponteiros para compartilhar memória sem copiar structs grandes: '&x' obtém o endereço de memória de 'x', e '*p' acessa ou altera o valor guardado naquele endereço. Porém, diferente de C, o Go proíbe aritmética de ponteiros (como p++), eliminando invasões de memória! Além disso, Go não tem as palavras 'public' ou 'private': qualquer função, struct ou campo que começa com Letra Maiúscula é público (exportado), e com letra minúscula é privado ao pacote.",
       "codeExample": "package conta\n\n// Público (Exportado): começa com letra maiúscula\ntype Cliente struct {\n    Nome  string // Público\n    saldo int    // Privado ao pacote\n}\n\nfunc Zerar(valor *int) {\n    *valor = 0 // Modifica a variável original via ponteiro\n}",
       "keyTakeaways": [
         "Inicial Maiúscula = Público (Exportado para outros pacotes); inicial minúscula = Privado ao pacote atual.",
@@ -28,13 +28,50 @@
       "explanation": "Go substitui modificadores public/private pela convenção da primeira letra: Maiúscula exporta, minúscula mantém privado ao pacote."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete a função 'Dobrar' para receber um ponteiro de `int`, multiplicar o valor apontado por 2 e chamá-la passando o endereço de `numero`:",
+      "codeTemplate": "func Dobrar(n {{blank}}int) {\n    {{blank}}n *= 2\n}\nnumero := 5\nDobrar({{blank}}numero)",
+      "blanks": [
+        { "answer": "*", "placeholder": "tipo ponteiro" },
+        { "answer": "*", "placeholder": "desreferência" },
+        { "answer": "&", "placeholder": "endereço" }
+      ],
+      "options": ["*", "&", "->", "ref", "ptr", "@"],
+      "explanation": "`*int` define o tipo ponteiro, `*n` acessa/altera o valor no endereço e `&numero` obtém o endereço de `numero`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código compila, mas gera panic (nil pointer dereference) ao tentar escrever no ponteiro. Clique na linha onde ocorre a escrita inválida:",
+      "lines": [
+        "func main() {",
+        "    var p *int",
+        "    *p = 10",
+        "    fmt.Println(*p)",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Um ponteiro não inicializado tem zero value `nil`. Desreferenciar `*p = 10` quando `p == nil` causa panic; é preciso apontar para uma variável existente (`x := 0; p := &x`)."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para criar uma variável `saldo`, obter seu ponteiro com `&` e atualizar o valor via `*`:",
+      "blocks": [
+        "*ptr = 200",
+        "saldo := 100",
+        "fmt.Println(saldo)",
+        "ptr := &saldo"
+      ],
+      "correctOrder": [1, 3, 0, 2],
+      "explanation": "Primeiro declaramos `saldo`, pegamos seu endereço com `ptr := &saldo`, alteramos o conteúdo com `*ptr = 200` e imprimimos `saldo`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva um struct em Go chamado 'Servidor' com os campos 'Host string' e 'Porta int':",
-      "starterCode": "// Defina o type Servidor struct abaixo:\n",
-      "requiredTokens": ["type", "Servidor", "struct", "Host", "string", "Porta", "int"],
-      "sampleSolution": "type Servidor struct {\n    Host  string\n    Porta int\n}",
-      "hint": "Use: type Servidor struct { Host string; Porta int }",
-      "explanation": "Em Go combinamos as palavras reservadas 'type' e 'struct' para definir novos tipos estruturados."
+      "prompt": "Desafio de Código: Defina um struct exportado 'Conta' com um campo exportado 'Titular string' e um campo privado 'saldo int'. Escreva uma função exportada 'Depositar(c *Conta, valor int)' que some 'valor' ao 'saldo' usando o ponteiro. Na função 'main', crie uma instância de 'Conta' e passe seu endereço com '&' para 'Depositar'.",
+      "starterCode": "",
+      "requiredTokens": ["type", "Conta", "struct", "Titular", "saldo", "func", "Depositar", "*Conta", "&"],
+      "sampleSolution": "type Conta struct {\n    Titular string\n    saldo   int\n}\n\nfunc Depositar(c *Conta, valor int) {\n    c.saldo += valor\n}\n\nfunc main() {\n    conta := Conta{Titular: \"Ana\"}\n    Depositar(&conta, 100)\n}",
+      "hint": "Use inicial maiúscula em `Conta`, `Titular` e `Depositar` para exportá-los, inicial minúscula em `saldo` para mantê-lo privado ao pacote, e passe `&conta` para `Depositar`.",
+      "explanation": "Em Go, ponteiros (*Conta) permitem modificar structs diretamente sem cópia, e a capitalização controla o acesso entre pacotes."
     }
   ]
 }

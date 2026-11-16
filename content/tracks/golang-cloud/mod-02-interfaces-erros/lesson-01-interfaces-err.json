@@ -7,12 +7,13 @@
     {
       "type": "theory",
       "title": "Structs, Receivers e Interfaces Implícitas",
-      "content": "Go não possui classes nem herança (extends). Em vez disso, definimos dados com 'struct' e associamos métodos usando um receptor (receiver). As interfaces em Go são satisfeitas implicitamente: se o seu struct implementa os métodos exigidos por uma interface, ele já a implementa automaticamente — sem precisar declarar 'implements'.",
+      "content": "Go não possui classes nem herança (extends). Em vez disso, definimos dados com 'struct' e associamos métodos usando um receptor (receiver). As interfaces em Go são satisfeitas implicitamente: se o seu struct implementa os métodos exigidos por uma interface, ele já a implementa automaticamente — sem precisar declarar 'implements'. Além disso, métodos e funções que podem falhar retornam 'error' e são verificados com 'if err != nil'.",
       "codeExample": "type Notificador interface {\n    Enviar(msg string) error\n}\n\ntype Email struct { Destino string }\n\n// Método associado ao struct Email\nfunc (e Email) Enviar(msg string) error {\n    if e.Destino == \"\" {\n        return fmt.Errorf(\"destino vazio\")\n    }\n    return nil\n}",
       "keyTakeaways": [
         "Métodos em Go declaram o receptor entre 'func' e o nome do método: func (u *Usuario) Salvar().",
         "Use receptor ponteiro (*T) quando o método precisar modificar os campos do struct.",
-        "Funções que podem falhar retornam (Resultado, error) e devem ter o erro checado antes de usar o valor."
+        "Interfaces são implícitas: basta implementar os métodos exigidos.",
+        "Funções que podem falhar retornam (Resultado, error) e devem ter o erro checado com 'if err != nil'."
       ]
     },
     {
@@ -42,6 +43,38 @@
       ],
       "correctIndex": 1,
       "explanation": "Em Go, interfaces são implícitas (structural typing): basta implementar os métodos exigidos pela interface e o compilador reconhece a compatibilidade."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a definição da interface 'Armazenador' e do método no struct 'Memoria':",
+      "codeTemplate": "type Armazenador {{blank}} {\n    Salvar(dado string) error\n}\ntype Memoria {{blank}} {}\nfunc (m Memoria) Salvar(dado string) {{blank}} {\n    return nil\n}",
+      "blanks": [
+        { "answer": "interface", "placeholder": "contrato" },
+        { "answer": "struct", "placeholder": "estrutura" },
+        { "answer": "error", "placeholder": "retorno" }
+      ],
+      "options": ["interface", "struct", "error", "class", "implements", "void"],
+      "explanation": "Interfaces declaram assinaturas com 'interface', dados são modelados com 'struct' e métodos que podem falhar retornam 'error'."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para instanciar o struct Email, chamar o método Enviar e tratar o erro retornado:",
+      "blocks": [
+        "if err != nil {\n    fmt.Println(\"Falha:\", err)\n}",
+        "e := Email{Destino: \"dev@go.dev\"}",
+        "err := e.Enviar(\"Olá\")"
+      ],
+      "correctOrder": [1, 2, 0],
+      "explanation": "Primeiro criamos a instância de `Email`, chamamos o método `Enviar` capturando `err` e checamos `if err != nil`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Defina uma interface 'Enviador' com o método 'Enviar(msg string) error', um struct 'SMS' com o campo 'Numero string' e implemente o método 'Enviar' para 'SMS': se 's.Numero' for igual a \"\", retorne um erro com 'fmt.Errorf'; caso contrário retorne 'nil'.",
+      "starterCode": "",
+      "requiredTokens": ["type", "Enviador", "interface", "SMS", "struct", "func", "Enviar", "error", "fmt.Errorf", "nil"],
+      "sampleSolution": "type Enviador interface {\n    Enviar(msg string) error\n}\n\ntype SMS struct {\n    Numero string\n}\n\nfunc (s SMS) Enviar(msg string) error {\n    if s.Numero == \"\" {\n        return fmt.Errorf(\"numero vazio\")\n    }\n    return nil\n}",
+      "hint": "Declare `type Enviador interface`, `type SMS struct` e o método `func (s SMS) Enviar(msg string) error` checando `s.Numero == \"\"`.",
+      "explanation": "Como `SMS` possui o método `Enviar(msg string) error`, ele satisfaz implicitamente a interface `Enviador`."
     }
   ]
 }

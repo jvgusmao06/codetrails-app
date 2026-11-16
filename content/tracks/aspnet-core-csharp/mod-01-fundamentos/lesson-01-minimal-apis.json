@@ -1,18 +1,18 @@
 {
   "id": "aspnet-minimal-01",
   "title": "ASP.NET Core: Minimal APIs (MapGet, MapPost) e Injeção de Dependência",
-  "description": "Defina rotas HTTP limpas em 3 linhas com WebApplication e retorne Results tipados.",
-  "xp": 35,
+  "description": "Defina rotas HTTP limpas em poucas linhas com WebApplication, injeção de dependência e Results tipados.",
+  "xp": 40,
   "steps": [
     {
       "type": "theory",
       "title": "Minimal APIs no ASP.NET Core",
-      "content": "No .NET moderno, você não precisa de Controllers pesados para criar uma API REST: as **Minimal APIs** usam **`app.MapGet(\"/rota\", ...)`** e **`app.MapPost(...)`**, injetam serviços direto nos parâmetros da lambda e retornam **`Results.Ok(...)`**, **`Results.Created(...)`** ou **`Results.NotFound()`**!",
-      "codeExample": "var builder = WebApplication.CreateBuilder(args);\nbuilder.Services.AddScoped<IProdutoService, ProdutoService>();\nvar app = builder.Build();\n\napp.MapGet(\"/produtos/{id:int}\", (int id, IProdutoService svc) =>\n    svc.Buscar(id) is { } p ? Results.Ok(p) : Results.NotFound());\n\napp.Run();",
+      "content": "No .NET moderno, você não precisa de Controllers pesados para criar uma API REST: as **Minimal APIs** usam `app.MapGet(\"/rota\", ...)` e `app.MapPost(...)`, injetam serviços registrados no container de DI (`AddSingleton`, `AddScoped`, `AddTransient`) direto nos parâmetros da lambda e retornam `Results.Ok(...)`, `Results.Created(...)` ou `Results.NotFound()`.\n\nConstraints de rota como `{id:int}` garantem validação automática de tipo na URL antes mesmo de executar o handler.",
+      "codeExample": "var builder = WebApplication.CreateBuilder(args);\nbuilder.Services.AddScoped<IProdutoService, ProdutoService>();\nvar app = builder.Build();\n\napp.MapGet(\"/produtos/{id:int}\", (int id, IProdutoService svc) =>\n    svc.Buscar(id) is { } p ? Results.Ok(p) : Results.NotFound());\n\napp.MapPost(\"/produtos\", (Produto item, IProdutoService svc) =>\n{\n    var criado = svc.Criar(item);\n    return Results.Created($\"/produtos/{criado.Id}\", criado);\n});\n\napp.Run();",
       "keyTakeaways": [
-        "`AddSingleton` = 1 instância para todo o app; `AddScoped` = 1 instância por requisição HTTP (padrão para serviços e EF Core!); `AddTransient` = nova instância sempre.",
+        "`AddSingleton` = 1 instância para todo o app; `AddScoped` = 1 instância por requisição HTTP (padrão para serviços e EF Core); `AddTransient` = nova instância sempre.",
         "Constraint de rota `{id:int}` rejeita `/produtos/abc` automaticamente com 404.",
-        "`Results.Created($\"/itens/{id}\", item)` retorna HTTP 201 com header `Location`."
+        "`Results.Created($\"/itens/{id}\", item)` retorna HTTP 201 com header `Location`, enquanto `Results.Ok` retorna 200 e `Results.NotFound` retorna 404."
       ]
     },
     {
@@ -28,12 +28,53 @@
       "explanation": "`AddScoped` cria uma instância compartilhada durante uma única requisição HTTP e a descarta (`Dispose`) ao final dela."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete a Minimal API com constraint de rota inteira e retorno tipado de sucesso ou não encontrado:",
+      "codeTemplate": "app.{{blank}}(\"/produtos/{id:{{blank}}}\", (int id, IProdutoService svc) =>\n    svc.Buscar(id) is { } p ? Results.{{blank}}(p) : Results.NotFound());",
+      "blanks": [
+        { "answer": "MapGet", "placeholder": "verbo" },
+        { "answer": "int", "placeholder": "tipo" },
+        { "answer": "Ok", "placeholder": "status 200" }
+      ],
+      "options": ["MapGet", "int", "Ok", "MapPost", "Created", "string"],
+      "explanation": "`app.MapGet` mapeia GET, `{id:int}` restringe o parâmetro a inteiros e `Results.Ok(p)` retorna HTTP 200 com JSON."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha que causa `InvalidOperationException` ao iniciar a aplicação ASP.NET Core:",
+      "lines": [
+        "var builder = WebApplication.CreateBuilder(args);",
+        "var app = builder.Build();",
+        "builder.Services.AddScoped<IProdutoService, ProdutoService>();",
+        "app.MapGet(\"/produtos\", (IProdutoService s) => Results.Ok(s.Listar()));",
+        "app.Run();"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Na linha 3, `builder.Services.AddScoped(...)` foi chamado após `builder.Build()`. Todos os serviços devem ser registrados antes de `Build()`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para configurar uma Minimal API com injeção de dependência e um endpoint `MapPost` retornando `Results.Created`:",
+      "blocks": [
+        "var app = builder.Build();",
+        "var builder = WebApplication.CreateBuilder(args);\nbuilder.Services.AddScoped<IPedidoService, PedidoService>();",
+        "app.Run();",
+        "app.MapPost(\"/pedidos\", (Pedido p, IPedidoService svc) => Results.Created($\"/pedidos/{p.Id}\", svc.Salvar(p)));"
+      ],
+      "correctOrder": [1, 0, 3, 2],
+      "explanation": "Primeiro cria-se o `builder` e registram-se os serviços; depois chama-se `builder.Build()`, mapeiam-se as rotas e inicia-se o servidor com `app.Run()`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie uma rota Minimal API `app.MapGet(\"/health\", () => Results.Ok(new { status = \"ok\" }));`:",
-      "starterCode": "// Crie o endpoint /health com MapGet:\n",
-      "requiredTokens": ["app.MapGet(", "\"/health\"", "Results.Ok("],
+      "prompt": "Crie um endpoint GET na rota `/health` usando Minimal API que retorne HTTP 200 OK com um objeto anônimo contendo `status = \"ok\"`.",
+      "starterCode": "",
+      "requiredTokens": [
+        "app.MapGet(",
+        "\"/health\"",
+        "Results.Ok("
+      ],
       "sampleSolution": "app.MapGet(\"/health\", () => Results.Ok(new { status = \"ok\" }));",
-      "hint": "Use `app.MapGet(\"/health\", () => Results.Ok(new { status = \"ok\" }));`.",
+      "hint": "Chame `app.MapGet` passando a rota `\"/health\"` e uma lambda que retorna `Results.Ok(new { status = \"ok\" })`.",
       "explanation": "Minimal APIs serializam objetos anônimos ou records automaticamente para JSON."
     }
   ]

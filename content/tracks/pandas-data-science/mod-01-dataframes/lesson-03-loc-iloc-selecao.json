@@ -28,12 +28,45 @@
       "explanation": "`.iloc` (integer location) sempre indexa por posição numérica 0-based."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código para criar uma coluna vetorizada `total` e filtrar linhas caras exibindo apenas a coluna `produto`:",
+      "codeTemplate": "df[\"total\"] = df[\"qtd\"] {{blank}} df[\"preco\"]\ncaros = df.{{blank}}[df[\"total\"] > 100, \"produto\"]",
+      "blanks": [
+        { "answer": "*", "placeholder": "multiplicar" },
+        { "answer": "loc", "placeholder": "indexador" }
+      ],
+      "options": ["*", "loc", "iloc", "+", "at"],
+      "explanation": "Multiplicar colunas diretamente é vetorizado, e `.loc` permite combinar máscara booleana nas linhas com nome de coluna."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha com erro de indexação ao tentar selecionar colunas pelo nome:",
+      "lines": [
+        "amostra = df.iloc[:5, [\"produto\", \"preco\"]]",
+        "df[\"total\"] = df[\"qtd\"] * df[\"preco\"]",
+        "print(amostra.head())"
+      ],
+      "buggyLineIndex": 0,
+      "explanation": "`.iloc` aceita apenas posições inteiras, nunca nomes de colunas em string. Para selecionar colunas pelo nome, use `.loc`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para calcular a coluna `total`, filtrar pedidos acima de 500 com `.loc` e pegar as 3 primeiras linhas com `.iloc`:",
+      "blocks": [
+        "top3 = grandes.iloc[:3]",
+        "df[\"total\"] = df[\"qtd\"] * df[\"preco\"]",
+        "grandes = df.loc[df[\"total\"] > 500, [\"produto\", \"total\"]]"
+      ],
+      "correctOrder": [1, 2, 0],
+      "explanation": "Calculamos `total` de forma vetorizada, filtramos e projetamos colunas com `.loc`, e pegamos as 3 primeiras linhas com `.iloc[:3]`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Usando `.loc`, selecione apenas a coluna `\"nome\"` das linhas onde `df[\"idade\"] >= 18` e guarde em `adultos`:",
-      "starterCode": "# Filtre com df.loc[condicao, coluna]:\n",
+      "prompt": "Desafio de Código: Usando indexação por rótulos no DataFrame `df`, selecione apenas a coluna `\"nome\"` das linhas em que `idade` é maior ou igual a `18` e armazene o resultado em `adultos`.",
+      "starterCode": "",
       "requiredTokens": ["adultos", "df.loc[", "df[\"idade\"] >= 18", "\"nome\""],
       "sampleSolution": "adultos = df.loc[df[\"idade\"] >= 18, \"nome\"]",
-      "hint": "Use `adultos = df.loc[df[\"idade\"] >= 18, \"nome\"]`.",
+      "hint": "Passe a condição `df[\"idade\"] >= 18` como primeiro argumento de `df.loc[...]` e `\"nome\"` como segundo.",
       "explanation": "Passar filtro e coluna juntos no `.loc` é a forma mais segura e idiomática no Pandas."
     }
   ]

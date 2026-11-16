@@ -8,9 +8,10 @@
       "type": "theory",
       "title": "SQL Puro em Velocidade Máxima com Dapper",
       "content": "Quando o EF Core é pesado demais para relatórios complexos ou APIs de baixíssima latência, o **Dapper** brilha! Ele adiciona métodos de extensão em qualquer `IDbConnection`: **`QueryAsync<T>(sql, param)`** para listas e **`QueryFirstOrDefaultAsync<T>(sql, param)`** para um único registro — sempre passando parâmetros com `@Nome` em um objeto anônimo `new { Nome = ... }` (nunca concatenando strings!).",
-      "codeExample": "const string sql = \"SELECT id, nome FROM produtos WHERE categoria = @Cat\";\nvar lista = await conn.QueryAsync<ProdutoDto>(sql, new { Cat = \"Tech\" });",
+      "codeExample": "const string sql = \"SELECT id, nome FROM produtos WHERE categoria = @Cat\";\nvar lista = await conn.QueryAsync<ProdutoDto>(sql, new { Cat = \"Tech\" });\n\nvar item = await conn.QueryFirstOrDefaultAsync<ProdutoDto>(\n    \"SELECT id, nome FROM produtos WHERE id = @Id\",\n    new { Id = 42 }\n);\n\nawait conn.ExecuteAsync(\"DELETE FROM produtos WHERE id = @Id\", new { Id = 42 });",
       "keyTakeaways": [
         "`new { Cat = \"Tech\" }` cria parâmetros SQL reais (`@Cat`), bloqueando 100% de SQL Injection.",
+        "Use `QueryAsync<T>` para coleções e `QueryFirstOrDefaultAsync<T>` quando esperar 0 ou 1 registro.",
         "Para `INSERT`/`UPDATE`/`DELETE`, use `await conn.ExecuteAsync(sql, param)`.",
         "Muitos times usam EF Core para escrita/migrations e Dapper para queries analíticas pesadas (CQRS)."
       ]
@@ -28,12 +29,47 @@
       "explanation": "Passar `@Email` na query e `new { Email = email }` como segundo argumento gera um `DbParameter` seguro contra SQL Injection."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código Dapper para executar um `UPDATE` parametrizado e depois buscar uma lista de pedidos:",
+      "codeTemplate": "await conn.{{blank}}(\"UPDATE pedidos SET pago = 1 WHERE id = @Id\", new { Id = pedidoId });\nvar pedidos = await conn.{{blank}}<PedidoDto>(\"SELECT id, total FROM pedidos WHERE cliente_id = @ClienteId\", new { ClienteId = cid });",
+      "blanks": [
+        { "answer": "ExecuteAsync", "placeholder": "comando" },
+        { "answer": "QueryAsync", "placeholder": "consulta" }
+      ],
+      "options": ["ExecuteAsync", "QueryAsync", "QueryFirstOrDefaultAsync", "SaveChangesAsync"],
+      "explanation": "`ExecuteAsync` executa comandos sem retorno de linhas (`INSERT`/`UPDATE`/`DELETE`), enquanto `QueryAsync<T>` retorna uma coleção mapeada."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha vulnerável a SQL Injection no trecho abaixo:",
+      "lines": [
+        "public async Task<Usuario?> BuscarPorEmail(IDbConnection conn, string email)",
+        "{",
+        "    var sql = $\"SELECT id, nome FROM usuarios WHERE email = '{email}'\";",
+        "    return await conn.QueryFirstOrDefaultAsync<Usuario>(sql);",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Interpolar `email` diretamente na string SQL abre brecha crítica para SQL Injection. O correto é usar `@Email` e passar `new { Email = email }`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para definir uma query SQL parametrizada e buscar a lista de produtos ativos com Dapper:",
+      "blocks": [
+        "var produtos = await conn.QueryAsync<ProdutoDto>(sql, parametros);",
+        "const string sql = \"SELECT id, nome FROM produtos WHERE ativo = @Ativo\";",
+        "var parametros = new { Ativo = true };"
+      ],
+      "correctOrder": [1, 2, 0],
+      "explanation": "Primeiro definimos a string SQL com o parâmetro `@Ativo`, criamos o objeto anônimo com o valor e passamos ambos para `conn.QueryAsync<ProdutoDto>`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Execute uma consulta Dapper usando `await conn.QueryFirstOrDefaultAsync<Usuario>(\"SELECT id, nome FROM usuarios WHERE id = @Id\", new { Id = id });`:",
-      "starterCode": "// Consulte 1 Usuario com Dapper de forma segura:\n",
+      "prompt": "Desafio de Código: Em C# com Dapper, faça uma consulta assíncrona na conexão `conn` para buscar um único `Usuario` (selecionando `id, nome` da tabela `usuarios`) filtrando pelo parâmetro SQL `@Id` associado à variável local `id`.",
+      "starterCode": "",
       "requiredTokens": ["await", "conn.QueryFirstOrDefaultAsync<Usuario>", "@Id", "new { Id = id }"],
       "sampleSolution": "var user = await conn.QueryFirstOrDefaultAsync<Usuario>(\n    \"SELECT id, nome FROM usuarios WHERE id = @Id\",\n    new { Id = id }\n);",
-      "hint": "Use `await conn.QueryFirstOrDefaultAsync<Usuario>(\"SELECT id, nome FROM usuarios WHERE id = @Id\", new { Id = id });`.",
+      "hint": "Use `await conn.QueryFirstOrDefaultAsync<Usuario>(...)` com a query filtrando `WHERE id = @Id` e um objeto anônimo `new { Id = id }`.",
       "explanation": "O Dapper mapeia automaticamente as colunas `id` e `nome` para as propriedades da classe/record `Usuario`."
     }
   ]

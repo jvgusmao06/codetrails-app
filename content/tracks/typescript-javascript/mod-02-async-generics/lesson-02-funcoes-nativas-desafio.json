@@ -1,40 +1,85 @@
 {
   "id": "ts-nativas-02",
-  "title": "Funções e Objetos Nativos (Object, JSON, Math, Set, Array)",
-  "description": "Domine as APIs nativas essenciais do JavaScript/TypeScript e resolva problemas escrevendo código do zero.",
+  "title": "08. Objetos e Funções Nativas (Object, Set, Math, reduce)",
+  "description": "Use Object.keys/entries para inspecionar objetos, Set para eliminar duplicatas, Math para cálculos e .reduce() para agregar arrays.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "As Funções e Globais Nativas do JS/TS",
-      "content": "O runtime JavaScript/TypeScript fornece objetos globais poderosos sem precisar instalar bibliotecas: 'Object.keys(obj)' e 'Object.entries(obj)' extraem chaves e pares de um objeto; 'JSON.stringify()' e 'JSON.parse()' convertem entre objetos e texto JSON; 'new Set(array)' remove duplicatas em O(1); e '.reduce()' acumula valores de um array em um único resultado.",
-      "codeExample": "const vendas = [10, 20, 10, 50];\n\n// Remover duplicatas com Set nativo\nconst unicos = [...new Set(vendas)]; // [10, 20, 50]\n\n// Somar valores com reduce\nconst total = unicos.reduce((acc, val) => acc + val, 0); // 80\n\n// Converter objeto para JSON\nconst payload = JSON.stringify({ total, max: Math.max(...unicos) });",
+      "title": "Globais Nativas: Object, Set, Math e .reduce()",
+      "content": "O JavaScript/TypeScript traz APIs nativas poderosas sem precisar de bibliotecas externas:\n\n1. **`Object.keys()` e `Object.entries()`**: `Object.keys(obj)` retorna um array com os nomes das chaves; `Object.entries(obj)` retorna pares `[chave, valor]`.\n2. **`Set` (Conjuntos únicos)**: `new Set(array)` remove duplicatas automaticamente. Combinado com Spread (`[...new Set(lista)]`), gera um novo array apenas com itens únicos.\n3. **`Math`**: Fornece funções matemáticas como `Math.max(...nums)`, `Math.min(...nums)` e `Math.round(x)`.\n4. **`array.reduce()`**: Reduz um array a um único valor (como soma ou objeto agrupado): `nums.reduce((acc, atual) => acc + atual, 0)`.",
+      "codeExample": "const config = { tema: \"dark\", fonte: 14 };\nconst chaves = Object.keys(config); // [\"tema\", \"fonte\"]\n\nconst unicos = [...new Set([1, 2, 2, 3])]; // [1, 2, 3]\nconst maior = Math.max(...unicos);         // 3\nconst soma = unicos.reduce((acc, n) => acc + n, 0); // 6",
       "keyTakeaways": [
-        "Object.keys(obj) retorna um array com os nomes das propriedades próprias do objeto.",
-        "[...new Set(lista)] é a forma nativa mais rápida de remover itens duplicados de um array.",
-        "array.reduce((acumulador, atual) => novoAcumulador, valorInicial) reduz qualquer lista a um único valor."
+        "Object.keys(obj) lista chaves; Object.entries(obj) lista pares [chave, valor].",
+        "[...new Set(lista)] remove duplicatas preservando a ordem de inserção.",
+        "Math.max(...nums) encontra o maior número e .reduce((acc, x) => ..., inicial) agrega o array."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual expressão nativa do JavaScript converte uma string de texto JSON recebida de uma API de volta para um objeto manipulável?",
+      "prompt": "Qual expressão nativa do JavaScript remove elementos duplicados de um array 'tags' retornando um novo array?",
       "options": [
-        "JSON.stringify(texto)",
-        "JSON.parse(texto)",
-        "Object.fromJSON(texto)",
-        "Array.from(texto)"
+        "Object.keys(tags)",
+        "[...new Set(tags)]",
+        "Math.unique(tags)",
+        "tags.reduce()"
       ],
       "correctIndex": 1,
-      "explanation": "JSON.parse() analisa uma string no formato JSON e reconstrói o objeto ou array JavaScript correspondente."
+      "explanation": "new Set(tags) armazena apenas valores únicos e [... ] espalha os elementos de volta para um array."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código para extrair as chaves de um objeto e encontrar o maior número de um array usando Math:",
+      "codeTemplate": "const chaves = {{blank}}.keys(usuario);\nconst maior = {{blank}}.max(...[10, 45, 22]);",
+      "blanks": [
+        { "answer": "Object", "placeholder": "global" },
+        { "answer": "Math", "placeholder": "matemática" }
+      ],
+      "options": ["Object", "Array", "Math", "Set"],
+      "explanation": "Object.keys() extrai as chaves próprias do objeto e Math.max() retorna o maior argumento numérico."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a chamada de .reduce() para somar todos os números do array começando do zero:",
+      "codeTemplate": "const total = [10, 20, 30].{{blank}}((acc, n) => acc + n, {{blank}});",
+      "blanks": [
+        { "answer": "reduce", "placeholder": "método" },
+        { "answer": "0", "placeholder": "valor inicial" }
+      ],
+      "options": ["reduce", "map", "0", "1"],
+      "explanation": "O método .reduce(callback, valorInicial) acumula o resultado começando em 0."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O código tenta usar Math.max em um array diretamente, mas retorna NaN. Qual linha tem o bug?",
+      "lines": [
+        "const notas = [7, 9, 8];",
+        "const maior = Math.max(notas);",
+        "console.log(maior);"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Math.max espera argumentos numéricos separados, não um array. O correto é espalhar com Spread: Math.max(...notas)."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para remover duplicatas de uma lista de preços e somar os valores únicos com reduce:",
+      "blocks": [
+        "const unicos = [...new Set(precos)];",
+        "const soma = unicos.reduce((acc, p) => acc + p, 0);",
+        "const precos = [10, 20, 10, 30];",
+        "console.log(soma);"
+      ],
+      "correctOrder": [2, 0, 1, 3],
+      "explanation": "Definimos o array, removemos duplicatas com [...new Set(...)], somamos com .reduce() e imprimimos."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva uma função 'somarLista(numeros: number[])' que use '.reduce()' (ou um loop 'for') e 'return' para retornar a soma dos números:",
-      "starterCode": "// Escreva sua função somarLista do zero:\n",
-      "requiredTokens": ["function", "somarLista", "return"],
-      "sampleSolution": "function somarLista(numeros: number[]): number {\n  return numeros.reduce((acc, n) => acc + n, 0);\n}",
-      "hint": "Use: function somarLista(numeros: number[]) { return numeros.reduce((a, b) => a + b, 0); }",
-      "explanation": "O método nativo .reduce() acumula cada elemento da lista a partir do valor inicial 0 e retorna a soma total."
+      "prompt": "Escreva uma função 'somarUnicos' que receba um array de números, remova as duplicatas usando Set e retorne a soma dos valores únicos usando .reduce().",
+      "starterCode": "",
+      "requiredTokens": ["function", "somarUnicos", "Set", "reduce", "return"],
+      "sampleSolution": "function somarUnicos(numeros: number[]): number {\n  const unicos = [...new Set(numeros)];\n  return unicos.reduce((acc, n) => acc + n, 0);\n}",
+      "hint": "Crie um array único com [...new Set(numeros)] e aplique .reduce((acc, n) => acc + n, 0) no retorno.",
+      "explanation": "Combinamos Set com Spread para deduplicar e .reduce() para agregar a soma em uma função tipada."
     }
   ]
 }

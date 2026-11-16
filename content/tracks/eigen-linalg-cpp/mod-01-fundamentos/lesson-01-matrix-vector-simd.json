@@ -28,12 +28,49 @@
       "explanation": "Tipos de tamanho fixo evitam `new`/`malloc` na Heap e permitem desenrolamento de loops e vetorização em tempo de compilação."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código Eigen para criar uma matriz identidade 3x3, multiplicar pelo vetor `v` e calcular o produto vetorial:",
+      "codeTemplate": "Eigen::MatrixXd I = Eigen::MatrixXd::{{blank}}(3, 3);\nEigen::Vector3d res = I {{blank}} v;\nEigen::Vector3d ortogonal = v.{{blank}}(w);",
+      "blanks": [
+        { "answer": "Identity", "placeholder": "identidade" },
+        { "answer": "*", "placeholder": "op" },
+        { "answer": "cross", "placeholder": "vetorial" }
+      ],
+      "options": ["Identity", "*", "cross", "dot", "cwiseProduct", "Zeros"],
+      "explanation": "`MatrixXd::Identity(3, 3)` cria a identidade, `*` faz multiplicação matricial real e `.cross()` calcula o produto vetorial em 3D."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha que viola a boa prática recomendada no Eigen por causa da avaliação preguiçosa (lazy evaluation):",
+      "lines": [
+        "#include <Eigen/Dense>",
+        "Eigen::MatrixXd A = Eigen::MatrixXd::Identity(4, 4);",
+        "Eigen::MatrixXd B = Eigen::MatrixXd::Identity(4, 4);",
+        "auto C = A * B;",
+        "Eigen::Vector3d u(1.0, 2.0, 3.0);"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Usar `auto C = A * B;` armazena uma expressão temporária (*Expression Template*) em vez da matriz avaliada, podendo causar comportamento indefinido se `A` ou `B` mudarem. Prefira `Eigen::MatrixXd C = A * B;`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para incluir o Eigen, criar dois vetores 3D e multiplicar uma matriz identidade por um deles:",
+      "blocks": [
+        "Eigen::Vector3d res = A * v;",
+        "#include <Eigen/Dense>",
+        "Eigen::MatrixXd A = Eigen::MatrixXd::Identity(3, 3);",
+        "Eigen::Vector3d v(1.0, 0.0, 0.0);"
+      ],
+      "correctOrder": [1, 3, 2, 0],
+      "explanation": "Incluímos `<Eigen/Dense>`, declaramos o vetor `v`, criamos a matriz identidade `A` e realizamos `A * v`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie dois vetores `Eigen::Vector3d a(1, 2, 3);` e `Eigen::Vector3d b(4, 5, 6);` e calcule o produto escalar usando `a.dot(b)`:",
-      "starterCode": "#include <Eigen/Dense>\n// Crie a, b e calcule a.dot(b):\n",
+      "prompt": "Desafio de Código: Em C++ com Eigen, declare dois vetores 3D de precisão dupla (`a` com valores `1, 2, 3` e `b` com valores `4, 5, 6`) e armazene o produto escalar entre eles em uma variável `double`.",
+      "starterCode": "#include <Eigen/Dense>\n",
       "requiredTokens": ["Eigen::Vector3d a", "Eigen::Vector3d b", "a.dot(b)"],
       "sampleSolution": "Eigen::Vector3d a(1, 2, 3);\nEigen::Vector3d b(4, 5, 6);\ndouble esc = a.dot(b);",
-      "hint": "Declare `Eigen::Vector3d a(1, 2, 3);`, `Eigen::Vector3d b(4, 5, 6);` e `double esc = a.dot(b);`.",
+      "hint": "Instancie `Eigen::Vector3d a(1, 2, 3);` e `Eigen::Vector3d b(4, 5, 6);` e use o método `.dot(...)`.",
       "explanation": "`.dot()` calcula o produto escalar em 1 linha com instruções SIMD otimizadas."
     }
   ]

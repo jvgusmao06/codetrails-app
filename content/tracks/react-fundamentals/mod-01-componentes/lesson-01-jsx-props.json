@@ -1,17 +1,18 @@
 {
   "id": "react-jsx-01",
   "title": "Componentes e JSX",
-  "description": "Criando funções que retornam marcação de interface.",
-  "xp": 15,
+  "description": "Criando funções em PascalCase que recebem props e retornam marcação JSX.",
+  "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "Componentes Funcionais e Interpolação JSX",
-      "content": "No React, interfaces são divididas em componentes reutilizáveis — funções JavaScript que retornam marcação JSX. Todo componente React deve começar com letra Maiúscula (PascalCase) para não ser confundido com tags HTML comuns. Para exibir variáveis ou props dentro do JSX, usamos chaves { }.",
+      "title": "Componentes Funcionais, Props e Interpolação JSX",
+      "content": "No React, interfaces são divididas em componentes reutilizáveis — funções JavaScript que retornam marcação JSX. Todo componente React deve começar com letra Maiúscula (**PascalCase**) para não ser confundido com tags HTML comuns. Os dados entram no componente por meio de **props**, geralmente desestruturadas nos parâmetros da função (`function Header({ titulo })`). Para exibir variáveis ou expressões dentro do JSX, usamos chaves `{ }`.",
       "codeExample": "function Header({ titulo }) {\n  return <h1>{titulo}</h1>;\n}",
       "keyTakeaways": [
-        "Componentes React usam PascalCase (ex: <Header /> vs <header>).",
-        "Chaves { } avaliam expressões JavaScript dentro do JSX."
+        "Componentes React usam PascalCase (ex: `<Header />` vs `<header>`).",
+        "Props são passadas como atributos JSX e desestruturadas nos parâmetros da função.",
+        "Chaves `{ }` avaliam expressões JavaScript dentro do JSX."
       ]
     },
     {
@@ -28,7 +29,24 @@
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Exiba a prop 'titulo' dinamicamente dentro da tag <h1>:",
+      "prompt": "Receba a prop `nome` por desestruturação no componente `Saudacao`:",
+      "codeTemplate": "function Saudacao({{blank}} nome {{blank}}) {\n  return <p>Olá, {nome}</p>;\n}",
+      "blanks": [
+        {
+          "answer": "{",
+          "placeholder": "abre"
+        },
+        {
+          "answer": "}",
+          "placeholder": "fecha"
+        }
+      ],
+      "options": ["{", "}", "[", "]"],
+      "explanation": "No React, as props chegam em um único objeto como primeiro argumento da função, por isso desestruturamos com `{ nome }`."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Exiba a prop `titulo` dinamicamente dentro da tag `<h1>`:",
       "codeTemplate": "function Header({ titulo }) {\n  return <h1>{{blank}}titulo{{blank}}</h1>;\n}",
       "blanks": [
         {
@@ -41,7 +59,46 @@
         }
       ],
       "options": ["{", "}", "(", ")"],
-      "explanation": "No JSX, usamos chaves { } para interpolar expressões JavaScript dentro da marcação."
+      "explanation": "No JSX, usamos chaves `{ }` para interpolar expressões JavaScript dentro da marcação."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para formar um componente React funcional que recebe uma prop e a exibe em JSX:",
+      "blocks": [
+        "}",
+        "function Card({ texto }) {",
+        "  return <div>{texto}</div>;",
+        "// uso: <Card texto=\"Oi\" />"
+      ],
+      "correctOrder": [1, 2, 0, 3],
+      "explanation": "Definimos a função em PascalCase desestruturando `{ texto }`, retornamos o JSX interpolando `{texto}`, fechamos a função e podemos renderizá-la com `<Card ... />`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Encontre a linha com erro em um componente que deveria receber a prop `titulo` e renderizá-la em JSX:",
+      "lines": [
+        "function aviso({ titulo }) {",
+        "  return <span>{titulo}</span>;",
+        "}",
+        "const el = <aviso titulo=\"Atenção\" />;"
+      ],
+      "buggyLineIndex": 0,
+      "explanation": "O componente foi declarado com letra minúscula (`aviso`). Em React, componentes devem usar PascalCase (`Aviso`) para o JSX não tratá-lo como tag HTML."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Crie um componente funcional chamado `Badge` que receba uma prop `label` desestruturada e retorne um elemento `<span>` exibindo o valor dessa prop.",
+      "starterCode": "",
+      "requiredTokens": [
+        "function Badge",
+        "{ label }",
+        "return",
+        "<span>",
+        "{label}"
+      ],
+      "sampleSolution": "function Badge({ label }) {\n  return <span>{label}</span>;\n}",
+      "hint": "Use `function Badge({ label })` em PascalCase e retorne `<span>{label}</span>`.",
+      "explanation": "O componente `Badge` segue PascalCase, recebe `{ label }` via desestruturação de props e interpola `{label}` no JSX."
     }
   ]
 }

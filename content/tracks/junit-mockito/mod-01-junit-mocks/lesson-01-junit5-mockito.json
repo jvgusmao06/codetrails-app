@@ -1,18 +1,18 @@
 {
   "id": "junit-01",
-  "title": "Testes Unitários com @Test e Simulação com Mockito",
-  "description": "Use anotações do JUnit 5 e simule repositórios externos com when(...).thenReturn(...).",
-  "xp": 35,
+  "title": "Testes Unitários com @Test, assertThrows e Simulação com Mockito",
+  "description": "Use anotações e asserções do JUnit 5 e simule dependências externas com mock(), when(...).thenReturn(...) e verify().",
+  "xp": 40,
   "steps": [
     {
       "type": "theory",
       "title": "JUnit 5 + Mockito: Padrão Ouro de Testes em Java",
-      "content": "No JUnit 5 (Jupiter), qualquer método anotado com '@Test' vira um teste executável, e verificamos os resultados com 'assertEquals(esperado, atual)' ou 'assertThrows()'. Quando a classe testada depende de um banco de dados ou API externa, usamos o Mockito (@Mock + when().thenReturn()) para simular o retorno sem tocar no banco real.",
-      "codeExample": "import org.junit.jupiter.api.Test;\nimport static org.junit.jupiter.api.Assertions.*;\nimport static org.mockito.Mockito.*;\n\nclass PedidoServiceTest {\n    @Test\n    void deveCalcularTotalComFrete() {\n        FreteClient freteMock = mock(FreteClient.class);\n        when(freteMock.calcular(\"01000\")).thenReturn(15.0);\n\n        var service = new PedidoService(freteMock);\n        assertEquals(115.0, service.fecharPedido(100.0, \"01000\"));\n    }\n}",
+      "content": "No **JUnit 5 (Jupiter)**, qualquer método anotado com **`@Test`** vira um teste executável, e verificamos resultados com **`assertEquals(esperado, atual)`** ou exceções com **`assertThrows(TipoExcecao.class, () -> ...)`**. Quando a classe testada depende de um banco de dados ou API externa, usamos o **Mockito** (`mock(Classe.class)` + `when(...).thenReturn(...)`) para simular o retorno sem tocar no banco real, e **`verify(mock).metodo(...)`** para confirmar que a dependência foi invocada.",
+      "codeExample": "import org.junit.jupiter.api.Test;\nimport static org.junit.jupiter.api.Assertions.*;\nimport static org.mockito.Mockito.*;\n\nclass PedidoServiceTest {\n    @Test\n    void deveCalcularTotalComFrete() {\n        FreteClient freteMock = mock(FreteClient.class);\n        when(freteMock.calcular(\"01000\")).thenReturn(15.0);\n\n        var service = new PedidoService(freteMock);\n        assertEquals(115.0, service.fecharPedido(100.0, \"01000\"));\n        verify(freteMock).calcular(\"01000\");\n    }\n}",
       "keyTakeaways": [
-        "Em assertEquals(esperado, atual), o primeiro argumento é sempre o valor esperado e o segundo é o resultado obtido.",
-        "when(mock.metodo()).thenReturn(valor) ensina o mock a devolver um valor controlado durante o teste.",
-        "verify(mock).metodo() confirma se a dependência foi realmente invocada pelo serviço."
+        "Em `assertEquals(esperado, atual)`, o primeiro argumento é sempre o valor esperado e o segundo é o resultado obtido.",
+        "`assertThrows(Excecao.class, () -> ...)` verifica que o bloco lançou a exceção esperada.",
+        "`when(mock.metodo()).thenReturn(valor)` configura o stub e `verify(mock).metodo()` confirma que ele foi chamado."
       ]
     },
     {
@@ -25,7 +25,31 @@
         { "answer": "assertEquals", "placeholder": "assertion" }
       ],
       "options": ["@Test", "when", "assertEquals", "@Mock", "expect", "assertTrue"],
-      "explanation": "@Test marca o método no JUnit 5, when(...).thenReturn(...) configura o mock no Mockito e assertEquals compara esperado vs atual."
+      "explanation": "`@Test` marca o método no JUnit 5, `when(...).thenReturn(...)` configura o mock no Mockito e `assertEquals` compara esperado vs atual."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Como verificamos no JUnit 5 que a chamada `contaService.sacar(-10)` lança uma `IllegalArgumentException`?",
+      "options": [
+        "assertEquals(IllegalArgumentException.class, contaService.sacar(-10));",
+        "assertThrows(IllegalArgumentException.class, () -> contaService.sacar(-10));",
+        "when(contaService.sacar(-10)).thenThrow();",
+        "verify(IllegalArgumentException.class);"
+      ],
+      "correctIndex": 1,
+      "explanation": "`assertThrows` recebe a classe da exceção esperada e uma lambda que executa o código que deve lançá-la."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "No Mockito, para que serve a chamada `verify(freteMock).calcular(\"01000\")` após executar o método sob teste?",
+      "options": [
+        "Para definir o valor de retorno do mock",
+        "Para confirmar que o serviço realmente invocou o método do mock com aquele argumento",
+        "Para limpar o banco de dados em memória",
+        "Para compilar o teste sem JUnit"
+      ],
+      "correctIndex": 1,
+      "explanation": "`verify` valida a interação com a dependência simulada, garantindo que o método esperado foi chamado."
     },
     {
       "type": "order_code",
@@ -38,6 +62,28 @@
       ],
       "correctOrder": [0, 1, 2, 3],
       "explanation": "Primeiro preparamos o mock e seu comportamento (Arrange), depois executamos o método sob teste (Act) e por fim verificamos o resultado (Assert)."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este teste compila, mas quando falha mostra a mensagem invertida (`expected: <resultado> but was: <valor esperado>`)! Clique na linha com os argumentos na ordem trocada:",
+      "lines": [
+        "@Test",
+        "void deveSomarTaxa() {",
+        "    double total = service.calcular(100.0);",
+        "    assertEquals(total, 110.0);",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "No JUnit 5, a assinatura padrão é `assertEquals(expected, actual)` — o valor esperado (`110.0`) vem primeiro, e o resultado obtido (`total`) vem depois."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Desafio de Código: Escreva um método de teste JUnit 5 anotado com `@Test` que crie um mock de `FreteClient`, configure-o para retornar `15.0` quando `calcular(\"01000\")` for chamado e valide com `assertEquals` que `freteMock.calcular(\"01000\")` devolve `15.0`.",
+      "starterCode": "",
+      "requiredTokens": ["@Test", "mock(", "when(", ".thenReturn(", "assertEquals"],
+      "sampleSolution": "@Test\nvoid deveRetornarFreteSimulado() {\n    FreteClient freteMock = mock(FreteClient.class);\n    when(freteMock.calcular(\"01000\")).thenReturn(15.0);\n    assertEquals(15.0, freteMock.calcular(\"01000\"));\n}",
+      "hint": "Anote o método com `@Test`, instancie o mock com `mock(FreteClient.class)`, configure o comportamento com `when(...).thenReturn(...)` e faça a asserção colocando o valor esperado primeiro.",
+      "explanation": "Combinar `@Test`, `mock()`, `when().thenReturn()` e `assertEquals` forma a base dos testes unitários isolados em Java."
     }
   ]
 }

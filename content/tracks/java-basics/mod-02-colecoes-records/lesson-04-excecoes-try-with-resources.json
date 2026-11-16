@@ -1,40 +1,91 @@
 {
-  "id": "java-colecoes-list-map-03",
-  "title": "Coleções: List (ArrayList), Map (HashMap), Set e Generics",
-  "description": "Armazene listas dinâmicas com ArrayList, pares chave-valor em O(1) com HashMap e conjuntos únicos com HashSet.",
+  "id": "java-excecoes-try-resources-04",
+  "title": "Exceções (try/catch/throw/throws) e Try-with-Resources",
+  "description": "Entenda Checked vs Unchecked Exceptions, lance erros com throw, declare com throws e feche recursos automaticamente com try-with-resources.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "ArrayList, HashMap e HashSet do pacote java.util",
-      "content": "Arrays fixos (`int[]`) não crescem de tamanho. No dia a dia em Java, usamos a Collections Framework com **Generics `<Tipo>`** (usando classes wrapper como `Integer` e `Double`, já que Generics não aceitam primitivos `int`):\n- **`List<String> nomes = new ArrayList<>()`**: lista dinâmica indexada.\n- **`Map<String, Integer> estoque = new HashMap<>()`**: dicionário chave -> valor com busca $O(1)$.\n- **`Set<String> tags = new HashSet<>()`**: conjunto sem duplicatas.\nNo Java 9+, `List.of(\"a\", \"b\")` e `Map.of(\"k\", 1)` criam coleções imutáveis rapidamente.",
-      "codeExample": "import java.util.*;\n\nList<String> linguagens = new ArrayList<>();\nlinguagens.add(\"Java\");\nlinguagens.add(\"Kotlin\");\n\nMap<String, Integer> pontos = new HashMap<>();\npontos.put(\"Ana\", 100);\nint p = pontos.getOrDefault(\"Ana\", 0);",
+      "title": "Exceções Checked vs Unchecked, throw/throws e Try-with-Resources",
+      "content": "Em Java existem dois grupos de exceções: **Unchecked** (`RuntimeException`, como `IllegalArgumentException` ou `NumberFormatException`, que não obrigam `try/catch`) e **Checked** (`IOException`, `SQLException`, que o compilador obriga você a capturar com `try/catch` ou declarar na assinatura do método com **`throws`**). Para disparar um erro manualmente no código, usamos **`throw new ...`**. Já para fechar arquivos, `Scanner` ou conexões automaticamente sem precisar de `finally { close(); }`, usamos **try-with-resources**: `try (var sc = new Scanner(System.in)) { ... }`.",
+      "codeExample": "import java.io.IOException;\n\npublic static void lerArquivo() throws IOException {\n    throw new IOException(\"Arquivo não encontrado\");\n}\n\npublic static void sacar(double valor) {\n    if (valor <= 0) {\n        throw new IllegalArgumentException(\"Valor deve ser positivo\");\n    }\n}\n\n// Try-with-resources: fecha 'sc' automaticamente ao sair do bloco\ntry (var sc = new java.util.Scanner(System.in)) {\n    sacar(-10);\n} catch (IllegalArgumentException e) {\n    System.out.println(\"Erro: \" + e.getMessage());\n}",
       "keyTakeaways": [
-        "Programe sempre voltado para a interface: `List<String> x = new ArrayList<>();` e `Map<K,V> m = new HashMap<>();`.",
-        "Generics em Java exigem tipos de referência (`List<Integer>`, nunca `List<int>`).",
-        "`map.getOrDefault(chave, padrao)` evita `null` quando a chave ainda não existe no `HashMap`."
+        "`throw new ...` dispara uma exceção; `throws` na assinatura do método avisa quem chama que ele pode lançar uma exceção Checked.",
+        "Exceções `RuntimeException` são Unchecked (não exigem `throws`); `IOException` e `SQLException` são Checked.",
+        "Try-with-resources (`try (recurso)`) fecha automaticamente qualquer classe que implemente `AutoCloseable`."
       ]
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código para lançar uma exceção quando a quantidade for inválida e capturá-la no bloco `try/catch`:",
+      "codeTemplate": "if (qtd < 0) {{blank}} new IllegalArgumentException(\"Negativo\");\n\n{{blank}} {\n    processar(-1);\n} {{blank}} (IllegalArgumentException ex) {\n    System.out.println(ex.getMessage());\n}",
+      "blanks": [
+        { "answer": "throw", "placeholder": "lançar" },
+        { "answer": "try", "placeholder": "tentar" },
+        { "answer": "catch", "placeholder": "capturar" }
+      ],
+      "options": ["throw", "throws", "try", "catch", "except", "raise"],
+      "explanation": "`throw` dispara a instância da exceção, enquanto `try / catch` captura e trata o erro."
+    },
+    {
       "type": "multiple_choice",
-      "prompt": "Qual declaração de lista dinâmica de números inteiros é válida em Java?",
+      "prompt": "Qual é a diferença entre exceções Checked (como `IOException`) e Unchecked (como `IllegalArgumentException`) em Java?",
       "options": [
-        "List<int> nums = new ArrayList<>();",
-        "List<Integer> nums = new ArrayList<>();",
-        "ArrayList<int> nums = new List<>();",
-        "List[] nums = new ArrayList();"
+        "Checked obrigam o chamador a tratar com `try/catch` ou declarar `throws` na assinatura; Unchecked não obrigam",
+        "Unchecked sempre encerram a JVM antes de entrar no `catch`",
+        "Checked só existem dentro de blocos `static`",
+        "Não há diferença em tempo de compilação"
+      ],
+      "correctIndex": 0,
+      "explanation": "O compilador Java verifica exceções Checked em tempo de compilação, exigindo `try/catch` ou `throws`; já subclasses de `RuntimeException` são Unchecked."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O método abaixo confunde `throw` com `throws` na hora de disparar uma exceção. Clique na linha com o bug:",
+      "lines": [
+        "public static void validar(int idade) {",
+        "    if (idade < 0) {",
+        "        throws new IllegalArgumentException(\"Inválida\");",
+        "    }",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "`throws` só é usado na assinatura do método; para lançar uma exceção dentro do bloco de código, usa-se `throw` (no singular)."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para usar `try-with-resources` com `Scanner` e capturar uma possível exceção:",
+      "blocks": [
+        "try (var sc = new Scanner(System.in)) {",
+        "    String linha = sc.nextLine();",
+        "    System.out.println(linha);",
+        "} catch (Exception e) {",
+        "    System.out.println(e.getMessage());",
+        "}"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4, 5],
+      "explanation": "No `try-with-resources`, o recurso é aberto entre parênteses logo após `try` e fechado automaticamente ao final do bloco."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "O que o `try-with-resources` garante mesmo se uma exceção for lançada com `throw` dentro do bloco `try`?",
+      "options": [
+        "Que a exceção será ignorada sem entrar no `catch`",
+        "Que o método `.close()` do recurso (`AutoCloseable`) será chamado automaticamente",
+        "Que o programa continuará executando a próxima linha do `try`",
+        "Que toda exceção Checked se transforma em Unchecked"
       ],
       "correctIndex": 1,
-      "explanation": "Generics em Java não aceitam tipos primitivos (`int`), exigindo a classe Wrapper (`Integer`). Além disso, `List` é interface e `ArrayList` é a implementação."
+      "explanation": "Qualquer recurso declarado no cabeçalho do `try (...)` que implemente `AutoCloseable` tem seu método `.close()` invocado automaticamente, ocorra erro ou não."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie um `Map<String, Integer> idades = new HashMap<>();` e insira a chave `\"Joao\"` com valor `25` usando `.put()`:",
-      "starterCode": "// Crie o HashMap e adicione Joao -> 25:\n",
-      "requiredTokens": ["Map<String, Integer>", "HashMap", ".put(", "\"Joao\"", "25"],
-      "sampleSolution": "Map<String, Integer> idades = new HashMap<>();\nidades.put(\"Joao\", 25);",
-      "hint": "Escreva: Map<String, Integer> idades = new HashMap<>(); e idades.put(\"Joao\", 25);",
-      "explanation": "O operador diamante `<>` infere os tipos `<String, Integer>` automaticamente no `new HashMap<>()`."
+      "prompt": "Escreva um bloco `try/catch` que tente converter o texto `\"abc\"` para inteiro usando `Integer.parseInt` e, ao capturar uma `Exception`, imprima a mensagem de erro utilizando `getMessage()`.",
+      "starterCode": "",
+      "requiredTokens": ["try", "Integer.parseInt", "catch", "Exception", "getMessage()"],
+      "sampleSolution": "try {\n    int n = Integer.parseInt(\"abc\");\n} catch (Exception e) {\n    System.out.println(e.getMessage());\n}",
+      "hint": "Coloque a chamada a `Integer.parseInt(\"abc\")` dentro de `try { ... }` e trate `Exception e` no `catch` imprimindo `e.getMessage()`.",
+      "explanation": "`Integer.parseInt` lança `NumberFormatException` (subclasse de `Exception`) quando o texto não é um número válido."
     }
   ]
 }

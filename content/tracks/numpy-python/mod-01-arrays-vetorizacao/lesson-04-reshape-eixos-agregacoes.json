@@ -28,12 +28,46 @@
       "explanation": "`axis=1` colapsa as 4 colunas (lojas) ao longo de cada linha, retornando um array de 12 médias (uma por mês)."
     },
     {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código para transformar o vetor `x` em uma coluna 2D (deixando o NumPy inferir as linhas) e obter sua transposta:",
+      "codeTemplate": "col = x.{{blank}}(-1, 1)\nlinha = col.{{blank}}",
+      "blanks": [
+        { "answer": "reshape", "placeholder": "reformatar" },
+        { "answer": "T", "placeholder": "transpor" }
+      ],
+      "options": ["reshape", "T", "shape", "axis", "sum"],
+      "explanation": "`.reshape(-1, 1)` infere automaticamente o número de linhas, e `.T` retorna a matriz transposta."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Identifique a linha que lança `ValueError` ao tentar reorganizar o array:",
+      "lines": [
+        "import numpy as np",
+        "v = np.arange(6)",
+        "m = v.reshape(2, 4)",
+        "print(m.sum(axis=0))"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "`v` possui 6 elementos (`0..5`), mas `(2, 4)` exige 8 elementos. A quantidade total de elementos precisa se manter igual no `.reshape()`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para criar um array de 6 números, formatar como 2x3, transpor e somar por linha:",
+      "blocks": [
+        "print(mt.sum(axis=1))",
+        "m = np.arange(1, 7).reshape(2, 3)",
+        "mt = m.T"
+      ],
+      "correctOrder": [1, 2, 0],
+      "explanation": "Primeiro criamos a matriz 2x3 com `.reshape(2, 3)`, depois transpomos com `.T` e somamos por linha com `.sum(axis=1)`."
+    },
+    {
       "type": "write_code",
-      "prompt": "Desafio de Código: Transforme `v = np.arange(6)` em uma matriz 2x3 usando `.reshape(2, 3)` e calcule a soma por coluna com `.sum(axis=0)`:",
-      "starterCode": "import numpy as np\nv = np.arange(6)\n# Faça reshape(2, 3) e sum(axis=0):\n",
+      "prompt": "Desafio de Código: Dado um vetor NumPy `v` com 6 elementos, reorganize-o em uma matriz `m` de 2 linhas por 3 colunas e calcule `soma_cols` contendo a soma de cada coluna.",
+      "starterCode": "",
       "requiredTokens": [".reshape(2, 3)", ".sum(axis=0)"],
       "sampleSolution": "m = v.reshape(2, 3)\nsoma_cols = m.sum(axis=0)",
-      "hint": "Escreva `m = v.reshape(2, 3)` e `soma_cols = m.sum(axis=0)`.",
+      "hint": "Use `.reshape(2, 3)` em `v` para criar `m` e depois chame `.sum(axis=0)` em `m`.",
       "explanation": "`.reshape(2, 3)` reorganiza os 6 números sem copiar dados, e `.sum(axis=0)` soma cada uma das 3 colunas."
     }
   ]

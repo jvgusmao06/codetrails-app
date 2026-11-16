@@ -1,40 +1,90 @@
 {
   "id": "sql-groupby-04",
-  "title": "Agrupamentos (GROUP BY), Filtro HAVING, ORDER BY e LIMIT",
-  "description": "Aprenda a diferença entre WHERE e HAVING, agrupe relatórios com GROUP BY e pagine resultados com ORDER BY e LIMIT/OFFSET.",
+  "title": "04. Agrupamentos (GROUP BY), HAVING e Paginação",
+  "description": "Agrupe registros com GROUP BY, filtre grupos agregados com HAVING e pagine resultados com LIMIT e OFFSET.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "GROUP BY, HAVING e Paginação em SQL",
-      "content": "Quando usamos funções de agregação como COUNT(*) ou SUM(valor) junto com outras colunas (ex: total vendido por categoria), precisamos agrupar as linhas com 'GROUP BY categoria'. E atenção à pegadinha clássica de entrevistas: 'WHERE' filtra linhas individuais ANTES do agrupamento, enquanto 'HAVING' filtra os grupos DEPOIS da agregação (ex: mostrar apenas categorias com soma > 1000)!",
-      "codeExample": "SELECT categoria, COUNT(*) AS qtd, SUM(valor) AS receita\nFROM vendas\nWHERE cancelada = false\nGROUP BY categoria\nHAVING SUM(valor) > 1000\nORDER BY receita DESC\nLIMIT 10 OFFSET 0;",
+      "title": "GROUP BY, HAVING e Paginação (LIMIT/OFFSET)",
+      "content": "Quando queremos calcular totais ou contagens **por categoria** (por exemplo, quantos usuários existem em cada cidade), usamos agrupamento:\n\n1. **`GROUP BY`**: Agrupa linhas que compartilham o mesmo valor na coluna especificada para que `COUNT(*)`, `SUM()` ou `AVG()` sejam calculados por grupo.\n2. **`HAVING` vs `WHERE`**: `WHERE` filtra linhas individuais **antes** do agrupamento e **não aceita** funções de agregação (`COUNT(*)`, `SUM()`). Para filtrar grupos já agregados (ex: cidades com mais de 5 usuários), usamos `HAVING COUNT(*) > 5`.\n3. **`LIMIT` e `OFFSET`**: Para paginação, `LIMIT n` define quantas linhas retornar e `OFFSET p` define quantas linhas pular (ex: `LIMIT 10 OFFSET 20` traz a página 3).",
+      "codeExample": "SELECT categoria, COUNT(*) AS qtd, SUM(preco) AS total\nFROM produtos\nWHERE ativo = true\nGROUP BY categoria\nHAVING COUNT(*) >= 3\nORDER BY total DESC\nLIMIT 5 OFFSET 0;",
       "keyTakeaways": [
-        "WHERE não aceita funções agregadas (como WHERE COUNT(*) > 5); para filtrar agregações, use HAVING!",
-        "ORDER BY coluna DESC ordena do maior para o menor (decrescente); ASC ordena do menor para o maior.",
-        "LIMIT define quantas linhas retornar e OFFSET define quantas linhas pular (paginação)."
+        "Toda coluna no SELECT que não está em função agregada deve aparecer no GROUP BY.",
+        "WHERE filtra linhas antes de agrupar; HAVING filtra grupos após o GROUP BY.",
+        "LIMIT limita a quantidade de linhas e OFFSET pula registros para paginação."
       ]
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Esta query SQL tenta filtrar apenas os departamentos com mais de 5 funcionários, mas falha com erro de sintaxe porque usou agregação no lugar errado. Clique na linha com o bug:",
+      "prompt": "Esta query tenta filtrar apenas os departamentos com mais de 5 funcionários, mas falha com erro de sintaxe. Qual linha tem o bug?",
       "lines": [
         "SELECT departamento, COUNT(*) AS total",
-        "FROM colaboradores",
+        "FROM funcionarios",
         "WHERE COUNT(*) > 5",
         "GROUP BY departamento;"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Na linha 3, não é permitido usar COUNT(*) dentro do WHERE! Filtros sobre funções de agregação devem ficar em uma cláusula 'HAVING COUNT(*) > 5' após o GROUP BY."
+      "explanation": "Funções agregadas como COUNT(*) não podem ser usadas no WHERE. O correto é colocar 'HAVING COUNT(*) > 5' após o GROUP BY."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Em uma consulta paginada, o que faz a combinação LIMIT 10 OFFSET 20?",
+      "options": [
+        "Retorna 20 linhas pulando as 10 primeiras",
+        "Pula as 20 primeiras linhas e retorna até 10 linhas seguintes",
+        "Retorna as linhas de ID 10 até 20",
+        "Limita o número de colunas a 10"
+      ],
+      "correctIndex": 1,
+      "explanation": "OFFSET 20 descarta os 20 primeiros resultados e LIMIT 10 exibe os 10 registros seguintes."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a consulta para agrupar vendas por vendedor e exibir apenas quem faturou acima de 5000:",
+      "codeTemplate": "SELECT vendedor_id, SUM(valor) AS total\nFROM vendas\n{{blank}} vendedor_id\n{{blank}} SUM(valor) > 5000;",
+      "blanks": [
+        { "answer": "GROUP BY", "placeholder": "agrupar" },
+        { "answer": "HAVING", "placeholder": "filtrar grupo" }
+      ],
+      "options": ["GROUP BY", "HAVING", "WHERE", "ORDER BY"],
+      "explanation": "GROUP BY agrupa por vendedor_id e HAVING filtra o resultado da agregação SUM(valor)."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene as cláusulas SQL para filtrar pedidos pagos, agrupar por cliente, manter quem tem ao menos 2 pedidos e pegar os 5 maiores:",
+      "blocks": [
+        "HAVING COUNT(*) >= 2",
+        "SELECT cliente_id, COUNT(*) AS qtd",
+        "WHERE status = 'pago'",
+        "ORDER BY qtd DESC",
+        "FROM pedidos",
+        "GROUP BY cliente_id",
+        "LIMIT 5;"
+      ],
+      "correctOrder": [1, 4, 2, 5, 0, 3, 6],
+      "explanation": "A ordem completa em SQL é: SELECT -> FROM -> WHERE -> GROUP BY -> HAVING -> ORDER BY -> LIMIT."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Combine INNER JOIN, GROUP BY e paginação para listar as 3 categorias com maior soma de vendas:",
+      "codeTemplate": "SELECT c.nome, SUM(p.valor) AS receita\nFROM pedidos p\nINNER JOIN categorias c ON p.categoria_id = c.id\n{{blank}} c.nome\nORDER BY receita {{blank}}\n{{blank}} 3;",
+      "blanks": [
+        { "answer": "GROUP BY", "placeholder": "agrupar" },
+        { "answer": "DESC", "placeholder": "ordem" },
+        { "answer": "LIMIT", "placeholder": "limite" }
+      ],
+      "options": ["GROUP BY", "DESC", "ASC", "LIMIT", "OFFSET"],
+      "explanation": "Agrupamos por c.nome, ordenamos de forma decrescente (DESC) e pegamos os 3 primeiros com LIMIT 3."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva uma query SQL que selecione 'cidade' e 'COUNT(*)' da tabela 'usuarios' agrupando por 'GROUP BY cidade':",
-      "starterCode": "-- Escreva a consulta com GROUP BY abaixo:\n",
-      "requiredTokens": ["SELECT", "cidade", "COUNT", "FROM", "usuarios", "GROUP BY"],
-      "sampleSolution": "SELECT cidade, COUNT(*) FROM usuarios GROUP BY cidade;",
-      "hint": "Use: SELECT cidade, COUNT(*) FROM usuarios GROUP BY cidade;",
-      "explanation": "Toda coluna não-agregada listada no SELECT ('cidade') deve aparecer na cláusula GROUP BY."
+      "prompt": "Escreva uma query SQL na tabela 'usuarios' que conte quantos usuários existem por 'cidade', filtrando apenas cidades com mais de 10 usuários, ordenando da maior contagem para a menor e limitando o resultado a 5 linhas.",
+      "starterCode": "",
+      "requiredTokens": ["SELECT", "cidade", "COUNT", "FROM", "usuarios", "GROUP BY", "HAVING", "ORDER BY", "LIMIT"],
+      "sampleSolution": "SELECT cidade, COUNT(*) AS total\nFROM usuarios\nGROUP BY cidade\nHAVING COUNT(*) > 10\nORDER BY total DESC\nLIMIT 5;",
+      "hint": "Agrupe pela coluna cidade, filtre a contagem com HAVING, ordene com DESC e finalize com LIMIT 5.",
+      "explanation": "A consulta combina COUNT(*), GROUP BY, HAVING, ORDER BY DESC e LIMIT."
     }
   ]
 }

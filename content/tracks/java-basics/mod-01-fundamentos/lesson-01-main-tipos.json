@@ -1,18 +1,18 @@
 {
   "id": "java-main-01",
   "title": "Ponto de Entrada e Tipagem Forte",
-  "description": "Escrevendo seu primeiro código na JVM e declarando variáveis estáticas.",
-  "xp": 15,
+  "description": "Escrevendo seu primeiro código na JVM com o método main, tipos primitivos, String e saída padrão.",
+  "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "Tipagem Estática e Saída Padrão na JVM",
-      "content": "Java é uma linguagem fortemente tipada e compilada para bytecode da JVM. Toda variável precisa ter seu tipo declarado explicitamente antes do nome (como int para inteiros ou String para texto). Para exibir uma linha no terminal, usamos System.out.println().",
-      "codeExample": "public class Main {\n  public static void main(String[] args) {\n    int idade = 25;\n    String nome = \"Duke\";\n    System.out.println(nome);\n  }\n}",
+      "title": "Método main, Tipagem Estática e Saída Padrão na JVM",
+      "content": "Java é uma linguagem fortemente tipada e compilada para bytecode da JVM. Todo programa executável começa pelo método `public static void main(String[] args)` dentro de uma classe. Toda variável precisa ter seu tipo declarado explicitamente antes do nome: tipos primitivos (`int`, `double`, `boolean`) começam com letra minúscula, enquanto `String` é uma classe e começa com maiúscula. Para exibir uma linha no terminal, usamos `System.out.println()`.",
+      "codeExample": "public class Main {\n  public static void main(String[] args) {\n    int idade = 25;\n    double altura = 1.75;\n    boolean ativo = true;\n    String nome = \"Duke\";\n    System.out.println(nome);\n  }\n}",
       "keyTakeaways": [
-        "System.out.println() imprime texto no console e pula uma linha.",
-        "Tipos primitivos como 'int' começam com letra minúscula.",
-        "'String' é uma classe em Java, por isso começa com letra maiúscula."
+        "`public static void main(String[] args)` é o ponto de entrada padrão da JVM.",
+        "`System.out.println()` imprime texto no console e pula uma linha.",
+        "Tipos primitivos (`int`, `double`, `boolean`) começam com letra minúscula; `String` começa com maiúscula."
       ]
     },
     {
@@ -25,24 +25,77 @@
         "std::cout << \"Olá\";"
       ],
       "correctIndex": 1,
-      "explanation": "Em Java, utilizamos o fluxo de saída padrão dentro da classe System: System.out.println()."
+      "explanation": "Em Java, utilizamos o fluxo de saída padrão dentro da classe System: `System.out.println()`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a declaração de uma variável inteira e um texto em Java:",
-      "codeTemplate": "{{blank}} idade = 25;\n{{blank}} nome = \"Duke\";",
+      "prompt": "Complete a declaração de uma variável inteira, uma decimal e um texto em Java:",
+      "codeTemplate": "{{blank}} idade = 25;\n{{blank}} preco = 19.90;\n{{blank}} nome = \"Duke\";",
       "blanks": [
         {
           "answer": "int",
           "placeholder": "tipo inteiro"
         },
         {
+          "answer": "double",
+          "placeholder": "tipo decimal"
+        },
+        {
           "answer": "String",
           "placeholder": "tipo texto"
         }
       ],
-      "options": ["int", "String", "var", "str"],
-      "explanation": "Em Java, tipos primitivos como 'int' começam com minúscula, enquanto 'String' é uma classe e começa com letra maiúscula."
+      "options": ["int", "double", "String", "str", "float", "var"],
+      "explanation": "Em Java, tipos primitivos como `int` e `double` começam com minúscula, enquanto `String` é uma classe e começa com letra maiúscula."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para montar um programa Java válido com o ponto de entrada `main`:",
+      "blocks": [
+        "public class Main {",
+        "  public static void main(String[] args) {",
+        "    System.out.println(\"Olá, JVM!\");",
+        "  }",
+        "}"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "explanation": "Todo código executável em Java fica dentro de uma classe e inicia pelo método `public static void main(String[] args)`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este programa Java falha ao compilar por causa de um erro de tipagem. Clique na linha com o bug:",
+      "lines": [
+        "public class App {",
+        "  public static void main(String[] args) {",
+        "    int pontos = 100;",
+        "    string usuario = \"Ana\";",
+        "    System.out.println(usuario);",
+        "  }",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Em Java, `String` é uma classe e diferencia maiúsculas de minúsculas: `string` em minúsculo não existe e gera erro de compilação."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "O que acontece ao compilar `int idade = \"25\";` dentro do método `main` em Java?",
+      "options": [
+        "O Java converte \"25\" para 25 automaticamente",
+        "O compilador acusa erro de tipos incompatíveis (String não pode ser atribuída a int)",
+        "O código compila e lança erro apenas se idade for impressa",
+        "A variável idade passa a ser do tipo String"
+      ],
+      "correctIndex": 1,
+      "explanation": "Por ter tipagem estática e forte, o compilador Java rejeita imediatamente a atribuição de uma `String` a uma variável `int`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Declare uma variável inteira chamada `idade` com valor `20`, uma variável de texto chamada `nome` com valor `\"Ana\"` e exiba `nome` no console usando a saída padrão do Java.",
+      "starterCode": "",
+      "requiredTokens": ["int", "idade", "String", "nome", "System.out.println"],
+      "sampleSolution": "int idade = 20;\nString nome = \"Ana\";\nSystem.out.println(nome);",
+      "hint": "Declare `int idade = 20;`, depois `String nome = \"Ana\";` e imprima com `System.out.println(nome);`.",
+      "explanation": "Combinamos a declaração de um tipo primitivo (`int`), uma classe de texto (`String`) e a exibição com `System.out.println()`."
     }
   ]
 }

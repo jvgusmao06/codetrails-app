@@ -1,0 +1,88 @@
+{
+  "id": "rust-slices-lifetimes-03",
+  "title": "Slices (&[T], &str) e Noção de Lifetimes ('a)",
+  "description": "Referencie fatias de memória sem copiar dados usando Slices (&str e &[T]) e entenda o papel dos Lifetimes ('a).",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Slices e Lifetimes: Referências Sempre Válidas",
+      "content": "Um **Slice** (`&[T]` ou `&str`) é uma referência para uma parte contígua de um `Vec<T>`, array ou `String` sem copiar nada (`&texto[0..3]`). Literais como `\"ola\"` têm tipo `&str`, e `&String` se converte automaticamente para `&str` — por isso funções de leitura preferem `&str` e `&[T]`. Já **Lifetimes (`'a`)** garantem que nenhuma referência aponte para memória já liberada: o compilador infere quase sempre, mas quando uma função retorna uma referência vinda de dois parâmetros, anotamos `fn maior<'a>(x: &'a str, y: &'a str) -> &'a str`.",
+      "codeExample": "fn primeiro_caractere(s: &str) -> &str {\n    &s[..1]\n}\n\nfn maior<'a>(a: &'a str, b: &'a str) -> &'a str {\n    if a.len() >= b.len() { a } else { b }\n}",
+      "keyTakeaways": [
+        "Prefira `&str` e `&[T]` nos parâmetros em vez de `&String` e `&Vec<T>`, pois slices aceitam ambos.",
+        "Slices permitem ler apenas uma fatia (`&lista[0..2]`) sem alocar memória.",
+        "Lifetimes (`'a`) descrevem para o Borrow Checker que a referência retornada vive pelo menos enquanto as referências de entrada."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual assinatura de parâmetro em Rust é mais flexível por aceitar tanto `&String` quanto literais `&str` sem alocar memória?",
+      "options": [
+        "texto: String",
+        "texto: &str",
+        "texto: mut String",
+        "texto: char[]"
+      ],
+      "correctIndex": 1,
+      "explanation": "Um string slice (`&str`) aceita tanto literais `\"ola\"` quanto referências `&minha_string`."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "O que a expressão `&numeros[0..2]` cria em Rust?",
+      "options": [
+        "Uma cópia independente dos dois primeiros elementos na Heap",
+        "Um slice (`&[i32]`) que referencia apenas os índices 0 e 1 sem alocar memória",
+        "Um novo `Vec<i32>` mutável",
+        "Uma variável com lifetime estático obrigatório"
+      ],
+      "correctIndex": 1,
+      "explanation": "Slices são referências para uma região contígua da memória original, evitando cópias e alocações."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete as anotações de lifetime `'a` na função `maior`, que retorna uma referência vinda de `x` ou `y`:",
+      "codeTemplate": "fn maior<{{blank}}>(x: &{{blank}} str, y: &'a str) -> &{{blank}} str {\n    if x.len() >= y.len() { x } else { y }\n}",
+      "blanks": [
+        { "answer": "'a", "placeholder": "lifetime" },
+        { "answer": "'a", "placeholder": "lifetime" },
+        { "answer": "'a", "placeholder": "lifetime" }
+      ],
+      "options": ["'a", "&a", "a", "'static", "mut"],
+      "explanation": "Declaramos `<'a>` após o nome da função e associamos `'a` aos parâmetros e ao retorno `&'a str`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Esta função retorna uma referência vinda de um de dois parâmetros `&str`, mas falta a anotação de lifetime exigida pelo compilador. Clique na linha com o erro:",
+      "lines": [
+        "fn escolher(a: &str, b: &str) -> &str {",
+        "    if a.len() > b.len() { a } else { b }",
+        "}"
+      ],
+      "buggyLineIndex": 0,
+      "explanation": "Na linha 1, como há duas referências de entrada (`a` e `b`), o compilador não sabe qual lifetime ligar ao retorno. É preciso anotar `fn escolher<'a>(a: &'a str, b: &'a str) -> &'a str`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para criar uma `String`, extrair um slice dos 4 primeiros bytes e imprimi-lo:",
+      "blocks": [
+        "    println!(\"{}\", fatia);",
+        "fn main() {",
+        "    let fatia: &str = &texto[0..4];",
+        "    let texto = String::from(\"RustLang\");",
+        "}"
+      ],
+      "correctOrder": [1, 3, 2, 0, 4],
+      "explanation": "Criamos `texto`, fazemos o slice `&texto[0..4]` em `fatia` e imprimimos com `println!`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Crie uma função chamada `primeiro_item` que receba um parâmetro `lista` como slice de `i32` e retorne o primeiro elemento desse slice (`i32`).",
+      "starterCode": "",
+      "requiredTokens": ["fn", "primeiro_item", "lista", "&[i32]", "->", "i32", "[0]"],
+      "sampleSolution": "fn primeiro_item(lista: &[i32]) -> i32 {\n    lista[0]\n}",
+      "hint": "Use `fn primeiro_item(lista: &[i32]) -> i32 { lista[0] }` (sem ponto e vírgula no retorno).",
+      "explanation": "Receber `&[i32]` permite passar slices de arrays `[i32; N]` ou vetores `&Vec<i32>` sem copiar."
+    }
+  ]
+}

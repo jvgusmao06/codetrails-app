@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { EditorView } from "@codemirror/view";
@@ -37,7 +37,7 @@ function getLanguageExtension(languageId?: string) {
 
 const mobileTouchTheme = EditorView.theme({
   "&": {
-    fontSize: "13px",
+    fontSize: "14px",
     backgroundColor: "#020617", // slate-950
   },
   ".cm-scroller": {
@@ -61,6 +61,23 @@ const mobileTouchTheme = EditorView.theme({
   },
 });
 
+const MOBILE_SYMBOLS: ReadonlyArray<{ label: string; value: string }> = [
+  { label: "Tab", value: "  " },
+  { label: "(", value: "(" },
+  { label: ")", value: ")" },
+  { label: "{", value: "{" },
+  { label: "}", value: "}" },
+  { label: "[", value: "[" },
+  { label: "]", value: "]" },
+  { label: "=", value: "=" },
+  { label: "=>", value: " => " },
+  { label: ";", value: ";" },
+  { label: '"', value: '"' },
+  { label: "'", value: "'" },
+  { label: ":", value: ":" },
+  { label: ".", value: "." },
+];
+
 export function CodeEditor({
   value,
   onChange,
@@ -74,32 +91,66 @@ export function CodeEditor({
   disabled?: boolean;
   placeholder?: string;
 }) {
+  const viewRef = useRef<EditorView | null>(null);
+
   const extensions = useMemo(
     () => [getLanguageExtension(languageId), EditorView.lineWrapping, mobileTouchTheme],
     [languageId]
   );
 
+  function insertSnippet(snippet: string) {
+    const view = viewRef.current;
+    if (!view || disabled) return;
+    view.dispatch(view.state.replaceSelection(snippet));
+    view.focus();
+  }
+
   return (
-    <CodeMirror
-      value={value}
-      onChange={onChange}
-      theme={oneDark}
-      extensions={extensions}
-      editable={!disabled}
-      readOnly={disabled}
-      placeholder={placeholder}
-      minHeight="170px"
-      basicSetup={{
-        lineNumbers: true,
-        highlightActiveLineGutter: true,
-        highlightActiveLine: true,
-        foldGutter: false,
-        autocompletion: true,
-        closeBrackets: true,
-        bracketMatching: true,
-        indentOnInput: true,
-        tabSize: 2,
-      }}
-    />
+    <div>
+      <CodeMirror
+        value={value}
+        onChange={onChange}
+        onCreateEditor={(view) => {
+          viewRef.current = view;
+        }}
+        theme={oneDark}
+        extensions={extensions}
+        editable={!disabled}
+        readOnly={disabled}
+        placeholder={placeholder}
+        minHeight="170px"
+        basicSetup={{
+          lineNumbers: true,
+          highlightActiveLineGutter: true,
+          highlightActiveLine: true,
+          foldGutter: false,
+          autocompletion: true,
+          closeBrackets: true,
+          bracketMatching: true,
+          indentOnInput: true,
+          tabSize: 2,
+        }}
+      />
+
+      {!disabled && (
+        <div
+          role="toolbar"
+          aria-label="Símbolos rápidos de código"
+          className="md:hidden flex items-center gap-1.5 px-2.5 py-2 border-t border-border/80 bg-surface overflow-x-auto no-scrollbar"
+        >
+          {MOBILE_SYMBOLS.map((sym) => (
+            <button
+              key={sym.label}
+              type="button"
+              onPointerDown={(e) => e.preventDefault()}
+              onClick={() => insertSnippet(sym.value)}
+              className="h-8 min-w-[34px] px-2.5 rounded-lg bg-surface-card border border-border font-mono text-xs text-slate-200 active:bg-emerald-500/20 active:border-accent/60 shrink-0 transition cursor-pointer"
+            >
+              {sym.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

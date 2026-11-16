@@ -28,6 +28,7 @@ import {
   triggerFeedbackEffect,
   useUserProgress,
 } from "@/lib/progress";
+import { hasWriteCodeContent, matchRequiredTokens } from "@/lib/code-validation";
 
 export function LessonPlayer({
   trackId,
@@ -68,6 +69,7 @@ export function LessonPlayer({
   }, [lesson.steps, practiceOnly]);
 
   const [stepIdx, setStepIdx] = useState(0);
+  const [retryQueue, setRetryQueue] = useState<number[]>([]);
   const [energy, setEnergy] = useState(5);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [blankAnswers, setBlankAnswers] = useState<string[]>([]);
@@ -79,7 +81,13 @@ export function LessonPlayer({
   const [status, setStatus] = useState<"idle" | "correct" | "wrong">("idle");
   const [isFinished, setIsFinished] = useState(false);
 
-  const safeStepIdx = Math.min(stepIdx, Math.max(0, activeSteps.length - 1));
+  const totalSteps = activeSteps.length + retryQueue.length;
+  const isRetryStep = stepIdx >= activeSteps.length;
+  const rawStepIdx =
+    stepIdx < activeSteps.length
+      ? stepIdx
+      : retryQueue[stepIdx - activeSteps.length] ?? 0;
+  const safeStepIdx = Math.min(rawStepIdx, Math.max(0, activeSteps.length - 1));
   const currentStep = activeSteps[safeStepIdx];
 
   useEffect(() => {
@@ -87,7 +95,7 @@ export function LessonPlayer({
       setWrittenCode(currentStep.starterCode ?? "");
       setShowHint(false);
     }
-  }, [safeStepIdx, currentStep]);
+  }, [stepIdx, currentStep]);
 
   const expectedBlanksCount =
     currentStep?.type === "fill_in_blank" ? currentStep.blanks.length : 0;
@@ -115,7 +123,7 @@ export function LessonPlayer({
       return selectedBugLine !== null;
     }
     if (currentStep.type === "write_code") {
-      return writtenCode.trim().length > 0;
+      return hasWriteCodeContent(writtenCode, languageId, trackId);
     }
     return false;
   }, [
@@ -125,6 +133,8 @@ export function LessonPlayer({
     orderedIndices.length,
     selectedBugLine,
     writtenCode,
+    languageId,
+    trackId,
   ]);
 
   function handleCheckAnswer() {
@@ -144,10 +154,12 @@ export function LessonPlayer({
     } else if (currentStep.type === "spot_the_bug") {
       isCorrect = selectedBugLine === currentStep.buggyLineIndex;
     } else if (currentStep.type === "write_code") {
-      const normalized = writtenCode.toLowerCase();
-      isCorrect = currentStep.requiredTokens.every((tok) =>
-        normalized.includes(tok.toLowerCase())
-      );
+      isCorrect = matchRequiredTokens(
+        writtenCode,
+        currentStep.requiredTokens,
+        languageId,
+        trackId
+      ).passed;
     }
 
     if (isCorrect) {
@@ -160,9 +172,30 @@ export function LessonPlayer({
     }
   }
 
+  function handleRetry() {
+    setStatus("idle");
+    if (currentStep?.type !== "write_code") {
+      setSelectedOption(null);
+      setBlankAnswers([]);
+      setActiveBlankIdx(0);
+      setOrderedIndices([]);
+      setSelectedBugLine(null);
+    }
+  }
+
   function handleNext() {
-    const nextIdx = safeStepIdx + 1;
-    if (nextIdx >= activeSteps.length) {
+    const shouldQueueRetry =
+      status === "wrong" && !retryQueue.includes(safeStepIdx);
+    const nextRetryQueue = shouldQueueRetry
+      ? [...retryQueue, safeStepIdx]
+      : retryQueue;
+    if (shouldQueueRetry) {
+      setRetryQueue(nextRetryQueue);
+    }
+
+    const nextIdx = stepIdx + 1;
+    const nextTotal = activeSteps.length + nextRetryQueue.length;
+    if (nextIdx >= nextTotal) {
       completeLessonProgress(lesson.id, lesson.xp);
       triggerFeedbackEffect("complete");
       setIsFinished(true);
@@ -201,8 +234,13 @@ export function LessonPlayer({
     if (isFinished || !currentStep) return;
 
     function onKeyDown(e: KeyboardEvent) {
+      if (e.isComposing) return;
       const target = e.target as HTMLElement | null;
-      const isInput = target?.tagName === "INPUT" || target?.tagName === "TEXTAREA";
+      const isEditor =
+        target?.tagName === "TEXTAREA" ||
+        Boolean(target?.isContentEditable) ||
+        Boolean(target?.closest?.(".cm-editor"));
+      const isInput = target?.tagName === "INPUT" || isEditor;
 
       if (
         currentStep.type === "multiple_choice" &&
@@ -217,8 +255,14 @@ export function LessonPlayer({
       }
 
       if (e.key === "Enter") {
-        const isTextarea = target?.tagName === "TEXTAREA";
-        if (isTextarea && status === "idle" && !(e.ctrlKey || e.metaKey)) {
+        if (target?.closest?.("button, a")) {
+          return;
+        }
+        if (
+          (isEditor || currentStep.type === "write_code") &&
+          status === "idle" &&
+          !(e.ctrlKey || e.metaKey)
+        ) {
           return; // Allow normal multiline Enter inside write_code editor
         }
         if (currentStep.type === "theory") {
@@ -241,7 +285,7 @@ export function LessonPlayer({
 
   if (isFinished) {
     return (
-      <div className="min-h-dvh bg-[#090d16] text-slate-100 flex flex-col items-center justify-center p-6">
+      <div className="min-h-dvh bg-background text-foreground flex flex-col items-center justify-center p-6">
         <ConfettiBurst />
         <div className="w-full max-w-md rounded-2xl border border-emerald-500/35 bg-slate-900/85 p-6 space-y-6 shadow-xl">
           <div className="flex items-center justify-between border-b border-zinc-800 pb-4 font-mono text-xs text-zinc-400">
@@ -301,9 +345,9 @@ export function LessonPlayer({
       : [];
 
   return (
-    <div className="min-h-dvh bg-zinc-950 text-zinc-100 flex flex-col justify-between">
+    <div className="min-h-dvh bg-background text-foreground flex flex-col justify-between">
       {/* Top IDE-style Header */}
-      <header className="border-b border-zinc-800/80 bg-zinc-950/90 px-4 py-3">
+      <header className="border-b border-border/80 bg-background/90 px-4 pt-[calc(0.75rem+env(safe-area-inset-top))] pb-3 sm:py-3">
         <div className="max-w-3xl w-full mx-auto flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <Link
@@ -322,20 +366,29 @@ export function LessonPlayer({
 
           {/* Segmented Step Bar */}
           <div className="flex items-center gap-1.5 flex-1 max-w-xs">
-            {activeSteps.map((s, idx) => (
-              <div
-                key={idx}
-                className={`h-1.5 flex-1 rounded-full transition-all ${
-                  idx < safeStepIdx
-                    ? "bg-emerald-500"
-                    : idx === safeStepIdx
-                    ? s.type === "theory"
-                      ? "bg-cyan-400"
-                      : "bg-indigo-500"
-                    : "bg-zinc-800"
-                }`}
-              />
-            ))}
+            {Array.from({ length: totalSteps }, (_, idx) => {
+              const targetIdx =
+                idx < activeSteps.length
+                  ? idx
+                  : retryQueue[idx - activeSteps.length] ?? 0;
+              const s = activeSteps[targetIdx];
+              return (
+                <div
+                  key={idx}
+                  className={`h-1.5 flex-1 rounded-full transition-all ${
+                    idx < stepIdx
+                      ? "bg-emerald-500"
+                      : idx === stepIdx
+                      ? idx >= activeSteps.length
+                        ? "bg-amber-400"
+                        : s?.type === "theory"
+                        ? "bg-cyan-400"
+                        : "bg-indigo-500"
+                      : "bg-zinc-800"
+                  }`}
+                />
+              );
+            })}
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
@@ -345,17 +398,19 @@ export function LessonPlayer({
               onClick={() => {
                 setPracticeOnly((p) => !p);
                 setStepIdx(0);
+                setRetryQueue([]);
                 setStatus("idle");
               }}
-              className={`hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-mono text-[11px] border transition cursor-pointer ${
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md font-mono text-[11px] border transition cursor-pointer ${
                 practiceOnly
                   ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-300"
                   : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200"
               }`}
+              aria-label={t.common.toggleModeTitle}
               title={t.common.toggleModeTitle}
             >
               <Dumbbell className="w-3 h-3" />
-              <span>
+              <span className="sr-only sm:not-sr-only">
                 {practiceOnly
                   ? t.player.practiceModeBadge
                   : t.player.skipTheory}
@@ -381,7 +436,7 @@ export function LessonPlayer({
                 {t.player.theoryBadge}
               </span>
               <span className="font-mono text-xs text-zinc-400">
-                {t.player.step} {safeStepIdx + 1}/{activeSteps.length}
+                {t.player.step} {stepIdx + 1}/{totalSteps}
               </span>
             </div>
 
@@ -441,8 +496,13 @@ export function LessonPlayer({
               <span>{moduleTitle}</span>
               <span>•</span>
               <span>
-                {t.player.step} {safeStepIdx + 1}/{activeSteps.length}
+                {t.player.step} {stepIdx + 1}/{totalSteps}
               </span>
+              {isRetryStep && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[10px]">
+                  <RotateCcw className="w-3 h-3" /> Revisão
+                </span>
+              )}
               {practiceOnly && (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[10px]">
                   <Dumbbell className="w-3 h-3" /> {t.player.practiceModeBadge}
@@ -479,6 +539,12 @@ export function LessonPlayer({
             <div className="grid gap-2.5">
               {currentStep.options.map((option, idx) => {
                 const isSelected = selectedOption === idx;
+                const isRightOption =
+                  status !== "idle" && idx === currentStep.correctIndex;
+                const isWrongPick =
+                  status === "wrong" &&
+                  isSelected &&
+                  idx !== currentStep.correctIndex;
                 return (
                   <button
                     key={idx}
@@ -486,14 +552,22 @@ export function LessonPlayer({
                     disabled={status !== "idle"}
                     onClick={() => setSelectedOption(idx)}
                     className={`w-full text-left p-3.5 rounded-xl border font-mono text-sm transition flex items-center gap-3.5 cursor-pointer ${
-                      isSelected
+                      isRightOption
+                        ? "border-emerald-500/70 bg-emerald-500/15 text-emerald-100"
+                        : isWrongPick
+                        ? "border-rose-500/70 bg-rose-500/15 text-rose-100"
+                        : isSelected
                         ? "border-indigo-500 bg-indigo-500/15 text-white"
                         : "border-zinc-800 bg-zinc-900/60 text-zinc-300 hover:bg-zinc-900 hover:border-zinc-700"
                     }`}
                   >
                     <span
                       className={`w-6 h-6 rounded-md border flex items-center justify-center text-xs font-mono shrink-0 ${
-                        isSelected
+                        isRightOption
+                          ? "border-emerald-400 bg-emerald-600 text-white"
+                          : isWrongPick
+                          ? "border-rose-400 bg-rose-600 text-white"
+                          : isSelected
                           ? "border-indigo-400 bg-indigo-600 text-white"
                           : "border-zinc-700 bg-zinc-950 text-zinc-400"
                       }`}
@@ -541,6 +615,10 @@ export function LessonPlayer({
                     {i < currentStep.blanks.length && (
                       <input
                         type="text"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        autoComplete="off"
+                        spellCheck={false}
                         disabled={status !== "idle"}
                         value={currentBlanks[i] ?? ""}
                         onFocus={() => setActiveBlankIdx(i)}
@@ -552,10 +630,14 @@ export function LessonPlayer({
                         placeholder={
                           currentStep.blanks[i].placeholder ?? "___"
                         }
-                        className={`mx-1 px-2.5 py-0.5 rounded-md border font-mono font-semibold text-center transition focus:outline-none ${
-                          activeBlankIdx === i
+                        className={`mx-1 px-2.5 py-0.5 rounded-md border font-mono text-base sm:text-inherit font-semibold text-center transition focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/40 ${
+                          status === "correct"
+                            ? "border-emerald-500 bg-emerald-500/15 text-emerald-200"
+                            : status === "wrong"
+                            ? "border-rose-500 bg-rose-500/15 text-rose-200"
+                            : activeBlankIdx === i
                             ? "border-indigo-400 bg-indigo-500/20 text-white"
-                            : "border-zinc-700 bg-zinc-950 text-cyan-300"
+                            : "border-zinc-700 bg-surface-inset text-cyan-300"
                         }`}
                         style={{
                           width: `${Math.max(
@@ -568,6 +650,22 @@ export function LessonPlayer({
                   </span>
                 ))}
               </div>
+
+              {status === "wrong" && (
+                <div className="px-4 py-2.5 bg-rose-950/25 border-t border-rose-500/30 font-mono text-xs text-rose-200 flex items-center gap-2 flex-wrap">
+                  <span className="text-rose-400 font-semibold">
+                    {t.common.referenceSolution}:
+                  </span>
+                  {currentStep.blanks.map((b, i) => (
+                    <code
+                      key={i}
+                      className="px-2 py-0.5 rounded bg-surface-inset border border-emerald-500/40 text-emerald-300"
+                    >
+                      {b.answer}
+                    </code>
+                  ))}
+                </div>
+              )}
             </div>
 
             {currentStep.options && currentStep.options.length > 0 && (
@@ -699,6 +797,12 @@ export function LessonPlayer({
               <div className="divide-y divide-zinc-800/60">
                 {currentStep.lines.map((line, idx) => {
                   const isSelected = selectedBugLine === idx;
+                  const isBugLine =
+                    status !== "idle" && idx === currentStep.buggyLineIndex;
+                  const isWrongPick =
+                    status === "wrong" &&
+                    isSelected &&
+                    idx !== currentStep.buggyLineIndex;
                   return (
                     <button
                       key={idx}
@@ -706,14 +810,20 @@ export function LessonPlayer({
                       disabled={status !== "idle"}
                       onClick={() => setSelectedBugLine(idx)}
                       className={`w-full text-left px-4 py-2.5 font-mono text-xs sm:text-sm flex items-center gap-3.5 transition cursor-pointer ${
-                        isSelected
+                        isBugLine
+                          ? "bg-emerald-500/15 text-emerald-200 border-l-2 border-l-emerald-500"
+                          : isWrongPick || (status === "idle" && isSelected)
                           ? "bg-rose-500/15 text-rose-200 border-l-2 border-l-rose-500"
                           : "hover:bg-zinc-800/60 text-zinc-300"
                       }`}
                     >
                       <span
                         className={`w-6 text-right text-[11px] select-none shrink-0 ${
-                          isSelected ? "text-rose-400 font-bold" : "text-zinc-500"
+                          isBugLine
+                            ? "text-emerald-400 font-bold"
+                            : isWrongPick || (status === "idle" && isSelected)
+                            ? "text-rose-400 font-bold"
+                            : "text-zinc-500"
                         }`}
                       >
                         {idx + 1}
@@ -721,8 +831,12 @@ export function LessonPlayer({
                       <code className="whitespace-pre-wrap break-all flex-1">
                         <CodeHighlight code={line} />
                       </code>
-                      {isSelected && (
-                        <Bug className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                      {(isBugLine || isSelected) && (
+                        <Bug
+                          className={`w-3.5 h-3.5 shrink-0 ${
+                            isBugLine ? "text-emerald-400" : "text-rose-400"
+                          }`}
+                        />
                       )}
                     </button>
                   );
@@ -788,31 +902,39 @@ export function LessonPlayer({
                 placeholder={t.common.editorPlaceholder}
               />
 
-              <div className="px-4 py-2 bg-slate-900/80 border-t border-slate-800/80 flex items-center justify-between flex-wrap gap-2">
-                <span className="font-mono text-[11px] text-slate-400">
-                  Tokens esperados:
-                </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {currentStep.requiredTokens.map((tok, i) => {
-                    const hasTok = writtenCode
-                      .toLowerCase()
-                      .includes(tok.toLowerCase());
-                    return (
-                      <span
-                        key={i}
-                        className={`px-2 py-0.5 rounded font-mono text-[11px] border transition ${
-                          hasTok
-                            ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-300"
-                            : "bg-slate-950 border-slate-800 text-slate-400"
-                        }`}
-                      >
-                        {hasTok ? "✓ " : ""}
-                        {tok}
-                      </span>
-                    );
-                  })}
+              {status === "wrong" && (
+                <div className="px-4 py-2 bg-slate-900/80 border-t border-slate-800/80 flex items-center justify-between flex-wrap gap-2">
+                  <span className="font-mono text-[11px] text-slate-400">
+                    Tokens esperados:
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(() => {
+                      const { matched } = matchRequiredTokens(
+                        writtenCode,
+                        currentStep.requiredTokens,
+                        languageId,
+                        trackId
+                      );
+                      return currentStep.requiredTokens.map((tok, i) => {
+                        const hasTok = matched[i];
+                        return (
+                          <span
+                            key={i}
+                            className={`px-2 py-0.5 rounded font-mono text-[11px] border transition ${
+                              hasTok
+                                ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-300"
+                                : "bg-rose-950/60 border-rose-500/40 text-rose-300"
+                            }`}
+                          >
+                            {hasTok ? "✓ " : "✗ "}
+                            {tok}
+                          </span>
+                        );
+                      });
+                    })()}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {status !== "idle" && (
@@ -906,17 +1028,28 @@ export function LessonPlayer({
               <Play className="w-3.5 h-3.5 fill-current" /> {t.player.runTest}
             </button>
           ) : (
-            <button
-              type="button"
-              onClick={handleNext}
-              className={`w-full sm:w-auto px-6 py-3 rounded-xl font-mono font-semibold text-xs uppercase tracking-wider text-white flex items-center justify-center gap-2 transition cursor-pointer ${
-                status === "correct"
-                  ? "bg-emerald-600 hover:bg-emerald-500"
-                  : "bg-rose-600 hover:bg-rose-500"
-              }`}
-            >
-              {t.player.nextStep} <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
+              {status === "wrong" && (
+                <button
+                  type="button"
+                  onClick={handleRetry}
+                  className="w-full sm:w-auto px-5 py-3 rounded-xl border border-rose-400/50 bg-rose-950/50 hover:bg-rose-900/60 text-rose-100 font-mono font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" /> Tentar Novamente
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={handleNext}
+                className={`w-full sm:w-auto px-6 py-3 rounded-xl font-mono font-semibold text-xs uppercase tracking-wider text-white flex items-center justify-center gap-2 transition cursor-pointer ${
+                  status === "correct"
+                    ? "bg-emerald-600 hover:bg-emerald-500"
+                    : "bg-rose-600 hover:bg-rose-500"
+                }`}
+              >
+                {t.player.nextStep} <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           )}
         </div>
       </footer>

@@ -1,40 +1,91 @@
 {
   "id": "rust-basico-00",
-  "title": "Primeiros Passos: Variáveis (let, mut, const), Tipos e If",
-  "description": "Comece do zero em Rust: fn main, variáveis imutáveis vs mutáveis, tipos escalares (i32, f64, bool, char), tuplas e if como expressão.",
+  "title": "Variáveis (let, mut, const) e Tipos Primitivos",
+  "description": "Comece do zero em Rust: fn main, imutabilidade por padrão, mutabilidade explícita com mut, constantes e tipos escalares.",
   "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "Criando Variáveis e Tipos Primitivos no Rust",
-      "content": "Todo programa Rust começa em 'fn main()'. Criamos variáveis com 'let', que são imutáveis por padrão para evitar bugs acidentais! Para permitir que o valor mude, adicionamos 'mut' ('let mut contador = 0;'). Já constantes globais usam 'const' e exigem tipo explícito ('const MAX: u32 = 100;'). Os tipos primitivos principais são inteiros com sinal (i8, i32, i64), inteiros sem sinal (u8, u32, usize), decimais (f64), booleanos (bool) e caracteres Unicode (char). Além disso, 'if/else' em Rust retorna valor e pode ser atribuído direto a uma variável!",
-      "codeExample": "const LIMITE: i32 = 100;\n\nfn main() {\n    let nome: &str = \"Ferris\";\n    let mut nivel: i32 = 1;\n    nivel += 1;\n\n    // if/else funcionando como expressão que retorna valor\n    let status = if nivel >= 2 { \"Pronto\" } else { \"Iniciante\" };\n    println!(\"{} ({}) -> {}\", nome, LIMITE, status);\n}",
+      "title": "Variáveis Imutáveis, Mutáveis, Tipos (:) e Macros (!)",
+      "content": "Todo programa Rust começa em `fn main()`. Criamos variáveis com `let`, que são **imutáveis por padrão**; para permitir alteração de valor, adicionamos `mut` (`let mut nivel = 1;`). Sempre que queremos indicar o tipo explícito, colocamos **dois-pontos (`:`)** após o nome (ex: `let ativo: bool = true;`). Constantes usam `const`, nome em MAIÚSCULAS e tipo obrigatório com `:`. Os principais tipos primitivos são inteiros (`i32`, `u32`, `u8`), decimais (`f64`), booleanos (`bool`) e caracteres (`char`). Para imprimir, usamos `println!(\"{}\", valor);` — o **`!`** indica que `println!` é uma **macro** (um gerador de código expandido na compilação, diferente de uma função comum).",
+      "codeExample": "const LIMITE: i32 = 100;\n\nfn main() {\n    let ativo: bool = true;\n    let mut nivel: i32 = 1;\n    nivel += 1;\n\n    println!(\"Ativo: {}, Nível: {}, Limite: {}\", ativo, nivel, LIMITE);\n}",
       "keyTakeaways": [
-        "'let x = 5;' cria uma variável imutável; 'let mut x = 5;' cria uma variável mutável.",
-        "'const' exige anotação de tipo explícita (ex: const TAXA: f64 = 0.05;) e valor conhecido em compilação.",
-        "Em Rust, 'if condicao { valor1 } else { valor2 }' pode ser usado no lado direito de um 'let'!"
+        "`let x = 5;` cria uma variável imutável; `let mut x = 5;` permite alterar o valor depois.",
+        "Para declarar o tipo explicitamente, use `:` após o nome: `let idade: i32 = 20;` ou `const MAX: u8 = 5;`.",
+        "Nomes terminados em `!` (como `println!`) são **macros**: elas geram código em tempo de compilação e por isso aceitam formatos variáveis como `\"{}, {}\"`."
       ]
     },
     {
+      "type": "multiple_choice",
+      "prompt": "O que acontece ao tentar executar `let x = 10; x = 20;` em Rust?",
+      "options": [
+        "Erro de compilação, pois variáveis criadas com `let` são imutáveis por padrão",
+        "Funciona normalmente e `x` passa a valer `20`",
+        "Gera apenas um aviso (*warning*) em tempo de execução",
+        "Converte `x` automaticamente em uma `const`"
+      ],
+      "correctIndex": 0,
+      "explanation": "Em Rust, toda variável declarada com `let` é imutável por padrão. Para permitir reatribuição, é obrigatório declarar `let mut x = 10;`."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Por que `println!` termina com um ponto de exclamação (`!`) em Rust?",
+      "options": [
+        "Porque indica que ela pode falhar em tempo de execução",
+        "Porque é uma macro expandida em tempo de compilação, não uma função comum",
+        "Porque é uma função assíncrona",
+        "Porque imprime apenas constantes"
+      ],
+      "correctIndex": 1,
+      "explanation": "O sufixo `!` identifica uma macro em Rust. Macros geram código durante a compilação, permitindo aceitar quantidade variável de argumentos."
+    },
+    {
       "type": "fill_in_blank",
-      "prompt": "Complete o código Rust declarando uma constante tipada, uma variável mutável e atribuindo o resultado de um if/else:",
-      "codeTemplate": "{{blank}} MAX_VIDAS: u8 = 5;\nlet {{blank}} pontos = 10;\nlet msg = {{blank}} pontos > 5 { \"Alto\" } else { \"Baixo\" };",
+      "prompt": "Complete o código Rust declarando uma constante tipada, uma variável mutável e imprimindo seu valor:",
+      "codeTemplate": "{{blank}} MAX_VIDAS: u8 = 5;\nlet {{blank}} pontos = 10;\npontos += 5;\n{{blank}}(\"{}\", pontos);",
       "blanks": [
         { "answer": "const", "placeholder": "constante" },
         { "answer": "mut", "placeholder": "mutável" },
-        { "answer": "if", "placeholder": "condicional" }
+        { "answer": "println!", "placeholder": "macro" }
       ],
-      "options": ["const", "mut", "if", "var", "let", "when"],
-      "explanation": "Usamos 'const' para constantes tipadas, 'let mut' para variáveis mutáveis e 'if ... else' como expressão."
+      "options": ["const", "mut", "println!", "var", "let", "print"],
+      "explanation": "Usamos `const` para constantes com tipo explícito, `let mut` para variáveis mutáveis e `println!` para imprimir."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código não compila por causa de uma regra das constantes em Rust. Clique na linha com o erro:",
+      "lines": [
+        "fn main() {",
+        "    const LIMITE = 50;",
+        "    let mut total: i32 = 10;",
+        "    println!(\"{} {}\", total, LIMITE);",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Na linha 2, `const LIMITE = 50;` está sem o tipo explícito obrigatório. O correto é `const LIMITE: i32 = 50;`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para montar um programa Rust válido com constante, variável mutável e impressão:",
+      "blocks": [
+        "    nivel += 1;",
+        "fn main() {",
+        "    println!(\"{} {}\", nivel, MAX);",
+        "const MAX: u8 = 10;",
+        "    let mut nivel: u8 = 1;",
+        "}"
+      ],
+      "correctOrder": [3, 1, 4, 0, 2, 5],
+      "explanation": "Declaramos `const MAX: u8 = 10;`, abrimos `fn main()`, criamos `let mut nivel`, incrementamos, imprimimos com `println!` e fechamos `}`."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva do zero em Rust a declaração de uma variável mutável 'let mut idade: i32 = 20;' e imprima seu valor com 'println!(\"{}\", idade);':",
-      "starterCode": "// Declare let mut idade e imprima com println!:\n",
-      "requiredTokens": ["let", "mut", "idade", "20", "println!"],
+      "prompt": "Declare uma variável mutável chamada `idade` (tipo `i32`) com valor `20` e imprima seu valor no console.",
+      "starterCode": "",
+      "requiredTokens": ["let", "mut", "idade", "i32", "20", "println!"],
       "sampleSolution": "let mut idade: i32 = 20;\nprintln!(\"{}\", idade);",
-      "hint": "Use: let mut idade: i32 = 20; na primeira linha e println!(\"{}\", idade); na segunda.",
-      "explanation": "A combinação 'let mut' informa ao compilador Rust que a variável terá seu valor alterado ao longo do escopo."
+      "hint": "Use `let mut idade: i32 = 20;` na primeira linha e `println!(\"{}\", idade);` na segunda.",
+      "explanation": "A combinação `let mut` informa ao compilador Rust que a variável pode ter seu valor alterado no escopo."
     }
   ]
 }

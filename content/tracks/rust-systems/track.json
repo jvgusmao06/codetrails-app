@@ -1,7 +1,7 @@
 {
   "id": "rust-systems",
   "title": "Rust & Memory Safety",
-  "description": "Aprenda Rust do zero às funções nativas: variáveis (let/mut/const), tipos, loops, structs, iteradores, ownership, Option/Result e traits.",
+  "description": "Aprenda Rust passo a passo do zero: variáveis, fluxo, funções, structs, ownership, borrowing, slices, Option/Result, coleções, traits, generics e testes.",
   "category": "language",
   "color": "#F74C00",
   "icon": "🦀",
@@ -9,33 +9,36 @@
   "modules": [
     {
       "id": "mod-00-sintaxe",
-      "title": "Módulo 1: Do Zero a Funções, Loops, Structs e Iteradores",
-      "description": "Variáveis let/mut/const, tipos primitivos, if como expressão, funções, structs, loops e iteradores (.iter/.collect).",
+      "title": "Módulo 1: Fundamentos da Linguagem",
+      "description": "Variáveis (let/mut/const), tipos primitivos, condicionais, loops, funções com retorno implícito, structs e métodos.",
       "lessons": [
         "lesson-00-variaveis-tipos-primitivos",
-        "lesson-01-sintaxe-structs",
-        "lesson-02-loops-iteradores-nativos"
+        "lesson-01-controle-fluxo-loops",
+        "lesson-02-funcoes-expressoes",
+        "lesson-03-structs-metodos"
       ]
     },
     {
       "id": "mod-01-ownership",
-      "title": "Módulo 2: Imutabilidade, Ownership e Borrowing",
-      "description": "Entenda move semantics, referências (& e &mut) e como o Borrow Checker evita bugs.",
+      "title": "Módulo 2: Ownership, Borrowing e Memória",
+      "description": "Entenda move vs copy, referências (& e &mut), slices (&str, &[T]), lifetimes ('a) e smart pointers (Box, Rc, Arc).",
       "lessons": [
-        "lesson-01-mut-ownership",
-        "lesson-02-slices-lifetimes",
-        "lesson-03-smart-pointers-box-rc"
+        "lesson-01-ownership-move",
+        "lesson-02-borrowing-referencias",
+        "lesson-03-slices-lifetimes",
+        "lesson-04-smart-pointers-box-rc"
       ]
     },
     {
       "id": "mod-02-enums-match",
-      "title": "Módulo 3: Pattern Matching, Option, Result e Traits",
-      "description": "Domine enums algébricos, match exaustivo, String vs &str e polimorfismo com traits.",
+      "title": "Módulo 3: Enums, Erros, Coleções, Traits e Testes",
+      "description": "Domine Option, Result, match, if let, operador ?, Vec/HashMap/closures, traits, generics <T> e testes com #[test].",
       "lessons": [
         "lesson-01-option-result",
-        "lesson-02-traits-generics-rust",
-        "lesson-03-hashmap-closures-if-let",
-        "lesson-04-modulos-crates-cargo-tests"
+        "lesson-02-if-let-operador-interrogacao",
+        "lesson-03-vec-hashmap-closures",
+        "lesson-04-traits-generics-rust",
+        "lesson-05-modulos-crates-cargo-tests"
       ]
     }
   ]

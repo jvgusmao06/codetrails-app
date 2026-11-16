@@ -1,0 +1,88 @@
+{
+  "id": "rust-if-let-interrogacao-02",
+  "title": "Atalhos: if let e Operador ? (Propagação de Erros)",
+  "description": "Simplifique matches de um único caso com if let e propague Result/Option de forma limpa usando o operador ?.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Código Limpo Sem match Gigante: if let e ?",
+      "content": "Quando você só se importa com **uma** variante (como `Some(x)`), escrever `match` com `_ => ()` fica verboso. Para isso existe `if let Some(x) = valor { ... }`. Já em funções que retornam `Result<T, E>`, o operador **`?`** ao final de uma expressão (`fs::read_to_string(\"a.txt\")?;`) extrai o valor de `Ok` ou faz **retorno antecipado** do `Err` para quem chamou a função!",
+      "codeExample": "use std::fs;\nuse std::io;\n\nfn ler_config() -> Result<String, io::Error> {\n    let texto = fs::read_to_string(\"config.toml\")?; // Se Err, retorna já aqui\n    Ok(texto)\n}\n\nfn mostrar(talvez: Option<i32>) {\n    if let Some(v) = talvez {\n        println!(\"Valor: {}\", v);\n    }\n}",
+      "keyTakeaways": [
+        "`if let Some(x) = opt { ... }` executa o bloco apenas quando `opt` corresponde ao padrão.",
+        "O operador `?` desempacota `Ok(v)` ou retorna `Err(e)` imediatamente da função atual.",
+        "`?` só pode ser usado dentro de funções cujo tipo de retorno seja compatível (`Result` ou `Option`)."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Em qual situação vale mais a pena usar `if let` em vez de `match`?",
+      "options": [
+        "Quando você só quer agir sobre uma única variante (ex: `Some(x)`) e ignorar as outras",
+        "Quando precisa garantir que todas as 5 variantes de um `enum` foram tratadas",
+        "Quando quer criar um laço infinito",
+        "Quando a função não possui variáveis locais"
+      ],
+      "correctIndex": 0,
+      "explanation": "`if let` elimina o boilerplate `_ => ()` quando apenas um padrão importa no momento."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Em uma função Rust que retorna `Result<String, io::Error>`, o que faz o operador `?` em `let texto = fs::read_to_string(\"a.txt\")?;`?",
+      "options": [
+        "Ignora qualquer erro e retorna uma string vazia",
+        "Se for Ok(s), guarda s em texto; se for Err(e), retorna imediatamente Err(e) da função atual",
+        "Converte Result em Option",
+        "Encerra o programa com panic!"
+      ],
+      "correctIndex": 1,
+      "explanation": "O operador `?` desempacota `Ok` ou faz retorno antecipado (`early return`) do `Err`, eliminando `match` repetitivo."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O operador `?` exige um tipo de retorno compatível na função. Clique na linha que causa erro de compilação:",
+      "lines": [
+        "fn main() {",
+        "    let conteudo = std::fs::read_to_string(\"dados.txt\")?;",
+        "    println!(\"{}\", conteudo);",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Na linha 2, `main()` retorna `()` e não `Result` nem `Option`, então o operador `?` não pode propagar o erro."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código usando propagação com `?` e verificação com `if let`:",
+      "codeTemplate": "fn obter() -> {{blank}}<i32, String> {\n    let x = validar(10){{blank}};\n    Ok(x)\n}\n\n{{blank}} Ok(v) = obter() {\n    println!(\"{}\", v);\n}",
+      "blanks": [
+        { "answer": "Result", "placeholder": "tipo retorno" },
+        { "answer": "?", "placeholder": "operador" },
+        { "answer": "if let", "placeholder": "atalho" }
+      ],
+      "options": ["Result", "?", "if let", "Option", "!", "match"],
+      "explanation": "A função retorna `Result`, usa `?` para propagar o erro e `if let Ok(v)` para tratar o sucesso de forma concisa."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para criar uma função que extrai um `Option<u16>` com `?` e retorna o valor dobrado:",
+      "blocks": [
+        "    Some(porta * 2)",
+        "fn dobrar_porta(opt: Option<u16>) -> Option<u16> {",
+        "}",
+        "    let porta = opt?;"
+      ],
+      "correctOrder": [1, 3, 0, 2],
+      "explanation": "Em funções que retornam `Option`, `opt?` retorna `None` automaticamente se `opt` for `None`, ou desempacota `porta` para `Some(porta * 2)`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Use `if let` para extrair o valor interno `v` da variável `talvez` (caso seja `Some`) e imprima `v` no console.",
+      "starterCode": "",
+      "requiredTokens": ["if let", "Some(", "talvez", "println!"],
+      "sampleSolution": "if let Some(v) = talvez {\n    println!(\"{}\", v);\n}",
+      "hint": "Escreva `if let Some(v) = talvez { println!(\"{}\", v); }`.",
+      "explanation": "`if let Some(v) = talvez` vincula o valor interno a `v` apenas quando `talvez` contém `Some`."
+    }
+  ]
+}

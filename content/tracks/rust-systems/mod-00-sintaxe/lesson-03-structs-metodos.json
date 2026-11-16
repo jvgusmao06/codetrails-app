@@ -1,0 +1,91 @@
+{
+  "id": "rust-structs-metodos-03",
+  "title": "Structs e Métodos (impl e &self)",
+  "description": "Agrupe dados com struct e adicione comportamentos com blocos impl e &self.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Modelando Dados com struct e impl",
+      "content": "Rust não tem `class`. Para agrupar campos relacionados, definimos um `struct` com o nome e o tipo de cada campo (por exemplo `String` para texto dinâmico, `u32` para inteiros ou `bool` para booleanos). Já os métodos que pertencem a esse struct ficam separados dentro de um bloco `impl NomeStruct { ... }`, recebendo `&self` como primeiro parâmetro para ler os campos da instância.",
+      "codeExample": "struct Retangulo {\n    largura: u32,\n    altura: u32,\n}\n\nimpl Retangulo {\n    fn area(&self) -> u32 {\n        self.largura * self.altura\n    }\n}\n\nfn main() {\n    let r = Retangulo { largura: 10, altura: 5 };\n    println!(\"Área = {}\", r.area());\n}",
+      "keyTakeaways": [
+        "`struct Nome { campo: Tipo }` define a estrutura de dados.",
+        "`impl Nome { fn metodo(&self) -> Tipo { ... } }` define métodos associados.",
+        "Instanciamos um struct com `Nome { campo: valor }` e chamamos métodos com `instancia.metodo()`."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Para que serve o primeiro parâmetro `&self` em um método dentro de `impl Retangulo`?",
+      "options": [
+        "Para permitir acesso de leitura aos campos da própria instância sem precisar de `class`",
+        "Para tornar o struct global em todo o programa",
+        "Para apagar a instância após a chamada do método",
+        "Para converter o struct em uma constante"
+      ],
+      "correctIndex": 0,
+      "explanation": "`&self` referencia a instância atual sobre a qual o método foi chamado, permitindo ler `self.campo`."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código para implementar o método `nivel` no struct `Player` e imprimir o resultado:",
+      "codeTemplate": "{{blank}} Player {\n    {{blank}} nivel(&self) -> u8 {\n        10\n    }\n}\n{{blank}}(\"Nível: {}\", p.nivel());",
+      "blanks": [
+        { "answer": "impl", "placeholder": "bloco" },
+        { "answer": "fn", "placeholder": "função" },
+        { "answer": "println!", "placeholder": "macro" }
+      ],
+      "options": ["impl", "fn", "println!", "class", "def", "println"],
+      "explanation": "Métodos ficam dentro de `impl NomeStruct`, são declarados com `fn` e exibidos com a macro `println!`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código tenta definir um método diretamente dentro do `struct`, o que não é válido em Rust. Clique na linha com o erro:",
+      "lines": [
+        "struct Ponto {",
+        "    x: i32,",
+        "    y: i32,",
+        "    fn soma(&self) -> i32 { self.x + self.y }",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Na linha 4, métodos não podem ficar dentro de `struct`. Em Rust, dados ficam em `struct Ponto` e métodos ficam separados em `impl Ponto { ... }`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para definir o struct `Conta`, implementar `saldo(&self)` e imprimir o valor em `main`:",
+      "blocks": [
+        "impl Conta { fn saldo(&self) -> i32 { self.valor } }",
+        "fn main() {",
+        "    let c = Conta { valor: 100 };",
+        "struct Conta { valor: i32 }",
+        "    println!(\"{}\", c.saldo());",
+        "}"
+      ],
+      "correctOrder": [3, 0, 1, 2, 4, 5],
+      "explanation": "Definimos `struct Conta`, depois `impl Conta`, e dentro de `fn main()` instanciamos `c` e chamamos `c.saldo()`."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a criação da instância `r` do `struct Retangulo` e a verificação condicional usando o método `area()`:",
+      "codeTemplate": "let r = {{blank}} { largura: 4, altura: 5 };\n{{blank}} r.{{blank}}() > 10 {\n    println!(\"Grande\");\n}",
+      "blanks": [
+        { "answer": "Retangulo", "placeholder": "struct" },
+        { "answer": "if", "placeholder": "condição" },
+        { "answer": "area", "placeholder": "método" }
+      ],
+      "options": ["Retangulo", "if", "area", "new", "when", "impl"],
+      "explanation": "Instanciamos com `Retangulo { ... }`, testamos com `if` e chamamos o método `r.area()`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Defina um tipo composto chamado `Usuario` com os campos `nome` (texto `String`) e `ativo` (booleano `bool`).",
+      "starterCode": "",
+      "requiredTokens": ["struct", "Usuario", "nome", "String", "ativo", "bool"],
+      "sampleSolution": "struct Usuario {\n    nome: String,\n    ativo: bool,\n}",
+      "hint": "Use `struct Usuario { nome: String, ativo: bool }`.",
+      "explanation": "Em structs do Rust, cada campo segue o formato `nome_campo: Tipo`, separado por vírgula."
+    }
+  ]
+}

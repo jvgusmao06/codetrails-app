@@ -1,0 +1,92 @@
+{
+  "id": "rust-vec-hashmap-closures-03",
+  "title": "Coleções (Vec, HashMap), Closures (|x|) e Iteradores",
+  "description": "Armazene listas com Vec<T>, pares chave-valor com HashMap e transforme coleções com closures e .iter().map().collect().",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Vec, HashMap e Iteradores com Closures",
+      "content": "As duas coleções mais usadas no dia a dia em Rust são:\n- **`Vec<T>`**: lista dinâmica criada com `vec![1, 2, 3]` (`.push()`, `.len()`).\n- **`HashMap<K, V>`** (`std::collections::HashMap`): dicionário chave-valor com `HashMap::new()`, `.insert(k, v)` e `.get(&k)` (que retorna `Option<&V>`).\nPara transformar elementos sem laços manuais, usamos **iteradores** (`.iter()`) combinados com **closures** (`|x| x * 2`, funções anônimas com barras verticais) e `.collect()` para montar a nova coleção.",
+      "codeExample": "use std::collections::HashMap;\n\nlet nums = vec![1, 2, 3];\nlet dobros: Vec<i32> = nums.iter().map(|x| x * 2).collect();\n\nlet mut pontos = HashMap::new();\npontos.insert(\"Ana\", 50);\nprintln!(\"{:?} -> {:?}\", dobros, pontos.get(\"Ana\"));",
+      "keyTakeaways": [
+        "`vec![...]` cria um `Vec<T>`; `HashMap::new()` cria um mapa chave-valor.",
+        "Closures em Rust usam `|param| corpo` (ex: `|x| x * 2`).",
+        "`.iter().map(...).collect()` transforma coleções sem custo extra de abstração."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Em um `HashMap<&str, i32>`, o que o método `.get(\"Ana\")` retorna?",
+      "options": [
+        "`Option<&i32>`, pois a chave pode ou não existir no mapa",
+        "`i32` diretamente, ou `0` se não existir",
+        "`Result<i32, String>`",
+        "`Vec<i32>` com todos os valores"
+      ],
+      "correctIndex": 0,
+      "explanation": "`.get(&chave)` retorna `Option<&V>` (`Some(&valor)` ou `None`), evitando acessos inválidos ou exceções."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é a sintaxe correta de uma *closure* em Rust que recebe `x` e retorna `x + 1`?",
+      "options": [
+        "|x| x + 1",
+        "(x) => x + 1",
+        "lambda x: x + 1",
+        "fn(x) { x + 1 }"
+      ],
+      "correctIndex": 0,
+      "explanation": "Closures em Rust delimitam os parâmetros com barras verticais (`|x|`), seguidas pela expressão ou bloco."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código para criar um `HashMap`, inserir um par chave-valor e dobrar os itens de `lista` usando iterador e `.collect()`:",
+      "codeTemplate": "let mut mapa = {{blank}}::new();\nmapa.{{blank}}(\"chave\", 10);\nlet dobros: Vec<i32> = lista.{{blank}}().map(|x| x * 2).{{blank}}();",
+      "blanks": [
+        { "answer": "HashMap", "placeholder": "tipo mapa" },
+        { "answer": "insert", "placeholder": "método" },
+        { "answer": "iter", "placeholder": "iterador" },
+        { "answer": "collect", "placeholder": "coletor" }
+      ],
+      "options": ["HashMap", "insert", "iter", "collect", "push", "toList"],
+      "explanation": "`HashMap::new()` + `.insert(k, v)` manipula o dicionário, enquanto `.iter()` + `.collect()` transforma e materializa o `Vec`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código tenta adicionar um item ao `Vec`, mas viola a regra de mutabilidade do Rust. Clique na linha com o erro:",
+      "lines": [
+        "fn main() {",
+        "    let nums = vec![1, 2, 3];",
+        "    nums.push(4);",
+        "    println!(\"{:?}\", nums);",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Na linha 2, `nums` foi declarado sem `mut`. Para chamar `.push(4)`, precisamos de `let mut nums = vec![1, 2, 3];`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para criar um `HashMap`, inserir uma chave e lê-la com `if let`:",
+      "blocks": [
+        "let mut notas = HashMap::new();",
+        "if let Some(v) = notas.get(\"Rust\") {",
+        "use std::collections::HashMap;",
+        "    println!(\"{}\", v);",
+        "notas.insert(\"Rust\", 10);",
+        "}"
+      ],
+      "correctOrder": [2, 0, 4, 1, 3, 5],
+      "explanation": "Importamos `HashMap`, criamos o mapa mutável, inserimos `\"Rust\"` e usamos `if let Some(v) = notas.get(\"Rust\")` para imprimir."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Crie uma closure chamada `triplo` que receba um parâmetro `n: i32` e retorne `n * 3`. Em seguida, imprima `triplo(4)` no console.",
+      "starterCode": "",
+      "requiredTokens": ["let", "triplo", "|", "* 3", "println!", "triplo(4)"],
+      "sampleSolution": "let triplo = |n: i32| n * 3;\nprintln!(\"{}\", triplo(4));",
+      "hint": "Defina `let triplo = |n: i32| n * 3;` e chame `println!(\"{}\", triplo(4));`.",
+      "explanation": "Closures são atribuídas a variáveis com `let` e invocadas como funções normais."
+    }
+  ]
+}

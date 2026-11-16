@@ -1,0 +1,92 @@
+{
+  "id": "rust-smart-pointers-box-rc-04",
+  "title": "Smart Pointers: Box<T>, Rc<T> e Arc<T>",
+  "description": "Aloque na Heap com Box<T>, compartilhe donos na mesma thread com Rc<T> e entre múltiplas threads com Arc<T>.",
+  "xp": 40,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Quando Um Único Dono Não Basta: Box, Rc e Arc",
+      "content": "No Rust padrão, cada valor tem **um** dono. Quando precisamos de mais flexibilidade, usamos **Smart Pointers**:\n- **`Box<T>`**: coloca o valor na Heap com dono único (essencial para tipos recursivos como árvores).\n- **`Rc<T>`** (*Reference Counted*): permite **múltiplos donos na mesma thread** contando referências com `Rc::clone(&x)`.\n- **`Arc<T>`** (*Atomic Rc*): versão *thread-safe* do `Rc<T>` para compartilhar dados entre múltiplas threads.",
+      "codeExample": "use std::rc::Rc;\n\nlet caixa = Box::new(42); // Heap, dono único\n\nlet config = Rc::new(String::from(\"Prod\"));\nlet copia_a = Rc::clone(&config);\nlet copia_b = Rc::clone(&config);\nprintln!(\"Donos: {}\", Rc::strong_count(&config)); // 3",
+      "keyTakeaways": [
+        "`Box::new(x)` move `x` para a Heap e libera quando `Box` sai de escopo.",
+        "`Rc::clone(&x)` apenas incrementa um contador em $O(1)$, sem copiar o conteúdo.",
+        "Em código concorrente com múltiplas threads, o compilador exige `Arc<T>` no lugar de `Rc<T>`."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Escolha o Smart Pointer correto em Rust para cada cenário: alocação na Heap com dono único, múltiplos donos em 1 thread e múltiplos donos entre threads:",
+      "codeTemplate": "let na_heap = {{blank}}::new(10);\nlet mesma_thread = {{blank}}::new(\"dado\");\nlet multi_thread = {{blank}}::new(\"seguro\");",
+      "blanks": [
+        { "answer": "Box", "placeholder": "Heap" },
+        { "answer": "Rc", "placeholder": "1 thread" },
+        { "answer": "Arc", "placeholder": "Multi-thread" }
+      ],
+      "options": ["Box", "Rc", "Arc", "Ref", "Ptr"],
+      "explanation": "`Box<T>` aloca na Heap com 1 dono, `Rc<T>` compartilha na mesma thread e `Arc<T>` compartilha atomicamente entre threads."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "O que `Rc::clone(&config)` faz internamente em comparação com `String::clone()`?",
+      "options": [
+        "Copia todos os bytes da `String` novamente na Heap",
+        "Apenas incrementa o contador de referências em tempo constante, sem duplicar os dados",
+        "Move a posse e invalida `config`",
+        "Transfere os dados da Heap para a Stack"
+      ],
+      "correctIndex": 1,
+      "explanation": "`Rc::clone(&x)` apenas incrementa o contador de donos (`strong_count`), compartilhando o mesmo dado na Heap."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Por que o compilador Rust proíbe compartilhar um `Rc<T>` entre múltiplas threads?",
+      "options": [
+        "Porque `Rc<T>` só aceita números inteiros",
+        "Porque seu contador de referências não é atômico (*thread-safe*); para threads usamos `Arc<T>`",
+        "Porque `Rc<T>` não aloca na Heap",
+        "Porque `Rc<T>` não possui `Rc::clone`"
+      ],
+      "correctIndex": 1,
+      "explanation": "O contador de `Rc<T>` não usa operações atômicas para evitar custo extra em código single-thread; entre threads, `Arc<T>` é obrigatório."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este código tenta compartilhar uma `String` com `Rc`, mas há um erro na chamada de `Rc::clone`. Clique na linha com o problema:",
+      "lines": [
+        "use std::rc::Rc;",
+        "fn main() {",
+        "    let dado = Rc::new(String::from(\"App\"));",
+        "    let copia = Rc::clone(dado);",
+        "    println!(\"{}\", Rc::strong_count(&dado));",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Na linha 4, `Rc::clone` espera uma referência (`&dado`) para não mover `dado`. O correto é `Rc::clone(&dado)`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para criar um `Rc<String>`, clonar a referência e imprimir o total de donos:",
+      "blocks": [
+        "    let b = Rc::clone(&a);",
+        "fn main() {",
+        "    println!(\"{}\", Rc::strong_count(&a));",
+        "use std::rc::Rc;",
+        "    let a = Rc::new(String::from(\"Ok\"));",
+        "}"
+      ],
+      "correctOrder": [3, 1, 4, 0, 2, 5],
+      "explanation": "Importamos `std::rc::Rc`, criamos `a` com `Rc::new`, incrementamos com `Rc::clone(&a)` e imprimimos `Rc::strong_count(&a)`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Aloque o número `100` na Heap na variável `ptr` usando o smart pointer de posse única do Rust e imprima seu valor no console.",
+      "starterCode": "",
+      "requiredTokens": ["let", "ptr", "Box::new(100)", "println!"],
+      "sampleSolution": "let ptr = Box::new(100);\nprintln!(\"{}\", ptr);",
+      "hint": "Escreva `let ptr = Box::new(100);` e `println!(\"{}\", ptr);`.",
+      "explanation": "`Box<T>` permite alocar na Heap com dono único e imprimir seu valor diretamente com `println!`."
+    }
+  ]
+}

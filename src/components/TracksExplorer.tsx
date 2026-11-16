@@ -12,12 +12,65 @@ import {
   Sparkles,
   RotateCcw,
   Search,
+  X,
 } from "lucide-react";
 import type { LoadedTrack } from "@/lib/schema";
+import type { Locale } from "@/lib/i18n";
 import { useUserProgress } from "@/lib/progress";
 import { localizeTracks } from "@/lib/track-i18n";
 import { getWhyLearn } from "@/lib/track-why";
 import { isTrackSatisfied } from "./SkillTree";
+
+type StatusFilter = "all" | "in_progress" | "completed";
+
+const EMPTY_CATALOG_TITLE: Record<Locale, string> = {
+  pt: "Nenhuma trilha encontrada para os filtros atuais.",
+  en: "No tracks match your current filters.",
+  es: "No se encontraron rutas con los filtros actuales.",
+  zh: "没有符合当前筛选条件的路线。",
+  hi: "वर्तमान फ़िल्टर से कोई ट्रैक मेल नहीं खाता।",
+  fr: "Aucun parcours ne correspond aux filtres actuels.",
+  ar: "لا توجد مسارات تطابق عوامل التصفية الحالية.",
+  ru: "Нет треков, соответствующих текущим фильтрам.",
+};
+
+function countTrackLessons(track: LoadedTrack) {
+  return track.modules.reduce((acc, m) => acc + m.lessons.length, 0);
+}
+
+function countCompletedInTrack(
+  track: LoadedTrack,
+  completedLessons: string[],
+  masteredTracks: string[]
+) {
+  if (masteredTracks.includes(track.id)) return countTrackLessons(track);
+  return track.modules.reduce(
+    (acc, m) =>
+      acc + m.lessons.filter((l) => completedLessons.includes(l.id)).length,
+    0
+  );
+}
+
+function matchesTrackSearch(track: LoadedTrack, q: string) {
+  return (
+    track.title.toLowerCase().includes(q) ||
+    track.description.toLowerCase().includes(q) ||
+    track.id.toLowerCase().includes(q)
+  );
+}
+
+function matchesStatusFilter(
+  track: LoadedTrack,
+  filter: StatusFilter,
+  completedLessons: string[],
+  masteredTracks: string[]
+) {
+  if (filter === "all") return true;
+  const satisfied = isTrackSatisfied(track, completedLessons, masteredTracks);
+  if (filter === "completed") return satisfied;
+  const done = countCompletedInTrack(track, completedLessons, masteredTracks);
+  return done > 0 && !satisfied;
+}
 
 export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
   const { progress, setActiveTrack, toggleMasteredTrack, t } =
@@ -29,6 +82,7 @@ export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
   );
 
   const [selectedLangId, setSelectedLangId] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const q = searchQuery.trim().toLowerCase();
@@ -38,20 +92,39 @@ export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
       ? baseLanguages
       : baseLanguages.filter((l) => l.id === selectedLangId)
   ).filter((lang) => {
-    if (!q) return true;
-    const langMatch =
-      lang.title.toLowerCase().includes(q) ||
-      lang.description.toLowerCase().includes(q) ||
-      lang.id.toLowerCase().includes(q);
-    if (langMatch) return true;
-    return localizedTracks.some(
-      (child) =>
-        child.languageId === lang.id &&
-        (child.title.toLowerCase().includes(q) ||
-          child.description.toLowerCase().includes(q) ||
-          child.id.toLowerCase().includes(q))
+    const children = localizedTracks.filter(
+      (tr) =>
+        tr.category !== "language" &&
+        tr.category !== "concept" &&
+        tr.languageId === lang.id
     );
+
+    const langMatchesText = !q || matchesTrackSearch(lang, q);
+    const anyChildMatchesText = !q || children.some((c) => matchesTrackSearch(c, q));
+    if (!langMatchesText && !anyChildMatchesText) return false;
+
+    const langMatchesStatus = matchesStatusFilter(
+      lang,
+      statusFilter,
+      progress.completedLessons,
+      progress.masteredTracks
+    );
+    const anyChildMatchesStatus = children.some((c) =>
+      matchesStatusFilter(
+        c,
+        statusFilter,
+        progress.completedLessons,
+        progress.masteredTracks
+      )
+    );
+    return langMatchesStatus || anyChildMatchesStatus;
   });
+
+  function clearAllFilters() {
+    setSearchQuery("");
+    setSelectedLangId("all");
+    setStatusFilter("all");
+  }
 
   return (
     <div className="space-y-8">
@@ -82,8 +155,41 @@ export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t.common.searchPlaceholder}
             aria-label={t.common.searchPlaceholder}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-800 text-sm text-white placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none transition"
+            className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-surface-card/80 border border-border text-sm text-white placeholder:text-slate-500 focus:border-accent focus:ring-2 focus:ring-accent/25 focus:outline-none transition"
           />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              aria-label={t.common.reset}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800/80 transition cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2 flex-wrap">
+          {(
+            [
+              ["all", t.categories.all],
+              ["in_progress", t.roadmap.progress],
+              ["completed", t.roadmap.completed],
+            ] as const
+          ).map(([statusKey, label]) => (
+            <button
+              key={statusKey}
+              type="button"
+              onClick={() => setStatusFilter(statusKey)}
+              className={`px-3 py-1 rounded-lg font-mono text-[11px] transition border cursor-pointer ${
+                statusFilter === statusKey
+                  ? "bg-indigo-600 text-white border-indigo-500"
+                  : "bg-surface-card/70 border-border text-muted hover:text-slate-100"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
@@ -119,29 +225,49 @@ export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
 
       {/* Hierarchical Sections: Base Language + Its Exclusive Frameworks/Libraries */}
       <div className="space-y-10">
+        {visibleLanguages.length === 0 && (
+          <div className="rounded-2xl border border-border bg-surface-card/40 p-8 text-center space-y-3">
+            <Search className="w-6 h-6 text-muted mx-auto" />
+            <p className="text-sm text-slate-300">
+              {EMPTY_CATALOG_TITLE[progress.locale] ?? EMPTY_CATALOG_TITLE.en}
+            </p>
+            <button
+              type="button"
+              onClick={clearAllFilters}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs font-semibold transition cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              {t.common.reset}
+            </button>
+          </div>
+        )}
+
         {visibleLanguages.map((lang) => {
-          const childTracks = localizedTracks.filter(
+          const allChildTracks = localizedTracks.filter(
             (tr) =>
               tr.category !== "language" &&
               tr.category !== "concept" &&
               tr.languageId === lang.id
           );
+          const langMatchesText = !q || matchesTrackSearch(lang, q);
+          const childTracks = allChildTracks.filter((tr) => {
+            const textOk = langMatchesText || matchesTrackSearch(tr, q);
+            const statusOk = matchesStatusFilter(
+              tr,
+              statusFilter,
+              progress.completedLessons,
+              progress.masteredTracks
+            );
+            return textOk && statusOk;
+          });
           const isLangActive = progress.activeTrackId === lang.id;
           const isLangMastered = progress.masteredTracks.includes(lang.id);
-          const totalLangLessons = lang.modules.reduce(
-            (acc, m) => acc + m.lessons.length,
-            0
+          const totalLangLessons = countTrackLessons(lang);
+          const completedLangCount = countCompletedInTrack(
+            lang,
+            progress.completedLessons,
+            progress.masteredTracks
           );
-          const completedLangCount = isLangMastered
-            ? totalLangLessons
-            : lang.modules.reduce(
-                (acc, m) =>
-                  acc +
-                  m.lessons.filter((l) =>
-                    progress.completedLessons.includes(l.id)
-                  ).length,
-                0
-              );
 
           return (
             <section
@@ -248,9 +374,11 @@ export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
                       const isActive = progress.activeTrackId === track.id;
                       const isTrackMastered =
                         progress.masteredTracks.includes(track.id);
-                      const totalLessons = track.modules.reduce(
-                        (acc, m) => acc + m.lessons.length,
-                        0
+                      const totalLessons = countTrackLessons(track);
+                      const completedChildCount = countCompletedInTrack(
+                        track,
+                        progress.completedLessons,
+                        progress.masteredTracks
                       );
 
                       const unmetReqs = (track.prerequisites ?? [])
@@ -273,8 +401,8 @@ export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
                           key={track.id}
                           className={`rounded-xl border p-4 flex flex-col justify-between transition ${
                             isActive
-                              ? "border-indigo-500 bg-zinc-900"
-                              : "border-zinc-800/80 bg-zinc-950/60 hover:border-zinc-700"
+                              ? "border-indigo-500 bg-surface-card"
+                              : "border-border/80 bg-surface-inset/60 hover:border-border-strong"
                           }`}
                         >
                           <div>
@@ -286,7 +414,8 @@ export function TracksExplorer({ tracks }: { tracks: LoadedTrack[] }) {
                                     {track.title}
                                   </h3>
                                   <span className="font-mono text-[10px] uppercase text-zinc-400">
-                                    {t.categories[track.category]}
+                                    {t.categories[track.category]} •{" "}
+                                    {completedChildCount}/{totalLessons}
                                   </span>
                                 </div>
                               </div>

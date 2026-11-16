@@ -3,19 +3,71 @@
 :root {
   --background: #090d16;
   --foreground: #f1f5f9;
+  --surface: #0b101b;
+  --surface-card: #0f172a;
+  --surface-inset: #020617;
+  --border: #1e293b;
+  --border-strong: #334155;
+  --muted: #94a3b8;
+  --accent: #10b981;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-card: var(--surface-card);
+  --color-surface-inset: var(--surface-inset);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+@layer base {
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  }
+
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    touch-action: manipulation;
+  }
+
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Consistent keyboard focus visibility across interactive controls */
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible,
+  select:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  [role="button"]:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--accent) 85%, transparent);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 /* Custom subtle dark scrollbar */

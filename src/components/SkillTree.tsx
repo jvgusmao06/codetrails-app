@@ -83,6 +83,13 @@ export function SkillTree({ tracks }: { tracks: LoadedTrack[] }) {
       (id) => !progress.completedLessons.includes(id)
     ) ?? allLessonsOrdered[allLessonsOrdered.length - 1];
 
+  const nextLessonObj = currentTrack.modules
+    .flatMap((m) => m.lessons)
+    .find((l) => l.id === firstUncompletedId);
+  const nextLessonNumber = firstUncompletedId
+    ? allLessonsOrdered.indexOf(firstUncompletedId) + 1
+    : 0;
+
   const isCurrentMastered = progress.masteredTracks.includes(currentTrack.id);
 
   const completedInTrack = isCurrentMastered
@@ -262,7 +269,7 @@ export function SkillTree({ tracks }: { tracks: LoadedTrack[] }) {
                   ? t.roadmap.undoMastered
                   : t.roadmap.iAlreadyKnowThis
               }
-              className="px-3 py-2.5 rounded-xl font-mono text-xs flex items-center gap-1.5 border border-zinc-800 bg-zinc-950/60 text-zinc-400 hover:text-emerald-300 hover:border-emerald-500/40 transition cursor-pointer"
+              className="px-3 py-2.5 rounded-xl font-mono text-xs flex items-center gap-1.5 border border-border bg-surface-inset/60 text-muted hover:text-emerald-300 hover:border-accent/40 transition cursor-pointer"
             >
               {isCurrentMastered ? (
                 <>
@@ -321,7 +328,26 @@ export function SkillTree({ tracks }: { tracks: LoadedTrack[] }) {
           </div>
         )}
 
-        <div className="w-full h-1.5 rounded-full bg-zinc-950 overflow-hidden border border-zinc-800/80">
+        {!isCurrentTrackLockedByPrereq && nextLessonObj && (
+          <div className="flex items-center justify-between gap-2 flex-wrap rounded-xl bg-surface-inset/70 border border-border/80 px-3.5 py-2 text-xs">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/35 shrink-0">
+                {trackProgressPct === 100 ? t.roadmap.review : t.roadmap.nextStep}
+              </span>
+              <span className="font-mono text-muted shrink-0">
+                #{nextLessonNumber}/{allLessonsOrdered.length}
+              </span>
+              <span className="font-medium text-slate-100 truncate">
+                {nextLessonObj.title}
+              </span>
+            </div>
+            <span className="font-mono text-[11px] text-indigo-400 font-semibold shrink-0">
+              +{nextLessonObj.xp} XP
+            </span>
+          </div>
+        )}
+
+        <div className="w-full h-1.5 rounded-full bg-surface-inset overflow-hidden border border-border/80">
           <div
             className="h-full transition-all duration-300"
             style={{
@@ -388,8 +414,8 @@ export function SkillTree({ tracks }: { tracks: LoadedTrack[] }) {
                     isSelectedEco
                       ? "bg-indigo-950/40 border-indigo-500 text-white"
                       : isUnlocked
-                      ? "bg-zinc-950/80 border-zinc-800 hover:border-zinc-700 text-zinc-200"
-                      : "bg-zinc-950/40 border-zinc-800/60 text-zinc-400 hover:border-zinc-700"
+                      ? "bg-surface-inset/80 border-border hover:border-border-strong text-slate-200"
+                      : "bg-surface-inset/40 border-border/60 text-muted hover:border-border-strong"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2 w-full">
@@ -438,7 +464,16 @@ export function SkillTree({ tracks }: { tracks: LoadedTrack[] }) {
 
       {/* 4. Git-Graph / Technical Roadmap Modules */}
       <div className="space-y-8">
-        {currentTrack.modules.map((mod, modIdx) => (
+        {currentTrack.modules.map((mod, modIdx) => {
+          const modDoneCount = isCurrentMastered
+            ? mod.lessons.length
+            : mod.lessons.filter((l) =>
+                progress.completedLessons.includes(l.id)
+              ).length;
+          const modAllDone =
+            mod.lessons.length > 0 && modDoneCount === mod.lessons.length;
+
+          return (
           <section
             key={mod.id}
             className="rounded-2xl border border-zinc-800/90 bg-zinc-900/30 p-5 sm:p-6 space-y-5"
@@ -460,6 +495,16 @@ export function SkillTree({ tracks }: { tracks: LoadedTrack[] }) {
                   </p>
                 </div>
               </div>
+              <span
+                className={`inline-flex items-center gap-1 font-mono text-[11px] px-2.5 py-1 rounded-lg border shrink-0 ${
+                  modAllDone
+                    ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-300"
+                    : "bg-surface-inset/70 border-border text-muted"
+                }`}
+              >
+                {modAllDone && <Check className="w-3 h-3" />}
+                {modDoneCount}/{mod.lessons.length}
+              </span>
             </div>
 
             {/* Linear Commit-Timeline of Lessons */}
@@ -489,7 +534,7 @@ export function SkillTree({ tracks }: { tracks: LoadedTrack[] }) {
                         isCompleted
                           ? "bg-emerald-500 border-emerald-400 text-zinc-950"
                           : isCurrent
-                          ? "bg-indigo-600 border-cyan-400 text-white ring-4 ring-indigo-500/20"
+                          ? "bg-indigo-600 border-cyan-400 text-white ring-4 ring-indigo-500/20 animate-pulse"
                           : "bg-zinc-900 border-zinc-700 text-zinc-500"
                       }`}
                     >
@@ -609,7 +654,8 @@ export function SkillTree({ tracks }: { tracks: LoadedTrack[] }) {
               })}
             </div>
           </section>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

@@ -294,6 +294,11 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
     URL.revokeObjectURL(url);
   }
 
+  const fieldBase =
+    "w-full px-3 py-2 rounded-lg border border-border text-xs transition focus:outline-none focus:ring-2";
+  const fieldEmerald = `${fieldBase} focus:border-accent focus:ring-accent/25`;
+  const fieldSky = `${fieldBase} focus:border-sky-500 focus:ring-sky-500/25`;
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -390,7 +395,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                       setSelectedModuleId(nextTr.modules[0].id);
                     }
                   }}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                  className={`${fieldEmerald} bg-surface-card text-white`}
                 >
                   {localizedTracks.map((tr) => (
                     <option key={tr.id} value={tr.id}>
@@ -407,7 +412,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                 <select
                   value={activeModule?.id ?? ""}
                   onChange={(e) => setSelectedModuleId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                  className={`${fieldEmerald} bg-surface-card text-white`}
                 >
                   {selectedTrack?.modules.map((m) => (
                     <option key={m.id} value={m.id}>
@@ -429,7 +434,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                       e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-")
                     )
                   }
-                  className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 font-mono text-xs text-white focus:border-emerald-500 focus:outline-none"
+                  className={`${fieldEmerald} bg-surface-card font-mono text-white`}
                 />
               </div>
             </div>
@@ -444,7 +449,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                   type="text"
                   value={lessonId}
                   onChange={(e) => setLessonId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 font-mono text-xs text-white focus:border-emerald-500 focus:outline-none"
+                  className={`${fieldEmerald} bg-surface-inset font-mono text-white`}
                 />
               </div>
               <div>
@@ -455,7 +460,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                  className={`${fieldEmerald} bg-surface-inset text-white`}
                 />
               </div>
               <div>
@@ -466,7 +471,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                   type="text"
                   value={theoryTitle}
                   onChange={(e) => setTheoryTitle(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-xs text-white focus:border-sky-500 focus:outline-none"
+                  className={`${fieldSky} bg-surface-inset text-white`}
                 />
               </div>
             </div>
@@ -480,7 +485,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                   rows={3}
                   value={theoryContent}
                   onChange={(e) => setTheoryContent(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200 focus:border-sky-500 focus:outline-none"
+                  className={`${fieldSky} bg-surface-inset text-slate-200`}
                 />
               </div>
               <div>
@@ -491,14 +496,14 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                   rows={2}
                   value={codeExample}
                   onChange={(e) => setCodeExample(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-800 font-mono text-xs text-emerald-300 focus:border-sky-500 focus:outline-none mb-2"
+                  className={`${fieldSky} bg-surface-inset font-mono text-emerald-300 mb-2`}
                 />
                 <input
                   type="text"
                   value={takeaway}
                   onChange={(e) => setTakeaway(e.target.value)}
                   placeholder="Ponto-chave para lembrar..."
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200 focus:border-sky-500 focus:outline-none"
+                  className={`${fieldSky} py-1.5 bg-surface-inset text-slate-200`}
                 />
               </div>
             </div>
@@ -540,7 +545,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Enunciado do desafio..."
-                className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className={`${fieldEmerald} bg-surface-card text-white`}
               />
 
               {practiceType === "fill_in_blank" && (
@@ -549,7 +554,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                     rows={3}
                     value={codeTemplate}
                     onChange={(e) => setCodeTemplate(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 font-mono text-xs text-sky-300 focus:outline-none"
+                    className={`${fieldEmerald} bg-surface-card font-mono text-sky-300`}
                   />
                   <div className="space-y-2">
                     <input
@@ -557,14 +562,14 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                       value={answer}
                       onChange={(e) => setAnswer(e.target.value)}
                       placeholder="Resposta exata do {{blank}}"
-                      className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 font-mono text-xs text-white focus:outline-none"
+                      className={`${fieldEmerald} bg-surface-card font-mono text-white`}
                     />
                     <input
                       type="text"
                       value={explanation}
                       onChange={(e) => setExplanation(e.target.value)}
                       placeholder="Explicação pós-resposta"
-                      className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-200 focus:outline-none"
+                      className={`${fieldEmerald} bg-surface-card text-slate-200`}
                     />
                   </div>
                 </div>
@@ -577,7 +582,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                     value={mcOptionsRaw}
                     onChange={(e) => setMcOptionsRaw(e.target.value)}
                     placeholder="Uma opção por linha"
-                    className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 font-mono text-xs text-slate-200 focus:outline-none"
+                    className={`${fieldEmerald} bg-surface-card font-mono text-slate-200`}
                   />
                   <div className="space-y-2">
                     <label className="block font-mono text-[11px] text-slate-400">
@@ -588,14 +593,14 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                       min={0}
                       value={mcCorrectIdx}
                       onChange={(e) => setMcCorrectIdx(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 font-mono text-xs text-white focus:outline-none"
+                      className={`${fieldEmerald} bg-surface-card font-mono text-white`}
                     />
                     <input
                       type="text"
                       value={explanation}
                       onChange={(e) => setExplanation(e.target.value)}
                       placeholder="Explicação pós-resposta"
-                      className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-200 focus:outline-none"
+                      className={`${fieldEmerald} bg-surface-card text-slate-200`}
                     />
                   </div>
                 </div>
@@ -608,14 +613,14 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                     value={orderBlocksRaw}
                     onChange={(e) => setOrderBlocksRaw(e.target.value)}
                     placeholder="Um bloco de código por linha na ordem correta"
-                    className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 font-mono text-xs text-sky-300 focus:outline-none"
+                    className={`${fieldEmerald} bg-surface-card font-mono text-sky-300`}
                   />
                   <input
                     type="text"
                     value={explanation}
                     onChange={(e) => setExplanation(e.target.value)}
                     placeholder="Explicação pós-resposta"
-                    className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-200 self-start focus:outline-none"
+                    className={`${fieldEmerald} bg-surface-card text-slate-200 self-start`}
                   />
                 </div>
               )}
@@ -627,7 +632,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                     value={bugLinesRaw}
                     onChange={(e) => setBugLinesRaw(e.target.value)}
                     placeholder="Uma linha de código por linha"
-                    className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 font-mono text-xs text-rose-300 focus:outline-none"
+                    className={`${fieldEmerald} bg-surface-card font-mono text-rose-300`}
                   />
                   <div className="space-y-2">
                     <label className="block font-mono text-[11px] text-slate-400">
@@ -638,14 +643,14 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                       min={0}
                       value={bugLineIdx}
                       onChange={(e) => setBugLineIdx(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 font-mono text-xs text-white focus:outline-none"
+                      className={`${fieldEmerald} bg-surface-card font-mono text-white`}
                     />
                     <input
                       type="text"
                       value={explanation}
                       onChange={(e) => setExplanation(e.target.value)}
                       placeholder="Explicação do bug"
-                      className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-200 focus:outline-none"
+                      className={`${fieldEmerald} bg-surface-card text-slate-200`}
                     />
                   </div>
                 </div>
@@ -658,7 +663,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                     value={sampleSolution}
                     onChange={(e) => setSampleSolution(e.target.value)}
                     placeholder="Solução completa de referência"
-                    className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 font-mono text-xs text-emerald-300 focus:outline-none"
+                    className={`${fieldEmerald} bg-surface-card font-mono text-emerald-300`}
                   />
                   <div className="space-y-2">
                     <label className="block font-mono text-[11px] text-slate-400">
@@ -668,14 +673,14 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                       type="text"
                       value={requiredTokensRaw}
                       onChange={(e) => setRequiredTokensRaw(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 font-mono text-xs text-white focus:outline-none"
+                      className={`${fieldEmerald} bg-surface-card font-mono text-white`}
                     />
                     <input
                       type="text"
                       value={explanation}
                       onChange={(e) => setExplanation(e.target.value)}
                       placeholder="Explicação pós-resposta"
-                      className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-200 focus:outline-none"
+                      className={`${fieldEmerald} bg-surface-card text-slate-200`}
                     />
                   </div>
                 </div>
@@ -684,7 +689,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
           </div>
         ) : (
           /* New Track Metadata Mode */
-          <div className="grid sm:grid-cols-2 gap-3 p-4 rounded-xl bg-slate-950/70 border border-slate-800">
+          <div className="grid sm:grid-cols-2 gap-3 p-4 rounded-xl bg-surface-inset/70 border border-border">
             <div>
               <label className="block font-mono text-xs text-slate-400 mb-1">
                 ID da Nova Trilha (pasta)
@@ -697,7 +702,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                     e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-")
                   )
                 }
-                className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 font-mono text-xs text-white"
+                className={`${fieldEmerald} bg-surface-card font-mono text-white`}
               />
             </div>
             <div>
@@ -708,7 +713,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                 type="text"
                 value={newTrackTitle}
                 onChange={(e) => setNewTrackTitle(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                className={`${fieldEmerald} bg-surface-card text-white`}
               />
             </div>
             <div>
@@ -727,7 +732,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                       | "concept"
                   )
                 }
-                className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                className={`${fieldEmerald} bg-surface-card text-white`}
               >
                 <option value="language">Linguagem Base</option>
                 <option value="framework">Framework</option>
@@ -744,7 +749,7 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                 <select
                   value={newTrackLangId}
                   onChange={(e) => setNewTrackLangId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                  className={`${fieldEmerald} bg-surface-card text-white`}
                 >
                   {baseLanguages.map((l) => (
                     <option key={l.id} value={l.id}>
@@ -760,14 +765,14 @@ export function TrackStudio({ tracks }: { tracks: LoadedTrack[] }) {
                 value={newTrackDesc}
                 onChange={(e) => setNewTrackDesc(e.target.value)}
                 placeholder="Descrição curta..."
-                className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white"
+                className={`${fieldEmerald} bg-surface-card text-white`}
               />
               <input
                 type="text"
                 value={newTrackAuthor}
                 onChange={(e) => setNewTrackAuthor(e.target.value)}
                 placeholder="Seu @github"
-                className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 font-mono text-xs text-white"
+                className={`${fieldEmerald} bg-surface-card font-mono text-white`}
               />
             </div>
           </div>

@@ -26,9 +26,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#09090b",
+  themeColor: "#090d16",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -41,7 +42,7 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-100">
+      <body className="min-h-full flex flex-col bg-background text-foreground">
         <PWAProvider>
           <AppShell>{children}</AppShell>
         </PWAProvider>

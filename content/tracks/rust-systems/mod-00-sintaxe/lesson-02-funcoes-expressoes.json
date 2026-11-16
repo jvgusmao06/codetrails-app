@@ -1,0 +1,90 @@
+{
+  "id": "rust-funcoes-02",
+  "title": "Funções (fn), Retorno Implícito e Macros (!)",
+  "description": "Declare funções tipadas com fn, entenda expressões vs statements (com ou sem ';') e reconheça macros terminadas em '!'.",
+  "xp": 30,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Funções, Expressões Sem ';' e Macros (!)",
+      "content": "Funções em Rust começam com `fn`, exigem tipos nos parâmetros usando `:` (ex: `x: i32`) e indicam o tipo de retorno após `->`. Um detalhe fundamental do Rust: **a última expressão de um bloco sem `;` é retornada automaticamente**! Se você colocar `;` no final da última linha, ela vira um *statement* e retorna o tipo vazio `()` (*unit*). Já chamadas terminadas com `!` (como `println!` ou `vec!`) são **macros** e não funções: em vez de serem executadas em runtime como uma função normal, macros expandem e geram código Rust antes mesmo da compilação final, permitindo aceitar quantidade variável de argumentos.",
+      "codeExample": "fn dobrar(x: i32) -> i32 {\n    x * 2 // Sem ';' -> retorna o resultado de x * 2\n}\n\nfn main() {\n    let lista = vec![1, 2, 3]; // macro que cria um Vec\n    println!(\"Dobro: {}, Lista: {:?}\", dobrar(7), lista);\n}",
+      "keyTakeaways": [
+        "Assinatura: `fn nome(param: Tipo) -> TipoRetorno` (sempre usando `:` para o tipo do parâmetro).",
+        "Última linha sem `;` = valor retornado; colocar `;` transforma em statement e retorna `()`.",
+        "Função normal (`dobrar(7)`) vs Macro (`println!(...)`, `vec![...]`): o `!` avisa que aquela chamada gera código em tempo de compilação."
+      ]
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Esta função Rust deveria retornar `i32`, mas não compila dizendo `expected i32, found ()`. Clique na linha com o erro:",
+      "lines": [
+        "fn calcular_bonus(salario: i32) -> i32 {",
+        "    let taxa = 2;",
+        "    salario * taxa;",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Na linha 3, o ponto-e-vírgula ao final de `salario * taxa;` descarta o valor da expressão e faz a função retornar `()` em vez de `i32`."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Em `let v = vec![1, 2, 3];`, por que `vec!` tem um `!` no nome enquanto `dobrar(7)` não tem?",
+      "options": [
+        "`vec!` é uma macro que expande código na compilação; `dobrar` é uma função normal",
+        "`vec!` só funciona dentro de loops",
+        "`vec!` é uma função que pode lançar exceção",
+        "O `!` significa que o vetor é mutável"
+      ],
+      "correctIndex": 0,
+      "explanation": "Em Rust, `!` indica uma macro (como `vec!` e `println!`), que gera código em tempo de compilação e aceita argumentos variáveis."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a assinatura e o retorno implícito da função `somar` que recebe dois inteiros `i32` e retorna `i32`:",
+      "codeTemplate": "{{blank}} somar(a: i32, b: {{blank}}) {{blank}} i32 {\n    a + b\n}",
+      "blanks": [
+        { "answer": "fn", "placeholder": "palavra-chave" },
+        { "answer": "i32", "placeholder": "tipo de b" },
+        { "answer": "->", "placeholder": "retorno" }
+      ],
+      "options": ["fn", "i32", "->", "def", "function", ":"],
+      "explanation": "Funções usam `fn`, parâmetros exigem `: Tipo` e o tipo de retorno vem após `->`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Esta função não compila por causa da assinatura do parâmetro. Clique na linha com o erro:",
+      "lines": [
+        "fn quadrado(x) -> i32 {",
+        "    x * x",
+        "}",
+        "fn main() { println!(\"{}\", quadrado(4)); }"
+      ],
+      "buggyLineIndex": 0,
+      "explanation": "Na linha 1, o parâmetro `x` está sem tipo explícito. Em Rust, parâmetros de função exigem anotação de tipo: `fn quadrado(x: i32) -> i32`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para definir uma função que usa `if/else` como expressão de retorno implícito e imprime o resultado:",
+      "blocks": [
+        "    if a > b { a } else { b }",
+        "fn main() {",
+        "fn maior(a: i32, b: i32) -> i32 {",
+        "    println!(\"{}\", maior(4, 9));",
+        "}",
+        "}"
+      ],
+      "correctOrder": [2, 0, 4, 1, 3, 5],
+      "explanation": "Primeiro definimos `fn maior` com a expressão `if a > b { a } else { b }` sem `;`, fechamos a função, e depois chamamos dentro de `fn main()`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Escreva uma função chamada `triplo` que receba um parâmetro `x` do tipo inteiro `i32` e retorne `x` multiplicado por `3` (também `i32`).",
+      "starterCode": "",
+      "requiredTokens": ["fn", "triplo", "i32", "->", "*"],
+      "sampleSolution": "fn triplo(x: i32) -> i32 {\n    x * 3\n}",
+      "hint": "Use `fn triplo(x: i32) -> i32 { x * 3 }` (lembre-se de não colocar `;` no retorno implícito).",
+      "explanation": "`fn` define a função, `x: i32` tipa o parâmetro, `-> i32` declara o retorno e `x * 3` sem `;` devolve o resultado."
+    }
+  ]
+}

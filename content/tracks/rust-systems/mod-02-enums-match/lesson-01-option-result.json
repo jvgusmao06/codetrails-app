@@ -1,23 +1,35 @@
 {
   "id": "rust-match-01",
-  "title": "Enums, Pattern Matching, Option e Result",
-  "description": "Elimine NullPointerExceptions e exceções surpresa com Option<T>, Result<T, E>, match exaustivo e o operador '?'.",
+  "title": "Enums, Option<T>, Result<T, E> e Match",
+  "description": "Modele estados com enum, elimine null usando Option<T>, trate falhas explícitas com Result<T, E> e garanta exaustividade com match.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Adeus null: Option<T>, Result<T, E> e Match",
-      "content": "Rust não tem 'null' nem exceções tradicionais. Valores opcionais usam o enum Option<T> (Some(valor) ou None), e operações que podem falhar retornam Result<T, E> (Ok(valor) ou Err(erro)). O comando 'match' exige que você trate todos os casos possíveis, e o operador '?' propaga erros de forma limpa.",
-      "codeExample": "fn dividir(a: f64, b: f64) -> Result<f64, String> {\n    if b == 0.0 {\n        Err(String::from(\"Divisão por zero\"))\n    } else {\n        Ok(a / b)\n    }\n}\n\nfn mostrar() {\n    match dividir(10.0, 2.0) {\n        Ok(res) => println!(\"Resultado: {}\", res),\n        Err(e) => println!(\"Erro: {}\", e),\n    }\n}",
+      "title": "Adeus null: enum, Option<T>, Result<T, E> e match",
+      "content": "Em Rust, definimos tipos com variantes usando `enum Status { Ativo, Inativo }`. Como Rust não tem `null` nem exceções, dois enums da biblioteca padrão resolvem isso:\n- **`Option<T>`**: `Some(valor)` quando há dado, ou `None` quando está ausente.\n- **`Result<T, E>`**: `Ok(valor)` em caso de sucesso, ou `Err(erro)` em caso de falha.\nPara extrair o valor interno com segurança, usamos `match`, que é **exaustivo** (o compilador obriga tratar todas as variantes).",
+      "codeExample": "fn dividir(a: f64, b: f64) -> Result<f64, String> {\n    if b == 0.0 {\n        Err(String::from(\"Divisão por zero\"))\n    } else {\n        Ok(a / b)\n    }\n}\n\nfn main() {\n    match dividir(10.0, 2.0) {\n        Ok(res) => println!(\"Resultado: {}\", res),\n        Err(e) => println!(\"Erro: {}\", e),\n    }\n}",
       "keyTakeaways": [
-        "Option<T> obriga o programador a tratar explicitamente o caso 'None' antes de acessar o valor em 'Some(v)'.",
-        "'match' em Rust é exaustivo: o compilador recusa o código se algum caso do enum ficar sem tratamento.",
-        "O operador '?' no final de uma chamada Result retorna o Err imediatamente ou extrai o valor de Ok."
+        "`enum` representa um valor que pode assumir uma entre várias variantes.",
+        "`Option<T>` (`Some`/`None`) substitui `null`; `Result<T, E>` (`Ok`/`Err`) substitui exceções.",
+        "`match` exige que todos os casos possíveis sejam tratados em tempo de compilação."
       ]
     },
     {
+      "type": "multiple_choice",
+      "prompt": "Como o Rust representa a possível ausência de um valor sem usar `null`?",
+      "options": [
+        "Com o enum `Option<T>`, que possui as variantes `Some(valor)` e `None`",
+        "Com a palavra-chave `undefined`",
+        "Com o enum `Result<T, E>` retornando `null`",
+        "Com ponteiros nulos automáticos"
+      ],
+      "correctIndex": 0,
+      "explanation": "`Option<T>` obriga o programador a lidar explicitamente com a presença (`Some`) ou ausência (`None`) do valor."
+    },
+    {
       "type": "fill_in_blank",
-      "prompt": "Complete o pattern matching sobre um Option<String> para tratar tanto a presença quanto a ausência de valor:",
+      "prompt": "Complete o `match` sobre um `Option<String>` para tratar tanto a presença quanto a ausência de valor:",
       "codeTemplate": "{{blank}} buscar_usuario(id) {\n    {{blank}}(nome) => println!(\"Olá, {}\", nome),\n    {{blank}} => println!(\"Usuário não encontrado\"),\n}",
       "blanks": [
         { "answer": "match", "placeholder": "comando" },
@@ -25,19 +37,53 @@
         { "answer": "None", "placeholder": "variante vazia" }
       ],
       "options": ["match", "Some", "None", "switch", "Null", "Ok"],
-      "explanation": "O enum Option<T> possui duas variantes: Some(valor) quando há dado e None quando está vazio, inspecionadas com match."
+      "explanation": "Em `Option<T>`, os braços do `match` tratam `Some(valor)` e `None`."
     },
     {
-      "type": "multiple_choice",
-      "prompt": "O que o operador '?' faz ao final de 'let bytes = fs::read(\"dados.txt\")?;' dentro de uma função que retorna Result?",
-      "options": [
-        "Ignora o erro caso o arquivo não exista e atribui vazio",
-        "Se for Ok(v), extrai 'v' para 'bytes'; se for Err(e), retorna Err(e) imediatamente da função atual",
-        "Encerra o programa inteiro com panic! imediatamente",
-        "Transforma a função em assíncrona"
+      "type": "order_code",
+      "prompt": "Ordene os blocos para formar um `match` válido tratando um `Result`:",
+      "blocks": [
+        "    Err(erro) => println!(\"Falha: {}\", erro),",
+        "match abrir_arquivo() {",
+        "}",
+        "    Ok(conteudo) => println!(\"{}\", conteudo),"
       ],
-      "correctIndex": 1,
-      "explanation": "O operador '?' é o atalho idiomático em Rust para propagar erros sem precisar escrever blocos match repetitivos."
+      "correctOrder": [1, 3, 0, 2],
+      "explanation": "Um `match` sobre `Result` trata o caso de sucesso `Ok(...)` e o caso de erro `Err(...)` dentro das chaves."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O `match` em Rust precisa ser exaustivo. Clique na linha onde começa o `match` incompleto que falha na compilação:",
+      "lines": [
+        "fn mostrar(opt: Option<i32>) {",
+        "    match opt {",
+        "        Some(n) => println!(\"{}\", n),",
+        "    }",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Na linha 2, o `match opt` não trata a variante `None`, violando a regra de exaustividade do compilador."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Combine `enum` e `match` para retornar uma mensagem de acordo com a variante de `Sinal`:",
+      "codeTemplate": "{{blank}} Sinal { Verde, Vermelho }\nfn acao(s: Sinal) -> &'static str {\n    {{blank}} s {\n        Sinal::Verde => \"Seguir\",\n        {{blank}}::Vermelho => \"Parar\",\n    }\n}",
+      "blanks": [
+        { "answer": "enum", "placeholder": "tipo" },
+        { "answer": "match", "placeholder": "decisão" },
+        { "answer": "Sinal", "placeholder": "enum" }
+      ],
+      "options": ["enum", "match", "Sinal", "struct", "switch", "Option"],
+      "explanation": "Definimos variantes com `enum` e acessamos cada variante no `match` usando `NomeEnum::Variante`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Crie uma função chamada `dobrar_se_positivo` que receba `n: i32` e retorne `Option<i32>`: se `n > 0`, retorne o dobro de `n` embrulhado em `Some`; caso contrário, retorne `None`.",
+      "starterCode": "",
+      "requiredTokens": ["fn", "dobrar_se_positivo", "Option<i32>", "Some(", "None"],
+      "sampleSolution": "fn dobrar_se_positivo(n: i32) -> Option<i32> {\n    if n > 0 {\n        Some(n * 2)\n    } else {\n        None\n    }\n}",
+      "hint": "Use `if n > 0 { Some(n * 2) } else { None }` como expressão de retorno da função.",
+      "explanation": "Combinamos `fn`, `if/else` como expressão e `Option<i32>` (`Some`/`None`) para modelar um resultado opcional seguro."
     }
   ]
 }

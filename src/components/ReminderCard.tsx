@@ -99,7 +99,7 @@ export function ReminderCard() {
             setTime(val);
             if (effectiveEnabled) void applyReminder(true, val);
           }}
-          className="px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 font-mono text-xs text-slate-200 focus:outline-none focus:border-emerald-500/60"
+          className="px-2.5 py-1.5 rounded-lg bg-surface-inset border border-border font-mono text-xs text-slate-200 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/25 transition"
         />
 
         <button

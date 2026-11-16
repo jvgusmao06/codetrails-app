@@ -33,7 +33,7 @@ export default async function LessonPage({
   return (
     <Suspense
       fallback={
-        <div className="min-h-dvh bg-zinc-950 text-zinc-400 flex items-center justify-center font-mono text-xs">
+        <div className="min-h-dvh bg-background text-muted flex items-center justify-center font-mono text-xs">
           Carregando módulo...
         </div>
       }

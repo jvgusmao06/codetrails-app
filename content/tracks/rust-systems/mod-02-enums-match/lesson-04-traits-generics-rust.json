@@ -1,0 +1,88 @@
+{
+  "id": "rust-traits-02",
+  "title": "Traits, Generics <T> e String vs &str",
+  "description": "Defina contratos compartilhados com trait, escreva código genérico com <T> e entenda a diferença prática entre String e &str.",
+  "xp": 35,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Polimorfismo em Rust: Traits e Generics <T>",
+      "content": "Para compartilhar comportamento entre structs diferentes, Rust usa **`trait`** (equivalente a interfaces), implementado com `impl NomeTrait for MeuStruct`. Já **Generics (`<T>`)** permitem escrever funções ou structs que funcionam com qualquer tipo — podendo restringir `T` a tipos que implementam certa trait (`fn exibir<T: Resumivel>(item: &T)`). Por fim, lembre-se dos dois tipos de texto: `&str` (referência imutável) e `String` (texto dinâmico na Heap, criado com `String::from(...)` ou `format!(...)`).",
+      "codeExample": "trait Resumivel {\n    fn resumo(&self) -> String;\n}\n\nstruct Artigo { titulo: String }\n\nimpl Resumivel for Artigo {\n    fn resumo(&self) -> String {\n        format!(\"Artigo: {}\", self.titulo)\n    }\n}\n\nfn imprimir_resumo<T: Resumivel>(item: &T) {\n    println!(\"{}\", item.resumo());\n}",
+      "keyTakeaways": [
+        "`trait` define métodos compartilhados; `impl Trait for Tipo` implementa o contrato.",
+        "`<T: MinhaTrait>` (trait bound) garante que o tipo genérico `T` possua os métodos exigidos.",
+        "`format!(\"{}\", x)` monta uma nova `String` na Heap sem imprimir no console."
+      ]
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o código definindo a trait `Logavel` e implementando-a para o struct `Evento`:",
+      "codeTemplate": "{{blank}} Logavel {\n    fn log(&self) -> String;\n}\n\n{{blank}} Logavel {{blank}} Evento {\n    fn log(&self) -> String {\n        String::from(\"ok\")\n    }\n}",
+      "blanks": [
+        { "answer": "trait", "placeholder": "contrato" },
+        { "answer": "impl", "placeholder": "implementar" },
+        { "answer": "for", "placeholder": "para" }
+      ],
+      "options": ["trait", "impl", "for", "interface", "implements", "in"],
+      "explanation": "Definimos contratos com `trait` e os associamos a um struct usando `impl NomeTrait for MeuTipo`."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Na assinatura `fn notificar<T: Logavel>(item: &T)`, o que significa `<T: Logavel>`?",
+      "options": [
+        "Que `T` é um tipo inteiro de 64 bits",
+        "Que a função aceita qualquer tipo `T`, desde que `T` implemente a trait `Logavel`",
+        "Que `Logavel` é uma classe pai que `T` herda por herança múltipla",
+        "Que `item` será movido para a Heap automaticamente"
+      ],
+      "correctIndex": 1,
+      "explanation": "`<T: Logavel>` é um *trait bound* sobre o parâmetro genérico `T`: o compilador só aceita tipos que implementam `Logavel`."
+    },
+    {
+      "type": "multiple_choice",
+      "prompt": "Qual é a função da macro `format!(\"Artigo: {}\", titulo)` em Rust?",
+      "options": [
+        "Imprimir o texto formatado diretamente no terminal",
+        "Criar e retornar uma nova `String` na Heap sem imprimir no console",
+        "Converter uma `String` em `&str` estático",
+        "Validar se uma trait foi implementada"
+      ],
+      "correctIndex": 1,
+      "explanation": "`format!` funciona como `println!`, mas em vez de escrever na tela, devolve uma `String` alocada na Heap."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Esta função genérica tenta chamar `.resumo()` em `item`, mas falta o *trait bound* na assinatura. Clique na linha com o erro:",
+      "lines": [
+        "fn exibir<T>(item: &T) {",
+        "    println!(\"{}\", item.resumo());",
+        "}"
+      ],
+      "buggyLineIndex": 0,
+      "explanation": "Na linha 1, `T` não tem restrição (`<T: Resumivel>`), então o compilador não garante que qualquer `T` possua o método `.resumo()`."
+    },
+    {
+      "type": "order_code",
+      "prompt": "Ordene os blocos para definir a trait `Descritivel`, o struct `Livro` e sua implementação usando `format!`:",
+      "blocks": [
+        "impl Descritivel for Livro {",
+        "    fn descrever(&self) -> String { format!(\"Livro: {}\", self.titulo) }",
+        "struct Livro { titulo: String }",
+        "trait Descritivel { fn descrever(&self) -> String; }",
+        "}"
+      ],
+      "correctOrder": [3, 2, 0, 1, 4],
+      "explanation": "Definimos `trait Descritivel`, depois `struct Livro`, e implementamos `impl Descritivel for Livro` usando `format!`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Defina uma função genérica chamada `imprimir_resumo` que aceite qualquer tipo `T` restrito à trait `Resumivel`, receba `item: &T` por empréstimo e imprima o resultado de `item.resumo()` no console.",
+      "starterCode": "",
+      "requiredTokens": ["fn", "imprimir_resumo", "<T: Resumivel>", "&T", "println!", "item.resumo()"],
+      "sampleSolution": "fn imprimir_resumo<T: Resumivel>(item: &T) {\n    println!(\"{}\", item.resumo());\n}",
+      "hint": "Use `fn imprimir_resumo<T: Resumivel>(item: &T)` e imprima `item.resumo()` com `println!`.",
+      "explanation": "O *trait bound* `<T: Resumivel>` garante em tempo de compilação que `item.resumo()` existe para qualquer `T` passado."
+    }
+  ]
+}

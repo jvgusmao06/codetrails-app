@@ -40,7 +40,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-dvh flex flex-col md:flex-row bg-[#090d16] text-slate-100 relative">
+    <div className="min-h-dvh flex flex-col md:flex-row bg-background text-foreground relative">
       {/* Subtle ambient glow */}
       <div
         aria-hidden="true"
@@ -48,7 +48,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       />
 
       {/* Desktop Left Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 border-r border-slate-800/80 bg-[#0b101b]/95 p-5 shrink-0 select-none z-10">
+      <aside className="hidden md:flex flex-col w-64 border-r border-border/80 bg-surface/95 p-5 shrink-0 select-none z-10">
         <Link
           href="/"
           className="flex items-center gap-3 px-2.5 py-2 mb-6 rounded-xl hover:bg-slate-900/80 transition"
@@ -151,9 +151,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 pb-20 md:pb-0 z-10">
+      <div className="flex-1 flex flex-col min-w-0 pb-[calc(5.25rem+env(safe-area-inset-bottom))] md:pb-0 z-10">
         {/* Top Status Bar */}
-        <header className="sticky top-0 z-20 backdrop-blur-md bg-[#090d16]/85 border-b border-slate-800/80 px-4 py-2.5">
+        <header className="sticky top-0 z-20 backdrop-blur-md bg-background/85 border-b border-border/80 px-4 pt-[calc(0.625rem+env(safe-area-inset-top))] pb-2.5 md:py-2.5">
           <div className="max-w-5xl mx-auto flex items-center justify-between gap-2">
             <Link href="/" className="flex md:hidden items-center gap-2">
               <span className="w-7 h-7 rounded-lg bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-mono font-bold text-xs">
@@ -164,7 +164,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </span>
             </Link>
 
-            <div className="hidden md:flex items-center gap-2 font-mono text-xs text-slate-400">
+            <div className="hidden md:flex items-center gap-2 font-mono text-xs text-muted">
               <span className="text-emerald-400">~/workspace</span>
               <span>/</span>
               <span className="text-slate-200">{progress.activeTrackId}</span>
@@ -172,7 +172,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
             <div className="flex items-center gap-2 sm:gap-2.5 font-mono text-xs">
               {/* Compact Language Select for Mobile & Topbar */}
-              <div className="flex items-center gap-1 bg-slate-900 border border-slate-800 rounded-lg px-2 py-1">
+              <div className="flex items-center gap-1 bg-surface-card border border-border rounded-lg px-2 py-1 focus-within:border-accent/70 focus-within:ring-2 focus-within:ring-accent/25 transition">
                 <Globe className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 <select
                   aria-label="Idioma"
@@ -225,7 +225,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Mobile Bottom Navigation Bar */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-[#0b101b]/95 backdrop-blur-md border-t border-slate-800 px-2 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
+      <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-surface/95 backdrop-blur-md border-t border-border px-2 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
         <div className="flex items-center justify-around max-w-md mx-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -237,7 +237,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl font-medium text-xs transition ${
+                className={`flex flex-col items-center justify-center gap-1 min-w-[60px] min-h-[44px] px-3 py-1.5 rounded-xl font-medium text-xs transition ${
                   active
                     ? "text-emerald-400 bg-emerald-500/12"
                     : "text-slate-400 hover:text-slate-200"

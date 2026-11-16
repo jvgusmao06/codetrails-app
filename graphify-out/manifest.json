@@ -1,0 +1,2108 @@
+{
+  ".github/ISSUE_TEMPLATE/bug-report.yml": {
+    "mtime": 1794586896.973948,
+    "seen": 1794811395.1852932,
+    "ast_hash": "a7a7f4831abdf78df650704b15023dc6",
+    "semantic_hash": "a7a7f4831abdf78df650704b15023dc6"
+  },
+  ".github/ISSUE_TEMPLATE/config.yml": {
+    "mtime": 1794586898.2371771,
+    "seen": 1794811395.185298,
+    "ast_hash": "584753f849b7b91a0ec41c497889c801",
+    "semantic_hash": "584753f849b7b91a0ec41c497889c801"
+  },
+  ".github/ISSUE_TEMPLATE/new-lesson.yml": {
+    "mtime": 1794586895.5268734,
+    "seen": 1794811395.1853,
+    "ast_hash": "4a7e1bae86ed10e2601d519f9b46133b",
+    "semantic_hash": "4a7e1bae86ed10e2601d519f9b46133b"
+  },
+  ".github/workflows/validate-tracks.yml": {
+    "mtime": 1794514157.770133,
+    "seen": 1794811395.1853015,
+    "ast_hash": "e421644a447d50513eb0ca35ff2357cf",
+    "semantic_hash": "e421644a447d50513eb0ca35ff2357cf"
+  },
+  "android/app/build.gradle": {
+    "mtime": 1794503735.4305408,
+    "seen": 1794811395.1853025,
+    "ast_hash": "da2feaf7f95c14f47a71af8eff09edf4",
+    "semantic_hash": "da2feaf7f95c14f47a71af8eff09edf4"
+  },
+  "android/app/capacitor.build.gradle": {
+    "mtime": 1794594917.8403034,
+    "seen": 1794811395.1853034,
+    "ast_hash": "40ff4eb78cc563ba8310aef14d1256c5",
+    "semantic_hash": "40ff4eb78cc563ba8310aef14d1256c5"
+  },
+  "android/app/src/androidTest/java/com/getcapacitor/myapp/ExampleInstrumentedTest.java": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1853046,
+    "ast_hash": "fbaf7cc870c663eb52dcf218531c439d",
+    "semantic_hash": "fbaf7cc870c663eb52dcf218531c439d"
+  },
+  "android/app/src/main/java/dev/codetrilhas/app/MainActivity.java": {
+    "mtime": 1794503735.4295068,
+    "seen": 1794811395.1853054,
+    "ast_hash": "1c1d89415b2fce124fc1a357d9d33230",
+    "semantic_hash": "1c1d89415b2fce124fc1a357d9d33230"
+  },
+  "android/app/src/test/java/com/getcapacitor/myapp/ExampleUnitTest.java": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.185306,
+    "ast_hash": "e91b4501c14da821682fa5c26a16d616",
+    "semantic_hash": "e91b4501c14da821682fa5c26a16d616"
+  },
+  "android/build.gradle": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1853068,
+    "ast_hash": "682315a426653617c6a74fc12bef55b6",
+    "semantic_hash": "682315a426653617c6a74fc12bef55b6"
+  },
+  "android/capacitor.settings.gradle": {
+    "mtime": 1794594917.8393028,
+    "seen": 1794811395.1853077,
+    "ast_hash": "d70c5b5a81b7362527e6d71aea3bd487",
+    "semantic_hash": "d70c5b5a81b7362527e6d71aea3bd487"
+  },
+  "android/gradlew": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1853087,
+    "ast_hash": "794669d78aef1dd5c7d889ef618b311a",
+    "semantic_hash": "794669d78aef1dd5c7d889ef618b311a"
+  },
+  "android/settings.gradle": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1853094,
+    "ast_hash": "f6cd925b3f859e23c3d819fe2459e0e4",
+    "semantic_hash": "f6cd925b3f859e23c3d819fe2459e0e4"
+  },
+  "android/variables.gradle": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1853101,
+    "ast_hash": "4b3fce8ea2a515a9d2e47e74757172ec",
+    "semantic_hash": "4b3fce8ea2a515a9d2e47e74757172ec"
+  },
+  "capacitor.config.ts": {
+    "mtime": 1794594860.0148604,
+    "seen": 1794811395.185311,
+    "ast_hash": "598292bc8db5db79b82bc547dee3a2a2",
+    "semantic_hash": "598292bc8db5db79b82bc547dee3a2a2"
+  },
+  "content/tracks/algorithms-data-structures/mod-01-complexidade/lesson-00-arrays-memoria.json": {
+    "mtime": 1794811322.5827868,
+    "seen": 1794811395.1853118,
+    "ast_hash": "5df6a612ea806716cc0529044eca03fb",
+    "semantic_hash": "5df6a612ea806716cc0529044eca03fb"
+  },
+  "content/tracks/algorithms-data-structures/mod-01-complexidade/lesson-01-big-o-busca.json": {
+    "mtime": 1794811322.5842614,
+    "seen": 1794811395.1853125,
+    "ast_hash": "50fa8713c73dd17bec1da5323cdef5b6",
+    "semantic_hash": "50fa8713c73dd17bec1da5323cdef5b6"
+  },
+  "content/tracks/algorithms-data-structures/mod-01-complexidade/lesson-02-pilhas-filas.json": {
+    "mtime": 1794811322.584764,
+    "seen": 1794811395.1853132,
+    "ast_hash": "be56d28c75aa8fe218b9a22c1880cbf9",
+    "semantic_hash": "be56d28c75aa8fe218b9a22c1880cbf9"
+  },
+  "content/tracks/algorithms-data-structures/mod-01-complexidade/lesson-03-listas-ligadas.json": {
+    "mtime": 1794811322.5858085,
+    "seen": 1794811395.185314,
+    "ast_hash": "188239389af9a8961f391a1579aa5c8e",
+    "semantic_hash": "188239389af9a8961f391a1579aa5c8e"
+  },
+  "content/tracks/algorithms-data-structures/mod-02-recursao-ordenacao/lesson-01-recursao-callstack.json": {
+    "mtime": 1794811322.586358,
+    "seen": 1794811395.185315,
+    "ast_hash": "6fd385334742826c3c46149c8df9c9ed",
+    "semantic_hash": "6fd385334742826c3c46149c8df9c9ed"
+  },
+  "content/tracks/algorithms-data-structures/mod-02-recursao-ordenacao/lesson-02-ordenacao-two-pointers.json": {
+    "mtime": 1794811322.5874736,
+    "seen": 1794811395.1853156,
+    "ast_hash": "9d606c1f9c74497ca3515af7d739fa4f",
+    "semantic_hash": "9d606c1f9c74497ca3515af7d739fa4f"
+  },
+  "content/tracks/algorithms-data-structures/mod-02-recursao-ordenacao/lesson-03-sliding-window.json": {
+    "mtime": 1794811322.588516,
+    "seen": 1794811395.1853163,
+    "ast_hash": "0b5cc8b7c56bac7886c1746eadcbc710",
+    "semantic_hash": "0b5cc8b7c56bac7886c1746eadcbc710"
+  },
+  "content/tracks/algorithms-data-structures/mod-02-recursao-ordenacao/lesson-04-arvores-bst-dfs-bfs.json": {
+    "mtime": 1794811322.5890348,
+    "seen": 1794811395.1853175,
+    "ast_hash": "3940c80aed8d6f566921c4cae56ee4e2",
+    "semantic_hash": "3940c80aed8d6f566921c4cae56ee4e2"
+  },
+  "content/tracks/algorithms-data-structures/mod-02-recursao-ordenacao/lesson-05-grafos-bfs-dijkstra.json": {
+    "mtime": 1794811322.5895505,
+    "seen": 1794811395.1853185,
+    "ast_hash": "4e5895d8b77a3866bc7dd2dff0f6e909",
+    "semantic_hash": "4e5895d8b77a3866bc7dd2dff0f6e909"
+  },
+  "content/tracks/algorithms-data-structures/mod-02-recursao-ordenacao/lesson-06-programacao-dinamica-memo.json": {
+    "mtime": 1794811322.59059,
+    "seen": 1794811395.1853192,
+    "ast_hash": "ddc761a49887886ec0a716ec10722d5d",
+    "semantic_hash": "ddc761a49887886ec0a716ec10722d5d"
+  },
+  "content/tracks/algorithms-data-structures/track.json": {
+    "mtime": 1794541778.824689,
+    "seen": 1794811395.18532,
+    "ast_hash": "43b299cc6962bb67864e83e675d2adc6",
+    "semantic_hash": "43b299cc6962bb67864e83e675d2adc6"
+  },
+  "content/tracks/asio-networking-cpp/mod-01-fundamentos/lesson-01-io-context-async.json": {
+    "mtime": 1794811232.2850823,
+    "seen": 1794811395.1853206,
+    "ast_hash": "ecf3e8d698b01c3c0f975ff0ef3ecfee",
+    "semantic_hash": "ecf3e8d698b01c3c0f975ff0ef3ecfee"
+  },
+  "content/tracks/asio-networking-cpp/track.json": {
+    "mtime": 1794541778.824689,
+    "seen": 1794811395.1853216,
+    "ast_hash": "1d14b8259aa578daeaad39a5f9697a42",
+    "semantic_hash": "1d14b8259aa578daeaad39a5f9697a42"
+  },
+  "content/tracks/aspnet-core-csharp/mod-01-fundamentos/lesson-01-minimal-apis.json": {
+    "mtime": 1794811210.343305,
+    "seen": 1794811395.1853225,
+    "ast_hash": "ad807318444dfd738de5df32318bf8b1",
+    "semantic_hash": "ad807318444dfd738de5df32318bf8b1"
+  },
+  "content/tracks/aspnet-core-csharp/track.json": {
+    "mtime": 1794541778.824689,
+    "seen": 1794811395.185323,
+    "ast_hash": "6cd8a312afc783a4ecfe662cd8f95e4a",
+    "semantic_hash": "6cd8a312afc783a4ecfe662cd8f95e4a"
+  },
+  "content/tracks/blazor-csharp/mod-01-fundamentos/lesson-01-razor-components.json": {
+    "mtime": 1794811210.344357,
+    "seen": 1794811395.185324,
+    "ast_hash": "3b0de603e3878824390e2a7c9c7460aa",
+    "semantic_hash": "3b0de603e3878824390e2a7c9c7460aa"
+  },
+  "content/tracks/blazor-csharp/track.json": {
+    "mtime": 1794541778.8256886,
+    "seen": 1794811395.185325,
+    "ast_hash": "4c295f36a99a9e722744401025320989",
+    "semantic_hash": "4c295f36a99a9e722744401025320989"
+  },
+  "content/tracks/boost-cpp/mod-01-fundamentos/lesson-01-boost-overview.json": {
+    "mtime": 1794811232.2855966,
+    "seen": 1794811395.1853256,
+    "ast_hash": "20c87a13d7aec2a0b70f851e2d7114d8",
+    "semantic_hash": "20c87a13d7aec2a0b70f851e2d7114d8"
+  },
+  "content/tracks/boost-cpp/track.json": {
+    "mtime": 1794541778.8256886,
+    "seen": 1794811395.1853263,
+    "ast_hash": "5a16c6c4787565f6b475b1b3f99dde66",
+    "semantic_hash": "5a16c6c4787565f6b475b1b3f99dde66"
+  },
+  "content/tracks/c-cpp-systems/mod-01-memoria/lesson-01-io-basico.json": {
+    "mtime": 1794811184.378026,
+    "seen": 1794811395.185327,
+    "ast_hash": "6a74a533884f569312765c7a9fa3573f",
+    "semantic_hash": "6a74a533884f569312765c7a9fa3573f"
+  },
+  "content/tracks/c-cpp-systems/mod-01-memoria/lesson-02-ponteiros.json": {
+    "mtime": 1794811184.3785474,
+    "seen": 1794811395.1853278,
+    "ast_hash": "125ebcd5a73b7d218e2647b31340b216",
+    "semantic_hash": "125ebcd5a73b7d218e2647b31340b216"
+  },
+  "content/tracks/c-cpp-systems/mod-02-structs-raii/lesson-01-structs-smart-pointers.json": {
+    "mtime": 1794811184.3811505,
+    "seen": 1794811395.185329,
+    "ast_hash": "926e41426ebe88db95a96a29c57706d0",
+    "semantic_hash": "926e41426ebe88db95a96a29c57706d0"
+  },
+  "content/tracks/c-cpp-systems/track.json": {
+    "mtime": 1794811184.3836763,
+    "seen": 1794811395.18533,
+    "ast_hash": "141deaec6be879c5930c49e1650349c3",
+    "semantic_hash": "141deaec6be879c5930c49e1650349c3"
+  },
+  "content/tracks/clap-cli-rust/mod-01-fundamentos/lesson-01-parser-subcommands.json": {
+    "mtime": 1794811232.286636,
+    "seen": 1794811395.1853306,
+    "ast_hash": "84b1fda45c4ec646db071184eacb73b4",
+    "semantic_hash": "84b1fda45c4ec646db071184eacb73b4"
+  },
+  "content/tracks/clap-cli-rust/track.json": {
+    "mtime": 1794541778.826689,
+    "seen": 1794811395.1853313,
+    "ast_hash": "2e2c66ac556e5f32c4899cc343efa226",
+    "semantic_hash": "2e2c66ac556e5f32c4899cc343efa226"
+  },
+  "content/tracks/cmake-build-system/mod-01-cmakelists/lesson-01-cmake-targets.json": {
+    "mtime": 1794811322.5911102,
+    "seen": 1794811395.1853323,
+    "ast_hash": "4a7e9bb1281988f20927ae1517ecd88e",
+    "semantic_hash": "4a7e9bb1281988f20927ae1517ecd88e"
+  },
+  "content/tracks/cmake-build-system/track.json": {
+    "mtime": 1794541778.826689,
+    "seen": 1794811395.185333,
+    "ast_hash": "8d93702759b26aab4e0557b0b3f39338",
+    "semantic_hash": "8d93702759b26aab4e0557b0b3f39338"
+  },
+  "content/tracks/cobra-cli-go/mod-01-fundamentos/lesson-01-cobra-commands-flags.json": {
+    "mtime": 1794811232.2876904,
+    "seen": 1794811395.1853337,
+    "ast_hash": "9c01d4e998ae477d649c4b9f56e00800",
+    "semantic_hash": "9c01d4e998ae477d649c4b9f56e00800"
+  },
+  "content/tracks/cobra-cli-go/track.json": {
+    "mtime": 1794541901.3486857,
+    "seen": 1794811395.1853354,
+    "ast_hash": "ec54b8111eba3261f4a43cdb758a6d19",
+    "semantic_hash": "ec54b8111eba3261f4a43cdb758a6d19"
+  },
+  "content/tracks/csharp-dotnet/mod-01-fundamentos/lesson-01-hello-variaveis-tipos.json": {
+    "mtime": 1794811184.3836763,
+    "seen": 1794811395.1853364,
+    "ast_hash": "1c26e7c73815466f559f8dd0ffc6e360",
+    "semantic_hash": "1c26e7c73815466f559f8dd0ffc6e360"
+  },
+  "content/tracks/csharp-dotnet/mod-01-fundamentos/lesson-02-condicionais-switch-null.json": {
+    "mtime": 1794811184.3846748,
+    "seen": 1794811395.1853368,
+    "ast_hash": "4e31ad256b44d0c51e48e790cef98b4a",
+    "semantic_hash": "4e31ad256b44d0c51e48e790cef98b4a"
+  },
+  "content/tracks/csharp-dotnet/mod-01-fundamentos/lesson-03-loops-arrays-listas.json": {
+    "mtime": 1794811184.3846748,
+    "seen": 1794811395.1853375,
+    "ast_hash": "eda8cec2796948d892374df12ef80d48",
+    "semantic_hash": "eda8cec2796948d892374df12ef80d48"
+  },
+  "content/tracks/csharp-dotnet/mod-01-fundamentos/lesson-04-metodos-classes-objetos.json": {
+    "mtime": 1794811184.3856752,
+    "seen": 1794811395.1853383,
+    "ast_hash": "c0be29a5907ff807cd4f235c207bfbf0",
+    "semantic_hash": "c0be29a5907ff807cd4f235c207bfbf0"
+  },
+  "content/tracks/csharp-dotnet/mod-01-fundamentos/lesson-05-heranca-interfaces-records.json": {
+    "mtime": 1794811184.3856752,
+    "seen": 1794811395.1853392,
+    "ast_hash": "521d07853a531afe7d6ee867fe6b93b2",
+    "semantic_hash": "521d07853a531afe7d6ee867fe6b93b2"
+  },
+  "content/tracks/csharp-dotnet/mod-02-dotnet-moderno/lesson-01-linq-where-select.json": {
+    "mtime": 1794811184.3866756,
+    "seen": 1794811395.18534,
+    "ast_hash": "4b711358025190c0f69b54ad51b43cdb",
+    "semantic_hash": "4b711358025190c0f69b54ad51b43cdb"
+  },
+  "content/tracks/csharp-dotnet/mod-02-dotnet-moderno/lesson-02-collections-dictionary-hashset.json": {
+    "mtime": 1794811184.3876753,
+    "seen": 1794811395.185341,
+    "ast_hash": "f82ceaa5bd3362efe699b5cc57f9a436",
+    "semantic_hash": "f82ceaa5bd3362efe699b5cc57f9a436"
+  },
+  "content/tracks/csharp-dotnet/mod-02-dotnet-moderno/lesson-03-async-await-task.json": {
+    "mtime": 1794811184.3876753,
+    "seen": 1794811395.1853416,
+    "ast_hash": "0b43cfc4735856017483903af19940fc",
+    "semantic_hash": "0b43cfc4735856017483903af19940fc"
+  },
+  "content/tracks/csharp-dotnet/mod-02-dotnet-moderno/lesson-04-excecoes-using-idisposable.json": {
+    "mtime": 1794811184.388676,
+    "seen": 1794811395.1853426,
+    "ast_hash": "236f02430e3eefff596bcc5cd6ae7c5a",
+    "semantic_hash": "236f02430e3eefff596bcc5cd6ae7c5a"
+  },
+  "content/tracks/csharp-dotnet/mod-02-dotnet-moderno/lesson-05-pattern-matching-nativas-desafio.json": {
+    "mtime": 1794811184.388676,
+    "seen": 1794811395.1853433,
+    "ast_hash": "d3f99add45a42be515fbc3cddbff3200",
+    "semantic_hash": "d3f99add45a42be515fbc3cddbff3200"
+  },
+  "content/tracks/csharp-dotnet/track.json": {
+    "mtime": 1794541778.8276882,
+    "seen": 1794811395.185344,
+    "ast_hash": "9939aa1027e34de00d89abade8e8e30a",
+    "semantic_hash": "9939aa1027e34de00d89abade8e8e30a"
+  },
+  "content/tracks/dapper-csharp/mod-01-fundamentos/lesson-01-query-async-dapper.json": {
+    "mtime": 1794811232.2884066,
+    "seen": 1794811395.1853447,
+    "ast_hash": "707216cf39656d82b54f421c28856d72",
+    "semantic_hash": "707216cf39656d82b54f421c28856d72"
+  },
+  "content/tracks/dapper-csharp/track.json": {
+    "mtime": 1794541778.828192,
+    "seen": 1794811395.1853456,
+    "ast_hash": "ad05b9b355b6519c71e11c9741bfca23",
+    "semantic_hash": "ad05b9b355b6519c71e11c9741bfca23"
+  },
+  "content/tracks/django-python/mod-01-fundamentos/lesson-01-models-orm-views.json": {
+    "mtime": 1794811210.3452587,
+    "seen": 1794811395.1853464,
+    "ast_hash": "1c75c76f50d5c8f23d91eec4119b5ea3",
+    "semantic_hash": "1c75c76f50d5c8f23d91eec4119b5ea3"
+  },
+  "content/tracks/django-python/mod-01-fundamentos/lesson-02-urls-views-templates.json": {
+    "mtime": 1794811210.345764,
+    "seen": 1794811395.185347,
+    "ast_hash": "b1bd5a2d3c0336712dd75c870dd6a533",
+    "semantic_hash": "b1bd5a2d3c0336712dd75c870dd6a533"
+  },
+  "content/tracks/django-python/mod-01-fundamentos/lesson-03-admin-forms-validacao.json": {
+    "mtime": 1794811210.345764,
+    "seen": 1794811395.185348,
+    "ast_hash": "cf967acc4ccf36d4cc30e300372a0bd3",
+    "semantic_hash": "cf967acc4ccf36d4cc30e300372a0bd3"
+  },
+  "content/tracks/django-python/mod-01-fundamentos/lesson-04-drf-serializers-viewsets.json": {
+    "mtime": 1794811210.346769,
+    "seen": 1794811395.1853487,
+    "ast_hash": "8c8149482bcde8c6565dd4a0ce0a115b",
+    "semantic_hash": "8c8149482bcde8c6565dd4a0ce0a115b"
+  },
+  "content/tracks/django-python/mod-01-fundamentos/lesson-05-querysets-n1-select-related.json": {
+    "mtime": 1794811210.346769,
+    "seen": 1794811395.1853495,
+    "ast_hash": "d70c5235e07f10685db0d188a7551b63",
+    "semantic_hash": "d70c5235e07f10685db0d188a7551b63"
+  },
+  "content/tracks/django-python/track.json": {
+    "mtime": 1794541778.828192,
+    "seen": 1794811395.1853504,
+    "ast_hash": "9ce4c2b6f2a15291abd1fa01f8c5cbda",
+    "semantic_hash": "9ce4c2b6f2a15291abd1fa01f8c5cbda"
+  },
+  "content/tracks/echo-go/mod-01-fundamentos/lesson-01-echo-context-bind.json": {
+    "mtime": 1794811210.3477685,
+    "seen": 1794811395.1853511,
+    "ast_hash": "1b430a731e3da4d0b33840f7364e3951",
+    "semantic_hash": "1b430a731e3da4d0b33840f7364e3951"
+  },
+  "content/tracks/echo-go/track.json": {
+    "mtime": 1794541898.2358463,
+    "seen": 1794811395.1853518,
+    "ast_hash": "7cf4181050a75770fca00e91b92ec9fa",
+    "semantic_hash": "7cf4181050a75770fca00e91b92ec9fa"
+  },
+  "content/tracks/ef-core-csharp/mod-01-fundamentos/lesson-01-dbcontext-notracking.json": {
+    "mtime": 1794811232.2884066,
+    "seen": 1794811395.1853528,
+    "ast_hash": "377474c71b732ced7bdc84d89731d23a",
+    "semantic_hash": "377474c71b732ced7bdc84d89731d23a"
+  },
+  "content/tracks/ef-core-csharp/track.json": {
+    "mtime": 1794541778.8291962,
+    "seen": 1794811395.1853533,
+    "ast_hash": "d82bfcd3947fe0cd440ca20b12482889",
+    "semantic_hash": "d82bfcd3947fe0cd440ca20b12482889"
+  },
+  "content/tracks/eigen-linalg-cpp/mod-01-fundamentos/lesson-01-matrix-vector-simd.json": {
+    "mtime": 1794811232.2898085,
+    "seen": 1794811395.185354,
+    "ast_hash": "6ea6bddb276f993889310ce80a30bfb0",
+    "semantic_hash": "6ea6bddb276f993889310ce80a30bfb0"
+  },
+  "content/tracks/eigen-linalg-cpp/track.json": {
+    "mtime": 1794541778.8291962,
+    "seen": 1794811395.1853547,
+    "ast_hash": "4aeabf5df88ec5f1849b1767a73fbbdf",
+    "semantic_hash": "4aeabf5df88ec5f1849b1767a73fbbdf"
+  },
+  "content/tracks/fastapi-python/mod-01-rotas-api/lesson-01-get-endpoint.json": {
+    "mtime": 1794811210.3487685,
+    "seen": 1794811395.1853554,
+    "ast_hash": "f84ae324f6940398298e5b64982a4b48",
+    "semantic_hash": "f84ae324f6940398298e5b64982a4b48"
+  },
+  "content/tracks/fastapi-python/mod-01-rotas-api/lesson-02-pydantic-post-body.json": {
+    "mtime": 1794811210.3487685,
+    "seen": 1794811395.1853564,
+    "ast_hash": "b9fe09079a07cf8e76d7988406c10173",
+    "semantic_hash": "b9fe09079a07cf8e76d7988406c10173"
+  },
+  "content/tracks/fastapi-python/mod-01-rotas-api/lesson-03-path-query-params-status.json": {
+    "mtime": 1794811210.3497686,
+    "seen": 1794811395.185357,
+    "ast_hash": "f6c51ca8c6b408026c1651d1455c920d",
+    "semantic_hash": "f6c51ca8c6b408026c1651d1455c920d"
+  },
+  "content/tracks/fastapi-python/mod-01-rotas-api/lesson-04-depends-injecao-dependencia.json": {
+    "mtime": 1794811210.3506675,
+    "seen": 1794811395.1853578,
+    "ast_hash": "cfb8e5446b0918f952cb4ecd8edd8134",
+    "semantic_hash": "cfb8e5446b0918f952cb4ecd8edd8134"
+  },
+  "content/tracks/fastapi-python/mod-01-rotas-api/lesson-05-async-background-tasks-routers.json": {
+    "mtime": 1794811210.3506675,
+    "seen": 1794811395.1853585,
+    "ast_hash": "6c180fd80046532486188045692a5a09",
+    "semantic_hash": "6c180fd80046532486188045692a5a09"
+  },
+  "content/tracks/fastapi-python/track.json": {
+    "mtime": 1794541778.8301976,
+    "seen": 1794811395.1853595,
+    "ast_hash": "ffac51f97c38b12fd75790c3f28b4ee7",
+    "semantic_hash": "ffac51f97c38b12fd75790c3f28b4ee7"
+  },
+  "content/tracks/fiber-go/mod-01-fundamentos/lesson-01-fiber-routes-json.json": {
+    "mtime": 1794811210.3516715,
+    "seen": 1794811395.1853602,
+    "ast_hash": "24dc026c2bc6c7cfdb7bcf775fc5bcbb",
+    "semantic_hash": "24dc026c2bc6c7cfdb7bcf775fc5bcbb"
+  },
+  "content/tracks/fiber-go/track.json": {
+    "mtime": 1794541895.4241772,
+    "seen": 1794811395.185361,
+    "ast_hash": "9824be6f57f55d96f760187954457c31",
+    "semantic_hash": "9824be6f57f55d96f760187954457c31"
+  },
+  "content/tracks/fluentvalidation-csharp/mod-01-fundamentos/lesson-01-abstract-validator.json": {
+    "mtime": 1794811232.2898085,
+    "seen": 1794811395.1853616,
+    "ast_hash": "c1dd573c53e80b29170e216c3bb1e25b",
+    "semantic_hash": "c1dd573c53e80b29170e216c3bb1e25b"
+  },
+  "content/tracks/fluentvalidation-csharp/track.json": {
+    "mtime": 1794541778.8301976,
+    "seen": 1794811395.1853626,
+    "ast_hash": "d20e54be36359b669a0161730337288e",
+    "semantic_hash": "d20e54be36359b669a0161730337288e"
+  },
+  "content/tracks/git-github-workflow/mod-01-commits-branches/lesson-00-init-status-diff.json": {
+    "mtime": 1794811322.5921557,
+    "seen": 1794811395.1853635,
+    "ast_hash": "fe40c64fc70098d79dbc57a4502c32f2",
+    "semantic_hash": "fe40c64fc70098d79dbc57a4502c32f2"
+  },
+  "content/tracks/git-github-workflow/mod-01-commits-branches/lesson-01-fluxo-git.json": {
+    "mtime": 1794811322.592673,
+    "seen": 1794811395.1853642,
+    "ast_hash": "c67add9b212177f9e9f285e46f581c73",
+    "semantic_hash": "c67add9b212177f9e9f285e46f581c73"
+  },
+  "content/tracks/git-github-workflow/mod-01-commits-branches/lesson-02-branches-merge.json": {
+    "mtime": 1794811322.593718,
+    "seen": 1794811395.185365,
+    "ast_hash": "01230362c198a9211a17af85fd350738",
+    "semantic_hash": "01230362c198a9211a17af85fd350738"
+  },
+  "content/tracks/git-github-workflow/mod-01-commits-branches/lesson-03-amend-conventional-commits.json": {
+    "mtime": 1794811322.5942354,
+    "seen": 1794811395.1853657,
+    "ast_hash": "6a0c6624effc453c5586211bb1df7822",
+    "semantic_hash": "6a0c6624effc453c5586211bb1df7822"
+  },
+  "content/tracks/git-github-workflow/mod-02-remoto-avancado/lesson-01-pull-push-stash.json": {
+    "mtime": 1794811322.5947578,
+    "seen": 1794811395.1853666,
+    "ast_hash": "a8f133aa9317c9d03290c1572edf0ff0",
+    "semantic_hash": "a8f133aa9317c9d03290c1572edf0ff0"
+  },
+  "content/tracks/git-github-workflow/mod-02-remoto-avancado/lesson-02-reset-revert-log.json": {
+    "mtime": 1794811322.5952744,
+    "seen": 1794811395.1853673,
+    "ast_hash": "0ee69a3d74ed8420b0ca06b78a6ef41f",
+    "semantic_hash": "0ee69a3d74ed8420b0ca06b78a6ef41f"
+  },
+  "content/tracks/git-github-workflow/mod-02-remoto-avancado/lesson-03-rebase-interativo-squash.json": {
+    "mtime": 1794811322.5963142,
+    "seen": 1794811395.1853678,
+    "ast_hash": "362ff6b3ca3ab0cfcd052513400426d2",
+    "semantic_hash": "362ff6b3ca3ab0cfcd052513400426d2"
+  },
+  "content/tracks/git-github-workflow/mod-02-remoto-avancado/lesson-04-cherry-pick-tags-releases.json": {
+    "mtime": 1794811322.5968318,
+    "seen": 1794811395.1853695,
+    "ast_hash": "2ed7f9554164223a8aff86d401fe00e0",
+    "semantic_hash": "2ed7f9554164223a8aff86d401fe00e0"
+  },
+  "content/tracks/git-github-workflow/mod-02-remoto-avancado/lesson-05-reflog-bisect-resgate.json": {
+    "mtime": 1794811322.5973458,
+    "seen": 1794811395.1853704,
+    "ast_hash": "21788afb4b1b8f6890b6e6abadcc629f",
+    "semantic_hash": "21788afb4b1b8f6890b6e6abadcc629f"
+  },
+  "content/tracks/git-github-workflow/mod-02-remoto-avancado/lesson-06-pull-requests-forks-ssh.json": {
+    "mtime": 1794811322.5978632,
+    "seen": 1794811395.185371,
+    "ast_hash": "5079b6dd26e3c44b79720c0fb3b01539",
+    "semantic_hash": "5079b6dd26e3c44b79720c0fb3b01539"
+  },
+  "content/tracks/git-github-workflow/track.json": {
+    "mtime": 1794541778.8301976,
+    "seen": 1794811395.1853716,
+    "ast_hash": "816657075fac2941e22690f66ff39128",
+    "semantic_hash": "816657075fac2941e22690f66ff39128"
+  },
+  "content/tracks/go-gorm-sqlc/mod-01-fundamentos/lesson-01-sqlc-gorm.json": {
+    "mtime": 1794811232.2908163,
+    "seen": 1794811395.1853724,
+    "ast_hash": "5c1e1ee142fc53484933eeca73b6d8e7",
+    "semantic_hash": "5c1e1ee142fc53484933eeca73b6d8e7"
+  },
+  "content/tracks/go-gorm-sqlc/track.json": {
+    "mtime": 1794541778.8327067,
+    "seen": 1794811395.185373,
+    "ast_hash": "efc3c3c23dc3ac30a582a025088c5491",
+    "semantic_hash": "efc3c3c23dc3ac30a582a025088c5491"
+  },
+  "content/tracks/go-web-gin/mod-01-gin-handlers/lesson-01-gin-rest-json.json": {
+    "mtime": 1794811210.353084,
+    "seen": 1794811395.185374,
+    "ast_hash": "14756b43e93f6fb908535e9f0f407612",
+    "semantic_hash": "14756b43e93f6fb908535e9f0f407612"
+  },
+  "content/tracks/go-web-gin/track.json": {
+    "mtime": 1794541778.8332276,
+    "seen": 1794811395.1853747,
+    "ast_hash": "ed3b8312063f3895fce1adb1e5b4c1b3",
+    "semantic_hash": "ed3b8312063f3895fce1adb1e5b4c1b3"
+  },
+  "content/tracks/golang-cloud/mod-00-sintaxe/lesson-00-variaveis-tipos-if.json": {
+    "mtime": 1794811184.3896766,
+    "seen": 1794811395.1853755,
+    "ast_hash": "fb6c5f7c26a55dd4764a9690ae0fbefc",
+    "semantic_hash": "fb6c5f7c26a55dd4764a9690ae0fbefc"
+  },
+  "content/tracks/golang-cloud/mod-00-sintaxe/lesson-01-sintaxe-slices.json": {
+    "mtime": 1794811184.390678,
+    "seen": 1794811395.185376,
+    "ast_hash": "fff64a66425d326be58981e38c42d558",
+    "semantic_hash": "fff64a66425d326be58981e38c42d558"
+  },
+  "content/tracks/golang-cloud/mod-00-sintaxe/lesson-02-funcoes-nativas-desafio.json": {
+    "mtime": 1794811184.390678,
+    "seen": 1794811395.185377,
+    "ast_hash": "7259659e10d272362042c44ef934c718",
+    "semantic_hash": "7259659e10d272362042c44ef934c718"
+  },
+  "content/tracks/golang-cloud/mod-00-sintaxe/lesson-03-funcoes-multiplo-retorno.json": {
+    "mtime": 1794811184.3916762,
+    "seen": 1794811395.1853776,
+    "ast_hash": "0b18731162db4f51b1881675032b5bfb",
+    "semantic_hash": "0b18731162db4f51b1881675032b5bfb"
+  },
+  "content/tracks/golang-cloud/mod-01-concorrencia/lesson-01-go-basico.json": {
+    "mtime": 1794811184.3916762,
+    "seen": 1794811395.1853783,
+    "ast_hash": "7914f6b05c6091fd2ee1bb74da73c287",
+    "semantic_hash": "7914f6b05c6091fd2ee1bb74da73c287"
+  },
+  "content/tracks/golang-cloud/mod-01-concorrencia/lesson-02-select-waitgroup-mutex.json": {
+    "mtime": 1794811184.3926747,
+    "seen": 1794811395.185379,
+    "ast_hash": "1aa632ce88956d0d17ffc1e2c73c5fda",
+    "semantic_hash": "1aa632ce88956d0d17ffc1e2c73c5fda"
+  },
+  "content/tracks/golang-cloud/mod-01-concorrencia/lesson-03-context-timeouts.json": {
+    "mtime": 1794811184.3926747,
+    "seen": 1794811395.1853797,
+    "ast_hash": "eac1917499119fc86a9205cd3d185fb2",
+    "semantic_hash": "eac1917499119fc86a9205cd3d185fb2"
+  },
+  "content/tracks/golang-cloud/mod-02-interfaces-erros/lesson-01-interfaces-err.json": {
+    "mtime": 1794811184.3936749,
+    "seen": 1794811395.1853807,
+    "ast_hash": "a8c150d4c5cc6b363ccc47403f6b659c",
+    "semantic_hash": "a8c150d4c5cc6b363ccc47403f6b659c"
+  },
+  "content/tracks/golang-cloud/mod-02-interfaces-erros/lesson-02-ponteiros-pacotes-go.json": {
+    "mtime": 1794811184.3936749,
+    "seen": 1794811395.1853814,
+    "ast_hash": "679cc5fe8734d8679b96c86952ac7425",
+    "semantic_hash": "679cc5fe8734d8679b96c86952ac7425"
+  },
+  "content/tracks/golang-cloud/mod-02-interfaces-erros/lesson-03-generics-json-testing.json": {
+    "mtime": 1794811184.394676,
+    "seen": 1794811395.185382,
+    "ast_hash": "f1718f8bd0573c94afcff58952abe9b3",
+    "semantic_hash": "f1718f8bd0573c94afcff58952abe9b3"
+  },
+  "content/tracks/golang-cloud/track.json": {
+    "mtime": 1794541778.8332276,
+    "seen": 1794811395.1853828,
+    "ast_hash": "1e15a85486ea01cc1838cc19fd4ea023",
+    "semantic_hash": "1e15a85486ea01cc1838cc19fd4ea023"
+  },
+  "content/tracks/googletest-cpp/mod-01-fundamentos/lesson-01-test-expect-assert.json": {
+    "mtime": 1794811322.5989063,
+    "seen": 1794811395.1853833,
+    "ast_hash": "22a45a4c0046b713813e5bd0348810cf",
+    "semantic_hash": "22a45a4c0046b713813e5bd0348810cf"
+  },
+  "content/tracks/googletest-cpp/track.json": {
+    "mtime": 1794541778.8338387,
+    "seen": 1794811395.1853843,
+    "ast_hash": "bccd5207826e0b279886ab585845d52d",
+    "semantic_hash": "bccd5207826e0b279886ab585845d52d"
+  },
+  "content/tracks/grpc-go/mod-01-fundamentos/lesson-01-grpc-server-protobuf.json": {
+    "mtime": 1794811210.353084,
+    "seen": 1794811395.1853852,
+    "ast_hash": "7a0e03b091dbc205fff5b5d6e6158771",
+    "semantic_hash": "7a0e03b091dbc205fff5b5d6e6158771"
+  },
+  "content/tracks/grpc-go/track.json": {
+    "mtime": 1794541933.916367,
+    "seen": 1794811395.1853857,
+    "ast_hash": "d0fa2599788570a7580db986e242cc4a",
+    "semantic_hash": "d0fa2599788570a7580db986e242cc4a"
+  },
+  "content/tracks/java-basics/mod-01-fundamentos/lesson-01-main-tipos.json": {
+    "mtime": 1794811184.394676,
+    "seen": 1794811395.1853864,
+    "ast_hash": "c86593d001057dbd487294cc262eea28",
+    "semantic_hash": "c86593d001057dbd487294cc262eea28"
+  },
+  "content/tracks/java-basics/mod-01-fundamentos/lesson-02-classes-objetos.json": {
+    "mtime": 1794811184.3956776,
+    "seen": 1794811395.1853876,
+    "ast_hash": "adcb3f8bfa3a24649c4e203e8dbfd7f7",
+    "semantic_hash": "adcb3f8bfa3a24649c4e203e8dbfd7f7"
+  },
+  "content/tracks/java-basics/mod-01-fundamentos/lesson-04-condicionais-switch-scanner.json": {
+    "mtime": 1794811184.396678,
+    "seen": 1794811395.1853883,
+    "ast_hash": "ab4e52372ea651ddffdd6c427c666d52",
+    "semantic_hash": "ab4e52372ea651ddffdd6c427c666d52"
+  },
+  "content/tracks/java-basics/mod-01-fundamentos/lesson-05-heranca-interfaces-extends.json": {
+    "mtime": 1794811184.396678,
+    "seen": 1794811395.185389,
+    "ast_hash": "267cd014cf8ced39d725b187b153da22",
+    "semantic_hash": "267cd014cf8ced39d725b187b153da22"
+  },
+  "content/tracks/java-basics/mod-02-colecoes-records/lesson-01-streams-records.json": {
+    "mtime": 1794811184.397675,
+    "seen": 1794811395.1853898,
+    "ast_hash": "bc04d8b4baeefc9561084c915f2ccf8a",
+    "semantic_hash": "bc04d8b4baeefc9561084c915f2ccf8a"
+  },
+  "content/tracks/java-basics/mod-02-colecoes-records/lesson-02-funcoes-nativas-desafio.json": {
+    "mtime": 1794811184.398676,
+    "seen": 1794811395.1853907,
+    "ast_hash": "03cf926af0b5dbeff53e70b748fa334d",
+    "semantic_hash": "03cf926af0b5dbeff53e70b748fa334d"
+  },
+  "content/tracks/java-basics/mod-02-colecoes-records/lesson-03-arraylist-hashmap-generics.json": {
+    "mtime": 1794811184.398676,
+    "seen": 1794811395.1853914,
+    "ast_hash": "a09621bfdcf77a7d7ff62761e8fde2ee",
+    "semantic_hash": "a09621bfdcf77a7d7ff62761e8fde2ee"
+  },
+  "content/tracks/java-basics/mod-02-colecoes-records/lesson-04-excecoes-try-with-resources.json": {
+    "mtime": 1794811184.3996768,
+    "seen": 1794811395.1853921,
+    "ast_hash": "34e2c8bd5a7518573641da259a4a1185",
+    "semantic_hash": "34e2c8bd5a7518573641da259a4a1185"
+  },
+  "content/tracks/java-basics/mod-02-colecoes-records/lesson-05-optional-enums-threads.json": {
+    "mtime": 1794811184.400678,
+    "seen": 1794811395.1853929,
+    "ast_hash": "403480c0075784969c281932b5fd9b15",
+    "semantic_hash": "403480c0075784969c281932b5fd9b15"
+  },
+  "content/tracks/java-basics/track.json": {
+    "mtime": 1794811184.4013603,
+    "seen": 1794811395.1853936,
+    "ast_hash": "c3e4fb1af0db7b32bcc22546d7c5f8f2",
+    "semantic_hash": "c3e4fb1af0db7b32bcc22546d7c5f8f2"
+  },
+  "content/tracks/junit-mockito/mod-01-junit-mocks/lesson-01-junit5-mockito.json": {
+    "mtime": 1794811322.5994241,
+    "seen": 1794811395.1853945,
+    "ast_hash": "5667679d20bf4be27488c25790d10cc7",
+    "semantic_hash": "5667679d20bf4be27488c25790d10cc7"
+  },
+  "content/tracks/junit-mockito/track.json": {
+    "mtime": 1794541778.8338387,
+    "seen": 1794811395.1853967,
+    "ast_hash": "5a7c3fe5bd28846be5cb4b64ffc16a75",
+    "semantic_hash": "5a7c3fe5bd28846be5cb4b64ffc16a75"
+  },
+  "content/tracks/lombok-java/mod-01-fundamentos/lesson-01-lombok-annotations.json": {
+    "mtime": 1794811232.2918146,
+    "seen": 1794811395.1853974,
+    "ast_hash": "48aaa3a454b4512f68398debff6425ab",
+    "semantic_hash": "48aaa3a454b4512f68398debff6425ab"
+  },
+  "content/tracks/lombok-java/track.json": {
+    "mtime": 1794541778.8338387,
+    "seen": 1794811395.1853983,
+    "ast_hash": "7b392ba7102bc7c53e71e32974665e3d",
+    "semantic_hash": "7b392ba7102bc7c53e71e32974665e3d"
+  },
+  "content/tracks/mapstruct-java/mod-01-fundamentos/lesson-01-mapper-dto.json": {
+    "mtime": 1794811232.2928128,
+    "seen": 1794811395.185399,
+    "ast_hash": "344eb9e0dbd818b2010ff5243fcd2b8d",
+    "semantic_hash": "344eb9e0dbd818b2010ff5243fcd2b8d"
+  },
+  "content/tracks/mapstruct-java/track.json": {
+    "mtime": 1794541778.8338387,
+    "seen": 1794811395.1853998,
+    "ast_hash": "0d0eafc573ebc92b7efe5a9ad8c351dd",
+    "semantic_hash": "0d0eafc573ebc92b7efe5a9ad8c351dd"
+  },
+  "content/tracks/mediatr-csharp/mod-01-fundamentos/lesson-01-cqrs-handlers.json": {
+    "mtime": 1794811232.2928128,
+    "seen": 1794811395.1854005,
+    "ast_hash": "3ba2f79568f5cac7064ca16db4c1210c",
+    "semantic_hash": "3ba2f79568f5cac7064ca16db4c1210c"
+  },
+  "content/tracks/mediatr-csharp/track.json": {
+    "mtime": 1794541778.8353486,
+    "seen": 1794811395.1854012,
+    "ast_hash": "0cf687bad1701d58b322ef25458b04f2",
+    "semantic_hash": "0cf687bad1701d58b322ef25458b04f2"
+  },
+  "content/tracks/mockito-java/mod-01-fundamentos/lesson-01-mockito-verify-captor.json": {
+    "mtime": 1794811322.600499,
+    "seen": 1794811395.1854022,
+    "ast_hash": "4b3d4b00707c303c51324822dc149ce0",
+    "semantic_hash": "4b3d4b00707c303c51324822dc149ce0"
+  },
+  "content/tracks/mockito-java/track.json": {
+    "mtime": 1794541778.8353486,
+    "seen": 1794811395.1854029,
+    "ast_hash": "cb59689f62265daa45410f1b2240a173",
+    "semantic_hash": "cb59689f62265daa45410f1b2240a173"
+  },
+  "content/tracks/nextjs-app-router/mod-01-roteamento/lesson-01-rotas-arquivos.json": {
+    "mtime": 1794811210.354088,
+    "seen": 1794811395.1854033,
+    "ast_hash": "7cc76e35d941d1e54f7d008c8ffb27cd",
+    "semantic_hash": "7cc76e35d941d1e54f7d008c8ffb27cd"
+  },
+  "content/tracks/nextjs-app-router/mod-01-roteamento/lesson-02-use-client.json": {
+    "mtime": 1794811210.3550878,
+    "seen": 1794811395.1854043,
+    "ast_hash": "ac73aada3269c86bb304f205484c7b5e",
+    "semantic_hash": "ac73aada3269c86bb304f205484c7b5e"
+  },
+  "content/tracks/nextjs-app-router/track.json": {
+    "mtime": 1794541778.8353486,
+    "seen": 1794811395.185405,
+    "ast_hash": "a4d4da9bec1beb4c18057d1fd3491caa",
+    "semantic_hash": "a4d4da9bec1beb4c18057d1fd3491caa"
+  },
+  "content/tracks/nlohmann-json-cpp/mod-01-fundamentos/lesson-01-parse-dump-structs.json": {
+    "mtime": 1794811232.2938135,
+    "seen": 1794811395.1854057,
+    "ast_hash": "d9469841fc286618f1983a402f95eaf1",
+    "semantic_hash": "d9469841fc286618f1983a402f95eaf1"
+  },
+  "content/tracks/nlohmann-json-cpp/track.json": {
+    "mtime": 1794541778.8363533,
+    "seen": 1794811395.1854064,
+    "ast_hash": "c56cfe1478831712f092efd981c6b2fb",
+    "semantic_hash": "c56cfe1478831712f092efd981c6b2fb"
+  },
+  "content/tracks/nodejs-hono-api/mod-01-rotas-middlewares/lesson-01-hono-express-routes.json": {
+    "mtime": 1794811210.3550878,
+    "seen": 1794811395.1854072,
+    "ast_hash": "945d17aaa8d980987bad8c47a7b26dc4",
+    "semantic_hash": "945d17aaa8d980987bad8c47a7b26dc4"
+  },
+  "content/tracks/nodejs-hono-api/track.json": {
+    "mtime": 1794541778.8363533,
+    "seen": 1794811395.185408,
+    "ast_hash": "725eb74872e1f00866c6f2407169d358",
+    "semantic_hash": "725eb74872e1f00866c6f2407169d358"
+  },
+  "content/tracks/numpy-python/mod-01-arrays-vetorizacao/lesson-01-ndarray-shape-dtype.json": {
+    "mtime": 1794811232.2948108,
+    "seen": 1794811395.1854088,
+    "ast_hash": "1c964a409386eba6d60839fa7295945b",
+    "semantic_hash": "1c964a409386eba6d60839fa7295945b"
+  },
+  "content/tracks/numpy-python/mod-01-arrays-vetorizacao/lesson-02-slicing-mascaras-booleanas.json": {
+    "mtime": 1794811232.2948108,
+    "seen": 1794811395.1854095,
+    "ast_hash": "16481d920e221913b782fc502e981ee3",
+    "semantic_hash": "16481d920e221913b782fc502e981ee3"
+  },
+  "content/tracks/numpy-python/mod-01-arrays-vetorizacao/lesson-03-vetorizacao-broadcasting.json": {
+    "mtime": 1794811232.2958167,
+    "seen": 1794811395.1854103,
+    "ast_hash": "76cfeb20d25f39f6b06685c34b9076f8",
+    "semantic_hash": "76cfeb20d25f39f6b06685c34b9076f8"
+  },
+  "content/tracks/numpy-python/mod-01-arrays-vetorizacao/lesson-04-reshape-eixos-agregacoes.json": {
+    "mtime": 1794811232.2958167,
+    "seen": 1794811395.185411,
+    "ast_hash": "bab6b6947fd4396ae49d11316f00bdfa",
+    "semantic_hash": "bab6b6947fd4396ae49d11316f00bdfa"
+  },
+  "content/tracks/numpy-python/mod-01-arrays-vetorizacao/lesson-05-algebra-linear-random.json": {
+    "mtime": 1794811232.2968173,
+    "seen": 1794811395.1854117,
+    "ast_hash": "da138ea9811de2c02f6f6b3e7415f0c8",
+    "semantic_hash": "da138ea9811de2c02f6f6b3e7415f0c8"
+  },
+  "content/tracks/numpy-python/track.json": {
+    "mtime": 1794541778.836938,
+    "seen": 1794811395.1854126,
+    "ast_hash": "ead2dfb4b4ae503fed7983d342458b1d",
+    "semantic_hash": "ead2dfb4b4ae503fed7983d342458b1d"
+  },
+  "content/tracks/pandas-data-science/mod-01-dataframes/lesson-01-df-groupby.json": {
+    "mtime": 1794811232.2978187,
+    "seen": 1794811395.1854134,
+    "ast_hash": "e363b21f1aba1289f0219486d85c4f7a",
+    "semantic_hash": "e363b21f1aba1289f0219486d85c4f7a"
+  },
+  "content/tracks/pandas-data-science/mod-01-dataframes/lesson-02-leitura-inspecao-csv.json": {
+    "mtime": 1794811232.2978187,
+    "seen": 1794811395.185414,
+    "ast_hash": "36870597f52fcb3e0950d983493861f2",
+    "semantic_hash": "36870597f52fcb3e0950d983493861f2"
+  },
+  "content/tracks/pandas-data-science/mod-01-dataframes/lesson-03-loc-iloc-selecao.json": {
+    "mtime": 1794811232.2988162,
+    "seen": 1794811395.185415,
+    "ast_hash": "4d14bf27b15943e271f00eae174e8917",
+    "semantic_hash": "4d14bf27b15943e271f00eae174e8917"
+  },
+  "content/tracks/pandas-data-science/mod-01-dataframes/lesson-04-limpeza-nulos-duplicatas.json": {
+    "mtime": 1794811232.2988162,
+    "seen": 1794811395.1854157,
+    "ast_hash": "12178570d892103d19843bd09cbe2256",
+    "semantic_hash": "12178570d892103d19843bd09cbe2256"
+  },
+  "content/tracks/pandas-data-science/mod-01-dataframes/lesson-05-merge-concat-apply.json": {
+    "mtime": 1794811232.2998152,
+    "seen": 1794811395.1854165,
+    "ast_hash": "a8952ed58f24734a3323c44de3338c86",
+    "semantic_hash": "a8952ed58f24734a3323c44de3338c86"
+  },
+  "content/tracks/pandas-data-science/track.json": {
+    "mtime": 1794541778.8379614,
+    "seen": 1794811395.1854172,
+    "ast_hash": "3583818cca04228172ef19b14743214f",
+    "semantic_hash": "3583818cca04228172ef19b14743214f"
+  },
+  "content/tracks/playwright-e2e/mod-01-fundamentos/lesson-01-locators-expect.json": {
+    "mtime": 1794811322.6010172,
+    "seen": 1794811395.185418,
+    "ast_hash": "3bf90f0eb2dc1e73f34776370c894593",
+    "semantic_hash": "3bf90f0eb2dc1e73f34776370c894593"
+  },
+  "content/tracks/playwright-e2e/track.json": {
+    "mtime": 1794541778.8379614,
+    "seen": 1794811395.1854188,
+    "ast_hash": "58f1214b088239fb824c36d634bce88d",
+    "semantic_hash": "58f1214b088239fb824c36d634bce88d"
+  },
+  "content/tracks/prisma-drizzle-orm/mod-01-queries-orm/lesson-01-orm-queries.json": {
+    "mtime": 1794811232.3008156,
+    "seen": 1794811395.1854196,
+    "ast_hash": "42d700cbe3b02d2250564c42e6465e65",
+    "semantic_hash": "42d700cbe3b02d2250564c42e6465e65"
+  },
+  "content/tracks/prisma-drizzle-orm/track.json": {
+    "mtime": 1794541778.8389676,
+    "seen": 1794811395.1854203,
+    "ast_hash": "467c70af34dbdcab3eabc6f183781c9d",
+    "semantic_hash": "467c70af34dbdcab3eabc6f183781c9d"
+  },
+  "content/tracks/pydantic-python/mod-01-fundamentos/lesson-01-basemodel-validators.json": {
+    "mtime": 1794811232.3008156,
+    "seen": 1794811395.185421,
+    "ast_hash": "4da9d9f6ab4706708936516cf5571301",
+    "semantic_hash": "4da9d9f6ab4706708936516cf5571301"
+  },
+  "content/tracks/pydantic-python/track.json": {
+    "mtime": 1794541778.8389676,
+    "seen": 1794811395.1854217,
+    "ast_hash": "b0fe66593b4ca5b8252c3dbb8d293682",
+    "semantic_hash": "b0fe66593b4ca5b8252c3dbb8d293682"
+  },
+  "content/tracks/pytest-testing/mod-01-assertions-fixtures/lesson-01-pytest-fixtures.json": {
+    "mtime": 1794811322.6021068,
+    "seen": 1794811395.1854236,
+    "ast_hash": "fb66b127fe3a7185eb82f49c1e937f31",
+    "semantic_hash": "fb66b127fe3a7185eb82f49c1e937f31"
+  },
+  "content/tracks/pytest-testing/track.json": {
+    "mtime": 1794541778.8431098,
+    "seen": 1794811395.185424,
+    "ast_hash": "8641e91bfffbe5ae8b5ebcdead482ff7",
+    "semantic_hash": "8641e91bfffbe5ae8b5ebcdead482ff7"
+  },
+  "content/tracks/python-basics/mod-01-fundamentos/lesson-01-print-vars.json": {
+    "mtime": 1794811322.5334234,
+    "seen": 1794811395.1854248,
+    "ast_hash": "9b84985ec1a219d7305cc0e6f370d9e9",
+    "semantic_hash": "9b84985ec1a219d7305cc0e6f370d9e9"
+  },
+  "content/tracks/python-basics/mod-01-fundamentos/lesson-02-tipos-strings.json": {
+    "mtime": 1794811322.5344572,
+    "seen": 1794811395.185426,
+    "ast_hash": "6fb7e29851007048fc8e099cc38726c5",
+    "semantic_hash": "6fb7e29851007048fc8e099cc38726c5"
+  },
+  "content/tracks/python-basics/mod-02-fluxo/lesson-01-condicionais.json": {
+    "mtime": 1794811322.5349767,
+    "seen": 1794811395.1854267,
+    "ast_hash": "4c42281e7354064803f2468ab51e9359",
+    "semantic_hash": "4c42281e7354064803f2468ab51e9359"
+  },
+  "content/tracks/python-basics/mod-02-fluxo/lesson-02-listas.json": {
+    "mtime": 1794811322.5349767,
+    "seen": 1794811395.1854274,
+    "ast_hash": "05509148494a55eaa480d4d5495270e6",
+    "semantic_hash": "05509148494a55eaa480d4d5495270e6"
+  },
+  "content/tracks/python-basics/mod-02-fluxo/lesson-03-loops-for-while.json": {
+    "mtime": 1794811322.5363986,
+    "seen": 1794811395.1854281,
+    "ast_hash": "ef60494a304c1cc0215b6974e52f8a69",
+    "semantic_hash": "ef60494a304c1cc0215b6974e52f8a69"
+  },
+  "content/tracks/python-basics/mod-04-classes-nativas/lesson-01-classes-init-self.json": {
+    "mtime": 1794811322.5379772,
+    "seen": 1794811395.185429,
+    "ast_hash": "018127c9292a8fe49c152c706c988708",
+    "semantic_hash": "018127c9292a8fe49c152c706c988708"
+  },
+  "content/tracks/python-basics/mod-04-classes-nativas/lesson-02-funcoes-nativas-desafio.json": {
+    "mtime": 1794811322.5390093,
+    "seen": 1794811395.1854298,
+    "ast_hash": "4c169478279f80b9f512b6884ad71aa1",
+    "semantic_hash": "4c169478279f80b9f512b6884ad71aa1"
+  },
+  "content/tracks/python-basics/mod-04-classes-nativas/lesson-03-try-except-with.json": {
+    "mtime": 1794811322.5395257,
+    "seen": 1794811395.1854305,
+    "ast_hash": "6d68810f31e1d258b949a415c8967915",
+    "semantic_hash": "6d68810f31e1d258b949a415c8967915"
+  },
+  "content/tracks/python-basics/mod-04-classes-nativas/lesson-04-sets-tuplas-lambdas.json": {
+    "mtime": 1794811322.5400681,
+    "seen": 1794811395.1854312,
+    "ast_hash": "54ec6bbd6ce81bee0a964a4aaa1d60ab",
+    "semantic_hash": "54ec6bbd6ce81bee0a964a4aaa1d60ab"
+  },
+  "content/tracks/python-basics/track.json": {
+    "mtime": 1794811322.5405853,
+    "seen": 1794811395.185432,
+    "ast_hash": "066be309785c79b6be8ba58e6d76a7fb",
+    "semantic_hash": "066be309785c79b6be8ba58e6d76a7fb"
+  },
+  "content/tracks/pytorch-ml-python/mod-01-tensores-redes/lesson-01-tensors-gpu-autograd.json": {
+    "mtime": 1794811210.3560877,
+    "seen": 1794811395.185433,
+    "ast_hash": "a9133e28feb4123fafd05efb1cd4afa4",
+    "semantic_hash": "a9133e28feb4123fafd05efb1cd4afa4"
+  },
+  "content/tracks/pytorch-ml-python/mod-01-tensores-redes/lesson-02-nn-module-linear-relu.json": {
+    "mtime": 1794811210.3570879,
+    "seen": 1794811395.1854336,
+    "ast_hash": "c08c93e557f7825c1d8644e0cefa6276",
+    "semantic_hash": "c08c93e557f7825c1d8644e0cefa6276"
+  },
+  "content/tracks/pytorch-ml-python/mod-01-tensores-redes/lesson-03-loss-optimizer-training-loop.json": {
+    "mtime": 1794811210.3570879,
+    "seen": 1794811395.1854343,
+    "ast_hash": "fe09f4b0b19c6bbc261df572f72c85cc",
+    "semantic_hash": "fe09f4b0b19c6bbc261df572f72c85cc"
+  },
+  "content/tracks/pytorch-ml-python/mod-01-tensores-redes/lesson-04-dataset-dataloader-batches.json": {
+    "mtime": 1794811210.3580878,
+    "seen": 1794811395.185435,
+    "ast_hash": "8199f26e3a2d165fef8c20bcc575a932",
+    "semantic_hash": "8199f26e3a2d165fef8c20bcc575a932"
+  },
+  "content/tracks/pytorch-ml-python/mod-01-tensores-redes/lesson-05-save-load-scikit-learn.json": {
+    "mtime": 1794811210.3590877,
+    "seen": 1794811395.185436,
+    "ast_hash": "00510b645bb902ba9e4425023a04bef7",
+    "semantic_hash": "00510b645bb902ba9e4425023a04bef7"
+  },
+  "content/tracks/pytorch-ml-python/track.json": {
+    "mtime": 1794541778.843614,
+    "seen": 1794811395.1854374,
+    "ast_hash": "95559585d8801e754047ad8b876778df",
+    "semantic_hash": "95559585d8801e754047ad8b876778df"
+  },
+  "content/tracks/qt-gui-cpp/mod-01-fundamentos/lesson-01-signals-slots-widgets.json": {
+    "mtime": 1794811210.3590877,
+    "seen": 1794811395.1854382,
+    "ast_hash": "6dfa45c468baa3da25f04bfce2938ec5",
+    "semantic_hash": "6dfa45c468baa3da25f04bfce2938ec5"
+  },
+  "content/tracks/qt-gui-cpp/track.json": {
+    "mtime": 1794541778.8446195,
+    "seen": 1794811395.1854389,
+    "ast_hash": "829f51d1593cd82467e5418306f2a580",
+    "semantic_hash": "829f51d1593cd82467e5418306f2a580"
+  },
+  "content/tracks/rayon-parallel-rust/mod-01-fundamentos/lesson-01-par-iter-rayon.json": {
+    "mtime": 1794811184.4149313,
+    "seen": 1794811395.1854398,
+    "ast_hash": "2c774d4478b75110c7ed2b35f6acf943",
+    "semantic_hash": "2c774d4478b75110c7ed2b35f6acf943"
+  },
+  "content/tracks/rayon-parallel-rust/track.json": {
+    "mtime": 1794541778.8446195,
+    "seen": 1794811395.1854405,
+    "ast_hash": "965291ad08788428b1818c8fc30fcc0a",
+    "semantic_hash": "965291ad08788428b1818c8fc30fcc0a"
+  },
+  "content/tracks/react-fundamentals/mod-01-componentes/lesson-01-jsx-props.json": {
+    "mtime": 1794811184.4154506,
+    "seen": 1794811395.1854413,
+    "ast_hash": "a2bef52dcbc6d70bc74a28819828372d",
+    "semantic_hash": "a2bef52dcbc6d70bc74a28819828372d"
+  },
+  "content/tracks/react-fundamentals/mod-01-componentes/lesson-02-usestate.json": {
+    "mtime": 1794811184.4159722,
+    "seen": 1794811395.185442,
+    "ast_hash": "7dc84221be2fa455c9615ec5b9c1d210",
+    "semantic_hash": "7dc84221be2fa455c9615ec5b9c1d210"
+  },
+  "content/tracks/react-fundamentals/track.json": {
+    "mtime": 1794541778.8456194,
+    "seen": 1794811395.185443,
+    "ast_hash": "e3ebf58db4db004ea09533cd30c99e98",
+    "semantic_hash": "e3ebf58db4db004ea09533cd30c99e98"
+  },
+  "content/tracks/redis-caching/mod-01-fundamentos/lesson-01-cache-ttl-incr.json": {
+    "mtime": 1794811322.6026258,
+    "seen": 1794811395.1854436,
+    "ast_hash": "0d261cae2b7fb0a2455866f98e21fd84",
+    "semantic_hash": "0d261cae2b7fb0a2455866f98e21fd84"
+  },
+  "content/tracks/redis-caching/track.json": {
+    "mtime": 1794541778.8461983,
+    "seen": 1794811395.1854444,
+    "ast_hash": "de1ccecafe91d591af51e25074976187",
+    "semantic_hash": "de1ccecafe91d591af51e25074976187"
+  },
+  "content/tracks/reqwest-http-rust/mod-01-fundamentos/lesson-01-client-json-status.json": {
+    "mtime": 1794811184.4164946,
+    "seen": 1794811395.185445,
+    "ast_hash": "d7bcd51f64db419ef54ad3cb3686a3d3",
+    "semantic_hash": "d7bcd51f64db419ef54ad3cb3686a3d3"
+  },
+  "content/tracks/reqwest-http-rust/track.json": {
+    "mtime": 1794541778.8461983,
+    "seen": 1794811395.1854458,
+    "ast_hash": "82b5c5531af983626c8a69882d43e83c",
+    "semantic_hash": "82b5c5531af983626c8a69882d43e83c"
+  },
+  "content/tracks/rust-axum-serde/mod-01-axum-serde/lesson-01-axum-handlers.json": {
+    "mtime": 1794811210.3600886,
+    "seen": 1794811395.1854467,
+    "ast_hash": "cdabe91c200314cc796448df91b99b43",
+    "semantic_hash": "cdabe91c200314cc796448df91b99b43"
+  },
+  "content/tracks/rust-axum-serde/track.json": {
+    "mtime": 1794541778.8461983,
+    "seen": 1794811395.1854475,
+    "ast_hash": "ba121168dc9cd677c55fc46549f9ca0f",
+    "semantic_hash": "ba121168dc9cd677c55fc46549f9ca0f"
+  },
+  "content/tracks/rust-systems/mod-00-sintaxe/lesson-00-variaveis-tipos-primitivos.json": {
+    "mtime": 1794810961.476282,
+    "seen": 1794811395.1854482,
+    "ast_hash": "f6721801ad2900ae4887b304b7967e12",
+    "semantic_hash": "f6721801ad2900ae4887b304b7967e12"
+  },
+  "content/tracks/rust-systems/mod-00-sintaxe/lesson-01-controle-fluxo-loops.json": {
+    "mtime": 1794810963.0268111,
+    "seen": 1794811395.1854491,
+    "ast_hash": "179e510a290532eaa299cb67695c82ff",
+    "semantic_hash": "179e510a290532eaa299cb67695c82ff"
+  },
+  "content/tracks/rust-systems/mod-00-sintaxe/lesson-02-funcoes-expressoes.json": {
+    "mtime": 1794810964.0110714,
+    "seen": 1794811395.18545,
+    "ast_hash": "963a1bc2f5586e08c2b3a61578e97bba",
+    "semantic_hash": "963a1bc2f5586e08c2b3a61578e97bba"
+  },
+  "content/tracks/rust-systems/mod-00-sintaxe/lesson-03-structs-metodos.json": {
+    "mtime": 1794810965.2542224,
+    "seen": 1794811395.1854508,
+    "ast_hash": "2d34ece0746cb768628f41349e3d56f5",
+    "semantic_hash": "2d34ece0746cb768628f41349e3d56f5"
+  },
+  "content/tracks/rust-systems/mod-01-ownership/lesson-01-ownership-move.json": {
+    "mtime": 1794811011.559734,
+    "seen": 1794811395.1854515,
+    "ast_hash": "237a730939202269b79411646b20d7a6",
+    "semantic_hash": "237a730939202269b79411646b20d7a6"
+  },
+  "content/tracks/rust-systems/mod-01-ownership/lesson-02-borrowing-referencias.json": {
+    "mtime": 1794811012.782518,
+    "seen": 1794811395.1854522,
+    "ast_hash": "c5f9d0a991f00164aaf944dfb8dcf685",
+    "semantic_hash": "c5f9d0a991f00164aaf944dfb8dcf685"
+  },
+  "content/tracks/rust-systems/mod-01-ownership/lesson-03-slices-lifetimes.json": {
+    "mtime": 1794811013.852254,
+    "seen": 1794811395.185453,
+    "ast_hash": "72f178169efb90f6fd21d97b8e2130db",
+    "semantic_hash": "72f178169efb90f6fd21d97b8e2130db"
+  },
+  "content/tracks/rust-systems/mod-01-ownership/lesson-04-smart-pointers-box-rc.json": {
+    "mtime": 1794811015.2179637,
+    "seen": 1794811395.185454,
+    "ast_hash": "71549aaf1ea8017e81ccd5e9efe56fd0",
+    "semantic_hash": "71549aaf1ea8017e81ccd5e9efe56fd0"
+  },
+  "content/tracks/rust-systems/mod-02-enums-match/lesson-01-option-result.json": {
+    "mtime": 1794811061.7012455,
+    "seen": 1794811395.1854546,
+    "ast_hash": "853595ff23e1ec582a6e9191ea169d8e",
+    "semantic_hash": "853595ff23e1ec582a6e9191ea169d8e"
+  },
+  "content/tracks/rust-systems/mod-02-enums-match/lesson-02-if-let-operador-interrogacao.json": {
+    "mtime": 1794811062.916356,
+    "seen": 1794811395.185455,
+    "ast_hash": "ae405f64662a816364e43f0064b62f69",
+    "semantic_hash": "ae405f64662a816364e43f0064b62f69"
+  },
+  "content/tracks/rust-systems/mod-02-enums-match/lesson-03-vec-hashmap-closures.json": {
+    "mtime": 1794811064.168738,
+    "seen": 1794811395.1854558,
+    "ast_hash": "e262b7aca09f45525649f41873c76c28",
+    "semantic_hash": "e262b7aca09f45525649f41873c76c28"
+  },
+  "content/tracks/rust-systems/mod-02-enums-match/lesson-04-traits-generics-rust.json": {
+    "mtime": 1794811065.2592316,
+    "seen": 1794811395.1854568,
+    "ast_hash": "15fcfdae4c4f063bae87de86e76e6994",
+    "semantic_hash": "15fcfdae4c4f063bae87de86e76e6994"
+  },
+  "content/tracks/rust-systems/mod-02-enums-match/lesson-05-modulos-crates-cargo-tests.json": {
+    "mtime": 1794811066.5385323,
+    "seen": 1794811395.1854575,
+    "ast_hash": "b06c13e86b0d60e019cd4ed47583ef34",
+    "semantic_hash": "b06c13e86b0d60e019cd4ed47583ef34"
+  },
+  "content/tracks/rust-systems/track.json": {
+    "mtime": 1794810010.343834,
+    "seen": 1794811395.1854582,
+    "ast_hash": "83d48d12e9f2b0394d25465d3f02a69d",
+    "semantic_hash": "83d48d12e9f2b0394d25465d3f02a69d"
+  },
+  "content/tracks/scikit-learn-python/mod-01-fundamentos/lesson-01-pipeline-fit-predict.json": {
+    "mtime": 1794811184.4175365,
+    "seen": 1794811395.185459,
+    "ast_hash": "e5aee92e31f3f41f52ac33c80a5e0b01",
+    "semantic_hash": "e5aee92e31f3f41f52ac33c80a5e0b01"
+  },
+  "content/tracks/scikit-learn-python/track.json": {
+    "mtime": 1794541778.847709,
+    "seen": 1794811395.1854596,
+    "ast_hash": "07c9b5271474dd10b11cee67fa0b2138",
+    "semantic_hash": "07c9b5271474dd10b11cee67fa0b2138"
+  },
+  "content/tracks/sdl2-raylib-cpp/mod-01-fundamentos/lesson-01-gameloop-raylib-sdl2.json": {
+    "mtime": 1794811184.4180655,
+    "seen": 1794811395.1854606,
+    "ast_hash": "a1730e74b314db2f467141f3f26f0c67",
+    "semantic_hash": "a1730e74b314db2f467141f3f26f0c67"
+  },
+  "content/tracks/sdl2-raylib-cpp/track.json": {
+    "mtime": 1794541778.847709,
+    "seen": 1794811395.1854615,
+    "ast_hash": "af3c981218091802f093d8ec852b900e",
+    "semantic_hash": "af3c981218091802f093d8ec852b900e"
+  },
+  "content/tracks/serde-serialization-rust/mod-01-fundamentos/lesson-01-serde-derive-json.json": {
+    "mtime": 1794811184.4185853,
+    "seen": 1794811395.1854622,
+    "ast_hash": "bdad38ff5b720de208aaf017cbb32a8f",
+    "semantic_hash": "bdad38ff5b720de208aaf017cbb32a8f"
+  },
+  "content/tracks/serde-serialization-rust/track.json": {
+    "mtime": 1794541778.847709,
+    "seen": 1794811395.185463,
+    "ast_hash": "2da6e98a306faa1fd7ee6f69aadada16",
+    "semantic_hash": "2da6e98a306faa1fd7ee6f69aadada16"
+  },
+  "content/tracks/signalr-csharp/mod-01-fundamentos/lesson-01-hubs-realtime.json": {
+    "mtime": 1794811210.3610892,
+    "seen": 1794811395.185464,
+    "ast_hash": "8a7209d29893e7f818b2505c242cbefc",
+    "semantic_hash": "8a7209d29893e7f818b2505c242cbefc"
+  },
+  "content/tracks/signalr-csharp/track.json": {
+    "mtime": 1794541778.8486166,
+    "seen": 1794811395.1854646,
+    "ast_hash": "2b5f8f9c4eb5de341a67431e2b261577",
+    "semantic_hash": "2b5f8f9c4eb5de341a67431e2b261577"
+  },
+  "content/tracks/spring-boot-java/mod-01-controllers/lesson-01-rest-controller.json": {
+    "mtime": 1794811210.3620877,
+    "seen": 1794811395.1854653,
+    "ast_hash": "07927bbbd7cd031d465dcbbb31f2c2f2",
+    "semantic_hash": "07927bbbd7cd031d465dcbbb31f2c2f2"
+  },
+  "content/tracks/spring-boot-java/track.json": {
+    "mtime": 1794541778.849121,
+    "seen": 1794811395.185466,
+    "ast_hash": "aafe604c8be03ca522eeaf789c55d752",
+    "semantic_hash": "aafe604c8be03ca522eeaf789c55d752"
+  },
+  "content/tracks/spring-data-jpa/mod-01-entities-repos/lesson-01-jpa-repositories.json": {
+    "mtime": 1794811210.3626719,
+    "seen": 1794811395.1854668,
+    "ast_hash": "ebd4e4204a48bb9819f6f3a3af62c74d",
+    "semantic_hash": "ebd4e4204a48bb9819f6f3a3af62c74d"
+  },
+  "content/tracks/spring-data-jpa/track.json": {
+    "mtime": 1794541778.849121,
+    "seen": 1794811395.1854677,
+    "ast_hash": "40a0384447b9a026bca49805824cf675",
+    "semantic_hash": "40a0384447b9a026bca49805824cf675"
+  },
+  "content/tracks/spring-kafka-java/mod-01-fundamentos/lesson-01-producer-consumer.json": {
+    "mtime": 1794811210.3626719,
+    "seen": 1794811395.1854684,
+    "ast_hash": "e03a0985b8c206f1cea421a77733cd43",
+    "semantic_hash": "e03a0985b8c206f1cea421a77733cd43"
+  },
+  "content/tracks/spring-kafka-java/track.json": {
+    "mtime": 1794541778.849121,
+    "seen": 1794811395.1854692,
+    "ast_hash": "42f65f262752edc8ac097ef84f3d6117",
+    "semantic_hash": "42f65f262752edc8ac097ef84f3d6117"
+  },
+  "content/tracks/spring-security-jwt/mod-01-fundamentos/lesson-01-filter-chain-jwt.json": {
+    "mtime": 1794811210.3636756,
+    "seen": 1794811395.1854699,
+    "ast_hash": "6faa4441e0744f4df66e8865e2c5d227",
+    "semantic_hash": "6faa4441e0744f4df66e8865e2c5d227"
+  },
+  "content/tracks/spring-security-jwt/track.json": {
+    "mtime": 1794541778.850127,
+    "seen": 1794811395.1854708,
+    "ast_hash": "b912b84a2d7a09df1a3a64128daa724e",
+    "semantic_hash": "b912b84a2d7a09df1a3a64128daa724e"
+  },
+  "content/tracks/sql-databases/mod-01-queries/lesson-00-tabelas-tipos-basico.json": {
+    "mtime": 1794811322.5416195,
+    "seen": 1794811395.1854715,
+    "ast_hash": "2e4fe6fa5555dd3e7dbb13a207c9830f",
+    "semantic_hash": "2e4fe6fa5555dd3e7dbb13a207c9830f"
+  },
+  "content/tracks/sql-databases/mod-01-queries/lesson-01-select-where.json": {
+    "mtime": 1794811322.5421321,
+    "seen": 1794811395.185472,
+    "ast_hash": "a198a6717b8e7ac18fab9e501c237686",
+    "semantic_hash": "a198a6717b8e7ac18fab9e501c237686"
+  },
+  "content/tracks/sql-databases/mod-01-queries/lesson-02-joins-bugs.json": {
+    "mtime": 1794811322.542645,
+    "seen": 1794811395.185473,
+    "ast_hash": "b3e92f52c30c3657318105f240e0f015",
+    "semantic_hash": "b3e92f52c30c3657318105f240e0f015"
+  },
+  "content/tracks/sql-databases/mod-01-queries/lesson-03-funcoes-nativas-desafio.json": {
+    "mtime": 1794811322.5436738,
+    "seen": 1794811395.1854734,
+    "ast_hash": "1164ba795e27ddfa1892e64a93127cc9",
+    "semantic_hash": "1164ba795e27ddfa1892e64a93127cc9"
+  },
+  "content/tracks/sql-databases/mod-01-queries/lesson-04-groupby-having-subqueries.json": {
+    "mtime": 1794811322.544194,
+    "seen": 1794811395.1854744,
+    "ast_hash": "10bb0d74a06680c70c77c6dfcf735564",
+    "semantic_hash": "10bb0d74a06680c70c77c6dfcf735564"
+  },
+  "content/tracks/sql-databases/mod-01-queries/lesson-05-subqueries-cte-with.json": {
+    "mtime": 1794811322.5447106,
+    "seen": 1794811395.185475,
+    "ast_hash": "4893ed81a9b784d7f51db38e27843cb0",
+    "semantic_hash": "4893ed81a9b784d7f51db38e27843cb0"
+  },
+  "content/tracks/sql-databases/mod-01-queries/lesson-06-window-functions-row-number.json": {
+    "mtime": 1794811322.545229,
+    "seen": 1794811395.1854758,
+    "ast_hash": "8267d50587a7cca5742f9c5b52a2c71e",
+    "semantic_hash": "8267d50587a7cca5742f9c5b52a2c71e"
+  },
+  "content/tracks/sql-databases/mod-02-ddl-transacoes/lesson-01-create-transactions.json": {
+    "mtime": 1794811322.5457706,
+    "seen": 1794811395.1854765,
+    "ast_hash": "e90edd707ab5cc047345f8401f8c07b6",
+    "semantic_hash": "e90edd707ab5cc047345f8401f8c07b6"
+  },
+  "content/tracks/sql-databases/mod-02-ddl-transacoes/lesson-02-foreign-key-constraints.json": {
+    "mtime": 1794811322.5462854,
+    "seen": 1794811395.1854775,
+    "ast_hash": "ed8fe96cc4cac0ee0e11ae608e766f34",
+    "semantic_hash": "ed8fe96cc4cac0ee0e11ae608e766f34"
+  },
+  "content/tracks/sql-databases/mod-02-ddl-transacoes/lesson-03-views-explain-otimizacao.json": {
+    "mtime": 1794811322.5468028,
+    "seen": 1794811395.1854782,
+    "ast_hash": "99503b4ca0cbee3b97e6f5987b9ffc90",
+    "semantic_hash": "99503b4ca0cbee3b97e6f5987b9ffc90"
+  },
+  "content/tracks/sql-databases/track.json": {
+    "mtime": 1794541778.850127,
+    "seen": 1794811395.185479,
+    "ast_hash": "6fdfc3302e110685707acac07d9394f9",
+    "semantic_hash": "6fdfc3302e110685707acac07d9394f9"
+  },
+  "content/tracks/sqlalchemy-python/mod-01-fundamentos/lesson-01-mapped-select.json": {
+    "mtime": 1794811184.4191344,
+    "seen": 1794811395.1854796,
+    "ast_hash": "bd2575291b10f1de1423235546c76726",
+    "semantic_hash": "bd2575291b10f1de1423235546c76726"
+  },
+  "content/tracks/sqlalchemy-python/track.json": {
+    "mtime": 1794541778.850127,
+    "seen": 1794811395.1854804,
+    "ast_hash": "7d6b7674725ab3f639ace1028fae7d3b",
+    "semantic_hash": "7d6b7674725ab3f639ace1028fae7d3b"
+  },
+  "content/tracks/sqlx-rust/mod-01-fundamentos/lesson-01-query-as-pool.json": {
+    "mtime": 1794811184.4196515,
+    "seen": 1794811395.1854813,
+    "ast_hash": "c8056b8e6f0963114cde6913e0cf6956",
+    "semantic_hash": "c8056b8e6f0963114cde6913e0cf6956"
+  },
+  "content/tracks/sqlx-rust/track.json": {
+    "mtime": 1794541778.851128,
+    "seen": 1794811395.185482,
+    "ast_hash": "f9f372919526ce33237afe3d3a678452",
+    "semantic_hash": "f9f372919526ce33237afe3d3a678452"
+  },
+  "content/tracks/stl-cpp/mod-01-vectors/lesson-01-std-vector.json": {
+    "mtime": 1794811184.4206915,
+    "seen": 1794811395.1854827,
+    "ast_hash": "4bf9d5f7ff3914ff78114e304a527789",
+    "semantic_hash": "4bf9d5f7ff3914ff78114e304a527789"
+  },
+  "content/tracks/stl-cpp/track.json": {
+    "mtime": 1794541778.851128,
+    "seen": 1794811395.1854835,
+    "ast_hash": "caea5ea56da35c2783c566f71e15242f",
+    "semantic_hash": "caea5ea56da35c2783c566f71e15242f"
+  },
+  "content/tracks/tailwind-css/mod-01-utilitarios/lesson-01-flexbox-espaco.json": {
+    "mtime": 1794811210.364484,
+    "seen": 1794811395.1854842,
+    "ast_hash": "7191f256323c693392b20db48386f968",
+    "semantic_hash": "7191f256323c693392b20db48386f968"
+  },
+  "content/tracks/tailwind-css/mod-01-utilitarios/lesson-02-responsivo.json": {
+    "mtime": 1794811210.364484,
+    "seen": 1794811395.1854851,
+    "ast_hash": "c092c347bff04ebc698e0013eab1f236",
+    "semantic_hash": "c092c347bff04ebc698e0013eab1f236"
+  },
+  "content/tracks/tailwind-css/track.json": {
+    "mtime": 1794541778.851128,
+    "seen": 1794811395.1854858,
+    "ast_hash": "fa12dc04bed65e55b4beb56337ee70ea",
+    "semantic_hash": "fa12dc04bed65e55b4beb56337ee70ea"
+  },
+  "content/tracks/tanstack-query-ts/mod-01-fundamentos/lesson-01-usequery-usemutation.json": {
+    "mtime": 1794811184.421211,
+    "seen": 1794811395.1854866,
+    "ast_hash": "04631018e1d35cf865ce5fce330ae826",
+    "semantic_hash": "04631018e1d35cf865ce5fce330ae826"
+  },
+  "content/tracks/tanstack-query-ts/track.json": {
+    "mtime": 1794541778.851128,
+    "seen": 1794811395.1854875,
+    "ast_hash": "654cb92bb17e723b85be91b9f3e2c668",
+    "semantic_hash": "654cb92bb17e723b85be91b9f3e2c668"
+  },
+  "content/tracks/tauri-desktop-rust/mod-01-fundamentos/lesson-01-tauri-commands.json": {
+    "mtime": 1794811210.3654888,
+    "seen": 1794811395.1854885,
+    "ast_hash": "a2a78b1d69aefc5c233f5663b513f4dd",
+    "semantic_hash": "a2a78b1d69aefc5c233f5663b513f4dd"
+  },
+  "content/tracks/tauri-desktop-rust/track.json": {
+    "mtime": 1794541778.8526328,
+    "seen": 1794811395.1854892,
+    "ast_hash": "9781333a186d7b9a55bea73787ba5742",
+    "semantic_hash": "9781333a186d7b9a55bea73787ba5742"
+  },
+  "content/tracks/testcontainers-java/mod-01-fundamentos/lesson-01-testcontainers-postgres.json": {
+    "mtime": 1794811322.6036296,
+    "seen": 1794811395.18549,
+    "ast_hash": "12e736ba11f98bc6711c4c08708be99f",
+    "semantic_hash": "12e736ba11f98bc6711c4c08708be99f"
+  },
+  "content/tracks/testcontainers-java/track.json": {
+    "mtime": 1794541778.8526328,
+    "seen": 1794811395.1854906,
+    "ast_hash": "27e92230d3847826686b76d0ba487e3f",
+    "semantic_hash": "27e92230d3847826686b76d0ba487e3f"
+  },
+  "content/tracks/testify-go/mod-01-fundamentos/lesson-01-assert-vs-require.json": {
+    "mtime": 1794811184.4217288,
+    "seen": 1794811395.1854916,
+    "ast_hash": "46a7ade613518c29829087f975e756fe",
+    "semantic_hash": "46a7ade613518c29829087f975e756fe"
+  },
+  "content/tracks/testify-go/track.json": {
+    "mtime": 1794541931.2071862,
+    "seen": 1794811395.1854923,
+    "ast_hash": "61851c5dc90494ffcb8796fe29f7d260",
+    "semantic_hash": "61851c5dc90494ffcb8796fe29f7d260"
+  },
+  "content/tracks/tokio-async-rust/mod-01-fundamentos/lesson-01-tokio-spawn-select.json": {
+    "mtime": 1794811184.4222472,
+    "seen": 1794811395.185493,
+    "ast_hash": "fa848216e90c3f2e2be2603a20eb8bc7",
+    "semantic_hash": "fa848216e90c3f2e2be2603a20eb8bc7"
+  },
+  "content/tracks/tokio-async-rust/track.json": {
+    "mtime": 1794541778.8531384,
+    "seen": 1794811395.185494,
+    "ast_hash": "c07be4abf8000157e798ab2114b7b4ba",
+    "semantic_hash": "c07be4abf8000157e798ab2114b7b4ba"
+  },
+  "content/tracks/tracing-telemetry-rust/mod-01-fundamentos/lesson-01-tracing-instrument-spans.json": {
+    "mtime": 1794811184.4222472,
+    "seen": 1794811395.185495,
+    "ast_hash": "b82e9cb9e96792f9367a2cf9a6c25590",
+    "semantic_hash": "b82e9cb9e96792f9367a2cf9a6c25590"
+  },
+  "content/tracks/tracing-telemetry-rust/track.json": {
+    "mtime": 1794541778.8536425,
+    "seen": 1794811395.1854954,
+    "ast_hash": "01c3713c812a53c439d197b5e8b1b6a1",
+    "semantic_hash": "01c3713c812a53c439d197b5e8b1b6a1"
+  },
+  "content/tracks/typescript-javascript/mod-00-sintaxe-js/lesson-01-let-const-arrow.json": {
+    "mtime": 1794811322.5473208,
+    "seen": 1794811395.1854963,
+    "ast_hash": "6504b341155b2c3ff6ab4079bb4814f7",
+    "semantic_hash": "6504b341155b2c3ff6ab4079bb4814f7"
+  },
+  "content/tracks/typescript-javascript/mod-00-sintaxe-js/lesson-02-loops-classes-objetos.json": {
+    "mtime": 1794811322.5483263,
+    "seen": 1794811395.1854978,
+    "ast_hash": "6d1267e0c5e187c6292c19bb270e480a",
+    "semantic_hash": "6d1267e0c5e187c6292c19bb270e480a"
+  },
+  "content/tracks/typescript-javascript/mod-00-sintaxe-js/lesson-03-operadores-condicionais-switch.json": {
+    "mtime": 1794811322.5483263,
+    "seen": 1794811395.1854987,
+    "ast_hash": "4c1a583088e35ae07549ab884b2fdf63",
+    "semantic_hash": "4c1a583088e35ae07549ab884b2fdf63"
+  },
+  "content/tracks/typescript-javascript/mod-01-ts-moderno/lesson-01-es6-arrays.json": {
+    "mtime": 1794811322.5493257,
+    "seen": 1794811395.1854994,
+    "ast_hash": "b962475db6c003ad566475f488c5b090",
+    "semantic_hash": "b962475db6c003ad566475f488c5b090"
+  },
+  "content/tracks/typescript-javascript/mod-01-ts-moderno/lesson-02-interfaces-types.json": {
+    "mtime": 1794811322.550326,
+    "seen": 1794811395.1855001,
+    "ast_hash": "478554c54f6e669276b17c1093b8be18",
+    "semantic_hash": "478554c54f6e669276b17c1093b8be18"
+  },
+  "content/tracks/typescript-javascript/mod-01-ts-moderno/lesson-03-desestruturacao-spread-rest.json": {
+    "mtime": 1794811322.550326,
+    "seen": 1794811395.1855009,
+    "ast_hash": "22e44d62bb23f877ab96af33d3e7c482",
+    "semantic_hash": "22e44d62bb23f877ab96af33d3e7c482"
+  },
+  "content/tracks/typescript-javascript/mod-02-async-generics/lesson-01-promises-generics.json": {
+    "mtime": 1794811322.5513258,
+    "seen": 1794811395.1855018,
+    "ast_hash": "d55b462ae6af229fc49ffe34100055de",
+    "semantic_hash": "d55b462ae6af229fc49ffe34100055de"
+  },
+  "content/tracks/typescript-javascript/mod-02-async-generics/lesson-02-funcoes-nativas-desafio.json": {
+    "mtime": 1794811322.552329,
+    "seen": 1794811395.1855025,
+    "ast_hash": "c311c9c275b9c2e304f29a608603bd25",
+    "semantic_hash": "c311c9c275b9c2e304f29a608603bd25"
+  },
+  "content/tracks/typescript-javascript/mod-02-async-generics/lesson-03-try-catch-fetch-json.json": {
+    "mtime": 1794811322.552329,
+    "seen": 1794811395.1855032,
+    "ast_hash": "7811ed4055417c50eec6ffd1e2bda187",
+    "semantic_hash": "7811ed4055417c50eec6ffd1e2bda187"
+  },
+  "content/tracks/typescript-javascript/mod-02-async-generics/lesson-04-enums-narrowing-utility-types.json": {
+    "mtime": 1794811322.5533292,
+    "seen": 1794811395.185504,
+    "ast_hash": "680ea3a64ae83e49e54dbdd5892486e2",
+    "semantic_hash": "680ea3a64ae83e49e54dbdd5892486e2"
+  },
+  "content/tracks/typescript-javascript/track.json": {
+    "mtime": 1794541778.8536425,
+    "seen": 1794811395.1855047,
+    "ast_hash": "102e3218a6eda1aa0bf7c9c29a8cc7e4",
+    "semantic_hash": "102e3218a6eda1aa0bf7c9c29a8cc7e4"
+  },
+  "content/tracks/unity-csharp/mod-01-fundamentos/lesson-01-monobehaviour-update.json": {
+    "mtime": 1794811210.3654888,
+    "seen": 1794811395.1855056,
+    "ast_hash": "413ddd24540fb351c4f3c97bcea4af2f",
+    "semantic_hash": "413ddd24540fb351c4f3c97bcea4af2f"
+  },
+  "content/tracks/unity-csharp/track.json": {
+    "mtime": 1794541778.8536425,
+    "seen": 1794811395.1855063,
+    "ast_hash": "e1eeee095232eac441069cdc6fcf1f9a",
+    "semantic_hash": "e1eeee095232eac441069cdc6fcf1f9a"
+  },
+  "content/tracks/viper-config-go/mod-01-fundamentos/lesson-01-viper-env-unmarshal.json": {
+    "mtime": 1794811184.4232516,
+    "seen": 1794811395.185507,
+    "ast_hash": "3a9fe09b9d128db81109afedb48f79d6",
+    "semantic_hash": "3a9fe09b9d128db81109afedb48f79d6"
+  },
+  "content/tracks/viper-config-go/track.json": {
+    "mtime": 1794541936.4542458,
+    "seen": 1794811395.1855078,
+    "ast_hash": "0d58ce509038d002f78c6f3a99ad120c",
+    "semantic_hash": "0d58ce509038d002f78c6f3a99ad120c"
+  },
+  "content/tracks/vitest-testing/mod-01-vitest-mocks/lesson-01-vitest-expect.json": {
+    "mtime": 1794811322.6036296,
+    "seen": 1794811395.1855085,
+    "ast_hash": "a7874c438de5ae385c44e6b31b94eb1b",
+    "semantic_hash": "a7874c438de5ae385c44e6b31b94eb1b"
+  },
+  "content/tracks/vitest-testing/track.json": {
+    "mtime": 1794541778.8536425,
+    "seen": 1794811395.1855094,
+    "ast_hash": "9271a07931bd309f8c89624772fca3e8",
+    "semantic_hash": "9271a07931bd309f8c89624772fca3e8"
+  },
+  "content/tracks/xunit-csharp/mod-01-fundamentos/lesson-01-fact-theory-assert.json": {
+    "mtime": 1794811184.4232516,
+    "seen": 1794811395.1855102,
+    "ast_hash": "b78624b3826cb24dfea20a1354d85c4d",
+    "semantic_hash": "b78624b3826cb24dfea20a1354d85c4d"
+  },
+  "content/tracks/xunit-csharp/track.json": {
+    "mtime": 1794541778.8546476,
+    "seen": 1794811395.1855109,
+    "ast_hash": "355d06241b5655c42145635993cb12d5",
+    "semantic_hash": "355d06241b5655c42145635993cb12d5"
+  },
+  "content/tracks/zap-logging-go/mod-01-fundamentos/lesson-01-zap-structured-fields.json": {
+    "mtime": 1794811184.4247541,
+    "seen": 1794811395.1855116,
+    "ast_hash": "52917a337f8969051e6089e0225d9eb0",
+    "semantic_hash": "52917a337f8969051e6089e0225d9eb0"
+  },
+  "content/tracks/zap-logging-go/track.json": {
+    "mtime": 1794541904.2481735,
+    "seen": 1794811395.1855125,
+    "ast_hash": "5610b198b60a50fd46d5d1f84465d73b",
+    "semantic_hash": "5610b198b60a50fd46d5d1f84465d73b"
+  },
+  "content/tracks/zod-validation/mod-01-schemas/lesson-01-schemas-parse.json": {
+    "mtime": 1794811184.4247541,
+    "seen": 1794811395.1855133,
+    "ast_hash": "9a709e171387d15934707bb0c28c0931",
+    "semantic_hash": "9a709e171387d15934707bb0c28c0931"
+  },
+  "content/tracks/zod-validation/track.json": {
+    "mtime": 1794541778.8546476,
+    "seen": 1794811395.185514,
+    "ast_hash": "bb384547089baeec94ff2c68a8d2e7f9",
+    "semantic_hash": "bb384547089baeec94ff2c68a8d2e7f9"
+  },
+  "eslint.config.mjs": {
+    "mtime": 1794499672.1053834,
+    "seen": 1794811395.1855147,
+    "ast_hash": "dfa1f5f6a7037bf39dc510f30b180002",
+    "semantic_hash": "dfa1f5f6a7037bf39dc510f30b180002"
+  },
+  "ios/App/App/AppDelegate.swift": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855154,
+    "ast_hash": "66cf80b6a9ef034e815c7d0135b97e36",
+    "semantic_hash": "66cf80b6a9ef034e815c7d0135b97e36"
+  },
+  "ios/App/App/Assets.xcassets/AppIcon.appiconset/Contents.json": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855164,
+    "ast_hash": "7453c3002126811a57c38b2740f990cf",
+    "semantic_hash": "7453c3002126811a57c38b2740f990cf"
+  },
+  "ios/App/App/Assets.xcassets/Contents.json": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.185517,
+    "ast_hash": "31cc68f34934a99c0b0c1bebde56309c",
+    "semantic_hash": "31cc68f34934a99c0b0c1bebde56309c"
+  },
+  "ios/App/App/Assets.xcassets/Splash.imageset/Contents.json": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855178,
+    "ast_hash": "1162e1cddd7ea769bcacdd1aa7b4ac72",
+    "semantic_hash": "1162e1cddd7ea769bcacdd1aa7b4ac72"
+  },
+  "ios/App/App/SceneDelegate.swift": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855185,
+    "ast_hash": "109aded755e8064cd0c2de99e039aeb5",
+    "semantic_hash": "109aded755e8064cd0c2de99e039aeb5"
+  },
+  "ios/App/CapApp-SPM/Package.swift": {
+    "mtime": 1794594876.7065537,
+    "seen": 1794811395.1855195,
+    "ast_hash": "34bf3d66a135b13091fde57ad8a28688",
+    "semantic_hash": "34bf3d66a135b13091fde57ad8a28688"
+  },
+  "ios/App/CapApp-SPM/Sources/CapApp-SPM/CapApp-SPM.swift": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855202,
+    "ast_hash": "0d92cb44a62bc3f2d73464a2e4f9a890",
+    "semantic_hash": "0d92cb44a62bc3f2d73464a2e4f9a890"
+  },
+  "next.config.ts": {
+    "mtime": 1794586429.7369645,
+    "seen": 1794811395.185521,
+    "ast_hash": "6112da8a525e0ecc36e4020b16f1d0ee",
+    "semantic_hash": "6112da8a525e0ecc36e4020b16f1d0ee"
+  },
+  "package.json": {
+    "mtime": 1794586900.9432895,
+    "seen": 1794811395.1855216,
+    "ast_hash": "8f71ab5b885cc86c60496d96bd7feb26",
+    "semantic_hash": "8f71ab5b885cc86c60496d96bd7feb26"
+  },
+  "scripts/validate-tracks.mjs": {
+    "mtime": 1794809567.8999884,
+    "seen": 1794811395.185522,
+    "ast_hash": "6b0e8790671dcf566ab80550ab3b0029",
+    "semantic_hash": "6b0e8790671dcf566ab80550ab3b0029"
+  },
+  "src/app/community/page.tsx": {
+    "mtime": 1794514198.3792777,
+    "seen": 1794811395.1855233,
+    "ast_hash": "9ae023905fb07c9633e638401794553c",
+    "semantic_hash": "9ae023905fb07c9633e638401794553c"
+  },
+  "src/app/layout.tsx": {
+    "mtime": 1794593122.3050225,
+    "seen": 1794811395.185524,
+    "ast_hash": "4957e0190b42dd977f6962bdb454a0a0",
+    "semantic_hash": "4957e0190b42dd977f6962bdb454a0a0"
+  },
+  "src/app/lesson/[trackId]/[lessonId]/page.tsx": {
+    "mtime": 1794592877.1343544,
+    "seen": 1794811395.1855247,
+    "ast_hash": "d3ec8a3dd06a15839e2a5308198b7e75",
+    "semantic_hash": "d3ec8a3dd06a15839e2a5308198b7e75"
+  },
+  "src/app/manifest.ts": {
+    "mtime": 1794541778.8211775,
+    "seen": 1794811395.1855254,
+    "ast_hash": "9dd495cb03f09c4fceb72376c1f0af6f",
+    "semantic_hash": "9dd495cb03f09c4fceb72376c1f0af6f"
+  },
+  "src/app/page.tsx": {
+    "mtime": 1794500194.556034,
+    "seen": 1794811395.1855264,
+    "ast_hash": "6e13689eee3d892c7a9825703d3789fd",
+    "semantic_hash": "6e13689eee3d892c7a9825703d3789fd"
+  },
+  "src/app/serwist/[path]/route.ts": {
+    "mtime": 1794586421.5947988,
+    "seen": 1794811395.185527,
+    "ast_hash": "358b4af756f3166eb03014941bf6869b",
+    "semantic_hash": "358b4af756f3166eb03014941bf6869b"
+  },
+  "src/app/stats/page.tsx": {
+    "mtime": 1794513544.7816215,
+    "seen": 1794811395.1855278,
+    "ast_hash": "832f391aaf579e9d2b788a181f9094c1",
+    "semantic_hash": "832f391aaf579e9d2b788a181f9094c1"
+  },
+  "src/app/sw.ts": {
+    "mtime": 1794586420.4255004,
+    "seen": 1794811395.1855285,
+    "ast_hash": "d1c49eed509c9f95bfb47f638df55de7",
+    "semantic_hash": "d1c49eed509c9f95bfb47f638df55de7"
+  },
+  "src/app/tracks/page.tsx": {
+    "mtime": 1794500219.301899,
+    "seen": 1794811395.1855292,
+    "ast_hash": "adcddd21b42d933d7312de52aaa124f5",
+    "semantic_hash": "adcddd21b42d933d7312de52aaa124f5"
+  },
+  "src/components/AppShell.tsx": {
+    "mtime": 1794593126.6153288,
+    "seen": 1794811395.1855302,
+    "ast_hash": "12955c59eae8144f4dbb738ee5047afb",
+    "semantic_hash": "12955c59eae8144f4dbb738ee5047afb"
+  },
+  "src/components/CodeEditor.tsx": {
+    "mtime": 1794593145.3982372,
+    "seen": 1794811395.185531,
+    "ast_hash": "ac83b3400906a4e315f333a3f611b343",
+    "semantic_hash": "ac83b3400906a4e315f333a3f611b343"
+  },
+  "src/components/CodeHighlight.tsx": {
+    "mtime": 1794513172.352365,
+    "seen": 1794811395.1855316,
+    "ast_hash": "f3a93d2c1e1b76ccb74c7dc6d311c681",
+    "semantic_hash": "f3a93d2c1e1b76ccb74c7dc6d311c681"
+  },
+  "src/components/ConfettiBurst.tsx": {
+    "mtime": 1794593284.6781716,
+    "seen": 1794811395.1855323,
+    "ast_hash": "73a6c6fc3e7db0123a09e609a7fd02ff",
+    "semantic_hash": "73a6c6fc3e7db0123a09e609a7fd02ff"
+  },
+  "src/components/LessonPlayer.tsx": {
+    "mtime": 1794809528.5755332,
+    "seen": 1794811395.1855333,
+    "ast_hash": "394c088364de170d00e214ac1a702047",
+    "semantic_hash": "394c088364de170d00e214ac1a702047"
+  },
+  "src/components/PWAProvider.tsx": {
+    "mtime": 1794586422.8770106,
+    "seen": 1794811395.185534,
+    "ast_hash": "b605ffb7b777a322fae56cff9b884d9c",
+    "semantic_hash": "b605ffb7b777a322fae56cff9b884d9c"
+  },
+  "src/components/ReminderCard.tsx": {
+    "mtime": 1794592902.926489,
+    "seen": 1794811395.1855347,
+    "ast_hash": "5d7f1642c97d5edd751a6899c223294d",
+    "semantic_hash": "5d7f1642c97d5edd751a6899c223294d"
+  },
+  "src/components/SkillTree.tsx": {
+    "mtime": 1794593293.4046054,
+    "seen": 1794811395.1855354,
+    "ast_hash": "8314bada7c89e737348e96ddbcf8b491",
+    "semantic_hash": "8314bada7c89e737348e96ddbcf8b491"
+  },
+  "src/components/StatsDashboard.tsx": {
+    "mtime": 1794586406.0872142,
+    "seen": 1794811395.1855361,
+    "ast_hash": "298c461e243ec04289f3c3a3d7ae9ec1",
+    "semantic_hash": "298c461e243ec04289f3c3a3d7ae9ec1"
+  },
+  "src/components/TrackStudio.tsx": {
+    "mtime": 1794592962.0583494,
+    "seen": 1794811395.185537,
+    "ast_hash": "4576137354dae0dd6c6c64db28266f8a",
+    "semantic_hash": "4576137354dae0dd6c6c64db28266f8a"
+  },
+  "src/components/TracksExplorer.tsx": {
+    "mtime": 1794593461.0450587,
+    "seen": 1794811395.1855378,
+    "ast_hash": "6856980db9e19bab6d0bcdc60d3f1ea7",
+    "semantic_hash": "6856980db9e19bab6d0bcdc60d3f1ea7"
+  },
+  "src/lib/code-validation.ts": {
+    "mtime": 1794809499.927864,
+    "seen": 1794811395.1855383,
+    "ast_hash": "e25b6a7394fbb8002d6360403e2adee7",
+    "semantic_hash": "e25b6a7394fbb8002d6360403e2adee7"
+  },
+  "src/lib/i18n.ts": {
+    "mtime": 1794588917.880669,
+    "seen": 1794811395.185539,
+    "ast_hash": "801d463bd27e460a4606f59802bac89a",
+    "semantic_hash": "801d463bd27e460a4606f59802bac89a"
+  },
+  "src/lib/notifications.ts": {
+    "mtime": 1794586385.036042,
+    "seen": 1794811395.1855397,
+    "ast_hash": "f26c10d890f108488aa66bf83d39849a",
+    "semantic_hash": "f26c10d890f108488aa66bf83d39849a"
+  },
+  "src/lib/progress.ts": {
+    "mtime": 1794503427.3101976,
+    "seen": 1794811395.1855407,
+    "ast_hash": "1f44490e47de96c565fbe3a88d5bb1b1",
+    "semantic_hash": "1f44490e47de96c565fbe3a88d5bb1b1"
+  },
+  "src/lib/schema.ts": {
+    "mtime": 1794514435.326293,
+    "seen": 1794811395.1855414,
+    "ast_hash": "64f1f6a02cfd23598ccb100d21522774",
+    "semantic_hash": "64f1f6a02cfd23598ccb100d21522774"
+  },
+  "src/lib/track-i18n.ts": {
+    "mtime": 1794539927.3117576,
+    "seen": 1794811395.185542,
+    "ast_hash": "c103fbbdb5374ed482e5a67a5c09dc4c",
+    "semantic_hash": "c103fbbdb5374ed482e5a67a5c09dc4c"
+  },
+  "src/lib/track-why.ts": {
+    "mtime": 1794589791.9249506,
+    "seen": 1794811395.1855428,
+    "ast_hash": "63a95917deba4902e2f076c6a722b3a2",
+    "semantic_hash": "63a95917deba4902e2f076c6a722b3a2"
+  },
+  "src/lib/tracks.ts": {
+    "mtime": 1794541939.1258876,
+    "seen": 1794811395.1855438,
+    "ast_hash": "4151a661b6cbcd7f8524097a9fd53295",
+    "semantic_hash": "4151a661b6cbcd7f8524097a9fd53295"
+  },
+  "tsconfig.json": {
+    "mtime": 1794499672.3794768,
+    "seen": 1794811395.1855445,
+    "ast_hash": "ee17fd1c97c735e9f3564e3f5251f125",
+    "semantic_hash": "ee17fd1c97c735e9f3564e3f5251f125"
+  },
+  ".github/PULL_REQUEST_TEMPLATE.md": {
+    "mtime": 1794586899.645531,
+    "seen": 1794811395.1855452,
+    "ast_hash": "5a4a8a1e7258fb34c3c79d7f81bdfadc",
+    "semantic_hash": "5a4a8a1e7258fb34c3c79d7f81bdfadc"
+  },
+  "AGENTS.md": {
+    "mtime": 1794499740.4239824,
+    "seen": 1794811395.185546,
+    "ast_hash": "c98dbebb744eadc1acc4b9f58bfe0f42",
+    "semantic_hash": "c98dbebb744eadc1acc4b9f58bfe0f42"
+  },
+  "CONTRIBUTING.md": {
+    "mtime": 1794502127.6588104,
+    "seen": 1794811395.1855466,
+    "ast_hash": "0c9b128accb7701058033fb92c608b8d",
+    "semantic_hash": "0c9b128accb7701058033fb92c608b8d"
+  },
+  "README.md": {
+    "mtime": 1794588273.9019265,
+    "seen": 1794811395.1855476,
+    "ast_hash": "2cf4f0c5ddb06293b211763f90c54795",
+    "semantic_hash": "2cf4f0c5ddb06293b211763f90c54795"
+  },
+  "ios/App/CapApp-SPM/README.md": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855483,
+    "ast_hash": "d256f6b5922d4249607779141357d565",
+    "semantic_hash": "d256f6b5922d4249607779141357d565"
+  },
+  "android/app/src/main/res/drawable-land-hdpi/splash.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.185549,
+    "ast_hash": "f7a80786dd355bd39014e58027aa6e19",
+    "semantic_hash": "f7a80786dd355bd39014e58027aa6e19"
+  },
+  "android/app/src/main/res/drawable-land-mdpi/splash.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855497,
+    "ast_hash": "acc976d4a36479233371a53021525c0c",
+    "semantic_hash": "acc976d4a36479233371a53021525c0c"
+  },
+  "android/app/src/main/res/drawable-land-xhdpi/splash.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855507,
+    "ast_hash": "b8c72969bc1f78aab71a76035360d4af",
+    "semantic_hash": "b8c72969bc1f78aab71a76035360d4af"
+  },
+  "android/app/src/main/res/drawable-land-xxhdpi/splash.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855514,
+    "ast_hash": "f87e988387b07d843905f38b084929fb",
+    "semantic_hash": "f87e988387b07d843905f38b084929fb"
+  },
+  "android/app/src/main/res/drawable-land-xxxhdpi/splash.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855521,
+    "ast_hash": "055a69553b16b0bf5f72094a2e459fc7",
+    "semantic_hash": "055a69553b16b0bf5f72094a2e459fc7"
+  },
+  "android/app/src/main/res/drawable-port-hdpi/splash.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855528,
+    "ast_hash": "5eb10d16c81338abe8bbc033d49638a8",
+    "semantic_hash": "5eb10d16c81338abe8bbc033d49638a8"
+  },
+  "android/app/src/main/res/drawable-port-mdpi/splash.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855536,
+    "ast_hash": "d855a76a5070c8e6fcfd83a27549bdce",
+    "semantic_hash": "d855a76a5070c8e6fcfd83a27549bdce"
+  },
+  "android/app/src/main/res/drawable-port-xhdpi/splash.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855545,
+    "ast_hash": "df100b2a36bdb98b711cca58941728de",
+    "semantic_hash": "df100b2a36bdb98b711cca58941728de"
+  },
+  "android/app/src/main/res/drawable-port-xxhdpi/splash.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855552,
+    "ast_hash": "2c1b668364e815256f67b71dcdfa4d6e",
+    "semantic_hash": "2c1b668364e815256f67b71dcdfa4d6e"
+  },
+  "android/app/src/main/res/drawable-port-xxxhdpi/splash.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.185556,
+    "ast_hash": "b5b1b22b59abe686c1df0d74a423d034",
+    "semantic_hash": "b5b1b22b59abe686c1df0d74a423d034"
+  },
+  "android/app/src/main/res/drawable/splash.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855567,
+    "ast_hash": "acc976d4a36479233371a53021525c0c",
+    "semantic_hash": "acc976d4a36479233371a53021525c0c"
+  },
+  "android/app/src/main/res/mipmap-hdpi/ic_launcher.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855576,
+    "ast_hash": "1956941339dd5fe36d5c66601c89a08d",
+    "semantic_hash": "1956941339dd5fe36d5c66601c89a08d"
+  },
+  "android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855586,
+    "ast_hash": "73b1e06d769fa08a9c3b8328cc15fd75",
+    "semantic_hash": "73b1e06d769fa08a9c3b8328cc15fd75"
+  },
+  "android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855593,
+    "ast_hash": "f43e5674865a00186dd76183cf1f2f8e",
+    "semantic_hash": "f43e5674865a00186dd76183cf1f2f8e"
+  },
+  "android/app/src/main/res/mipmap-mdpi/ic_launcher.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.18556,
+    "ast_hash": "7ed1b3739b83215d0c4a0b4a7f2dcab4",
+    "semantic_hash": "7ed1b3739b83215d0c4a0b4a7f2dcab4"
+  },
+  "android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.185561,
+    "ast_hash": "5b77e8aec8b17eed320a97567c7cb8bf",
+    "semantic_hash": "5b77e8aec8b17eed320a97567c7cb8bf"
+  },
+  "android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855617,
+    "ast_hash": "a49547a32c7d9b529af607b033811d81",
+    "semantic_hash": "a49547a32c7d9b529af607b033811d81"
+  },
+  "android/app/src/main/res/mipmap-xhdpi/ic_launcher.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855624,
+    "ast_hash": "5689511ee4e41a367d0342f37ac48bdf",
+    "semantic_hash": "5689511ee4e41a367d0342f37ac48bdf"
+  },
+  "android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.185563,
+    "ast_hash": "15cdded29b9877ac98c5931024c5da5d",
+    "semantic_hash": "15cdded29b9877ac98c5931024c5da5d"
+  },
+  "android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855638,
+    "ast_hash": "c890fa4af62a63486d5dea62441ce7ab",
+    "semantic_hash": "c890fa4af62a63486d5dea62441ce7ab"
+  },
+  "android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855648,
+    "ast_hash": "a3285eeaedda8201f04e7737b9df8421",
+    "semantic_hash": "a3285eeaedda8201f04e7737b9df8421"
+  },
+  "android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855655,
+    "ast_hash": "4e9584ecc16d1fc75afb798688ce576f",
+    "semantic_hash": "4e9584ecc16d1fc75afb798688ce576f"
+  },
+  "android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855662,
+    "ast_hash": "14cde87848553e24d7106f56eb8ceb6f",
+    "semantic_hash": "14cde87848553e24d7106f56eb8ceb6f"
+  },
+  "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.185567,
+    "ast_hash": "9e029293ab1ae8e3a6a7b7d0b7177e46",
+    "semantic_hash": "9e029293ab1ae8e3a6a7b7d0b7177e46"
+  },
+  "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855679,
+    "ast_hash": "ed3696b7c52d9747411a475dbe3fa34a",
+    "semantic_hash": "ed3696b7c52d9747411a475dbe3fa34a"
+  },
+  "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855686,
+    "ast_hash": "85addb4159ecd3f76f02fbacd5ec86de",
+    "semantic_hash": "85addb4159ecd3f76f02fbacd5ec86de"
+  },
+  "ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855693,
+    "ast_hash": "0ac741c9e1701ee14dd05ea131f7cfd8",
+    "semantic_hash": "0ac741c9e1701ee14dd05ea131f7cfd8"
+  },
+  "ios/App/App/Assets.xcassets/Splash.imageset/splash-2732x2732-1.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855738,
+    "ast_hash": "958532b95c3e7d4997327dc977b80600",
+    "semantic_hash": "958532b95c3e7d4997327dc977b80600"
+  },
+  "ios/App/App/Assets.xcassets/Splash.imageset/splash-2732x2732-2.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855748,
+    "ast_hash": "958532b95c3e7d4997327dc977b80600",
+    "semantic_hash": "958532b95c3e7d4997327dc977b80600"
+  },
+  "ios/App/App/Assets.xcassets/Splash.imageset/splash-2732x2732.png": {
+    "mtime": 1793204073.0,
+    "seen": 1794811395.1855755,
+    "ast_hash": "958532b95c3e7d4997327dc977b80600",
+    "semantic_hash": "958532b95c3e7d4997327dc977b80600"
+  },
+  "public/file.svg": {
+    "mtime": 1794499672.1368983,
+    "seen": 1794811395.1855762,
+    "ast_hash": "d09f95206c3fa0bb9bd9fefabfd0ea71",
+    "semantic_hash": "d09f95206c3fa0bb9bd9fefabfd0ea71"
+  },
+  "public/globe.svg": {
+    "mtime": 1794499672.1468978,
+    "seen": 1794811395.185577,
+    "ast_hash": "2aaafa6a49b6563925fe440891e32717",
+    "semantic_hash": "2aaafa6a49b6563925fe440891e32717"
+  },
+  "public/icon.svg": {
+    "mtime": 1794501767.448188,
+    "seen": 1794811395.1855776,
+    "ast_hash": "9cae0cb6dbb666ef847139a53235c32f",
+    "semantic_hash": "9cae0cb6dbb666ef847139a53235c32f"
+  },
+  "public/next.svg": {
+    "mtime": 1794499672.159324,
+    "seen": 1794811395.1855786,
+    "ast_hash": "8e061864f388b47f33a1c3780831193e",
+    "semantic_hash": "8e061864f388b47f33a1c3780831193e"
+  },
+  "public/vercel.svg": {
+    "mtime": 1794499672.1693246,
+    "seen": 1794811395.1855795,
+    "ast_hash": "c0af2f507b369b085b35ef4bbe3bcf1e",
+    "semantic_hash": "c0af2f507b369b085b35ef4bbe3bcf1e"
+  },
+  "public/window.svg": {
+    "mtime": 1794499672.1793246,
+    "seen": 1794811395.1855803,
+    "ast_hash": "a2760511c65806022ad20adf74370ff3",
+    "semantic_hash": "a2760511c65806022ad20adf74370ff3"
+  }
+}

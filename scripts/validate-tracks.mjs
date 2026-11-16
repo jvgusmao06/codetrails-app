@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { LessonSchema, TrackMetaSchema } from "../src/lib/schema.ts";
+import { matchRequiredTokens } from "../src/lib/code-validation.ts";
 
 const tracksDir = path.join(process.cwd(), "content", "tracks");
 
@@ -63,14 +64,19 @@ for (const entry of fs.readdirSync(tracksDir, { withFileTypes: true })) {
             );
           }
         } else if (step.type === "write_code") {
-          const normSolution = step.sampleSolution.toLowerCase();
-          for (const tok of step.requiredTokens) {
-            if (!normSolution.includes(tok.toLowerCase())) {
+          const { matched } = matchRequiredTokens(
+            step.sampleSolution,
+            step.requiredTokens,
+            track.languageId ?? track.id,
+            track.id
+          );
+          step.requiredTokens.forEach((tok, idx) => {
+            if (!matched[idx]) {
               throw new Error(
-                `[${lesson.id}] sampleSolution não contém o requiredToken "${tok}"`
+                `[${lesson.id}] sampleSolution não contém o requiredToken "${tok}" (fora de comentários)`
               );
             }
-          }
+          });
         }
       }
       lessonCount++;

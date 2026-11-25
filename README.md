@@ -6,12 +6,14 @@
 
 ## ✨ Principais Funcionalidades
 
-- **📚 5 Mecânicas Interativas (Teoria + Prática)**:
-  - `theory`: Explicações diretas com exemplos de código comentados e pontos-chave antes dos exercícios.
-  - `multiple_choice`: Perguntas de múltipla escolha com *snippets* de código.
+- **📚 6 Mecânicas Interativas (Teoria + Prática)**:
+  - `theory`: Explicações diretas com exemplos de código comentados, saída esperada (`expectedOutput`) e pontos-chave antes dos exercícios.
+  - `multiple_choice`: Perguntas de múltipla escolha e desafios de previsão de saída (`predict_output`) com *snippets* de código.
   - `fill_in_blank`: Preenchimento de lacunas (`{{blank}}`) com banco de tokens amigável para telas *touch*.
   - `order_code`: **Parson's Puzzle** — ordenação interativa de blocos de código ou pipelines de comandos.
   - `spot_the_bug`: **Inspetor de Debug** — seleção direta da linha exata onde ocorre um bug lógico, *race condition*, *borrow error* ou vulnerabilidade.
+  - `write_code`: **Editor de Código Interativo (CodeMirror 6)** — escrita livre de código com syntax highlighting, dicas progressivas (`hint`), validação de tokens obrigatórios e simulação de saída no console.
+  - **Missões, Combos e Progressão Contínua**: Cada lição conta com contexto de missão (`mission`), rastreamento de **Melhor Combo** e transição direta para a próxima lição da trilha.
 - **🌍 Internacionalização Nativa (8 Idiomas)**: Interface, estatísticas e catálogo disponíveis nos 8 idiomas mais falados globalmente:
   - 🇧🇷 Português (`pt`) | 🇺🇸 English (`en`) | 🇪🇸 Español (`es`) | 🇨🇳 中文 (`zh`)
   - 🇮🇳 हिन्दी (`hi`) | 🇫🇷 Français (`fr`) | 🇸🇦 العربية (`ar`) | 🇷🇺 Русский (`ru`)
@@ -32,7 +34,7 @@
 
 ---
 
-## 🧭 Trilhas e Árvore de Pré-Requisitos (74 Trilhas / 187 Lições)
+## 🧭 Trilhas e Árvore de Pré-Requisitos (74 Trilhas / 197 Lições)
 
 As trilhas são organizadas de forma hierárquica: o estudante escolhe uma **Linguagem Base** ou **Conceito de Ciência da Computação** no topo e, dentro de cada linguagem, visualiza apenas os **Frameworks, Bibliotecas e Ferramentas daquele ecossistema**, com verificação automática de pré-requisitos (`prerequisites` e `languageId`):
 
@@ -89,6 +91,8 @@ As trilhas são organizadas de forma hierárquica: o estudante escolhe uma **Lin
 | **Framework** | [Next.js 16 (App Router)](https://nextjs.org/) + React 19 | Renderização estática/híbrida, rotas dinâmicas e Web App Manifest nativo |
 | **Linguagem** | [TypeScript 5](https://www.typescriptlang.org/) | Tipagem estática ponta a ponta |
 | **Estilização** | [Tailwind CSS v4](https://tailwindcss.com/) | Estética *Developer IDE / Git Graph* responsiva e mobile-first |
+| **Editor de Código** | [CodeMirror 6](https://codemirror.net/) | Editor interativo multi-linguagem para desafios `write_code` |
+| **PWA & Mobile** | [Serwist](https://serwist.pages.dev/) + [Capacitor 8](https://capacitorjs.com/) | Service Worker offline, notificações locais e builds nativos Android/iOS |
 | **Validação de Conteúdo** | [Zod](https://zod.dev/) | Validação estrita das trilhas e lições JSON submetidas pela comunidade |
 | **Ícones** | [Lucide React](https://lucide.dev/) | Ícones leves e consistentes |
 
@@ -158,21 +162,28 @@ codetrails-app/
 │   └── validate-tracks.mjs      # Validador CLI para CI / Pull Requests
 ├── src/
 │   ├── app/
-│   │   ├── community/page.tsx   # Portal de contribuição + Gerador de JSON
+│   │   ├── community/page.tsx   # Portal de contribuição + TrackStudio
 │   │   ├── lesson/[trackId]/[lessonId]/page.tsx # Player de lição
+│   │   ├── stats/page.tsx       # Painel de estatísticas e conquistas
 │   │   ├── tracks/page.tsx      # Catálogo com filtros por categoria
 │   │   ├── layout.tsx           # Root Layout + Metadados PWA
 │   │   ├── manifest.ts          # Web App Manifest nativo
+│   │   ├── sw.ts                # Service Worker (Serwist)
 │   │   └── page.tsx             # Home (Roadmap estilo Git Branch)
 │   ├── components/
 │   │   ├── AppShell.tsx         # Sidebar, Topbar, Seletor de Idioma e Bottom Nav
-│   │   ├── LessonPlayer.tsx     # Motor interativo (Teoria + Múltipla Escolha + Lacunas)
+│   │   ├── CodeEditor.tsx       # Editor CodeMirror 6 para desafios de escrita
+│   │   ├── LessonPlayer.tsx     # Motor interativo (6 mecânicas, combos e saída)
 │   │   ├── SkillTree.tsx        # Visualizador de módulos e linha do tempo
-│   │   └── TracksExplorer.tsx   # Explorador de trilhas
+│   │   ├── StatsDashboard.tsx   # Dashboard de XP, nível e conquistas
+│   │   ├── TracksExplorer.tsx   # Explorador de trilhas
+│   │   └── TrackStudio.tsx      # Gerador visual de trilhas/lições JSON
 │   └── lib/
-│       ├── i18n.ts              # Dicionários em 5 idiomas (PT, EN, ES, ZH, HI)
+│       ├── code-validation.ts   # Validação de código para desafios write_code
+│       ├── i18n.ts              # Dicionários em 8 idiomas (PT, EN, ES, ZH, HI, FR, AR, RU)
+│       ├── notifications.ts     # Lembretes diários (Capacitor Local Notifications)
 │       ├── progress.ts          # Estado local, Streak, XP, Web Audio & Vibration
-│       ├── schema.ts            # Schemas Zod (Theory, MultipleChoice, FillInBlank)
+│       ├── schema.ts            # Schemas Zod (6 mecânicas + missões e dicas)
 │       ├── track-i18n.ts        # Traduções dos metadados das trilhas
 │       └── tracks.ts            # Loader seguro das trilhas do filesystem
 └── CONTRIBUTING.md              # Guia detalhado para criadores de trilhas

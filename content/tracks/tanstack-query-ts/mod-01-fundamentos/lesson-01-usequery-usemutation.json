@@ -1,100 +1,74 @@
 {
   "id": "lesson-01-usequery-usemutation",
   "title": "useQuery, useMutation e Cache",
-  "description": "Busque, armazene em cache e invalide dados de API com tipagem forte em TypeScript.",
+  "description": "Substitua useEffect + fetch manual por cache automático com useQuery e recarregamento instantâneo via invalidateQueries.",
+  "mission": "Missão 1: Carregar a lista de produtos no SyncBoard e atualizar o painel sozinho quando um novo item for criado.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Estado de servidor sem boilerplate",
-      "content": "Em vez de controlar `useState`, `useEffect`, `isLoading` e `error` na mão, o **TanStack Query** gerencia dados remotos de forma declarativa:\n\n- `useQuery({ queryKey, queryFn })`: busca e armazena dados em cache pela `queryKey` (ex: `[\"users\", id]`).\n- `useMutation({ mutationFn, onSuccess })`: executa `POST`/`PUT`/`DELETE` e permite atualizar a UI.\n- `queryClient.invalidateQueries({ queryKey })`: marca o cache como obsoleto após uma mutação para refazer o fetch automaticamente.",
-      "codeExample": "import { useQuery, useMutation, useQueryClient } from \"@tanstack/react-query\";\n\ntype User = { id: number; name: string };\n\nconst { data, isPending } = useQuery<User[]>({\n  queryKey: [\"users\"],\n  queryFn: () => fetch(\"/api/users\").then((r) => r.json()),\n});\n\nconst queryClient = useQueryClient();\nconst createUser = useMutation({\n  mutationFn: (name: string) =>\n    fetch(\"/api/users\", { method: \"POST\", body: JSON.stringify({ name }) }),\n  onSuccess: () => queryClient.invalidateQueries({ queryKey: [\"users\"] }),\n});",
+      "title": "Dados do servidor em cache sem boilerplate",
+      "content": "Chega de montar `useState`, `useEffect` e `loading` na mão! Com o **TanStack Query**, `useQuery({ queryKey, queryFn })` busca e guarda seus dados em cache identificados pela `queryKey`.\nQuando você cria ou edita algo no servidor com `useMutation`, basta chamar `queryClient.invalidateQueries({ queryKey })` no `onSuccess` para a tela atualizar sozinha!",
+      "codeExample": "const { data, isPending } = useQuery<Todo[]>({\n  queryKey: [\"todos\"],\n  queryFn: () => fetch(\"/api/todos\").then((r) => r.json()),\n});\nconst createTodo = useMutation({\n  mutationFn: (t: string) => fetch(\"/api/todos\", { method: \"POST\", body: t }),\n  onSuccess: () => queryClient.invalidateQueries({ queryKey: [\"todos\"] }),\n});",
+      "expectedOutput": "Lista carrega com cache [\"todos\"] e refaz o fetch automaticamente após criar um item",
       "keyTakeaways": [
-        "`useQuery` gerencia cache, loading (`isPending`) e refetch automático pela `queryKey`.",
-        "`useMutation` encapsula operações de escrita (`POST`/`PUT`/`DELETE`) com `mutationFn` e callbacks como `onSuccess`.",
-        "`queryClient.invalidateQueries({ queryKey })` força a atualização das queries ativas após uma mutação."
+        "`useQuery({ queryKey, queryFn })` cuida do fetch, cache e estado `isPending` sozinho.",
+        "`useMutation` + `queryClient.invalidateQueries({ queryKey })` mantém a lista na tela sempre atualizada."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual método do `QueryClient` força o TanStack Query a marcar uma query em cache como obsoleta e refazer a requisição quando necessário?",
+      "kind": "predict_output",
+      "prompt": "O que acontece na tela logo depois que `createUser.mutate(\"Lia\")` termina com sucesso?",
+      "codeSnippet": "const createUser = useMutation({\n  mutationFn: salvarUsuario,\n  onSuccess: () => queryClient.invalidateQueries({ queryKey: [\"users\"] }),\n});",
       "options": [
-        "queryClient.invalidateQueries({ queryKey: [\"users\"] })",
-        "queryClient.clearCache(\"users\")",
-        "useQuery.reload([\"users\"])",
-        "queryClient.deleteState([\"users\"])"
+        "O cache [\"users\"] é marcado como antigo e a lista na tela refaz o fetch automaticamente",
+        "A página inteira do navegador é recarregada (F5)",
+        "Nada acontece até o usuário clicar em atualizar",
+        "O cache de todas as rotas é apagado permanentemente"
       ],
       "correctIndex": 0,
-      "explanation": "`invalidateQueries` marca as queries correspondentes à `queryKey` como stale e dispara refetch automático se estiverem ativas na tela."
+      "hint": "`invalidateQueries({ queryKey: [\"users\"] })` avisa o TanStack Query que os dados ativos ficaram desatualizados!",
+      "expectedOutput": "Refetch automático de useQuery([\"users\"]) -> \"Lia\" aparece na lista",
+      "explanation": "Essa é a mágica do `invalidateQueries`: qualquer `useQuery` ativo com `[\"users\"]` busca os dados novos na hora!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a chamada de `useQuery` tipada para buscar a lista de tarefas:",
-      "codeTemplate": "const { data, isPending } = {{blank}}<Todo[]>({\n  {{blank}}: [\"todos\"],\n  {{blank}}: () => fetch(\"/api/todos\").then((r) => r.json()),\n});",
+      "prompt": "Complete a chamada de `useQuery` passando a chave do cache e a função de busca:",
+      "codeTemplate": "const { data } = useQuery<Todo[]>({\n  {{blank}}: [\"todos\"],\n  {{blank}}: () => fetch(\"/api/todos\").then((r) => r.json()),\n});",
       "blanks": [
-        { "answer": "useQuery" },
-        { "answer": "queryKey" },
-        { "answer": "queryFn" }
+        { "answer": "queryKey", "placeholder": "chave" },
+        { "answer": "queryFn", "placeholder": "função" }
       ],
-      "options": ["useQuery", "useMutation", "queryKey", "cacheKey", "queryFn", "fetchFn"],
-      "explanation": "`useQuery` recebe um objeto com `queryKey` (identificador único do cache) e `queryFn` (função que retorna uma Promise)."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete a mutação para criar um usuário e invalidar o cache `[\"users\"]` após o sucesso:",
-      "codeTemplate": "const createUser = {{blank}}({\n  {{blank}}: (name: string) => fetch(\"/api/users\", { method: \"POST\", body: JSON.stringify({ name }) }),\n  {{blank}}: () => queryClient.invalidateQueries({ queryKey: [\"users\"] }),\n});",
-      "blanks": [
-        { "answer": "useMutation" },
-        { "answer": "mutationFn" },
-        { "answer": "onSuccess" }
-      ],
-      "options": ["useMutation", "useQuery", "mutationFn", "queryFn", "onSuccess", "onComplete"],
-      "explanation": "`useMutation` recebe `mutationFn` para executar a alteração no servidor e `onSuccess` para reagir quando a operação conclui."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para configurar o `queryClient`, criar uma mutação de exclusão e invalidar a lista em cache no `onSuccess`:",
-      "blocks": [
-        "const deleteTodo = useMutation({",
-        "const queryClient = useQueryClient();",
-        "  onSuccess: () => queryClient.invalidateQueries({ queryKey: [\"todos\"] }),",
-        "  mutationFn: (id: number) => fetch(`/api/todos/${id}`, { method: \"DELETE\" }),",
-        "});"
-      ],
-      "correctOrder": [1, 0, 3, 2, 4],
-      "explanation": "Primeiro obtemos `queryClient` com `useQueryClient()`, depois definimos `useMutation` com `mutationFn` e invalidamos `[\"todos\"]` em `onSuccess`."
+      "options": ["queryKey", "queryFn", "cacheKey", "mutationFn"],
+      "hint": "No TanStack Query v5, `useQuery` recebe `queryKey` (array) e `queryFn` (função assíncrona).",
+      "expectedOutput": "data: Todo[] em cache sob [\"todos\"]",
+      "explanation": "Certinho! `queryKey` identifica o cache e `queryFn` busca os dados no servidor."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Encontre a linha com erro ao invalidar o cache após criar um item:",
+      "prompt": "Ops! No TanStack Query v5, a invalidação do cache está falhando por causa do formato passado! Clique na linha com o bug:",
       "lines": [
         "const queryClient = useQueryClient();",
         "const mutation = useMutation({",
         "  mutationFn: createPost,",
-        "  onSuccess: () => {",
-        "    queryClient.invalidateQueries(\"posts\");",
-        "  },",
+        "  onSuccess: () => queryClient.invalidateQueries(\"posts\"),",
         "});"
       ],
-      "buggyLineIndex": 4,
-      "explanation": "No TanStack Query v5, `invalidateQueries` recebe um objeto de filtro com array: `queryClient.invalidateQueries({ queryKey: [\"posts\"] })`."
+      "buggyLineIndex": 3,
+      "hint": "Na v5, `invalidateQueries` não aceita uma string solta — ele espera `{ queryKey: [...] }`!",
+      "expectedOutput": "Cache [\"posts\"] invalidado e lista atualizada",
+      "explanation": "Na linha 4, o formato correto é `queryClient.invalidateQueries({ queryKey: [\"posts\"] })`!"
     },
     {
       "type": "write_code",
-      "prompt": "Use o TanStack Query para buscar uma lista tipada de `Product[]` na chave de cache `[\"products\"]` a partir do endpoint `\"/api/products\"`, e em seguida configure uma mutação que envia um POST para criar um produto e invalida o cache de produtos ao concluir com sucesso.",
-      "starterCode": "",
-      "requiredTokens": [
-        "useQuery<Product[]>",
-        "queryKey:",
-        "[\"products\"]",
-        "queryFn:",
-        "useMutation",
-        "mutationFn:",
-        "invalidateQueries"
-      ],
-      "sampleSolution": "import { useQuery, useMutation, useQueryClient } from \"@tanstack/react-query\";\n\ntype Product = { id: number; title: string };\n\nconst { data } = useQuery<Product[]>({\n  queryKey: [\"products\"],\n  queryFn: () => fetch(\"/api/products\").then((r) => r.json()),\n});\n\nconst queryClient = useQueryClient();\nconst createProduct = useMutation({\n  mutationFn: (title: string) =>\n    fetch(\"/api/products\", { method: \"POST\", body: JSON.stringify({ title }) }),\n  onSuccess: () => queryClient.invalidateQueries({ queryKey: [\"products\"] }),\n});",
-      "hint": "Combine `useQuery<Product[]>({ queryKey: [\"products\"], queryFn: ... })` com `useMutation({ mutationFn: ..., onSuccess: () => queryClient.invalidateQueries({ queryKey: [\"products\"] }) })`.",
-      "explanation": "Essa dupla mantém a lista de produtos tipada em cache e garante atualização automática da UI após novas criações."
+      "prompt": "Complete `useQuery<Product[]>` na chave `[\"products\"]` e a mutação `createProduct` invalidando o cache no `onSuccess`.",
+      "starterCode": "import { useQuery, useMutation, useQueryClient } from \"@tanstack/react-query\";\ntype Product = { id: number; title: string };\n\nconst queryClient = useQueryClient();\n// TODO: busque Product[] com useQuery<Product[]>({ queryKey: [\"products\"], queryFn: ... })\nconst { data } = \n\n// TODO: crie createProduct com useMutation({ mutationFn: ..., onSuccess: () => queryClient.invalidateQueries(...) })\nconst createProduct = ",
+      "requiredTokens": ["useQuery<Product[]>", "queryKey:", "[\"products\"]", "queryFn:", "useMutation", "mutationFn:", "invalidateQueries"],
+      "sampleSolution": "import { useQuery, useMutation, useQueryClient } from \"@tanstack/react-query\";\ntype Product = { id: number; title: string };\n\nconst queryClient = useQueryClient();\nconst { data } = useQuery<Product[]>({\n  queryKey: [\"products\"],\n  queryFn: () => fetch(\"/api/products\").then((r) => r.json()),\n});\n\nconst createProduct = useMutation({\n  mutationFn: (title: string) =>\n    fetch(\"/api/products\", { method: \"POST\", body: JSON.stringify({ title }) }),\n  onSuccess: () => queryClient.invalidateQueries({ queryKey: [\"products\"] }),\n});",
+      "hint": "Passe `queryKey: [\"products\"]` e `queryFn` no `useQuery<Product[]>`, e `mutationFn` + `onSuccess` chamando `queryClient.invalidateQueries({ queryKey: [\"products\"] })` no `useMutation`.",
+      "expectedOutput": "Lista de produtos sincronizada automaticamente após cada POST",
+      "explanation": "Show demais! O SyncBoard agora mantém o cache e a UI sempre em harmonia sem nenhum `useEffect`."
     }
   ]
 }

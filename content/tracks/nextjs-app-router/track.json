@@ -1,7 +1,7 @@
 {
   "id": "nextjs-app-router",
   "title": "Next.js App Router",
-  "description": "Aprenda o framework full-stack usado neste app: Server Components, rotas em pastas, layouts aninhados e PWA.",
+  "description": "Construa a loja PixelShop com Next.js App Router: rotas em pastas, páginas dinâmicas assíncronas e Server vs Client Components.",
   "category": "framework",
   "languageId": "typescript-javascript",
   "prerequisites": ["typescript-javascript", "react-fundamentals"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-roteamento",
-      "title": "Módulo 1: Rotas e Server Components",
-      "description": "Como o Next.js organiza páginas no servidor e componentes interativos no cliente.",
+      "title": "Módulo 1: Rotas e Interatividade na PixelShop",
+      "description": "Crie URLs dinâmicas de produtos no servidor e adicione botões interativos onde o cliente precisa.",
       "lessons": ["lesson-01-rotas-arquivos", "lesson-02-use-client"]
     }
   ]

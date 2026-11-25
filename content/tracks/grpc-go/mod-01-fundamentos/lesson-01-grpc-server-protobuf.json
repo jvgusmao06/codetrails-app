@@ -1,70 +1,73 @@
 {
   "id": "lesson-01-grpc-server-protobuf",
-  "title": "grpc.NewServer e Handlers RPC",
-  "description": "Implemente um método RPC com context.Context e suba um servidor gRPC escutando em TCP.",
+  "title": "Microsserviço Rápido com gRPC-Go e Protobuf",
+  "description": "Implemente métodos RPC tipados com context.Context e coloque seu servidor gRPC no ar na porta TCP.",
+  "mission": "Missão 1: Subir o microsserviço gRPC de status da Central de Entregas do Gopher.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Comunicação binária entre microsserviços",
-      "content": "O **gRPC** usa **HTTP/2** e **Protocol Buffers (Protobuf)** em formato binário, sendo muito mais rápido e fortemente tipado que JSON/REST para comunicação interna entre serviços Go.\n\nNo servidor:\n1. Sua struct embute `pb.Unimplemented<Nome>Server` (garante compatibilidade futura).\n2. Cada método RPC recebe `(ctx context.Context, req *pb.MeuRequest)` e retorna `(*pb.MinhaResponse, error)`.\n3. Crie o listener `net.Listen(\"tcp\", \":50051\")`, instancie `s := grpc.NewServer()`, registre com `pb.Register...Server(s, &server{})` e chame `s.Serve(lis)`.",
-      "codeExample": "type server struct {\n    pb.UnimplementedGreeterServer\n}\n\nfunc (s *server) SayHello(ctx context.Context, req *pb.HelloRequest) (*pb.HelloReply, error) {\n    return &pb.HelloReply{Message: \"Olá \" + req.GetName()}, nil\n}\n\nlis, _ := net.Listen(\"tcp\", \":50051\")\ns := grpc.NewServer()\npb.RegisterGreeterServer(s, &server{})\ns.Serve(lis)",
+      "title": "Comunicação binária entre serviços Go",
+      "content": "Quando dois microsserviços Go conversam entre si, **gRPC + Protobuf** entrega contratos rígidos e tráfego binário sobre HTTP/2!\nSua struct embute `pb.Unimplemented...Server` (para não quebrar se o `.proto` ganhar novos métodos) e cada método RPC recebe `(ctx context.Context, req *pb.Req)`.",
+      "codeExample": "type server struct { pb.UnimplementedGreeterServer }\n\nfunc (s *server) SayHello(ctx context.Context, req *pb.HelloRequest) (*pb.HelloReply, error) {\n    return &pb.HelloReply{Message: \"Olá \" + req.GetName()}, nil\n}\nlis, _ := net.Listen(\"tcp\", \":50051\")\ns := grpc.NewServer()\npb.RegisterGreeterServer(s, &server{}); s.Serve(lis)",
+      "expectedOutput": "gRPC Reply: Message=\"Olá Gopher\"",
       "keyTakeaways": [
-        "Embutir `pb.Unimplemented<Servico>Server` garante forward-compatibility ao adicionar novos RPCs no `.proto`.",
-        "Métodos RPC sempre recebem `context.Context` e um ponteiro para a mensagem de request, retornando ponteiro da resposta e `error`.",
-        "A ordem do servidor é: `net.Listen` -> `grpc.NewServer()` -> `pb.Register...Server` -> `s.Serve(lis)`."
+        "Embutir `pb.Unimplemented<Servico>Server` mantém seu servidor compatível quando o `.proto` evolui.",
+        "Fluxo do servidor: `net.Listen` → `grpc.NewServer()` → `pb.Register...Server` → `s.Serve(lis)`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Por que toda struct servidora em gRPC-Go deve embutir `pb.Unimplemented<Servico>Server`?",
+      "kind": "predict_output",
+      "prompt": "Se um cliente gRPC chamar `SayHello` enviando `Name: \"Gopher\"`, o que o método abaixo devolve?",
+      "codeSnippet": "func (s *server) SayHello(ctx context.Context, req *pb.HelloRequest) (*pb.HelloReply, error) {\n    return &pb.HelloReply{Message: \"Oi, \" + req.GetName()}, nil\n}",
       "options": [
-        "Para garantir forward-compatibility caso novos métodos RPC sejam adicionados ao arquivo .proto",
-        "Para habilitar criptografia TLS automática",
-        "Para converter Protobuf em JSON automaticamente",
-        "Para abrir a porta TCP 50051 sem usar net.Listen"
+        "HelloReply{Message: \"Oi, Gopher\"} sem erro (nil)",
+        "Uma string JSON \"Oi, Gopher\"",
+        "Erro porque ctx não foi usado",
+        "HelloReply vazio"
       ],
       "correctIndex": 0,
-      "explanation": "Embutir Unimplemented*Server satisfaz todos os métodos da interface gerada, evitando quebra de compilação se o .proto ganhar novos RPCs."
+      "hint": "`req.GetName()` lê o campo `Name` com segurança e o retorno envia `&pb.HelloReply` + `nil`.",
+      "expectedOutput": "Message: \"Oi, Gopher\", err: <nil>",
+      "explanation": "O gRPC serializa `&pb.HelloReply{Message: \"Oi, Gopher\"}` em Protobuf binário e envia ao cliente!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para criar e iniciar um servidor gRPC na porta 50051:",
+      "prompt": "Instancie o servidor gRPC e coloque-o para aceitar conexões no listener `lis`:",
       "codeTemplate": "lis, _ := net.Listen(\"tcp\", \":50051\")\ns := grpc.{{blank}}()\npb.RegisterGreeterServer(s, &server{})\ns.{{blank}}(lis)",
       "blanks": [
-        { "answer": "NewServer" },
-        { "answer": "Serve" }
+        { "answer": "NewServer", "placeholder": "criar" },
+        { "answer": "Serve", "placeholder": "escutar" }
       ],
-      "options": ["NewServer", "CreateServer", "Serve", "Listen"],
-      "explanation": "grpc.NewServer() instancia o servidor gRPC e s.Serve(lis) aceita conexões no net.Listener TCP."
+      "options": ["NewServer", "Serve", "CreateServer", "Listen"],
+      "hint": "Criamos com `grpc.NewServer()` e iniciamos o loop de atendimento com `s.Serve(lis)`.",
+      "expectedOutput": "gRPC server listening on :50051",
+      "explanation": "`grpc.NewServer()` cria o servidor e `s.Serve(lis)` começa a atender requisições HTTP/2 no listener TCP."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os passos para subir um servidor gRPC em Go:",
+      "prompt": "Ordene os 4 passos para subir o microsserviço gRPC de pedidos:",
       "blocks": [
         "s.Serve(lis)",
-        "lis, err := net.Listen(\"tcp\", \":50051\")",
+        "lis, _ := net.Listen(\"tcp\", \":50051\")",
         "pb.RegisterOrderServiceServer(s, &orderServer{})",
         "s := grpc.NewServer()"
       ],
       "correctOrder": [1, 3, 2, 0],
-      "explanation": "Abre-se o listener TCP, cria-se o servidor gRPC, registra-se a implementação do serviço e inicia-se s.Serve(lis)."
+      "hint": "Abra a porta TCP, crie o servidor gRPC, registre o serviço nele e por fim chame `Serve`.",
+      "expectedOutput": "OrderService pronto na porta :50051",
+      "explanation": "Sempre registramos os serviços no `s` antes de chamar `s.Serve(lis)`!"
     },
     {
       "type": "write_code",
-      "prompt": "Defina a struct `healthSrv` embutindo `pb.UnimplementedHealthServer` e implemente o método RPC `GetStatus` que recebe `context.Context` e um ponteiro para `pb.StatusReq`, retornando um ponteiro para `pb.StatusRes` com o campo `Ok` verdadeiro.",
-      "starterCode": "",
-      "requiredTokens": [
-        "pb.UnimplementedHealthServer",
-        "(s *healthSrv) GetStatus(",
-        "context.Context",
-        "*pb.StatusReq",
-        "*pb.StatusRes",
-        "Ok: true"
-      ],
-      "sampleSolution": "type healthSrv struct {\n    pb.UnimplementedHealthServer\n}\n\nfunc (s *healthSrv) GetStatus(ctx context.Context, req *pb.StatusReq) (*pb.StatusRes, error) {\n    return &pb.StatusRes{Ok: true}, nil\n}",
-      "hint": "Embuta pb.UnimplementedHealthServer na struct healthSrv e declare o método recebendo (ctx context.Context, req *pb.StatusReq) e retornando (*pb.StatusRes, error).",
-      "explanation": "Métodos RPC sempre recebem context.Context para propagar cancelamentos e timeouts entre serviços."
+      "prompt": "Embuta `pb.UnimplementedHealthServer` em `healthSrv` e implemente `GetStatus` retornando `&pb.StatusRes{Ok: true}, nil`.",
+      "starterCode": "type healthSrv struct {\n    // TODO: embuta pb.UnimplementedHealthServer\n}\nfunc (s *healthSrv) GetStatus(ctx context.Context, req *pb.StatusReq) (*pb.StatusRes, error) {\n    // TODO: retorne &pb.StatusRes{Ok: true}, nil\n}",
+      "requiredTokens": ["pb.UnimplementedHealthServer", "&pb.StatusRes", "Ok: true", "nil"],
+      "sampleSolution": "type healthSrv struct {\n    pb.UnimplementedHealthServer\n}\nfunc (s *healthSrv) GetStatus(ctx context.Context, req *pb.StatusReq) (*pb.StatusRes, error) {\n    return &pb.StatusRes{Ok: true}, nil\n}",
+      "hint": "Adicione `pb.UnimplementedHealthServer` dentro da struct e `return &pb.StatusRes{Ok: true}, nil` no método.",
+      "expectedOutput": "StatusRes{Ok: true}",
+      "explanation": "Show! Seu primeiro microsserviço gRPC-Go está completo e pronto para conversar com a frota."
     }
   ]
 }

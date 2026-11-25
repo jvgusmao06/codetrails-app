@@ -1,60 +1,53 @@
 {
   "id": "cpp-stl-01",
-  "title": "Arrays Dinâmicos com std::vector",
-  "description": "Armazene coleções dinâmicas, insira elementos com push_back e consulte o tamanho com size.",
+  "title": "Listas Dinâmicas com std::vector",
+  "description": "Guarde coleções que crescem sob demanda com std::vector, insira itens com push_back e leia o tamanho com size.",
+  "mission": "Missão 1: Montar o inventário dinâmico de módulos da nave Nova-9 com std::vector.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Por que usar std::vector da STL?",
-      "content": "Em C/C++ puro, arrays estáticos têm tamanho fixo. A biblioteca padrão (STL) oferece o template `std::vector<T>`, que gerencia memória contígua automaticamente e cresce conforme inserimos itens com `.push_back(valor)`. Para saber quantos elementos existem no vetor, usamos `.size()`, e para acessar um índice específico com segurança ou percorrer os itens podemos usar `[i]` ou um loop `for (int x : vetor)`.",
-      "codeExample": "#include <vector>\n\nstd::vector<int> notas = {10, 20};\nnotas.push_back(30); // Agora possui 3 elementos\nsize_t total = notas.size(); // 3",
+      "title": "Arrays que crescem sozinhos com std::vector",
+      "content": "Diferente dos arrays fixos de C, `std::vector<T>` (`#include <vector>`) cresce automaticamente quando você adiciona itens com `.push_back(valor)`.\nPara saber quantos elementos há guardados, basta chamar `.size()` — e a memória é liberada sozinha ao sair do escopo!",
+      "codeExample": "#include <iostream>\n#include <vector>\n\nstd::vector<int> modulos = {10, 20};\nmodulos.push_back(30);\nstd::cout << \"Total: \" << modulos.size() << \"\\n\";",
+      "expectedOutput": "Total: 3",
       "keyTakeaways": [
-        "`std::vector<Tipo>` cria um array dinâmico fortemente tipado (requer `#include <vector>`).",
-        "`.push_back(valor)` adiciona um elemento ao final, redimensionando a memória se necessário.",
-        "`.size()` retorna a quantidade atual de elementos armazenados."
+        "`std::vector<T>` requer `#include <vector>` e cresce com `.push_back(valor)`.",
+        "`.size()` retorna a quantidade atual de itens armazenados."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual cabeçalho da STL é obrigatório incluir para declarar um `std::vector<T>`?",
+      "kind": "predict_output",
+      "prompt": "O que aparece na tela ao executar este código com `std::vector`?",
+      "codeSnippet": "std::vector<int> cargas = {5, 15};\ncargas.push_back(25);\nstd::cout << cargas.size() << \" - \" << cargas[2] << \"\\n\";",
       "options": [
-        "#include <array>",
-        "#include <vector>",
-        "#include <list>",
-        "#include <stdio.h>"
+        "3 - 25",
+        "2 - 15",
+        "3 - 15",
+        "Erro porque o vetor começou com só 2 itens"
       ],
-      "correctIndex": 1,
-      "explanation": "O container `std::vector` é definido no cabeçalho padrão `<vector>` da STL."
+      "correctIndex": 0,
+      "hint": "`push_back(25)` aumenta o tamanho para `3` e coloca `25` na posição de índice `2`.",
+      "expectedOutput": "3 - 25",
+      "explanation": "Agora `cargas` tem `{5, 15, 25}`: `.size()` vale `3` e `cargas[2]` vale `25`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Adicione o número 50 ao final do `std::vector` `dados`:",
-      "codeTemplate": "std::vector<int> dados = {10, 20};\ndados.{{blank}}(50);",
+      "prompt": "Adicione `50` ao final do vetor `dados` e guarde o total de itens:",
+      "codeTemplate": "std::vector<int> dados = {10, 20};\ndados.{{blank}}(50);\nsize_t total = dados.{{blank}}();",
       "blanks": [
-        {
-          "answer": "push_back",
-          "placeholder": "método"
-        }
+        { "answer": "push_back", "placeholder": "inserir" },
+        { "answer": "size", "placeholder": "tamanho" }
       ],
-      "options": ["push_back", "append", "add", "insert_end"],
-      "explanation": "Nos containers sequenciais da STL do C++, o método padrão para inserir ao final é `push_back()`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Após inserir dois elementos com `.push_back()`, qual método retorna a quantidade atual de itens em um `std::vector`?",
-      "options": [
-        ".length()",
-        ".count()",
-        ".size()",
-        ".len()"
-      ],
-      "correctIndex": 2,
-      "explanation": "Em toda a STL do C++, o método padrão para obter a quantidade de elementos de um container é `.size()`."
+      "options": ["push_back", "size", "append", "len"],
+      "hint": "Na STL de C++, inserimos no fim com `.push_back()` e contamos itens com `.size()`.",
+      "expectedOutput": "total == 3",
+      "explanation": "`.push_back(50)` coloca o item no fim do vetor e `.size()` retorna `3`."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os blocos para incluir a biblioteca, criar um vetor de inteiros vazio, adicionar um valor e guardar o tamanho atual:",
+      "prompt": "Ordene os blocos para incluir `<vector>`, criar o vetor `ids`, adicionar `42` e consultar o tamanho:",
       "blocks": [
         "size_t qtd = ids.size();",
         "#include <vector>",
@@ -62,33 +55,19 @@
         "std::vector<int> ids;"
       ],
       "correctOrder": [1, 3, 2, 0],
-      "explanation": "Primeiro incluímos `<vector>`, depois declaramos `std::vector<int> ids;`, inserimos com `push_back(42)` e consultamos `ids.size()`."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "Encontre a linha com erro ao tentar criar um vetor dinâmico de `double`, adicionar um item e ler o tamanho:",
-      "lines": [
-        "#include <vector>",
-        "std::vector<double> precos = {9.90};",
-        "precos.add(14.50);",
-        "size_t total = precos.size();"
-      ],
-      "buggyLineIndex": 2,
-      "explanation": "`std::vector` não possui o método `.add()`; o método correto da STL para inserir ao final é `.push_back(14.50)`."
+      "hint": "Comece pelo `#include`, declare `ids`, insira `42` com `push_back` e leia `.size()` por último.",
+      "expectedOutput": "qtd == 1",
+      "explanation": "Na ordem certa, incluímos `<vector>`, declaramos `ids`, inserimos `42` e `ids.size()` devolve `1`."
     },
     {
       "type": "write_code",
-      "prompt": "Inclua o cabeçalho necessário, declare um vetor dinâmico de inteiros chamado `notas` com os valores iniciais `7` e `8`, adicione a nota `10` ao final e armazene a quantidade total de elementos em uma variável `total`.",
-      "starterCode": "",
-      "requiredTokens": [
-        "#include <vector>",
-        "std::vector<int>",
-        "push_back",
-        "size()"
-      ],
-      "sampleSolution": "#include <vector>\n\nstd::vector<int> notas = {7, 8};\nnotas.push_back(10);\nsize_t total = notas.size();",
-      "hint": "Comece com `#include <vector>`, inicialize `std::vector<int> notas = {7, 8};`, chame `.push_back(10)` e leia `.size()`.",
-      "explanation": "`std::vector<int>` gerencia a coleção dinamicamente, `.push_back(10)` insere o novo valor ao final e `.size()` retorna `3`."
+      "prompt": "Complete o código para adicionar `10` ao vetor `notas` com `.push_back(10)` e guardar `notas.size()` em `total`.",
+      "starterCode": "#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<int> notas = {7, 8};\n    // TODO: adicione 10 em notas e guarde notas.size() em size_t total\n    \n    std::cout << total << \"\\n\";\n    return 0;\n}",
+      "requiredTokens": ["push_back", "10", "total", "size()"],
+      "sampleSolution": "#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<int> notas = {7, 8};\n    notas.push_back(10);\n    size_t total = notas.size();\n    std::cout << total << \"\\n\";\n    return 0;\n}",
+      "hint": "Escreva `notas.push_back(10);` e `size_t total = notas.size();`.",
+      "expectedOutput": "3",
+      "explanation": "Inventário atualizado! `std::vector` cresceu sozinho para 3 itens sem nenhum gerenciamento manual de memória."
     }
   ]
 }

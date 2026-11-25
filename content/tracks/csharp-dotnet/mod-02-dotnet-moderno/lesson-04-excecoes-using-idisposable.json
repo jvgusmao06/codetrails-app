@@ -1,93 +1,75 @@
 {
   "id": "csharp-excecoes-using-04",
-  "title": "Exceções (try/catch/throw) e Liberação de Recursos com 'using'",
-  "description": "Capture exceções específicas, relance erros preservando o stack trace com 'throw;', valide argumentos e feche recursos com 'using var'.",
+  "title": "Feche a Porta ao Sair: using var, try/catch e throw;",
+  "description": "Libere arquivos e conexões automaticamente com using var e relance erros sem apagar pistas com throw;.",
+  "mission": "Missão 9: Ler o log de vendas da PixelShop fechando o arquivo com segurança mesmo se der erro.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "IDisposable, 'using var' e a Pegadinha do 'throw;' vs 'throw ex;'",
-      "content": "Embora o .NET tenha Garbage Collector para memória, arquivos, conexões SQL e streams implementam **`IDisposable`** e precisam ser fechados rápido. A declaração **`using var stream = File.OpenRead(\"a.txt\");`** garante que `.Dispose()` será chamado automaticamente ao sair do escopo, mesmo se ocorrer uma exceção! No `catch (Exception ex)`: se for relançar a exceção, escreva apenas **`throw;`** (nunca `throw ex;`, que apaga o Stack Trace original!). E para validar argumentos obrigatórios em 1 linha, usamos **`ArgumentNullException.ThrowIfNull(arg)`**.",
-      "codeExample": "ArgumentNullException.ThrowIfNull(caminho);\nusing var reader = new StreamReader(caminho);\ntry {\n    var conteudo = await reader.ReadToEndAsync();\n} catch (FileNotFoundException ex) {\n    Console.WriteLine($\"Arquivo ausente: {ex.Message}\");\n} catch (Exception) {\n    throw; // Preserva o Stack Trace exato de onde o erro nasceu!\n}",
+      "title": "using var para fechar recursos e throw; para manter o rastreio",
+      "content": "Arquivos e conexões de banco implementam `IDisposable` e precisam ser fechados rápido. Colocando `using var`, o C# fecha o recurso sozinho ao fim do bloco — mesmo se estourar um erro!\nE se precisar relançar um erro dentro do `catch`, escreva apenas `throw;` (nunca `throw ex;`, que apaga a linha onde o bug realmente nasceu).",
+      "codeExample": "ArgumentNullException.ThrowIfNull(caminho);\nusing var reader = new StreamReader(caminho);\ntry {\n    Console.WriteLine(reader.ReadLine());\n} catch (IOException) {\n    throw; // Mantém a linha exata do erro!\n}",
+      "expectedOutput": "Venda #01 - StarRunner",
       "keyTakeaways": [
-        "`using var recurso = ...;` (C# 8+) chama `.Dispose()` automaticamente ao final do escopo atual, mesmo em caso de erro.",
-        "`throw;` preserva a linha original do erro; `throw ex;` reseta o stack trace para o bloco `catch`.",
-        "Use `ArgumentNullException.ThrowIfNull(arg)` no .NET moderno para validar argumentos obrigatórios em 1 linha."
+        "`using var` garante `.Dispose()` automático ao sair do escopo, com ou sem exceção.",
+        "Use `throw;` (sem `ex`) para preservar o stack trace original e `ArgumentNullException.ThrowIfNull(arg)` para validar nulos."
       ]
     },
     {
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal quando `nome` é `null` neste código?",
+      "codeSnippet": "string? nome = null;\ntry {\n    ArgumentNullException.ThrowIfNull(nome);\n    Console.WriteLine(\"OK\");\n} catch (ArgumentNullException) {\n    Console.WriteLine(\"Parâmetro obrigatório ausente!\");\n}",
+      "options": [
+        "Parâmetro obrigatório ausente!",
+        "OK",
+        "null",
+        "Não imprime nada"
+      ],
+      "correctIndex": 0,
+      "hint": "`ThrowIfNull(nome)` percebe que `nome` é `null`, lança `ArgumentNullException` e cai direto no `catch`!",
+      "expectedOutput": "Parâmetro obrigatório ausente!",
+      "explanation": "`ArgumentNullException.ThrowIfNull` corta o caminho na hora quando recebe `null`, caindo limpo no bloco `catch`."
+    },
+    {
       "type": "fill_in_blank",
-      "prompt": "Complete o código C# fechando o stream automaticamente com `using`, capturando o erro específico e relançando sem perder o Stack Trace:",
-      "codeTemplate": "{{blank}} var fs = File.OpenRead(\"log.txt\");\ntry {\n    fs.ReadByte();\n} {{blank}} (IOException) {\n    {{blank}};\n}",
+      "prompt": "Garanta que o arquivo feche sozinho com `using` e relance o erro preservando a origem com `throw`:",
+      "codeTemplate": "{{blank}} var reader = new StreamReader(\"vendas.txt\");\ntry {\n    Console.WriteLine(reader.ReadLine());\n} catch (IOException) {\n    {{blank}};\n}",
       "blanks": [
-        { "answer": "using", "placeholder": "auto-dispose" },
-        { "answer": "catch", "placeholder": "capturar" },
+        { "answer": "using", "placeholder": "auto-fechar" },
         { "answer": "throw", "placeholder": "relançar" }
       ],
-      "options": ["using", "catch", "throw", "with", "except", "raise"],
-      "explanation": "`using var` aciona `Dispose()` automaticamente ao sair do escopo, e `throw;` preserva o stack trace original."
+      "options": ["using", "throw", "with", "raise"],
+      "hint": "`using var` libera o arquivo ao sair do escopo e `throw;` relança o erro intacto.",
+      "expectedOutput": "Venda #01 - StarRunner",
+      "explanation": "Perfeito! Recurso fechado automaticamente e rastreamento de erro preservado."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este bloco `catch` apaga o Stack Trace original do erro ao relançar a exceção. Clique na linha com a má prática:",
+      "prompt": "Uma dessas linhas tem uma pegadinha clássica de C#: ela apaga a origem do erro no Stack Trace. Clique nela:",
       "lines": [
         "try {",
-        "    ProcessarArquivo();",
+        "    LerRelatorio();",
         "} catch (IOException ex) {",
         "    Console.WriteLine(ex.Message);",
         "    throw ex;",
         "}"
       ],
       "buggyLineIndex": 4,
-      "explanation": "Na linha 5, `throw ex;` sobrescreve a origem do Stack Trace. O correto é usar apenas `throw;`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Para que serve `ArgumentNullException.ThrowIfNull(usuario);` no .NET moderno?",
-      "options": [
-        "Retorna `null` se `usuario` não tiver propriedades preenchidas",
-        "Lança `ArgumentNullException` automaticamente caso `usuario` seja `null`, substituindo o antigo `if (usuario == null) throw ...`",
-        "Ignora exceções de referência nula dentro do método",
-        "Converte `usuario` em `IDisposable`"
-      ],
-      "correctIndex": 1,
-      "explanation": "`ArgumentNullException.ThrowIfNull(arg)` é o helper idiomático do .NET 6+ para validar parâmetros não-nulos em uma única linha."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Por que `using var reader = new StreamReader(path);` é mais seguro do que chamar `reader.Dispose()` manualmente no final do método?",
-      "options": [
-        "Porque `using var` garante a chamada de `Dispose()` ao sair do escopo mesmo se uma exceção for lançada no meio do método",
-        "Porque `using var` desabilita o Garbage Collector",
-        "Porque `Dispose()` manual não fecha arquivos no Windows",
-        "Porque `using var` executa em outra thread"
-      ],
-      "correctIndex": 0,
-      "explanation": "O compilador transforma `using var` em um bloco `try / finally` que garante o `.Dispose()` em qualquer caminho de saída."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para validar o parâmetro, abrir um `StreamReader` com `using var` dentro de `try` e relançar `IOException` preservando o stack trace:",
-      "blocks": [
-        "ArgumentNullException.ThrowIfNull(caminho);",
-        "try {",
-        "    using var reader = new StreamReader(caminho);",
-        "    Console.WriteLine(reader.ReadLine());",
-        "} catch (IOException) {",
-        "    throw;",
-        "}"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4, 5, 6],
-      "explanation": "Validamos `caminho` primeiro com `ThrowIfNull`, abrimos o recurso com `using var` dentro do `try` e relançamos no `catch` com `throw;`."
+      "hint": "Repare na linha que relança a exceção passando a variável `ex`.",
+      "expectedOutput": "Stack trace original preservado",
+      "explanation": "Na linha 5, `throw ex;` reseta o Stack Trace para dentro do `catch`. Trocar por apenas `throw;` preserva a linha exata da falha!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Valide uma variável `caminho` usando `ArgumentNullException.ThrowIfNull`, abra um `StreamReader` sobre `caminho` usando `using var` dentro de um bloco `try`, e capture `IOException` no `catch` exibindo a mensagem do erro e relançando a exceção preservando o stack trace original.",
-      "starterCode": "",
-      "requiredTokens": ["ArgumentNullException.ThrowIfNull", "using var", "StreamReader", "try", "catch", "throw;"],
-      "sampleSolution": "ArgumentNullException.ThrowIfNull(caminho);\ntry {\n    using var reader = new StreamReader(caminho);\n    Console.WriteLine(reader.ReadLine());\n} catch (IOException ex) {\n    Console.WriteLine(ex.Message);\n    throw;\n}",
-      "hint": "Chame `ArgumentNullException.ThrowIfNull(caminho);`, use `using var reader = new StreamReader(caminho);` dentro do `try`, e termine o `catch (IOException ex)` com `throw;`.",
-      "explanation": "Essa combinação reúne guarda de argumento, liberação determinística de recurso (`IDisposable`) e tratamento seguro de exceções."
+      "prompt": "Valide `caminho` com `ArgumentNullException.ThrowIfNull(caminho);` e abra um `StreamReader` usando `using var` dentro do `try`.",
+      "starterCode": "// TODO: valide `caminho` com ArgumentNullException.ThrowIfNull(caminho);\ntry {\n    // TODO: abra `using var reader = new StreamReader(caminho);`\n    Console.WriteLine(reader.ReadLine());\n} catch (IOException) {\n    throw;\n}",
+      "requiredTokens": ["ArgumentNullException.ThrowIfNull", "using var", "StreamReader"],
+      "sampleSolution": "ArgumentNullException.ThrowIfNull(caminho);\ntry {\n    using var reader = new StreamReader(caminho);\n    Console.WriteLine(reader.ReadLine());\n} catch (IOException) {\n    throw;\n}",
+      "hint": "Coloque `ArgumentNullException.ThrowIfNull(caminho);` no topo e `using var reader = new StreamReader(caminho);` dentro do `try`.",
+      "expectedOutput": "Venda #01 - StarRunner",
+      "explanation": "Excelente! Seu leitor de logs agora valida a entrada, fecha o arquivo sozinho e não esconde nenhum erro."
     }
   ]
 }

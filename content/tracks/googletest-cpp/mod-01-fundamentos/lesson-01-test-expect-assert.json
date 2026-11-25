@@ -1,46 +1,53 @@
 {
   "id": "gtest-01",
-  "title": "GoogleTest: TEST(Suite, Nome), EXPECT_EQ vs ASSERT_EQ",
-  "description": "Valide funções C++ com a biblioteca padrão de testes da Google integrada ao CMake.",
+  "title": "GoogleTest: TEST, EXPECT_EQ e ASSERT_NE",
+  "description": "Crie testes unitários em C++ com TEST(Suite, Nome) e escolha certo entre EXPECT e ASSERT.",
+  "mission": "Missão 1: Validar os cálculos de voo da nave Nova-9 no simulador GoogleTest.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Testes Unitários em C++ com GoogleTest",
-      "content": "O **GoogleTest (GTest)** é o framework de testes mais adotado em projetos C++ profissionais. Criamos testes com a macro **`TEST(NomeDaSuite, NomeDoTeste)`** e verificamos resultados com duas famílias de macros:\n- **`EXPECT_EQ(a, b)` / `EXPECT_NE(a, b)`**: falha não-fatal (marca o erro, mas continua testando as linhas seguintes).\n- **`ASSERT_EQ(a, b)` / `ASSERT_NE(a, b)`**: falha fatal (aborta a função de teste imediatamente — ideal para checar se um ponteiro não é `nullptr` antes de dereferenciá-lo!).",
-      "codeExample": "#include <gtest/gtest.h>\n\nint somar(int a, int b) { return a + b; }\n\nTEST(MatematicaTest, SomaPositivos) {\n    EXPECT_EQ(somar(2, 3), 5);\n    EXPECT_NE(somar(2, 3), 0);\n}",
+      "title": "Testes automáticos sem medo: EXPECT vs ASSERT",
+      "content": "No **GoogleTest**, cada caso de teste nasce com `TEST(Suite, Nome)`.\nUse `EXPECT_EQ(a, b)` na maioria das checagens: se falhar, ele anota o erro e continua o teste. Já `ASSERT_NE(ptr, nullptr)` interrompe o teste na hora — perfeito para impedir crashes antes de usar um ponteiro!",
+      "codeExample": "#include <gtest/gtest.h>\n\nint somar(int a, int b) { return a + b; }\n\nTEST(NaveTest, SomaImpulso) {\n    EXPECT_EQ(somar(2, 3), 5);\n    EXPECT_NE(somar(2, 3), 0);\n}",
+      "expectedOutput": "[  PASSED  ] 1 test. (NaveTest.SomaImpulso)",
       "keyTakeaways": [
-        "Use `EXPECT_*` na maioria dos casos para ver todas as falhas de uma vez.",
-        "Use `ASSERT_NE(ptr, nullptr)` antes de dereferenciar um ponteiro no teste.",
-        "Integra nativamente com CMake via `enable_testing()` e `ctest`."
+        "`EXPECT_*` registra a falha e segue testando as linhas seguintes.",
+        "`ASSERT_*` aborta o teste imediatamente — ideal para checar `nullptr` antes de `ptr->campo`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é a diferença entre `EXPECT_EQ(a, b)` e `ASSERT_EQ(a, b)` no GoogleTest?",
+      "kind": "predict_output",
+      "prompt": "O que acontece ao rodar este teste no GoogleTest?",
+      "codeSnippet": "TEST(MotorTest, ChecaNulo) {\n    int* p = nullptr;\n    ASSERT_NE(p, nullptr);\n    EXPECT_EQ(*p, 10);\n}",
       "options": [
-        "EXPECT_EQ só funciona para strings",
-        "EXPECT_EQ continua executando o resto do teste se falhar; ASSERT_EQ aborta a função de teste imediatamente",
-        "ASSERT_EQ é ignorado em modo Debug",
-        "Não há diferença"
+        "O teste falha em `ASSERT_NE` e para ali mesmo, sem executar `*p`",
+        "O teste falha em `ASSERT_NE`, mas tenta ler `*p` mesmo assim",
+        "O teste passa porque `p` é nulo",
+        "O teste é ignorado automaticamente"
       ],
-      "correctIndex": 1,
-      "explanation": "`ASSERT_*` gera falha fatal (retorna da função de teste); `EXPECT_*` gera falha não-fatal."
+      "correctIndex": 0,
+      "hint": "Lembre que macros `ASSERT_*` são fatais para a função de teste atual!",
+      "expectedOutput": "[  FAILED  ] MotorTest.ChecaNulo (abortado com segurança no ASSERT_NE)",
+      "explanation": "Graças ao `ASSERT_NE`, o teste aborta antes de tocar em `*p`, evitando um crash (*Segmentation Fault*)!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o teste GoogleTest para garantir de forma fatal que `ptr` não é nulo e depois verificar se `ptr->id` vale `10`:",
-      "codeTemplate": "{{blank}}(UsuarioTest, CarregaId) {\n    Usuario* ptr = buscarUsuario(10);\n    {{blank}}(ptr, nullptr);\n    EXPECT_EQ(ptr->id, 10);\n}",
+      "prompt": "Declare o teste e garanta de forma fatal que `ptr` não é nulo antes de acessar `ptr->id`:",
+      "codeTemplate": "{{blank}}(PilotoTest, CarregaId) {\n    Piloto* ptr = buscarPiloto(10);\n    {{blank}}(ptr, nullptr);\n    EXPECT_EQ(ptr->id, 10);\n}",
       "blanks": [
         { "answer": "TEST", "placeholder": "macro teste" },
         { "answer": "ASSERT_NE", "placeholder": "checagem fatal" }
       ],
-      "options": ["TEST", "ASSERT_NE", "EXPECT_NE", "ASSERT_EQ", "IT"],
-      "explanation": "`TEST(Suite, Nome)` define o caso de teste, e `ASSERT_NE(ptr, nullptr)` aborta imediatamente se o ponteiro for nulo, evitando segmentation fault na linha seguinte."
+      "options": ["TEST", "ASSERT_NE", "EXPECT_NE", "ASSERT_EQ"],
+      "hint": "Usamos `TEST` para abrir o bloco e `ASSERT_NE` (not equal) para barrar `nullptr`.",
+      "expectedOutput": "[  PASSED  ] 1 test. (PilotoTest.CarregaId)",
+      "explanation": "`TEST(Suite, Nome)` define o caso e `ASSERT_NE(ptr, nullptr)` protege a linha `ptr->id` contra crash."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este teste pode causar *Segmentation Fault* (crash) quando `buscar()` retorna `nullptr`, porque a linha seguinte dereferencia o ponteiro mesmo após a falha! Clique na linha inadequada:",
+      "prompt": "Cuidado! Se `buscar(99)` retornar `nullptr`, este teste pode dar crash na linha seguinte. Clique na linha com o bug:",
       "lines": [
         "TEST(RepoTest, BuscaItem) {",
         "    Item* ptr = buscar(99);",
@@ -49,29 +56,19 @@
         "}"
       ],
       "buggyLineIndex": 2,
-      "explanation": "`EXPECT_NE` não interrompe o teste quando falha; como `ptr->codigo` na linha seguinte dereferencia `ptr`, o correto é usar `ASSERT_NE(ptr, nullptr)`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para montar um arquivo de teste C++ completo com GoogleTest:",
-      "blocks": [
-        "#include <gtest/gtest.h>",
-        "int dobro(int x) { return x * 2; }",
-        "TEST(CalcTest, DobroPositivo) {",
-        "    EXPECT_EQ(dobro(5), 10);",
-        "}"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4],
-      "explanation": "Incluímos `<gtest/gtest.h>`, definimos (ou incluímos) a função testada e declaramos o bloco `TEST(...)` com `EXPECT_EQ`."
+      "hint": "`EXPECT_NE` não para o teste quando falha — qual macro deveria estar ali?",
+      "expectedOutput": "[  FAILED  ] RepoTest.BuscaItem (sem crash!)",
+      "explanation": "Trocando `EXPECT_NE` por `ASSERT_NE(ptr, nullptr)` na linha 3, o teste para com segurança se `ptr` for nulo."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva um caso de teste GoogleTest na suíte `CalcTest` com nome `Dobro` que valide de forma não-fatal que `dobro(4)` é igual a `8`.",
-      "starterCode": "",
+      "prompt": "Complete o teste `TEST(CalcTest, Dobro)` validando com `EXPECT_EQ` que `dobro(4)` é igual a `8`.",
+      "starterCode": "#include <gtest/gtest.h>\n\nint dobro(int x) { return x * 2; }\n\n// TODO: escreva TEST(CalcTest, Dobro) verificando EXPECT_EQ(dobro(4), 8)\n",
       "requiredTokens": ["TEST(", "CalcTest", "Dobro", "EXPECT_EQ", "dobro(4)", "8"],
-      "sampleSolution": "TEST(CalcTest, Dobro) {\n    EXPECT_EQ(dobro(4), 8);\n}",
-      "hint": "Use a macro `TEST` passando a suíte e o nome do caso de teste, e dentro verifique a igualdade com a macro `EXPECT_*` apropriada.",
-      "explanation": "A macro `TEST(Suite, Caso)` registra automaticamente o teste para o runner do GoogleTest."
+      "sampleSolution": "#include <gtest/gtest.h>\n\nint dobro(int x) { return x * 2; }\n\nTEST(CalcTest, Dobro) {\n    EXPECT_EQ(dobro(4), 8);\n}",
+      "hint": "Escreva `TEST(CalcTest, Dobro) { EXPECT_EQ(dobro(4), 8); }`.",
+      "expectedOutput": "[  PASSED  ] 1 test. (CalcTest.Dobro)",
+      "explanation": "Simulador verde! Seu teste GoogleTest valida `dobro(4) == 8` automaticamente."
     }
   ]
 }

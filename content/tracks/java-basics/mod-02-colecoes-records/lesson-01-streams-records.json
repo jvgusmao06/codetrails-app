@@ -1,88 +1,73 @@
 {
   "id": "java-streams-01",
   "title": "Records, Lambdas e Streams API",
-  "description": "Escreva Java moderno (17/21+): classes imutáveis com record, expressões lambda (->) e pipelines de Streams.",
+  "description": "Modele dados imutáveis em 1 linha com record e filtre listas de forma elegante com lambdas (->) e Streams.",
+  "mission": "Missão 7: Modelar o cardápio com record em 1 linha e filtrar os cafés premium com Streams.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Java Moderno: Records, Lambdas (->) e Streams",
-      "content": "O Java evoluiu muito além do código verboso clássico. Com **`record`**, você cria uma classe de dados imutável completa (construtor, métodos de acesso como `p.preco()`, `equals`, `hashCode` e `toString`) em apenas 1 linha! Já as **expressões Lambda** usam a seta simples **`->`** (ex: `x -> x * 2`). Combinadas com a **Streams API** (`.stream()`, `.filter()`, `.map()`, `.toList()`), você filtra e transforma coleções de forma declarativa.",
-      "codeExample": "import java.util.List;\n\n// Record imutável em 1 linha (Java 16+)\npublic record Produto(String nome, double preco) {}\n\npublic class Loja {\n    public static void main(String[] args) {\n        var itens = List.of(new Produto(\"Mouse\", 80), new Produto(\"Monitor\", 900));\n        var caros = itens.stream()\n            .filter(p -> p.preco() > 100)\n            .map(Produto::nome)\n            .toList();\n    }\n}",
+      "title": "Java moderno: record em 1 linha e Streams com ->",
+      "content": "Com `record`, você cria uma classe de dados imutável inteira em 1 linha — já com construtor, `toString()` e leitura via `p.preco()` (sem `get`)!\nPara filtrar ou transformar listas sem loops gigantes, abrimos um `.stream()`, passamos lambdas com seta simples `->` e fechamos com `.toList()`.\nLembre-se: Streams são preguiçosas e só rodam de verdade quando chamamos uma operação final como `.toList()`.",
+      "codeExample": "public record Cafe(String nome, double preco) {}\n\nvar menu = List.of(new Cafe(\"Expresso\", 8), new Cafe(\"Geisha\", 24));\nvar premium = menu.stream()\n  .filter(c -> c.preco() > 15)\n  .map(Cafe::nome)\n  .toList();\nSystem.out.println(premium);",
+      "expectedOutput": "[Geisha]",
       "keyTakeaways": [
-        "`public record Nome(Tipo campo) {}` cria uma classe imutável com getters no formato `campo()` (sem `get`).",
-        "Em Java, lambdas usam a seta simples `->` (diferente do `=>` do JavaScript/C#).",
-        "Pipelines de Streams começam com `.stream()`, transformam/filtram com `.filter()` / `.map()` e materializam com `.toList()`."
+        "`record Cafe(String nome, double preco) {}` cria dados imutáveis e lê campos com `c.preco()`.",
+        "Lambdas em Java usam seta simples `->` e Streams executam ao chamar `.toList()`."
       ]
     },
     {
-      "type": "spot_the_bug",
-      "prompt": "Este pipeline de Stream com lambda falha ao compilar em Java. Clique na linha com o bug:",
-      "lines": [
-        "var itens = List.of(new Produto(\"Mouse\", 80), new Produto(\"Monitor\", 900));",
-        "var caros = itens.stream()",
-        "    .filter(p => p.preco() > 100)",
-        "    .toList();"
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "O que aparece no console ao rodar este `record` com Stream?",
+      "codeSnippet": "var itens = List.of(new Cafe(\"Latte\", 12), new Cafe(\"Expresso\", 8));\nvar baratos = itens.stream()\n  .filter(c -> c.preco() <= 10)\n  .map(Cafe::nome)\n  .toList();\nSystem.out.println(baratos);",
+      "options": [
+        "[Expresso]",
+        "[Latte]",
+        "[Latte, Expresso]",
+        "Erro porque falta c.getPreco()"
       ],
-      "buggyLineIndex": 2,
-      "explanation": "Em Java, expressões lambda usam a seta simples `->` (`p -> p.preco() > 100`), e não `=>`."
+      "correctIndex": 0,
+      "hint": "Em `record`, o acesso é `c.preco()`, e só `Expresso` (8) é menor ou igual a 10.",
+      "expectedOutput": "[Expresso]",
+      "explanation": "`.filter` mantém apenas `Expresso` (8 <= 10), `.map(Cafe::nome)` extrai o nome e `.toList()` devolve `[Expresso]`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a definição de um `record` Java e o pipeline de Stream para filtrar números pares:",
-      "codeTemplate": "public {{blank}} Usuario(String nome, int idade) {}\n\nvar pares = numeros.{{blank}}()\n    .filter(n {{blank}} n % 2 == 0)\n    .toList();",
+      "prompt": "Complete o `record` de cliente e a seta da lambda que filtra os pedidos VIP:",
+      "codeTemplate": "public {{blank}} Pedido(String cliente, double total) {}\nvar vips = pedidos.stream().filter(p {{blank}} p.total() > 50).toList();",
       "blanks": [
-        { "answer": "record", "placeholder": "tipo classe" },
-        { "answer": "stream", "placeholder": "método" },
+        { "answer": "record", "placeholder": "tipo" },
         { "answer": "->", "placeholder": "lambda" }
       ],
-      "options": ["record", "stream", "->", "=>", "struct", "map"],
-      "explanation": "Records criam portadores de dados imutáveis, `.stream()` abre o fluxo funcional e `->` define a expressão lambda em Java."
+      "options": ["record", "->", "=>", "struct"],
+      "hint": "Classes de dados imutáveis usam `record` e lambdas em Java sempre usam `->`.",
+      "expectedOutput": "[Pedido[cliente=Ana, total=75.0]]",
+      "explanation": "`record` gera tudo em 1 linha e `p -> ...` define a regra do filtro na Stream!"
     },
     {
-      "type": "multiple_choice",
-      "prompt": "Dado `public record Produto(String nome, double preco) {}`, como acessamos o preço de uma instância `p`?",
-      "options": [
-        "`p.getPreco()`",
-        "`p.preco()`",
-        "`p->preco`",
-        "Alterando diretamente `p.preco = 10;`"
+      "type": "spot_the_bug",
+      "prompt": "O filtro do cardápio não compilou porque a seta da lambda veio do JavaScript! Clique na linha com o bug:",
+      "lines": [
+        "var menu = List.of(new Cafe(\"Expresso\", 8), new Cafe(\"Mocha\", 16));",
+        "var especiais = menu.stream()",
+        "  .filter(c => c.preco() > 10)",
+        "  .toList();"
       ],
-      "correctIndex": 1,
-      "explanation": "Records geram métodos de acesso com o mesmo nome do campo (`p.preco()`) e todos os campos são `final` (imutáveis)."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para filtrar produtos com preço maior que 50, extrair os nomes com `.map()` e coletar em uma lista:",
-      "blocks": [
-        "var nomesCaros = produtos.stream()",
-        "    .filter(p -> p.preco() > 50)",
-        "    .map(Produto::nome)",
-        "    .toList();"
-      ],
-      "correctOrder": [0, 1, 2, 3],
-      "explanation": "Um pipeline Stream inicia com `.stream()`, aplica operações intermediárias (`.filter`, `.map`) e termina com `.toList()`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "O que acontece se você chamar `.stream().filter(n -> n > 10)` sem nenhuma operação terminal (como `.toList()` ou `.count()`)?",
-      "options": [
-        "Retorna imediatamente uma `List` filtrada",
-        "Nada é executado, pois operações intermediárias de Streams são preguiçosas (lazy)",
-        "Lança `NullPointerException` em tempo de execução",
-        "Modifica a coleção original in-place"
-      ],
-      "correctIndex": 1,
-      "explanation": "Streams são lazy e não alteram a coleção original; elas só executam quando uma operação terminal (como `.toList()`) é chamada."
+      "buggyLineIndex": 2,
+      "hint": "Compare a seta usada na linha 3 com a seta das lambdas em Java.",
+      "expectedOutput": "[Cafe[nome=Mocha, preco=16.0]]",
+      "explanation": "Em Java, lambdas usam `->` (`c -> c.preco() > 10`), nunca `=>`!"
     },
     {
       "type": "write_code",
-      "prompt": "Declare um `record` público chamado `Pedido` com os campos `String cliente` e `double total`. Em seguida, a partir de uma coleção `pedidos`, crie um pipeline Stream filtrando apenas os pedidos com `total` maior que `100` e finalize em uma lista.",
-      "starterCode": "",
+      "prompt": "Complete o `record Pedido` e o pipeline Stream para filtrar pedidos com `total > 100` e coletar em lista.",
+      "starterCode": "public record Pedido(String cliente, double total) {}\n\n// TODO: filtre `pedidos` com total > 100 usando .stream(), .filter(...) e .toList()\nvar grandes = pedidos\n  // complete aqui\n  ;",
       "requiredTokens": ["record", "Pedido", ".stream()", ".filter(", "->", ".toList()"],
-      "sampleSolution": "public record Pedido(String cliente, double total) {}\n\nvar grandes = pedidos.stream()\n    .filter(p -> p.total() > 100)\n    .toList();",
-      "hint": "Defina `public record Pedido(String cliente, double total) {}` e encadeie `.stream()`, `.filter(p -> p.total() > 100)` e `.toList()`.",
-      "explanation": "Combinamos a modelagem imutável com `record` e a filtragem declarativa usando lambdas (`->`) na Streams API."
+      "sampleSolution": "public record Pedido(String cliente, double total) {}\n\nvar grandes = pedidos.stream()\n  .filter(p -> p.total() > 100)\n  .toList();",
+      "hint": "Encadeie `.stream().filter(p -> p.total() > 100).toList()` em `pedidos`.",
+      "expectedOutput": "[Pedido[cliente=Duke, total=120.0]]",
+      "explanation": "Lindo demais! Em poucas linhas você combinou `record`, lambda e Streams do Java moderno."
     }
   ]
 }

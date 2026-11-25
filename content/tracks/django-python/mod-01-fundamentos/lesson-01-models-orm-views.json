@@ -1,47 +1,53 @@
 {
   "id": "django-models-01",
-  "title": "Django Models, ORM (objects.filter) e Migrations",
-  "description": "Mapeie tabelas com models.Model, gere migrations automáticas e consulte dados com o ORM do Django.",
+  "title": "Models, Migrations e Django ORM",
+  "description": "Modele tabelas em Python com models.Model, rode migrations e filtre dados com objects.filter().",
+  "mission": "Missão 1: Modelar os produtos do catálogo CodePage e listar apenas os itens ativos com o ORM.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Batteries-Included: Models e ORM no Django",
-      "content": "O Django segue a filosofia *batteries-included* (já vem com ORM, painel Admin, autenticação e migrations). Cada tabela é uma classe Python herdando de **`models.Model`**, com campos como `models.CharField(max_length=120)`, `models.DecimalField(...)` e `models.BooleanField(default=True)`.\n\nApós criar ou alterar um Model, rodamos `python manage.py makemigrations` (gera o plano) e `python manage.py migrate` (aplica no banco). Para consultar dados, usamos o Manager **`objects`** (`Produto.objects.filter(ativo=True).order_by(\"nome\")` ou `.get(id=1)`).",
-      "codeExample": "from django.db import models\n\nclass Produto(models.Model):\n    nome = models.CharField(max_length=120)\n    preco = models.DecimalField(max_digits=10, decimal_places=2)\n    ativo = models.BooleanField(default=True)\n\n# Queries com o Django ORM:\nativos = Produto.objects.filter(ativo=True).order_by(\"nome\")",
+      "title": "Tabelas em Python com models.Model e .objects",
+      "content": "No Django, cada tabela do banco é uma classe que herda de `models.Model`, com campos prontos como `CharField` e `BooleanField`. Depois de editar um Model, rodamos `makemigrations` (gera o plano) e `migrate` (aplica no banco).\nPara consultar os registros sem escrever SQL na mão, usamos o manager `.objects`, como `Produto.objects.filter(ativo=True).order_by(\"nome\")`!",
+      "codeExample": "from django.db import models\n\nclass Produto(models.Model):\n    nome = models.CharField(max_length=120)\n    ativo = models.BooleanField(default=True)\n\nativos = Produto.objects.filter(ativo=True).order_by(\"nome\")",
+      "expectedOutput": "<QuerySet [<Produto: Café>, <Produto: Livro Python>]>",
       "keyTakeaways": [
-        "Todo Model herda de `models.Model` e define colunas usando atributos de `models` (`CharField`, `BooleanField`, etc.).",
-        "`python manage.py makemigrations` cria o arquivo de migração; `python manage.py migrate` executa o SQL no banco.",
-        "`.get(id=1)` retorna 1 objeto (ou lança erro se não existir); `.filter(...)` retorna um `QuerySet` preguiçoso que pode ser encadeado com `.order_by(...)`."
+        "Todo Model herda de `models.Model`; mudanças vão para o banco via `makemigrations` + `migrate`.",
+        "Consultas ORM passam sempre pelo manager `.objects` (ex: `.objects.filter(...).order_by(...)`)."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual comando do Django gera os arquivos de migração após você adicionar um novo campo em `models.Model`?",
+      "kind": "predict_output",
+      "prompt": "Temos 3 livros no banco: `\"Python\"` (ativo=True), `\"Cobol\"` (ativo=False) e `\"Django\"` (ativo=True). O que esta consulta retorna?",
+      "codeSnippet": "ativos = Livro.objects.filter(ativo=True).order_by(\"nome\")\nprint([l.nome for l in ativos])",
       "options": [
-        "python manage.py runserver",
-        "python manage.py makemigrations",
-        "django-admin startproject",
-        "python manage.py collectstatic"
+        "['Django', 'Python']",
+        "['Python', 'Django']",
+        "['Cobol', 'Django', 'Python']",
+        "Erro porque faltou rodar SQL manual"
       ],
-      "correctIndex": 1,
-      "explanation": "`makemigrations` detecta mudanças nos seus Models e gera o plano de migração; depois `migrate` executa o SQL."
+      "correctIndex": 0,
+      "hint": "`.filter(ativo=True)` remove `\"Cobol\"` e `.order_by(\"nome\")` ordena de A até Z!",
+      "expectedOutput": "['Django', 'Python']",
+      "explanation": "O ORM filtra só os ativos (`Python` e `Django`) e ordena alfabeticamente por `nome`, devolvendo `['Django', 'Python']`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a definição do Model `Curso` e a consulta ORM para listar apenas cursos ativos:",
-      "codeTemplate": "class Curso(models.{{blank}}):\n    titulo = models.{{blank}}(max_length=100)\n    ativo = models.BooleanField(default=True)\n\nativos = Curso.{{blank}}.filter(ativo=True)",
+      "prompt": "Complete a definição do Model `Curso` e a consulta ORM pelos cursos ativos:",
+      "codeTemplate": "class Curso(models.{{blank}}):\n    titulo = models.CharField(max_length=100)\n    ativo = models.BooleanField(default=True)\n\nativos = Curso.{{blank}}.filter(ativo=True)",
       "blanks": [
         { "answer": "Model", "placeholder": "classe base" },
-        { "answer": "CharField", "placeholder": "campo texto" },
         { "answer": "objects", "placeholder": "manager" }
       ],
-      "options": ["Model", "Table", "CharField", "TextField", "objects", "query"],
-      "explanation": "Models herdam de `models.Model`, textos curtos usam `models.CharField(max_length=...)` e consultas passam pelo manager `.objects`."
+      "options": ["Model", "Table", "objects", "query"],
+      "hint": "Models herdam de `models.Model` e consultas usam o manager padrão `.objects`.",
+      "expectedOutput": "<QuerySet [<Curso: Django na Prática>]>",
+      "explanation": "Isso aí! `models.Model` conecta a classe ao banco e `Curso.objects.filter(...)` busca os registros."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O código abaixo tenta filtrar produtos ativos e ordená-los por nome, mas falha ao acessar o ORM do Django. Clique na linha com erro:",
+      "prompt": "A consulta de produtos ativos gerou `AttributeError` porque faltou um intermediário obrigatório do ORM. Clique na linha com o bug:",
       "lines": [
         "class Produto(models.Model):",
         "    nome = models.CharField(max_length=120)",
@@ -49,24 +55,14 @@
         "ativos = Produto.filter(ativo=True).order_by(\"nome\")"
       ],
       "buggyLineIndex": 3,
-      "explanation": "Faltou o manager `.objects` antes de `.filter(...)`. O correto é `Produto.objects.filter(ativo=True).order_by(\"nome\")`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene o fluxo correto desde a criação de um Model até a consulta dos registros no banco:",
-      "blocks": [
-        "ativos = Produto.objects.filter(ativo=True).order_by(\"nome\")",
-        "python manage.py makemigrations",
-        "class Produto(models.Model): ...",
-        "python manage.py migrate"
-      ],
-      "correctOrder": [2, 1, 3, 0],
-      "explanation": "Primeiro definimos o Model, geramos a migration com `makemigrations`, aplicamos no banco com `migrate` e só então consultamos com `objects.filter`."
+      "hint": "Qual palavra vem entre `Produto` e `.filter(...)` no Django ORM?",
+      "expectedOutput": "<QuerySet [<Produto: Livro>]>",
+      "explanation": "Na linha 4 faltou `.objects`: o correto é `Produto.objects.filter(ativo=True).order_by(\"nome\")`."
     },
     {
       "type": "write_code",
-      "prompt": "Defina a classe `Usuario` como um model do Django com um campo de texto `nome` (tamanho máximo 100) e um campo booleano `ativo` com valor padrão verdadeiro. Em seguida, consulte todos os usuários ativos ordenados por `\"nome\"` e armazene o resultado na variável `ativos`.",
-      "starterCode": "",
+      "prompt": "Complete o model `Usuario` (`nome` CharField até 100, `ativo` BooleanField default True) e a consulta `ativos` ordenada por `\"nome\"`.",
+      "starterCode": "from django.db import models\n\nclass Usuario(models.Model):\n    # TODO: adicione nome (CharField) e ativo (BooleanField)\n    \n\n# TODO: filtre usuários ativos ordenados por \"nome\" em ativos\nativos = \n",
       "requiredTokens": [
         "class Usuario(models.Model):",
         "models.CharField(",
@@ -75,9 +71,10 @@
         "ativo=True",
         ".order_by("
       ],
-      "sampleSolution": "class Usuario(models.Model):\n    nome = models.CharField(max_length=100)\n    ativo = models.BooleanField(default=True)\n\nativos = Usuario.objects.filter(ativo=True).order_by(\"nome\")",
-      "hint": "Herde de `models.Model`, use `models.CharField(max_length=100)` e `models.BooleanField(default=True)` e encadeie `.filter(ativo=True).order_by(\"nome\")` em `Usuario.objects`.",
-      "explanation": "`Model.objects.filter(...)` traduz argumentos nomeados Python em cláusulas `WHERE` SQL e `.order_by(...)` ordena os resultados."
+      "sampleSolution": "from django.db import models\n\nclass Usuario(models.Model):\n    nome = models.CharField(max_length=100)\n    ativo = models.BooleanField(default=True)\n\nativos = Usuario.objects.filter(ativo=True).order_by(\"nome\")",
+      "hint": "Use `models.CharField(max_length=100)`, `models.BooleanField(default=True)` e `Usuario.objects.filter(ativo=True).order_by(\"nome\")`.",
+      "expectedOutput": "<QuerySet [<Usuario: Ana>, <Usuario: Py>]>",
+      "explanation": "Tabela modelada e consulta pronta! O Django traduz esse código limpo em SQL otimizado por baixo dos panos."
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "id": "stl-cpp",
   "title": "C++ STL & Containers",
-  "description": "Domine a Standard Template Library do C++: std::vector, iteradores e algoritmos de alta performance.",
+  "description": "Aprenda a STL do C++ montando o inventário dinâmico da nave Nova-9 com std::vector: lições leves, código guiado e saída visual.",
   "category": "library",
   "languageId": "c-cpp-systems",
   "prerequisites": ["c-cpp-systems"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-vectors",
-      "title": "Módulo 1: Vetores Dinâmicos (std::vector)",
-      "description": "Gerencie arrays dinâmicos seguros sem vazamento de memória.",
+      "title": "Módulo 1: Inventário Dinâmico (std::vector)",
+      "description": "Cresça listas com segurança usando push_back e consulte o total com size sem vazamentos.",
       "lessons": ["lesson-01-std-vector"]
     }
   ]

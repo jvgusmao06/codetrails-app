@@ -1,91 +1,74 @@
 {
   "id": "csharp-async-await-03",
-  "title": "Programação Assíncrona: async Task<T>, await e Task.WhenAll",
-  "description": "Escreva código backend escalável em C# sem travar threads com async/await, Task.WhenAll e CancellationToken.",
+  "title": "Sem Travar a Loja: async Task, await e Task.WhenAll",
+  "description": "Faça chamadas assíncronas rápidas em paralelo com async/await, Task.WhenAll e CancellationToken.",
+  "mission": "Missão 8: Buscar preço e avaliações de um jogo ao mesmo tempo sem travar o servidor da PixelShop.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Async / Await, Task.WhenAll e CancellationToken no .NET",
-      "content": "O C# foi quem popularizou o padrão `async / await`! Métodos assíncronos retornam **`Task`** (quando não há valor) ou **`Task<T>`** (quando retornam `T`), e por convenção terminam com o sufixo `Async`. Use **`await Task.WhenAll(t1, t2)`** para executar várias chamadas em paralelo, e passe sempre **`CancellationToken ct`** para interromper operações caso o cliente cancele a requisição!",
-      "codeExample": "public async Task<string> BuscarDadosAsync(HttpClient http, CancellationToken ct) {\n    var resp = await http.GetStringAsync(\"https://api.exemplo.com/v1\", ct);\n    return resp;\n}\n\n// Executando 2 tarefas em paralelo:\npublic async Task SincronizarAsync(CancellationToken ct) {\n    await Task.WhenAll(Task.Delay(50, ct), Task.Delay(50, ct));\n}",
+      "title": "async Task<T>, await e paralelismo com Task.WhenAll",
+      "content": "O C# foi quem popularizou o `async / await`! Métodos assíncronos devolvem `Task` (sem retorno) ou `Task<T>` (com valor) e liberam a thread enquanto esperam rede ou banco.\nQuer rodar duas buscas ao mesmo tempo? Junte com `await Task.WhenAll(t1, t2)` e passe sempre `CancellationToken ct` para cancelar se o cliente fechar a aba!",
+      "codeExample": "async Task<string> BuscarJogoAsync(CancellationToken ct) {\n    await Task.Delay(10, ct);\n    return \"StarRunner pronto!\";\n}\n\nConsole.WriteLine(await BuscarJogoAsync(CancellationToken.None));",
+      "expectedOutput": "StarRunner pronto!",
       "keyTakeaways": [
-        "NUNCA use `.Result` ou `.Wait()` em uma `Task` dentro de APIs web — isso pode causar **Deadlock** e exaurir threads! Use sempre `await`.",
-        "Evite `async void` (exceto em event handlers de UI), pois exceções em `async void` não podem ser capturadas com `try/catch`! Retorne `async Task`.",
-        "`Task.WhenAll(...)` executa múltiplas tarefas concorrentemente; `CancellationToken` propaga cancelamento cooperativo."
+        "Sempre use `await` — nunca `.Result` ou `.Wait()`, que travam a thread e podem causar Deadlock!",
+        "Prefira `async Task` em vez de `async void` e use `Task.WhenAll(...)` para rodar tarefas em paralelo."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual retorno deve ser usado em um método assíncrono em C# que **não devolve nenhum valor**, para que `await` e `try/catch` funcionem corretamente?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal ao rodar este método assíncrono?",
+      "codeSnippet": "async Task<int> SomarAsync() {\n    await Task.Delay(5);\n    return 20 + 22;\n}\nvar total = await SomarAsync();\nConsole.WriteLine($\"Total: {total}\");",
       "options": [
-        "async void",
-        "async Task",
-        "async Promise",
-        "async Future"
+        "Total: 42",
+        "Total: System.Threading.Tasks.Task`1",
+        "Total: 20",
+        "Erro porque Task.Delay não retorna int"
       ],
-      "correctIndex": 1,
-      "explanation": "`async Task` permite aguardar a conclusão e propagar exceções corretamente (diferente de `async void`)."
+      "correctIndex": 0,
+      "hint": "O `await` desembrulha o `Task<int>` e entrega o número `42` pronto para `total`.",
+      "expectedOutput": "Total: 42",
+      "explanation": "`await SomarAsync()` espera a tarefa terminar sem travar a thread e extrai o valor `42` do `Task<int>`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o método assíncrono que retorna uma `string` e propaga um token de cancelamento:",
-      "codeTemplate": "public {{blank}} Task<string> BaixarAsync(HttpClient http, {{blank}} ct) {\n    return {{blank}} http.GetStringAsync(\"https://exemplo.com\", ct);\n}",
+      "prompt": "Complete o método assíncrono que retorna `string` e aguarda a resposta com `await`:",
+      "codeTemplate": "public {{blank}} Task<string> CarregarAsync(CancellationToken ct) {\n    {{blank}} Task.Delay(10, ct);\n    return \"OK\";\n}",
       "blanks": [
         { "answer": "async", "placeholder": "modificador" },
-        { "answer": "CancellationToken", "placeholder": "cancelamento" },
         { "answer": "await", "placeholder": "aguardar" }
       ],
-      "options": ["async", "CancellationToken", "await", "void", "Task", "sync"],
-      "explanation": "`async Task<string>` declara o retorno assíncrono, `CancellationToken` permite cancelar a chamada HTTP e `await` aguarda sem bloquear a thread."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual é a vantagem de usar `await Task.WhenAll(t1, t2)` em vez de fazer `await t1; await t2;` em sequência?",
-      "options": [
-        "`Task.WhenAll` executa `t1` e `t2` concorrentemente, aguardando até que ambas terminem",
-        "`Task.WhenAll` cancela `t2` assim que `t1` termina",
-        "`Task.WhenAll` bloqueia a thread principal com `.Wait()`",
-        "Não há diferença prática"
-      ],
-      "correctIndex": 0,
-      "explanation": "Aguardar `t1` e depois `t2` serializa as chamadas; `Task.WhenAll(t1, t2)` aguarda ambas em paralelo."
+      "options": ["async", "await", "sync", "void"],
+      "hint": "Métodos com `await` precisam da palavra `async` na assinatura.",
+      "expectedOutput": "OK",
+      "explanation": "A dupla inseparável do .NET: `async` na assinatura + `await` para esperar sem bloquear!"
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este código assíncrono bloqueia a thread atual de forma síncrona, podendo causar **Deadlock** em aplicações web. Clique na linha problemática:",
+      "prompt": "Uma dessas linhas bloqueia a thread de forma síncrona (risco de Deadlock em APIs!). Clique na linha com o bug:",
       "lines": [
-        "public async Task<string> ProcessarAsync(HttpClient http, CancellationToken ct) {",
-        "    var dados = http.GetStringAsync(\"https://api.com\", ct).Result;",
-        "    await Task.Delay(10, ct);",
-        "    return dados;",
+        "public async Task<string> BaixarCapaAsync(HttpClient http, CancellationToken ct) {",
+        "    var html = http.GetStringAsync(\"https://pixelshop.dev\", ct).Result;",
+        "    await Task.Delay(5, ct);",
+        "    return html;",
         "}"
       ],
       "buggyLineIndex": 1,
-      "explanation": "Na linha 2, `.Result` bloqueia a thread esperando a `Task` terminar. Em métodos `async`, use sempre `await http.GetStringAsync(...)`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para criar um método assíncrono que recebe `CancellationToken`, dispara duas tarefas em paralelo com `Task.WhenAll` e retorna `bool`:",
-      "blocks": [
-        "public async Task<bool> AtualizarTudoAsync(CancellationToken ct) {",
-        "    var t1 = Task.Delay(20, ct);",
-        "    var t2 = Task.Delay(30, ct);",
-        "    await Task.WhenAll(t1, t2);",
-        "    return true;",
-        "}"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4, 5],
-      "explanation": "Iniciamos as duas `Task` passando o `CancellationToken`, aguardamos ambas com `await Task.WhenAll(t1, t2)` e retornamos `true`."
+      "hint": "Procure por `.Result` bloqueando uma `Task` dentro de um método que já é `async`.",
+      "expectedOutput": "Capa baixada sem bloquear threads",
+      "explanation": "Na linha 2, `.Result` trava a thread! Troque por `await http.GetStringAsync(\"https://pixelshop.dev\", ct)`."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Implemente um método assíncrono público `CarregarTudoAsync` que receba um `CancellationToken ct`, retorne `Task<int>`, aguarde duas chamadas `Task.Delay` em paralelo usando `await Task.WhenAll(...)` passando `ct`, e retorne `42`.",
-      "starterCode": "",
-      "requiredTokens": ["async Task<int>", "CarregarTudoAsync", "CancellationToken", "await Task.WhenAll(", "return 42"],
-      "sampleSolution": "public async Task<int> CarregarTudoAsync(CancellationToken ct) {\n    await Task.WhenAll(Task.Delay(10, ct), Task.Delay(20, ct));\n    return 42;\n}",
-      "hint": "Declare `public async Task<int> CarregarTudoAsync(CancellationToken ct)` e use `await Task.WhenAll(Task.Delay(10, ct), Task.Delay(20, ct));` antes do `return 42;`.",
-      "explanation": "`async Task<int>` + `Task.WhenAll` + `CancellationToken` é o padrão ouro para concorrência escalável e cancelável no .NET."
+      "prompt": "Complete `CarregarLojaAsync` para aguardar duas tarefas em paralelo usando `await Task.WhenAll(...)` e retornar `\"Pronto\"`.",
+      "starterCode": "public async Task<string> CarregarLojaAsync(CancellationToken ct) {\n    var t1 = Task.Delay(10, ct);\n    var t2 = Task.Delay(10, ct);\n    // TODO: aguarde t1 e t2 em paralelo com await Task.WhenAll(t1, t2);\n    // TODO: retorne \"Pronto\"\n}",
+      "requiredTokens": ["await Task.WhenAll(", "return \"Pronto\""],
+      "sampleSolution": "public async Task<string> CarregarLojaAsync(CancellationToken ct) {\n    var t1 = Task.Delay(10, ct);\n    var t2 = Task.Delay(10, ct);\n    await Task.WhenAll(t1, t2);\n    return \"Pronto\";\n}",
+      "hint": "Escreva `await Task.WhenAll(t1, t2);` e na linha seguinte `return \"Pronto\";`.",
+      "expectedOutput": "Pronto",
+      "explanation": "Show! Com `Task.WhenAll`, as duas tarefas rodam ao mesmo tempo e sua API fica voando."
     }
   ]
 }

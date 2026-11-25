@@ -1,90 +1,73 @@
 {
   "id": "sql-groupby-04",
-  "title": "04. Agrupamentos (GROUP BY), HAVING e Paginação",
-  "description": "Agrupe registros com GROUP BY, filtre grupos agregados com HAVING e pagine resultados com LIMIT e OFFSET.",
+  "title": "04. GROUP BY, HAVING e Paginação (LIMIT)",
+  "description": "Agrupe vendas por categoria com GROUP BY, filtre grupos com HAVING e pagine resultados com LIMIT e OFFSET.",
+  "mission": "Missão 5: Descobrir quais gêneros de games mais vendem na PixelQuest Store.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "GROUP BY, HAVING e Paginação (LIMIT/OFFSET)",
-      "content": "Quando queremos calcular totais ou contagens **por categoria** (por exemplo, quantos usuários existem em cada cidade), usamos agrupamento:\n\n1. **`GROUP BY`**: Agrupa linhas que compartilham o mesmo valor na coluna especificada para que `COUNT(*)`, `SUM()` ou `AVG()` sejam calculados por grupo.\n2. **`HAVING` vs `WHERE`**: `WHERE` filtra linhas individuais **antes** do agrupamento e **não aceita** funções de agregação (`COUNT(*)`, `SUM()`). Para filtrar grupos já agregados (ex: cidades com mais de 5 usuários), usamos `HAVING COUNT(*) > 5`.\n3. **`LIMIT` e `OFFSET`**: Para paginação, `LIMIT n` define quantas linhas retornar e `OFFSET p` define quantas linhas pular (ex: `LIMIT 10 OFFSET 20` traz a página 3).",
-      "codeExample": "SELECT categoria, COUNT(*) AS qtd, SUM(preco) AS total\nFROM produtos\nWHERE ativo = true\nGROUP BY categoria\nHAVING COUNT(*) >= 3\nORDER BY total DESC\nLIMIT 5 OFFSET 0;",
+      "title": "Agrupando resultados sem misturar WHERE e HAVING",
+      "content": "`GROUP BY` junta linhas com o mesmo valor (como o `genero` do jogo) para calcular `COUNT(*)` ou `SUM()` por grupo.\nLembre da regra de ouro: `WHERE` filtra linhas **antes** de agrupar, enquanto `HAVING` filtra os grupos **depois** — e `LIMIT`/`OFFSET` controlam quantos resultados mostrar na página.",
+      "codeExample": "SELECT genero, COUNT(*) AS qtd\nFROM jogos\nWHERE ativo = true\nGROUP BY genero\nHAVING COUNT(*) >= 3\nORDER BY qtd DESC\nLIMIT 5;",
+      "expectedOutput": "genero | qtd\nrpg    | 8\nindie  | 5",
       "keyTakeaways": [
-        "Toda coluna no SELECT que não está em função agregada deve aparecer no GROUP BY.",
-        "WHERE filtra linhas antes de agrupar; HAVING filtra grupos após o GROUP BY.",
-        "LIMIT limita a quantidade de linhas e OFFSET pula registros para paginação."
+        "`WHERE` filtra linhas antes do `GROUP BY`; `HAVING` filtra grupos agregados (`COUNT`, `SUM`).",
+        "`LIMIT 5 OFFSET 10` pula 10 linhas e traz as próximas 5 (perfeito para paginação)."
       ]
     },
     {
-      "type": "spot_the_bug",
-      "prompt": "Esta query tenta filtrar apenas os departamentos com mais de 5 funcionários, mas falha com erro de sintaxe. Qual linha tem o bug?",
-      "lines": [
-        "SELECT departamento, COUNT(*) AS total",
-        "FROM funcionarios",
-        "WHERE COUNT(*) > 5",
-        "GROUP BY departamento;"
-      ],
-      "buggyLineIndex": 2,
-      "explanation": "Funções agregadas como COUNT(*) não podem ser usadas no WHERE. O correto é colocar 'HAVING COUNT(*) > 5' após o GROUP BY."
-    },
-    {
       "type": "multiple_choice",
-      "prompt": "Em uma consulta paginada, o que faz a combinação LIMIT 10 OFFSET 20?",
+      "kind": "predict_output",
+      "prompt": "Nossa loja tem 4 jogos de `rpg`, 2 de `indie` e 1 de `corrida`. O que esta consulta retorna?",
+      "codeSnippet": "SELECT genero, COUNT(*) AS qtd\nFROM jogos\nGROUP BY genero\nHAVING COUNT(*) >= 2\nORDER BY qtd DESC;",
       "options": [
-        "Retorna 20 linhas pulando as 10 primeiras",
-        "Pula as 20 primeiras linhas e retorna até 10 linhas seguintes",
-        "Retorna as linhas de ID 10 até 20",
-        "Limita o número de colunas a 10"
+        "rpg (4) e indie (2)",
+        "rpg (4), indie (2) e corrida (1)",
+        "Apenas rpg (4)",
+        "Erro porque COUNT(*) não funciona no HAVING"
       ],
-      "correctIndex": 1,
-      "explanation": "OFFSET 20 descarta os 20 primeiros resultados e LIMIT 10 exibe os 10 registros seguintes."
+      "correctIndex": 0,
+      "hint": "`HAVING COUNT(*) >= 2` mantém só os gêneros com 2 ou mais jogos.",
+      "expectedOutput": "genero | qtd\nrpg    | 4\nindie  | 2",
+      "explanation": "`corrida` tem apenas 1 jogo e é filtrado pelo `HAVING`, sobrando `rpg` (4) e `indie` (2)."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a consulta para agrupar vendas por vendedor e exibir apenas quem faturou acima de 5000:",
-      "codeTemplate": "SELECT vendedor_id, SUM(valor) AS total\nFROM vendas\n{{blank}} vendedor_id\n{{blank}} SUM(valor) > 5000;",
+      "prompt": "Agrupe as vendas por `genero` e exiba apenas os gêneros que faturaram mais de 500:",
+      "codeTemplate": "SELECT genero, SUM(valor) AS total\nFROM vendas\n{{blank}} genero\n{{blank}} SUM(valor) > 500;",
       "blanks": [
         { "answer": "GROUP BY", "placeholder": "agrupar" },
         { "answer": "HAVING", "placeholder": "filtrar grupo" }
       ],
       "options": ["GROUP BY", "HAVING", "WHERE", "ORDER BY"],
-      "explanation": "GROUP BY agrupa por vendedor_id e HAVING filtra o resultado da agregação SUM(valor)."
+      "hint": "Agrupe com `GROUP BY` e filtre a soma agregada com `HAVING`.",
+      "expectedOutput": "genero | total\nrpg    | 1250.00\nindie  | 780.00",
+      "explanation": "Certinho! Como `SUM(valor)` é uma agregação, o filtro vai no `HAVING` logo após o `GROUP BY`."
     },
     {
-      "type": "order_code",
-      "prompt": "Ordene as cláusulas SQL para filtrar pedidos pagos, agrupar por cliente, manter quem tem ao menos 2 pedidos e pegar os 5 maiores:",
-      "blocks": [
-        "HAVING COUNT(*) >= 2",
-        "SELECT cliente_id, COUNT(*) AS qtd",
-        "WHERE status = 'pago'",
-        "ORDER BY qtd DESC",
-        "FROM pedidos",
-        "GROUP BY cliente_id",
-        "LIMIT 5;"
+      "type": "spot_the_bug",
+      "prompt": "A query tenta achar gêneros com mais de 5 jogos, mas o PostgreSQL recusou! Clique na linha com bug:",
+      "lines": [
+        "SELECT genero, COUNT(*) AS total",
+        "FROM jogos",
+        "WHERE COUNT(*) > 5",
+        "GROUP BY genero;"
       ],
-      "correctOrder": [1, 4, 2, 5, 0, 3, 6],
-      "explanation": "A ordem completa em SQL é: SELECT -> FROM -> WHERE -> GROUP BY -> HAVING -> ORDER BY -> LIMIT."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Combine INNER JOIN, GROUP BY e paginação para listar as 3 categorias com maior soma de vendas:",
-      "codeTemplate": "SELECT c.nome, SUM(p.valor) AS receita\nFROM pedidos p\nINNER JOIN categorias c ON p.categoria_id = c.id\n{{blank}} c.nome\nORDER BY receita {{blank}}\n{{blank}} 3;",
-      "blanks": [
-        { "answer": "GROUP BY", "placeholder": "agrupar" },
-        { "answer": "DESC", "placeholder": "ordem" },
-        { "answer": "LIMIT", "placeholder": "limite" }
-      ],
-      "options": ["GROUP BY", "DESC", "ASC", "LIMIT", "OFFSET"],
-      "explanation": "Agrupamos por c.nome, ordenamos de forma decrescente (DESC) e pegamos os 3 primeiros com LIMIT 3."
+      "buggyLineIndex": 2,
+      "hint": "Podemos usar `COUNT(*)` dentro do `WHERE`?",
+      "expectedOutput": "genero | total\nrpg    | 8",
+      "explanation": "`WHERE` não aceita funções agregadas. O certo é mover para `HAVING COUNT(*) > 5` depois do `GROUP BY`."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma query SQL na tabela 'usuarios' que conte quantos usuários existem por 'cidade', filtrando apenas cidades com mais de 10 usuários, ordenando da maior contagem para a menor e limitando o resultado a 5 linhas.",
-      "starterCode": "",
-      "requiredTokens": ["SELECT", "cidade", "COUNT", "FROM", "usuarios", "GROUP BY", "HAVING", "ORDER BY", "LIMIT"],
-      "sampleSolution": "SELECT cidade, COUNT(*) AS total\nFROM usuarios\nGROUP BY cidade\nHAVING COUNT(*) > 10\nORDER BY total DESC\nLIMIT 5;",
-      "hint": "Agrupe pela coluna cidade, filtre a contagem com HAVING, ordene com DESC e finalize com LIMIT 5.",
-      "explanation": "A consulta combina COUNT(*), GROUP BY, HAVING, ORDER BY DESC e LIMIT."
+      "prompt": "Complete a consulta para agrupar por `genero`, manter apenas grupos com mais de 2 jogos (`HAVING`) e pegar só o Top 3 (`LIMIT 3`).",
+      "starterCode": "SELECT genero, COUNT(*) AS total\nFROM jogos\n-- TODO: adicione GROUP BY, HAVING, ORDER BY e LIMIT 3\n",
+      "requiredTokens": ["GROUP BY", "genero", "HAVING", "COUNT", "ORDER BY", "LIMIT"],
+      "sampleSolution": "SELECT genero, COUNT(*) AS total\nFROM jogos\nGROUP BY genero\nHAVING COUNT(*) > 2\nORDER BY total DESC\nLIMIT 3;",
+      "hint": "Siga a ordem: `GROUP BY genero`, `HAVING COUNT(*) > 2`, `ORDER BY total DESC`, `LIMIT 3;`.",
+      "expectedOutput": "genero | total\nrpg    | 8\nindie  | 5\nacao   | 3",
+      "explanation": "Top 3 pronto! Agora você domina o pipeline completo de agregação no SQL."
     }
   ]
 }

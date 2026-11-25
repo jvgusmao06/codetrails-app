@@ -1,7 +1,7 @@
 {
   "id": "typescript-javascript",
   "title": "TypeScript & JavaScript",
-  "description": "Aprenda do zero às funções nativas: const/let, loops, classes, objetos, métodos de array, interfaces, async/await, Generics e APIs globais.",
+  "description": "Aprenda JS e TS modernos construindo o motor do TaskBeat (seu app de tarefas e playlists): lições curtinhas, sem pressão, com saída visual e código guiado.",
   "category": "language",
   "color": "#6366F1",
   "icon": "📘",
@@ -9,8 +9,8 @@
   "modules": [
     {
       "id": "mod-00-sintaxe-js",
-      "title": "Módulo 1: Variáveis, Loops, Classes e Objetos",
-      "description": "Domine const/let, arrow functions, for...of, while, classes (constructor/this) e palavras reservadas.",
+      "title": "Módulo 1: Primeiros Passos no TaskBeat",
+      "description": "Comece leve: crie variáveis, funções curtas, listas com loops, classes e decisões seguras no seu app.",
       "lessons": [
         "lesson-01-let-const-arrow",
         "lesson-02-loops-classes-objetos",
@@ -19,14 +19,18 @@
     },
     {
       "id": "mod-01-ts-moderno",
-      "title": "Módulo 2: Métodos de Array & Contratos TypeScript",
-      "description": "Manipule arrays com map/filter e defina interfaces e types estáticos.",
-      "lessons": ["lesson-01-es6-arrays", "lesson-02-interfaces-types", "lesson-03-desestruturacao-spread-rest"]
+      "title": "Módulo 2: Listas Turbinadas & Tipos Seguros",
+      "description": "Filtre e transforme playlists com map/filter, defina contratos com interface/type e copie dados sem bagunça.",
+      "lessons": [
+        "lesson-01-es6-arrays",
+        "lesson-02-interfaces-types",
+        "lesson-03-desestruturacao-spread-rest"
+      ]
     },
     {
       "id": "mod-02-async-generics",
-      "title": "Módulo 3: Async/Await, Generics e Funções Nativas",
-      "description": "Programe com Promises, Generics <T>, Object/JSON/Set/Math e desafios de escrita de código.",
+      "title": "Módulo 3: Async/Await, APIs e Superpoderes do TS",
+      "description": "Busque dados com Promises e fetch, use Set/reduce, trate erros sem sustos e domine Utility Types.",
       "lessons": [
         "lesson-01-promises-generics",
         "lesson-02-funcoes-nativas-desafio",

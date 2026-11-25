@@ -1,7 +1,7 @@
 {
   "id": "blazor-csharp",
   "title": "Blazor (Web UI em C#)",
-  "description": "Construa interfaces web interativas em C# e Razor (.razor) com @code, [Parameter], data binding (@bind) e eventos @onclick.",
+  "description": "Monte o painel web interativo da PixelShop 100% em C# e Razor (.razor): @page, @bind, @onclick e [Parameter] sem precisar de JavaScript.",
   "category": "framework",
   "languageId": "csharp-dotnet",
   "prerequisites": ["csharp-dotnet"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: Componentes Razor, @bind e @onclick",
-      "description": "Crie UIs web reativas sem escrever JavaScript usando Blazor.",
+      "title": "Módulo 1: Painel Admin da PixelShop com Blazor",
+      "description": "Crie páginas e componentes reativos misturando HTML e C# de forma natural.",
       "lessons": ["lesson-01-razor-components"]
     }
   ]

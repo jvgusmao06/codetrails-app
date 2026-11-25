@@ -1,51 +1,53 @@
 {
   "id": "cpp-algoritmos-stdlib-03",
-  "title": "Algoritmos Nativos da Stdlib (sort, max, min, empty)",
-  "description": "Use funções nativas de <algorithm>, <string> e <cstring> sem reinventar a roda.",
+  "title": "Atalhos da Stdlib: sort, max, min e empty",
+  "description": "Ordene vetores, compare valores e verifique coleções vazias em 1 linha usando <algorithm>.",
+  "mission": "Missão 9: Ordenar as leituras de telemetria e achar o pico de velocidade da nave.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Algoritmos e Métodos Nativos da Biblioteca Padrão",
-      "content": "Em C++, reinventar ordenação ou busca de máximo manualmente gera bugs e código lento. O cabeçalho `<algorithm>` fornece `std::sort(inicio, fim)` (ordenando em $O(n \\log n)$ usando `.begin()` e `.end()`), além de `std::max(a, b)` e `std::min(a, b)`. Para verificar se uma `std::string` ou container está vazio, prefira `.empty()` em vez de `.size() == 0`. Já ao lidar com C-strings herdadas de C (`<cstring>`), `strlen(s)` calcula o tamanho até encontrar `'\\0'`.",
-      "codeExample": "#include <algorithm>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main() {\n    std::vector<int> nums = {30, 10, 20};\n    std::sort(nums.begin(), nums.end()); // {10, 20, 30}\n    int maior = std::max(nums[0], nums[2]);\n\n    std::string msg = \"\";\n    if (msg.empty()) std::cout << maior << \"\\n\";\n    return 0;\n}",
+      "title": "Não reinvente a roda: use <algorithm>",
+      "content": "O cabeçalho `<algorithm>` traz ferramentas prontas e super rápidas: `std::sort(v.begin(), v.end())` ordena um vetor, e `std::max(a, b)` / `std::min(a, b)` escolhem o maior ou o menor.\nJá para conferir se uma `std::string` ou vetor está vazio, use `.empty()` — é mais limpo e rápido que checar o tamanho!",
+      "codeExample": "#include <algorithm>\n#include <vector>\n\nstd::vector<int> v = {30, 10, 20};\nstd::sort(v.begin(), v.end()); // {10, 20, 30}\nint pico = std::max(v[0], v[2]);\nstd::cout << pico << \"\\n\";",
+      "expectedOutput": "30",
       "keyTakeaways": [
-        "`std::sort(c.begin(), c.end())` ordena containers contíguos em $O(n \\log n)$.",
-        "`std::max(a, b)` e `std::min(a, b)` comparam valores de forma legível e genérica.",
-        "`.empty()` é a forma idiomática e $O(1)$ de checar se containers ou strings estão vazios."
+        "`std::sort(v.begin(), v.end())` ordena do menor para o maior usando iteradores.",
+        "Use `std::max` / `std::min` para comparar e `.empty()` para checar se algo está vazio."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual cabeçalho devemos incluir em C++ para usar `std::sort`, `std::max` e `std::min`?",
-      "options": ["<iostream>", "<algorithm>", "<memory>", "<stdio.h>"],
-      "correctIndex": 1,
-      "explanation": "Os algoritmos genéricos como `std::sort`, `std::max` e `std::min` ficam declarados no cabeçalho `<algorithm>`."
+      "kind": "predict_output",
+      "prompt": "O que aparece na tela após ordenar o vetor e pegar o primeiro item?",
+      "codeSnippet": "std::vector<int> sinais = {45, 12, 30};\nstd::sort(sinais.begin(), sinais.end());\nstd::cout << sinais[0] << \" \" << std::max(sinais[1], sinais[2]) << \"\\n\";",
+      "options": [
+        "12 45",
+        "45 30",
+        "12 30",
+        "30 45"
+      ],
+      "correctIndex": 0,
+      "hint": "Depois do `std::sort`, o vetor fica `{12, 30, 45}`.",
+      "expectedOutput": "12 45",
+      "explanation": "`sinais[0]` é o menor (`12`) e `std::max(30, 45)` devolve `45`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código C++ para ordenar o vetor `notas` e encontrar o menor valor entre duas variáveis:",
-      "codeTemplate": "#include <algorithm>\nstd::{{blank}}(notas.begin(), notas.end());\nint menor = std::{{blank}}(a, b);",
+      "prompt": "Complete para ordenar `leituras` e encontrar o menor entre `a` e `b`:",
+      "codeTemplate": "#include <algorithm>\nstd::{{blank}}(leituras.begin(), leituras.end());\nint menor = std::{{blank}}(a, b);",
       "blanks": [
         { "answer": "sort", "placeholder": "ordenar" },
         { "answer": "min", "placeholder": "menor" }
       ],
-      "options": ["sort", "min", "max", "empty", "order"],
-      "explanation": "`std::sort` ordena o intervalo definido por `.begin()` e `.end()`, e `std::min` retorna o menor entre dois valores."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete a verificação idiomática para checar se a `std::string` `nome` não possui caracteres:",
-      "codeTemplate": "if (nome.{{blank}}()) {\n    std::cout << \"Vazio\\n\";\n}",
-      "blanks": [
-        { "answer": "empty", "placeholder": "método" }
-      ],
-      "options": ["empty", "isEmpty", "null", "zero"],
-      "explanation": "Em C++, containers e `std::string` oferecem o método `.empty()` retornando `bool`."
+      "options": ["sort", "min", "max", "empty"],
+      "hint": "Use `sort` para ordenar o vetor e `min` para pegar o menor valor.",
+      "expectedOutput": "Vetor ordenado e menor valor encontrado",
+      "explanation": "`std::sort` ordena o intervalo `[begin, end)` e `std::min(a, b)` escolhe o menor."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O código abaixo tenta ordenar um `std::vector<int>`, mas falha ao passar os limites incorretos para `std::sort`. Clique na linha com bug:",
+      "prompt": "O compilador reclamou da chamada de `std::sort`! Clique na linha com o bug:",
       "lines": [
         "#include <algorithm>",
         "#include <vector>",
@@ -53,16 +55,19 @@
         "std::sort(v);"
       ],
       "buggyLineIndex": 3,
-      "explanation": "`std::sort` exige um par de iteradores de início e fim: `std::sort(v.begin(), v.end());`."
+      "hint": "`std::sort` precisa saber onde começa e onde termina o intervalo do vetor.",
+      "expectedOutput": "{2, 5, 9}",
+      "explanation": "Faltaram os iteradores! O correto é `std::sort(v.begin(), v.end());`."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva um programa em C++ (com `<iostream>`, `<algorithm>` e `<vector>`) que crie um `std::vector<int>` chamado `valores` com `{40, 10, 30}`, ordene-o em ordem crescente usando a biblioteca padrão, obtenha o maior elemento comparando o primeiro e o último ou usando `std::max`, e imprima esse maior valor caso o vetor não esteja vazio.",
-      "starterCode": "",
-      "requiredTokens": ["#include", "<algorithm>", "std::sort", ".begin()", ".end()", ".empty()", "std::max", "std::cout"],
-      "sampleSolution": "#include <algorithm>\n#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<int> valores = {40, 10, 30};\n    if (!valores.empty()) {\n        std::sort(valores.begin(), valores.end());\n        int maior = std::max(valores[0], valores[2]);\n        std::cout << maior << std::endl;\n    }\n    return 0;\n}",
-      "hint": "Verifique `!valores.empty()`, ordene com `std::sort(valores.begin(), valores.end())` e use `std::max`.",
-      "explanation": "Combinar `.empty()`, `std::sort` e `std::max` evita acessos inválidos e reutiliza algoritmos otimizados da STL."
+      "prompt": "Verifique se `valores` não está vazio com `.empty()`, ordene com `std::sort` e exiba o maior com `std::max`.",
+      "starterCode": "#include <algorithm>\n#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<int> valores = {40, 10, 30};\n    // TODO: cheque !valores.empty(), ordene com std::sort e imprima std::max(valores[0], valores[2])\n    \n    return 0;\n}",
+      "requiredTokens": [".empty()", "std::sort", ".begin()", ".end()", "std::max"],
+      "sampleSolution": "#include <algorithm>\n#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<int> valores = {40, 10, 30};\n    if (!valores.empty()) {\n        std::sort(valores.begin(), valores.end());\n        std::cout << std::max(valores[0], valores[2]) << \"\\n\";\n    }\n    return 0;\n}",
+      "hint": "Abra `if (!valores.empty())`, chame `std::sort(valores.begin(), valores.end());` e imprima `std::max(valores[0], valores[2])`.",
+      "expectedOutput": "40",
+      "explanation": "Telemetria ordenada! Usar `.empty()`, `std::sort` e `std::max` deixa o código curto e confiável."
     }
   ]
 }

@@ -1,86 +1,72 @@
 {
   "id": "py-sets-tuplas-lambda-04",
-  "title": "11. Tuplas, Sets e Lambda",
-  "description": "Use tuplas imutáveis para dados fixos, sets para eliminar duplicatas e funções anônimas lambda para ordenações customizadas.",
+  "title": "Mapa e Ranking: Tuplas, Sets e Lambda",
+  "description": "Use tuplas imutáveis para coordenadas, sets para remover duplicatas e funções lambda para ordenar rankings.",
+  "mission": "Missão 11: Guardar coordenadas fixas, limpar conquistas repetidas e ordenar o ranking final com lambda.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Tuplas, Sets e Funções Anônimas (lambda)",
-      "content": "Além de listas e dicionários, Python oferece estruturas e funções concisas muito usadas no dia a dia:\n\n1. **Tuplas `(a, b)`**: São sequências **imutáveis** criadas com parênteses. Ideais para coordenadas ou retornos múltiplos que não devem ser alterados.\n2. **Sets `set()` / `{1, 2}`**: Conjuntos não ordenados que **eliminam duplicatas automaticamente** e permitem checagem `x in meu_set` em `O(1)`. **Atenção**: `{}` vazio cria um `dict`, então para criar um set vazio use sempre `set()`.\n3. **Funções `lambda`**: São funções anônimas de uma única expressão: `lambda x: x * 2`. São muito usadas como argumento `key=` em `sorted(lista, key=lambda item: item[\"nota\"])`.",
-      "codeExample": "coordenada = (10, 20)        # tupla imutável\nvazio = set()                # set vazio\nunicos = set([1, 2, 2, 3])   # {1, 2, 3}\n\nprodutos = [(\"Mouse\", 80), (\"Teclado\", 150), (\"Cabo\", 25)]\npor_preco = sorted(produtos, key=lambda p: p[1])",
+      "title": "Tuplas imutáveis, Sets sem duplicatas e Lambda",
+      "content": "**Tuplas** `(x, y)` guardam valores fixos que não podem ser alterados. **Sets** (`set(lista)`) removem itens repetidos num piscar de olhos — só lembre de usar `set()` para criar um conjunto vazio (pois `{}` cria um dict).\nJá `lambda x: ...` cria uma função rapidinha de uma linha, perfeita para o argumento `key=` do `sorted()`!",
+      "codeExample": "spawn = (10, 20)\nmedalhas = set([\"ouro\", \"prata\", \"ouro\"])\nplacar = [(\"Py\", 90), (\"Leo\", 50)]\n\nprint(len(medalhas))\nprint(sorted(placar, key=lambda item: item[1]))",
+      "expectedOutput": "2\n[('Leo', 50), ('Py', 90)]",
       "keyTakeaways": [
-        "Tuplas (...) são imutáveis; tentar alterar um índice gera TypeError.",
-        "Sets eliminam duplicatas automaticamente; um set vazio é criado com set(), nunca {}.",
-        "lambda argumentos: expressao cria funções curtas, muito úteis no parâmetro key= de sorted()."
+        "Tuplas `(...)` são imutáveis; `set()` elimina duplicatas automaticamente.",
+        "`lambda item: item[1]` é ideal para dizer ao `sorted(..., key=...)` por qual campo ordenar."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual expressão cria um conjunto (Set) VAZIO em Python?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal ao executar este código?",
+      "codeSnippet": "tags = [\"py\", \"rpg\", \"py\", \"boss\", \"rpg\"]\nunicas = set(tags)\nprint(len(unicas))",
       "options": [
-        "{}",
-        "[]",
-        "set()",
-        "()"
+        "5",
+        "3",
+        "2",
+        "Erro porque set não aceita strings"
       ],
-      "correctIndex": 2,
-      "explanation": "Em Python, {} cria um dicionário vazio. Para criar um conjunto (Set) vazio, é obrigatório usar set()."
+      "correctIndex": 1,
+      "hint": "O `set()` remove todas as repetições antes do `len()` contar quantos sobraram.",
+      "expectedOutput": "3",
+      "explanation": "`set(tags)` deixa apenas `{\"py\", \"rpg\", \"boss\"}` — portanto `len(unicas)` é `3`!"
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o `sorted()` usando `lambda` para ordenar o ranking pela pontuação (índice 1 de cada tupla):",
+      "codeTemplate": "ranking = [(\"Ana\", 50), (\"Py\", 95), (\"Gui\", 70)]\nordenado = sorted(ranking, key={{blank}} item: item[{{blank}}])",
+      "blanks": [
+        { "answer": "lambda", "placeholder": "função curta" },
+        { "answer": "1", "placeholder": "índice" }
+      ],
+      "options": ["lambda", "def", "1", "0"],
+      "hint": "A pontuação é o segundo elemento da tupla (índice `1`), acessada dentro de uma função `lambda`.",
+      "expectedOutput": "[('Ana', 50), ('Gui', 70), ('Py', 95)]",
+      "explanation": "`key=lambda item: item[1]` ensina o `sorted()` a olhar para a pontuação em vez do nome!"
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O código tenta modificar o primeiro valor de uma tupla, mas gera um TypeError. Qual linha causa o erro?",
+      "prompt": "O mapa tentou alterar a coordenada inicial da Py, mas o Python disparou `TypeError`. Clique na linha com o bug:",
       "lines": [
         "ponto = (10, 20)",
         "ponto[0] = 99",
         "print(ponto)"
       ],
       "buggyLineIndex": 1,
-      "explanation": "Tuplas são imutáveis em Python; não é possível reatribuir elementos após a criação."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete o código para ordenar a lista de tuplas (nome, pontos) pelo segundo item usando lambda:",
-      "codeTemplate": "ranking = [(\"Ana\", 50), (\"Lia\", 90), (\"Gui\", 70)]\nordenado = sorted(ranking, key={{blank}} item: item[{{blank}}])",
-      "blanks": [
-        { "answer": "lambda", "placeholder": "função anônima" },
-        { "answer": "1", "placeholder": "índice" }
-      ],
-      "options": ["lambda", "def", "1", "0"],
-      "explanation": "Usamos 'lambda item: item[1]' para indicar que a ordenação deve comparar o segundo elemento (pontos) de cada tupla."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual será o resultado de len(set([4, 4, 2, 9, 2])) em Python?",
-      "options": [
-        "5",
-        "3",
-        "2",
-        "9"
-      ],
-      "correctIndex": 1,
-      "explanation": "set([4, 4, 2, 9, 2]) remove as duplicatas e guarda {2, 4, 9}, que possui tamanho 3."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para remover duplicatas de uma lista de tags usando set() e ordenar o resultado:",
-      "blocks": [
-        "unicas = set(tags)",
-        "print(ordenadas)",
-        "tags = [\"py\", \"sql\", \"py\", \"git\"]",
-        "ordenadas = sorted(unicas)"
-      ],
-      "correctOrder": [2, 0, 3, 1],
-      "explanation": "Primeiro definimos a lista, convertemos para set para remover duplicatas, ordenamos com sorted() e imprimimos."
+      "hint": "`ponto` foi criado com parênteses — ou seja, é uma tupla imutável!",
+      "expectedOutput": "(10, 20)",
+      "explanation": "Tuplas são imutáveis: depois de criadas, você não pode reatribuir `ponto[0] = 99`. Para mudar, crie uma nova tupla ou use uma lista."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma função 'organizar_pares' que receba uma lista de tuplas no formato (nome, nota), ordene os itens pela nota usando sorted() e lambda, e retorne a nova lista ordenada.",
-      "starterCode": "",
+      "prompt": "Complete `organizar_pares` retornando a lista de tuplas `(nome, nota)` ordenada pela nota usando `sorted()` e `lambda`.",
+      "starterCode": "def organizar_pares(pares: list[tuple[str, float]]) -> list[tuple[str, float]]:\n    # TODO: retorne sorted(pares, key=...) ordenando pela nota (índice 1)\n    return \n\nprint(organizar_pares([(\"Py\", 9.5), (\"Bot\", 7.0)]))\n",
       "requiredTokens": ["def", "organizar_pares", "sorted", "lambda", "return"],
-      "sampleSolution": "def organizar_pares(pares: list[tuple[str, float]]) -> list[tuple[str, float]]:\n    return sorted(pares, key=lambda item: item[1])",
-      "hint": "Passe o argumento nomeado key= com uma função lambda que acesse o índice 1 da tupla.",
-      "explanation": "Combinamos def, tuplas, sorted() e lambda para ordenar estruturas compostas sem alterar a lista original."
+      "sampleSolution": "def organizar_pares(pares: list[tuple[str, float]]) -> list[tuple[str, float]]:\n    return sorted(pares, key=lambda item: item[1])\n\nprint(organizar_pares([(\"Py\", 9.5), (\"Bot\", 7.0)]))",
+      "hint": "Use `return sorted(pares, key=lambda item: item[1])`.",
+      "expectedOutput": "[('Bot', 7.0), ('Py', 9.5)]",
+      "explanation": "Parabéns, você zerou a jornada de Python com a Py! Agora já domina até tuplas, sets e ordenação com `lambda`."
     }
   ]
 }

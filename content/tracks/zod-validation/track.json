@@ -1,7 +1,7 @@
 {
   "id": "zod-validation",
   "title": "Zod & Validação",
-  "description": "Garanta segurança em tempo de execução e inferência TypeScript automática (usado para validar as trilhas deste app).",
+  "description": "Proteja a portaria do festival FestPass com Zod: valide JSONs em runtime com safeParse e ganhe tipos TypeScript de graça.",
   "category": "library",
   "languageId": "typescript-javascript",
   "prerequisites": ["typescript-javascript"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-schemas",
-      "title": "Módulo 1: Schemas, Parse e Inferência",
-      "description": "Valide JSONs externos e extraia tipos estáticos sem duplicação.",
+      "title": "Módulo 1: Schemas, safeParse e Inferência no FestPass",
+      "description": "Cheque cadastros e ingressos com segurança sem duplicar interfaces no TypeScript.",
       "lessons": ["lesson-01-schemas-parse"]
     }
   ]

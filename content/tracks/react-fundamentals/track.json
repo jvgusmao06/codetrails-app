@@ -1,7 +1,7 @@
 {
   "id": "react-fundamentals",
   "title": "React & Hooks",
-  "description": "Construa interfaces reativas com componentes funcionais, JSX, props e gerenciamento de estado com useState.",
+  "description": "Aprenda React construindo o BeatBox (seu player de músicas): componentes leves em JSX, props e botões reativos com useState.",
   "category": "library",
   "languageId": "typescript-javascript",
   "prerequisites": ["typescript-javascript"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-componentes",
-      "title": "Unidade 1: Componentes, JSX e Estado",
-      "description": "Entenda como o React transforma dados em interface reativa.",
+      "title": "Módulo 1: Componentes, JSX e Estado no BeatBox",
+      "description": "Dê vida à tela: crie cards reutilizáveis com props e faça a UI reagir a cada clique.",
       "lessons": ["lesson-01-jsx-props", "lesson-02-usestate"]
     }
   ]

@@ -1,77 +1,73 @@
 {
   "id": "mapstruct-01",
-  "title": "MapStruct: @Mapper(componentModel = \"spring\") e @Mapping",
-  "description": "Substitua mappers lentos baseados em reflection por código Java puro gerado na compilação.",
+  "title": "@Mapper(componentModel = \"spring\") e @Mapping",
+  "description": "Converta Entities para DTOs em velocidade nativa sem reflection usando interfaces anotadas com MapStruct.",
+  "mission": "Missão 1: Criar o tradutor Entity ↔ DTO da API de Entregas usando @Mapper e @Mapping.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Mapeamento Entity <-> DTO sem Reflection",
-      "content": "Nunca exponha suas entidades `@Entity` direto nos controllers REST! Para converter entre `Usuario` e `UsuarioResponseDto`, o **MapStruct** gera uma implementação com chamadas diretas de `get`/`set` **em tempo de compilação** (10x mais rápido que `ModelMapper`/`BeanUtils`, e se um campo mudar de nome, o projeto avisa na hora!). Basta criar uma `interface` anotada com **`@Mapper(componentModel = \"spring\")`**.",
-      "codeExample": "@Mapper(componentModel = \"spring\")\npublic interface UsuarioMapper {\n    @Mapping(source = \"nomeCompleto\", target = \"nome\")\n    UsuarioDto toDto(Usuario entity);\n}",
+      "title": "Conversão Entity -> DTO rápida e segura na compilação",
+      "content": "Nunca devolva sua `@Entity` direto na API! Para converter `Cliente` em `ClienteDto` sem escrever dezenas de `get`/`set` à mão, criamos uma `interface` com `@Mapper(componentModel = \"spring\")`.\nO MapStruct gera uma classe Java pura na compilação (sem reflection lenta!) e já avisa no build se algum campo mudar de nome.\nSe um campo tiver nome diferente entre origem e destino, basta alinhar com `@Mapping(source = ..., target = ...)`!",
+      "codeExample": "@Mapper(componentModel = \"spring\")\npublic interface ClienteMapper {\n  @Mapping(source = \"nomeCompleto\", target = \"nome\")\n  ClienteDto toDto(Cliente entity);\n}",
+      "expectedOutput": "Cliente(nomeCompleto=\"Ana Silva\") -> ClienteDto(nome=\"Ana Silva\")",
       "keyTakeaways": [
-        "`componentModel = \"spring\"` transforma o mapper gerado em um `@Component` injetável pelo Spring!",
-        "`@Mapping(source = \"origem\", target = \"destino\")` mapeia campos com nomes diferentes.",
-        "Use `unmappedTargetPolicy = ReportingPolicy.IGNORE` apenas quando quiser ignorar campos que não existem no DTO."
+        "`@Mapper(componentModel = \"spring\")` gera um bean injetável pelo Spring sem reflection em runtime.",
+        "`@Mapping(source = \"origem\", target = \"destino\")` conecta campos com nomes diferentes."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Por que o **MapStruct** é muito mais rápido e seguro do que `BeanUtils.copyProperties` ou `ModelMapper`?",
+      "kind": "predict_output",
+      "prompt": "Ao chamar `mapper.toDto(entity)` com a interface abaixo, qual será o resultado do campo `nome` no DTO?",
+      "codeSnippet": "@Mapper(componentModel = \"spring\")\npublic interface ClienteMapper {\n  @Mapping(source = \"nomeCompleto\", target = \"nome\")\n  ClienteDto toDto(Cliente entity);\n}\n// entity.getNomeCompleto() == \"Duke Java\"",
       "options": [
-        "Porque usa reflection avançada em runtime",
-        "Porque gera código Java simples (getters/setters diretos) em tempo de compilação, validando os nomes dos campos antes de rodar",
-        "Porque roda dentro do banco PostgreSQL",
-        "Porque ignora todos os campos nulos"
+        "ClienteDto com nome = \"Duke Java\"",
+        "ClienteDto com nome = null porque os nomes diferem",
+        "Erro em runtime porque falta reflection",
+        "ClienteDto com nome = \"nomeCompleto\""
       ],
-      "correctIndex": 1,
-      "explanation": "Ao gerar código na compilação (Annotation Processing), o MapStruct elimina reflection em runtime e detecta erros de mapeamento no build."
+      "correctIndex": 0,
+      "hint": "O `@Mapping` liga explicitamente `source = \"nomeCompleto\"` ao `target = \"nome\"`.",
+      "expectedOutput": "ClienteDto[nome=Duke Java]",
+      "explanation": "O código gerado chama `entity.getNomeCompleto()` e preenche `nome` no DTO com `\"Duke Java\"` na velocidade de Java puro!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o mapper MapStruct integrado ao Spring que renomeia o campo `nomeCompleto` da entidade para `nome` no DTO:",
-      "codeTemplate": "@Mapper({{blank}} = \"spring\")\npublic interface UsuarioMapper {\n    @Mapping({{blank}} = \"nomeCompleto\", {{blank}} = \"nome\")\n    UsuarioDto toDto(Usuario entity);\n}",
+      "prompt": "Complete o mapper MapStruct para registrá-lo no Spring e mapear o campo de origem `nomeCompleto`:",
+      "codeTemplate": "@Mapper({{blank}} = \"spring\")\npublic interface UsuarioMapper {\n  @Mapping({{blank}} = \"nomeCompleto\", target = \"nome\")\n  UsuarioDto toDto(Usuario entity);\n}",
       "blanks": [
-        { "answer": "componentModel", "placeholder": "modelo" },
-        { "answer": "source", "placeholder": "origem" },
-        { "answer": "target", "placeholder": "destino" }
+        { "answer": "componentModel", "placeholder": "integração" },
+        { "answer": "source", "placeholder": "origem" }
       ],
-      "options": ["componentModel", "source", "target", "from", "to", "springModel"],
-      "explanation": "`componentModel = \"spring\"` registra o bean no Spring, enquanto `@Mapping(source = ..., target = ...)` conecta campos com nomes diferentes."
+      "options": ["componentModel", "source", "from", "springModel"],
+      "hint": "O atributo para virar bean do Spring é `componentModel`, e o campo de origem no `@Mapping` é `source`.",
+      "expectedOutput": "UsuarioMapperImpl gerado como @Component Spring!",
+      "explanation": "`componentModel = \"spring\"` permite injetar o mapper no serviço, e `source` indica o campo de entrada."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Identifique o erro na declaração deste mapper MapStruct:",
+      "prompt": "O build falhou porque o MapStruct não consegue gerar implementação para uma `class` concreta com método sem corpo! Clique na linha com o bug:",
       "lines": [
         "@Mapper(componentModel = \"spring\")",
         "public class ProdutoMapper {",
-        "    ProdutoDto toDto(Produto entity);",
+        "  ProdutoDto toDto(Produto entity);",
         "}"
       ],
       "buggyLineIndex": 1,
-      "explanation": "O MapStruct gera a implementação concreta automaticamente apenas a partir de uma `interface` (ou classe abstrata), nunca de uma `class` concreta com método sem corpo."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para definir um mapper MapStruct com renomeação de campo e integração Spring:",
-      "blocks": [
-        "    UsuarioDto toDto(Usuario entity);",
-        "@Mapper(componentModel = \"spring\")",
-        "    @Mapping(source = \"nomeCompleto\", target = \"nome\")",
-        "public interface UsuarioMapper {",
-        "}"
-      ],
-      "correctOrder": [1, 3, 2, 0, 4],
-      "explanation": "A anotação `@Mapper` vai acima da interface, e `@Mapping` vai imediatamente acima da assinatura do método `toDto`."
+      "hint": "Mappers do MapStruct devem ser declarados como `interface` (ou `abstract class`), nunca `class` comum.",
+      "expectedOutput": "ProdutoMapperImpl gerado com sucesso!",
+      "explanation": "Na linha 2, troque `public class ProdutoMapper` por `public interface ProdutoMapper` para o MapStruct gerar a implementação!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Em Java com MapStruct, defina a interface pública `PedidoMapper` configurada para ser injetada pelo Spring, declarando um método `toDto` que converte `Pedido entity` para `PedidoDto`.",
-      "starterCode": "",
+      "prompt": "Complete a interface `PedidoMapper` anotada com `@Mapper(componentModel = \"spring\")` e o método `PedidoDto toDto(Pedido entity);`.",
+      "starterCode": "// TODO: adicione @Mapper(componentModel = \"spring\")\npublic interface PedidoMapper {\n  // TODO: declare `PedidoDto toDto(Pedido entity);`\n}",
       "requiredTokens": ["@Mapper(componentModel = \"spring\")", "public interface PedidoMapper", "PedidoDto toDto(Pedido entity);"],
-      "sampleSolution": "@Mapper(componentModel = \"spring\")\npublic interface PedidoMapper {\n    PedidoDto toDto(Pedido entity);\n}",
-      "hint": "Anote `public interface PedidoMapper` com `@Mapper(componentModel = \"spring\")` e declare `PedidoDto toDto(Pedido entity);`.",
-      "explanation": "O processador de anotações do MapStruct cria automaticamente a classe `PedidoMapperImpl` durante o `mvn compile` / `gradle build`."
+      "sampleSolution": "@Mapper(componentModel = \"spring\")\npublic interface PedidoMapper {\n  PedidoDto toDto(Pedido entity);\n}",
+      "hint": "Coloque `@Mapper(componentModel = \"spring\")` acima da interface e `PedidoDto toDto(Pedido entity);` dentro dela.",
+      "expectedOutput": "Pedido -> PedidoDto convertido sem reflection!",
+      "explanation": "Mandou bem! Na próxima compilação, o MapStruct gera `PedidoMapperImpl` prontinho para injetar no seu Spring Boot."
     }
   ]
 }

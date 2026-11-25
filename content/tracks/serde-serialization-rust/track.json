@@ -1,7 +1,7 @@
 {
   "id": "serde-serialization-rust",
   "title": "Serde (JSON, TOML & Macros)",
-  "description": "Serialize e desserialize structs Rust para JSON, YAML ou TOML sem overhead usando #[derive(Serialize, Deserialize)].",
+  "description": "Converta fichas de heróis do Servidor RPG do Ferris de/para JSON em tempo de compilação com Serde.",
   "category": "library",
   "languageId": "rust-systems",
   "prerequisites": ["rust-systems"],
@@ -12,7 +12,7 @@
     {
       "id": "mod-01-fundamentos",
       "title": "Módulo 1: Derive Macros e Atributos Serde",
-      "description": "Converta structs Rust para JSON e customize nomes com #[serde(...)].",
+      "description": "Use #[derive(Serialize, Deserialize)], camelCase, default e skip_serializing.",
       "lessons": ["lesson-01-serde-derive-json"]
     }
   ]

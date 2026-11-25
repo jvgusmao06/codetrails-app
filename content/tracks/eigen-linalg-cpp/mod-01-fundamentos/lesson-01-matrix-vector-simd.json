@@ -1,77 +1,74 @@
 {
   "id": "eigen-matrix-01",
-  "title": "Eigen: MatrixXd, Vector3d e Multiplicação Otimizada com SIMD",
-  "description": "Use o padrão da indústria em robótica, visão computacional (OpenCV/ROS) e motores físicos para álgebra linear em C++.",
+  "title": "Eigen: Vector3d, MatrixXd e Operações 3D",
+  "description": "Calcule rotas 3D na velocidade da CPU com Eigen::Vector3d, .dot(), .cross() e multiplicação matricial.",
+  "mission": "Missão 1: Calcular direções e projeções 3D no piloto automático da nave Nova-9.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "O Equivalente ao NumPy para C++ de Tempo Real: Eigen",
-      "content": "**Eigen** é uma biblioteca *header-only* de álgebra linear que usa **Expression Templates** e instruções vetoriais da CPU (AVX/NEON) para entregar performance máxima sem alocações temporárias! Para tamanhos fixos pequenos (como 3D em jogos/robótica), use **`Eigen::Vector3d`** ou **`Matrix3d`** (ficam na Stack, zero `malloc`!); para tamanhos dinâmicos, use **`Eigen::MatrixXd`**.",
-      "codeExample": "#include <Eigen/Dense>\n\nEigen::Vector3d v(1.0, 0.0, 0.0);\nEigen::Vector3d w(0.0, 1.0, 0.0);\n\ndouble dot = v.dot(w);          // Produto escalar (0.0)\nEigen::Vector3d cross = v.cross(w); // Produto vetorial (0, 0, 1)\n\nEigen::MatrixXd A = Eigen::MatrixXd::Identity(3, 3);\nEigen::Vector3d res = A * v;    // Multiplicação matriz-vetor!",
+      "title": "Álgebra linear ultrarrápida com Eigen",
+      "content": "O **Eigen** (`#include <Eigen/Dense>`) é a biblioteca queridinha de robótica e jogos 3D em C++. Para vetores 3D fixos, use `Eigen::Vector3d` (vive na Stack, zero `malloc`!).\nCom ele, `.dot()` calcula o produto escalar, `.cross()` acha um vetor perpendicular e `*` faz multiplicação matricial real!",
+      "codeExample": "#include <Eigen/Dense>\n#include <iostream>\n\nEigen::Vector3d v(1.0, 0.0, 0.0);\nEigen::Vector3d w(0.0, 1.0, 0.0);\nstd::cout << \"dot: \" << v.dot(w) << \"\\n\";\nEigen::Vector3d z = v.cross(w); // (0, 0, 1)",
+      "expectedOutput": "dot: 0",
       "keyTakeaways": [
-        "No Eigen, o operador `*` já faz **multiplicação matricial** real (diferente do NumPy!); para elemento-a-elemento use `.cwiseProduct()` ou `.array()`.",
-        "Prefira tipos de tamanho fixo (`Vector3d`, `Matrix4f`) em loops de 60 FPS/robótica porque ficam na Stack.",
-        "CUIDADO com `auto C = A * B;` no Eigen: por causa de lazy evaluation, prefira tipar `MatrixXd C = A * B;`!"
+        "`Eigen::Vector3d` fica na Stack com performance SIMD; use `.dot()` e `.cross()` para operações 3D.",
+        "Evite `auto C = A * B;` no Eigen (avaliação preguiçosa) — prefira tipar `Eigen::MatrixXd C = A * B;`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Em gráficos 3D ou robótica a 1000 Hz, por que preferimos `Eigen::Vector3d` em vez de `Eigen::VectorXd(3)`?",
+      "kind": "predict_output",
+      "prompt": "Qual número aparece na tela ao calcular o produto escalar `.dot()` abaixo?",
+      "codeSnippet": "Eigen::Vector3d a(1, 2, 3);\nEigen::Vector3d b(2, 0, 1);\nstd::cout << a.dot(b) << \"\\n\";",
       "options": [
-        "Porque VectorXd não aceita números negativos",
-        "Porque Vector3d tem tamanho conhecido em compilação (fica na Stack, sem alocação dinâmica na Heap e melhor otimizado pelo compilador)",
-        "Porque Vector3d roda na placa de som",
-        "Não existe diferença de memória"
+        "5",
+        "6",
+        "3",
+        "0"
       ],
-      "correctIndex": 1,
-      "explanation": "Tipos de tamanho fixo evitam `new`/`malloc` na Heap e permitem desenrolamento de loops e vetorização em tempo de compilação."
+      "correctIndex": 0,
+      "hint": "O produto escalar multiplica coordenada por coordenada e soma: `1*2 + 2*0 + 3*1`!",
+      "expectedOutput": "5",
+      "explanation": "`(1 * 2) + (2 * 0) + (3 * 1) = 2 + 0 + 3 = 5` — calculado direto com instruções vetoriais da CPU!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código Eigen para criar uma matriz identidade 3x3, multiplicar pelo vetor `v` e calcular o produto vetorial:",
-      "codeTemplate": "Eigen::MatrixXd I = Eigen::MatrixXd::{{blank}}(3, 3);\nEigen::Vector3d res = I {{blank}} v;\nEigen::Vector3d ortogonal = v.{{blank}}(w);",
+      "prompt": "Crie a matriz identidade 3x3 e calcule o vetor perpendicular (produto vetorial) entre `v` e `w`:",
+      "codeTemplate": "Eigen::MatrixXd I = Eigen::MatrixXd::{{blank}}(3, 3);\nEigen::Vector3d cima = v.{{blank}}(w);",
       "blanks": [
         { "answer": "Identity", "placeholder": "identidade" },
-        { "answer": "*", "placeholder": "op" },
         { "answer": "cross", "placeholder": "vetorial" }
       ],
-      "options": ["Identity", "*", "cross", "dot", "cwiseProduct", "Zeros"],
-      "explanation": "`MatrixXd::Identity(3, 3)` cria a identidade, `*` faz multiplicação matricial real e `.cross()` calcula o produto vetorial em 3D."
+      "options": ["Identity", "cross", "dot", "Zeros"],
+      "hint": "Use `Identity` para a matriz identidade e `.cross()` para o produto vetorial 3D.",
+      "expectedOutput": "cima == (0, 0, 1)",
+      "explanation": "`MatrixXd::Identity(3, 3)` cria a identidade e `v.cross(w)` retorna o vetor ortogonal em 3D."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Identifique a linha que viola a boa prática recomendada no Eigen por causa da avaliação preguiçosa (lazy evaluation):",
+      "prompt": "O piloto automático violou uma regra famosa do Eigen sobre `auto` e avaliação preguiçosa! Clique na linha com o bug:",
       "lines": [
         "#include <Eigen/Dense>",
-        "Eigen::MatrixXd A = Eigen::MatrixXd::Identity(4, 4);",
-        "Eigen::MatrixXd B = Eigen::MatrixXd::Identity(4, 4);",
+        "Eigen::MatrixXd A = Eigen::MatrixXd::Identity(3, 3);",
+        "Eigen::MatrixXd B = Eigen::MatrixXd::Identity(3, 3);",
         "auto C = A * B;",
         "Eigen::Vector3d u(1.0, 2.0, 3.0);"
       ],
       "buggyLineIndex": 3,
-      "explanation": "Usar `auto C = A * B;` armazena uma expressão temporária (*Expression Template*) em vez da matriz avaliada, podendo causar comportamento indefinido se `A` ou `B` mudarem. Prefira `Eigen::MatrixXd C = A * B;`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para incluir o Eigen, criar dois vetores 3D e multiplicar uma matriz identidade por um deles:",
-      "blocks": [
-        "Eigen::Vector3d res = A * v;",
-        "#include <Eigen/Dense>",
-        "Eigen::MatrixXd A = Eigen::MatrixXd::Identity(3, 3);",
-        "Eigen::Vector3d v(1.0, 0.0, 0.0);"
-      ],
-      "correctOrder": [1, 3, 2, 0],
-      "explanation": "Incluímos `<Eigen/Dense>`, declaramos o vetor `v`, criamos a matriz identidade `A` e realizamos `A * v`."
+      "hint": "No Eigen, usar `auto` para guardar uma multiplicação de matrizes guarda apenas uma expressão pendente!",
+      "expectedOutput": "Eigen::MatrixXd C avaliada com segurança",
+      "explanation": "Na linha 4, `auto C = A * B;` guarda um *Expression Template* temporário. Troque para `Eigen::MatrixXd C = A * B;`!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Em C++ com Eigen, declare dois vetores 3D de precisão dupla (`a` com valores `1, 2, 3` e `b` com valores `4, 5, 6`) e armazene o produto escalar entre eles em uma variável `double`.",
-      "starterCode": "#include <Eigen/Dense>\n",
+      "prompt": "Complete declarando `Eigen::Vector3d a(1, 2, 3);`, `Eigen::Vector3d b(4, 5, 6);` e salvando `a.dot(b)` em `double esc`.",
+      "starterCode": "#include <Eigen/Dense>\n#include <iostream>\n\nint main() {\n    // TODO: declare Eigen::Vector3d a(1, 2, 3), Eigen::Vector3d b(4, 5, 6) e double esc = a.dot(b)\n    \n    std::cout << esc << \"\\n\";\n    return 0;\n}",
       "requiredTokens": ["Eigen::Vector3d a", "Eigen::Vector3d b", "a.dot(b)"],
-      "sampleSolution": "Eigen::Vector3d a(1, 2, 3);\nEigen::Vector3d b(4, 5, 6);\ndouble esc = a.dot(b);",
-      "hint": "Instancie `Eigen::Vector3d a(1, 2, 3);` e `Eigen::Vector3d b(4, 5, 6);` e use o método `.dot(...)`.",
-      "explanation": "`.dot()` calcula o produto escalar em 1 linha com instruções SIMD otimizadas."
+      "sampleSolution": "#include <Eigen/Dense>\n#include <iostream>\n\nint main() {\n    Eigen::Vector3d a(1, 2, 3);\n    Eigen::Vector3d b(4, 5, 6);\n    double esc = a.dot(b);\n    std::cout << esc << \"\\n\";\n    return 0;\n}",
+      "hint": "Escreva `Eigen::Vector3d a(1, 2, 3);`, `Eigen::Vector3d b(4, 5, 6);` e `double esc = a.dot(b);`.",
+      "expectedOutput": "32",
+      "explanation": "Rota traçada! `1*4 + 2*5 + 3*6 = 32`, calculado com SIMD na velocidade nativa do C++."
     }
   ]
 }

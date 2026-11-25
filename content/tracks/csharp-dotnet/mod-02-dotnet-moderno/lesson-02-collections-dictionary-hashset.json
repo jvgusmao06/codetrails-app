@@ -1,87 +1,72 @@
 {
   "id": "csharp-collections-dict-02",
-  "title": "Dictionary<K, V>, TryGetValue e HashSet<T> em O(1)",
-  "description": "Faça buscas em tempo constante O(1) em C# com Dictionary e HashSet evitando KeyNotFoundException com TryGetValue.",
+  "title": "Estoque Instantâneo: Dictionary, TryGetValue e HashSet",
+  "description": "Consulte valores em tempo constante O(1) sem sustos com TryGetValue e elimine duplicatas com HashSet.",
+  "mission": "Missão 7: Consultar o estoque de chaves digitais da PixelShop em O(1) sem derrubar a loja.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Dicionários Seguros e Conjuntos Únicos no .NET",
-      "content": "Em C#, **`Dictionary<TKey, TValue>`** é a Hash Table nativa para buscas em $O(1)$. **Cuidado:** acessar `dict[\"chave\"]` direto lança `KeyNotFoundException` se a chave não existir! A forma segura e rápida (apenas 1 lookup!) é usar **`dict.TryGetValue(\"chave\", out var valor)`**. Já **`HashSet<T>`** armazena apenas valores únicos, evita duplicatas automaticamente e realiza buscas com `.Contains()` também em $O(1)$!",
-      "codeExample": "var estoque = new Dictionary<string, int> {\n    [\"teclado\"] = 15,\n    [\"mouse\"] = 8\n};\n\n// Busca segura sem lançar KeyNotFoundException:\nif (estoque.TryGetValue(\"teclado\", out var qtd)) {\n    Console.WriteLine($\"Em estoque: {qtd}\");\n}\n\nvar tags = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { \"api\", \"API\" };\ntags.Add(\"dotnet\");\nbool existe = tags.Contains(\"DOTNET\"); // true em O(1)!",
+      "title": "Busca segura com TryGetValue e itens únicos com HashSet",
+      "content": "O `Dictionary<K, V>` guarda pares chave-valor com busca instantânea em O(1). Mas cuidado: usar `estoque[\"chave\"]` direto explode `KeyNotFoundException` se a chave não existir — prefira `TryGetValue(chave, out var qtd)`!\nJá o `HashSet<T>` guarda apenas itens únicos e ignora duplicatas automaticamente.",
+      "codeExample": "var estoque = new Dictionary<string, int> { [\"StarRunner\"] = 5 };\nif (estoque.TryGetValue(\"StarRunner\", out var qtd)) {\n    Console.WriteLine($\"Disponível: {qtd}\");\n}\nvar tags = new HashSet<string> { \"indie\", \"indie\", \"rpg\" };\nConsole.WriteLine($\"Tags únicas: {tags.Count}\");",
+      "expectedOutput": "Disponível: 5\nTags únicas: 2",
       "keyTakeaways": [
-        "`TryGetValue(chave, out var val)` checa existência e extrai o valor em uma única busca na tabela hash.",
-        "`HashSet<T>` elimina duplicatas automaticamente e aceita `StringComparer.OrdinalIgnoreCase` para ignorar maiúsculas/minúsculas.",
-        "Prefira `HashSet<T>.Contains()` em vez de `List<T>.Contains()` ao verificar permissões ou IDs em $O(1)$."
+        "`dict.TryGetValue(chave, out var valor)` testa se existe e já entrega o valor em 1 única busca.",
+        "`HashSet<T>` remove duplicatas sozinho e verifica `.Contains(...)` em O(1)."
       ]
     },
     {
-      "type": "spot_the_bug",
-      "prompt": "Este código C# pode lançar `KeyNotFoundException` e derrubar a requisição se `codigo` não existir no dicionário `precos`. Clique na linha arriscada:",
-      "lines": [
-        "decimal ObterPreco(Dictionary<string, decimal> precos, string codigo) {",
-        "    return precos[codigo];",
-        "}"
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "O que será impresso ao rodar este código com `HashSet`?",
+      "codeSnippet": "var generos = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { \"RPG\", \"rpg\", \"Ação\" };\nConsole.WriteLine($\"{generos.Count} gêneros | tem rpg? {generos.Contains(\"Rpg\")}\");",
+      "options": [
+        "2 gêneros | tem rpg? True",
+        "3 gêneros | tem rpg? True",
+        "2 gêneros | tem rpg? False",
+        "Erro por item duplicado"
       ],
-      "buggyLineIndex": 1,
-      "explanation": "Na linha 2, `precos[codigo]` lança exceção se a chave não existir! Use `precos.TryGetValue(codigo, out var p) ? p : 0m;`."
+      "correctIndex": 0,
+      "hint": "`StringComparer.OrdinalIgnoreCase` faz `\"RPG\"`, `\"rpg\"` e `\"Rpg\"` contarem como a mesma palavra!",
+      "expectedOutput": "2 gêneros | tem rpg? True",
+      "explanation": "O `HashSet` descarta a duplicata `\"rpg\"` silenciosamente, ficando com 2 itens, e `.Contains(\"Rpg\")` dá `True` em O(1)."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a leitura segura de um `Dictionary` usando o padrão `TryGetValue` com variável `out`:",
-      "codeTemplate": "if (usuarios.{{blank}}(id, {{blank}} var nome)) {\n    Console.WriteLine(nome);\n}",
+      "prompt": "Consulte o dicionário `estoque` com segurança usando `TryGetValue` e `out`:",
+      "codeTemplate": "if (estoque.{{blank}}(\"NeonDrift\", {{blank}} var qtd)) {\n    Console.WriteLine($\"Qtd: {qtd}\");\n}",
       "blanks": [
         { "answer": "TryGetValue", "placeholder": "busca segura" },
         { "answer": "out", "placeholder": "parâmetro de saída" }
       ],
-      "options": ["TryGetValue", "out", "ref", "GetOrDefault", "ContainsKey"],
-      "explanation": "`TryGetValue(chave, out var valor)` retorna `bool` indicando se encontrou e já preenche `valor` em um único acesso."
+      "options": ["TryGetValue", "out", "Get", "ref"],
+      "hint": "O método seguro começa com `Try...` e preenche `var qtd` usando a palavra-chave `out`.",
+      "expectedOutput": "Qtd: 8",
+      "explanation": "Lindo! Se a chave não existir, o `if` apenas retorna `false` sem lançar nenhuma exceção."
     },
     {
-      "type": "multiple_choice",
-      "prompt": "Quantos elementos terá `var permissoes = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { \"admin\", \"ADMIN\", \"editor\" };`?",
-      "options": [
-        "3 elementos",
-        "2 elementos (\"admin\" e \"editor\")",
-        "1 elemento",
-        "Lança exceção por chave duplicada"
-      ],
-      "correctIndex": 1,
-      "explanation": "O `HashSet<T>` descarta duplicatas silenciosamente (`Add` retorna `false`), e `StringComparer.OrdinalIgnoreCase` trata `\"admin\"` e `\"ADMIN\"` como iguais."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete o código para criar um conjunto de valores únicos `HashSet<string>` sem distinção de maiúsculas/minúsculas e verificar se contém `\"VIP\"`:",
-      "codeTemplate": "var perfis = new {{blank}}<string>({{blank}}.OrdinalIgnoreCase) { \"vip\" };\nbool autorizado = perfis.{{blank}}(\"VIP\");",
-      "blanks": [
-        { "answer": "HashSet", "placeholder": "conjunto único" },
-        { "answer": "StringComparer", "placeholder": "comparador" },
-        { "answer": "Contains", "placeholder": "busca O(1)" }
-      ],
-      "options": ["HashSet", "StringComparer", "Contains", "List", "Dictionary", "Has"],
-      "explanation": "`HashSet<string>(StringComparer.OrdinalIgnoreCase)` + `.Contains(...)` oferece verificação case-insensitive em tempo constante $O(1)$."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para registrar tags únicas em um `HashSet<string>` e consultar a quantidade em um `Dictionary<string, int>` com `TryGetValue`:",
-      "blocks": [
-        "var contadores = new Dictionary<string, int> { [\"csharp\"] = 10 };",
-        "var vistas = new HashSet<string> { \"csharp\" };",
-        "if (vistas.Contains(\"csharp\") && contadores.TryGetValue(\"csharp\", out var total)) {",
-        "    Console.WriteLine($\"Total: {total}\");",
+      "type": "spot_the_bug",
+      "prompt": "Se um cliente buscar um código inexistente, essa função vai quebrar a API com `KeyNotFoundException`. Clique na linha perigosa:",
+      "lines": [
+        "int VerEstoque(Dictionary<string, int> mapa, string jogo) {",
+        "    return mapa[jogo];",
         "}"
       ],
-      "correctOrder": [0, 1, 2, 3, 4],
-      "explanation": "Combinar `HashSet<T>.Contains` e `Dictionary<K,V>.TryGetValue` garante duas verificações seguras e em $O(1)$."
+      "buggyLineIndex": 1,
+      "hint": "Acessar `mapa[jogo]` direto sem checar explode se a chave faltar.",
+      "expectedOutput": "0 (quando não encontrado)",
+      "explanation": "Na linha 2, `mapa[jogo]` lança erro para chaves ausentes. Usar `mapa.TryGetValue(jogo, out var q) ? q : 0` resolve na hora!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie um `Dictionary<string, int>` chamado `estoque` com pelo menos um item, um `HashSet<string>` chamado `tags` usando `StringComparer.OrdinalIgnoreCase`, adicione `\"dotnet\"` a `tags`, e use `TryGetValue` para ler uma variável `chave` de `estoque` e imprimir o valor encontrado com `Console.WriteLine`.",
-      "starterCode": "",
-      "requiredTokens": ["Dictionary<string, int>", "HashSet<string>", "StringComparer.OrdinalIgnoreCase", "TryGetValue(", "out var", "Console.WriteLine"],
-      "sampleSolution": "var estoque = new Dictionary<string, int> { [\"dotnet\"] = 5 };\nvar tags = new HashSet<string>(StringComparer.OrdinalIgnoreCase);\ntags.Add(\"dotnet\");\n\nstring chave = \"dotnet\";\nif (estoque.TryGetValue(chave, out var qtd)) {\n    Console.WriteLine(qtd);\n}",
-      "hint": "Instancie `Dictionary<string, int>`, `HashSet<string>(StringComparer.OrdinalIgnoreCase)` com `.Add(\"dotnet\")`, e use `if (estoque.TryGetValue(chave, out var qtd))`.",
-      "explanation": "`Dictionary` + `TryGetValue` e `HashSet` formam a dupla essencial para buscas rápidas e seguras em $O(1)$ no .NET."
+      "prompt": "Use `TryGetValue` em `estoque` para buscar `\"StarRunner\"` com `out var qtd` e imprima o valor encontrado.",
+      "starterCode": "var estoque = new Dictionary<string, int> { [\"StarRunner\"] = 12 };\n// TODO: use if (estoque.TryGetValue(\"StarRunner\", out var qtd)) e imprima qtd\n",
+      "requiredTokens": ["TryGetValue(", "out var", "Console.WriteLine"],
+      "sampleSolution": "var estoque = new Dictionary<string, int> { [\"StarRunner\"] = 12 };\nif (estoque.TryGetValue(\"StarRunner\", out var qtd)) {\n    Console.WriteLine(qtd);\n}",
+      "hint": "Escreva `if (estoque.TryGetValue(\"StarRunner\", out var qtd)) { Console.WriteLine(qtd); }`.",
+      "expectedOutput": "12",
+      "explanation": "Show! Agora suas consultas de estoque são instantâneas em O(1) e à prova de chaves ausentes."
     }
   ]
 }

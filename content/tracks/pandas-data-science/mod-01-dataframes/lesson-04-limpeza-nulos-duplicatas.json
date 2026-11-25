@@ -1,74 +1,72 @@
 {
   "id": "pandas-limpeza-nulos-04",
-  "title": "Limpeza de Dados: isna(), fillna(), dropna() e drop_duplicates()",
-  "description": "Trate valores ausentes (NaN), remova linhas duplicadas e corrija tipos com astype() antes de modelar.",
+  "title": "Faxina de Dados: nulos e duplicatas",
+  "description": "Encontre valores ausentes com isna(), preencha lacunas com fillna() e limpe repetições com dropna() e drop_duplicates().",
+  "mission": "Missão 4: Fazer a faxina no cadastro de clientes da cafeteria limpando valores vazios e duplicatas.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Faxina de Datasets Reais no Pandas",
-      "content": "Dados do mundo real sempre vêm sujos (`NaN`, linhas repetidas, colunas numéricas como string). No Pandas:\n- **`df.isna().sum()`**: conta quantos `NaN` existem em cada coluna.\n- **`df.dropna(subset=[\"email\"])`**: remove linhas onde `email` é nulo.\n- **`df[\"desconto\"].fillna(0)`**: preenche `NaN` com `0` (ou com a `.mean()` / `.median()`).\n- **`df.drop_duplicates(subset=[\"id\"])`**: elimina registros duplicados.",
-      "codeExample": "# Contar nulos por coluna\nprint(df.isna().sum())\n\n# Preencher notas vazias com 0 e remover emails nulos\ndf[\"nota\"] = df[\"nota\"].fillna(0)\ndf = df.dropna(subset=[\"email\"]).drop_duplicates(subset=[\"email\"])",
+      "title": "Limpando dados reais sem dor de cabeça",
+      "content": "Planilhas reais quase sempre vêm com células vazias (`NaN`) e cadastros repetidos. Com **`df.isna().sum()`** você descobre onde faltam dados em um segundo.\nDepois, use **`.fillna(0)`** para preencher lacunas opcionais, **`.dropna(subset=[\"email\"])`** para remover linhas sem dado obrigatório e **`.drop_duplicates()`** para eliminar repetições!",
+      "codeExample": "import pandas as pd\n\ndf = pd.DataFrame({\"email\": [\"a@cafe.com\", \"a@cafe.com\", None], \"gorjeta\": [5.0, 5.0, None]})\ndf[\"gorjeta\"] = df[\"gorjeta\"].fillna(0)\ndf = df.dropna(subset=[\"email\"]).drop_duplicates()\nprint(len(df))",
+      "expectedOutput": "1",
       "keyTakeaways": [
-        "Prefira `df = df.dropna(...)` em vez de `inplace=True` (o Pandas moderno recomenda atribuição ou encadeamento limpo).",
-        "Sempre cheque `df.isna().sum()` antes de treinar modelos de Machine Learning (a maioria não aceita `NaN`).",
-        "Use `df[\"preco\"] = df[\"preco\"].astype(float)` para converter tipos após limpar textos."
+        "`df.isna().sum()` mostra quantos valores vazios (`NaN`) existem em cada coluna.",
+        "Prefira reatribuir (`df = df.dropna(...)`) em vez de misturar atribuição com `inplace=True`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual comando retorna a contagem de valores ausentes (`NaN`) em cada coluna do DataFrame `df`?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal depois de preencher o valor vazio com `0` e somar as gorjetas?",
+      "codeSnippet": "import pandas as pd\ngorjetas = pd.Series([5.0, None, 4.0])\nprint(gorjetas.fillna(0).sum())",
       "options": [
-        "df.dropna().count()",
-        "df.isna().sum()",
-        "df.fillna(0)",
-        "df.drop_duplicates()"
+        "9.0",
+        "NaN",
+        "3.0",
+        "Erro porque há um None na Series"
       ],
-      "correctIndex": 1,
-      "explanation": "`df.isna()` gera uma máscara booleana de nulos e `.sum()` soma os `True` (1) por coluna."
+      "correctIndex": 0,
+      "hint": "O `None` vira `0.0`, e depois somamos `5.0 + 0.0 + 4.0`.",
+      "expectedOutput": "9.0",
+      "explanation": "`.fillna(0)` substitui o valor ausente por `0.0`, resultando na soma limpa `9.0`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a limpeza do DataFrame substituindo nulos na coluna `idade` pela mediana e removendo linhas duplicadas:",
-      "codeTemplate": "df[\"idade\"] = df[\"idade\"].{{blank}}(df[\"idade\"].median())\ndf = df.{{blank}}()",
+      "prompt": "Complete a faxina preenchendo as gorjetas vazias com `0` e removendo linhas repetidas:",
+      "codeTemplate": "df[\"gorjeta\"] = df[\"gorjeta\"].{{blank}}(0)\ndf = df.{{blank}}()",
       "blanks": [
         { "answer": "fillna", "placeholder": "preencher" },
         { "answer": "drop_duplicates", "placeholder": "duplicatas" }
       ],
       "options": ["fillna", "drop_duplicates", "dropna", "isna", "unique"],
-      "explanation": "`.fillna(valor)` preenche células `NaN` e `.drop_duplicates()` remove linhas repetidas."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "Identifique a linha que transforma `df` em `None` por misturar atribuição com `inplace=True`:",
-      "lines": [
-        "print(df.isna().sum())",
-        "df[\"nota\"] = df[\"nota\"].fillna(0)",
-        "df = df.dropna(subset=[\"email\"], inplace=True)",
-        "df[\"nota\"] = df[\"nota\"].astype(float)"
-      ],
-      "buggyLineIndex": 2,
-      "explanation": "Quando `inplace=True` é passado, `dropna` altera o DataFrame no lugar e retorna `None`. Atribuir `df = ...` sobrescreve `df` com `None`."
+      "hint": "Use `fillna` para trocar nulos por `0` e `drop_duplicates` para tirar linhas repetidas.",
+      "expectedOutput": "        email  gorjeta\n0  a@cafe.com      5.0",
+      "explanation": "Simples e direto: `fillna(0)` tapa os buracos numéricos e `drop_duplicates()` deixa cada registro único."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os blocos para auditar nulos, preencher `preco` nulo com `0`, converter para `float` e remover duplicatas:",
+      "prompt": "Ordene os blocos para auditar os nulos, preencher `gorjeta` com `0` e eliminar clientes duplicados:",
       "blocks": [
-        "df = df.drop_duplicates(subset=[\"id\"])",
+        "df = df.drop_duplicates(subset=[\"email\"])",
         "print(df.isna().sum())",
-        "df[\"preco\"] = df[\"preco\"].fillna(0).astype(float)"
+        "df[\"gorjeta\"] = df[\"gorjeta\"].fillna(0)"
       ],
       "correctOrder": [1, 2, 0],
-      "explanation": "Primeiro auditamos nulos com `isna().sum()`, depois preenchemos e convertemos `preco` com `fillna(0).astype(float)` e por fim removemos duplicatas."
+      "hint": "Primeiro inspecione os nulos, depois preencha `gorjeta` e por último remova duplicatas.",
+      "expectedOutput": "email      0\ngorjeta    1\ndtype: int64",
+      "explanation": "Auditar primeiro com `isna().sum()`, tratar nulos com `fillna` e remover duplicatas deixa a base pronta para análise!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: No DataFrame `df`, preencha os valores ausentes da coluna `\"bonus\"` com `0` e, em seguida, remova todas as linhas onde a coluna `\"email\"` é nula.",
-      "starterCode": "",
-      "requiredTokens": ["df[\"bonus\"]", ".fillna(0)", "df.dropna(", "subset=[\"email\"]"],
-      "sampleSolution": "df[\"bonus\"] = df[\"bonus\"].fillna(0)\ndf = df.dropna(subset=[\"email\"])",
-      "hint": "Atribua `df[\"bonus\"].fillna(0)` de volta à coluna e depois atualize `df` com `df.dropna(subset=[\"email\"])`.",
-      "explanation": "Combinar `fillna` para valores numéricos opcionais e `dropna(subset=...)` para chaves obrigatórias é rotina padrão de ETL."
+      "prompt": "Preencha os nulos da coluna `\"gorjeta\"` com `0` e remova as linhas onde `\"email\"` é nulo.",
+      "starterCode": "import pandas as pd\n\n# df já possui as colunas \"email\" e \"gorjeta\"\n# TODO: preencha nulos de \"gorjeta\" com 0 e remova linhas com \"email\" nulo\ndf[\"gorjeta\"] = \ndf = \nprint(df.isna().sum())",
+      "requiredTokens": ["fillna(0)", "dropna(", "subset=", "email"],
+      "sampleSolution": "import pandas as pd\n\ndf[\"gorjeta\"] = df[\"gorjeta\"].fillna(0)\ndf = df.dropna(subset=[\"email\"])\nprint(df.isna().sum())",
+      "hint": "Use `df[\"gorjeta\"].fillna(0)` na primeira linha e `df.dropna(subset=[\"email\"])` na segunda.",
+      "expectedOutput": "email      0\ngorjeta    0\ndtype: int64",
+      "explanation": "Cadastro zerado de nulos! Agora nenhum relatório da cafeteria vai quebrar por causa de dados vazios."
     }
   ]
 }

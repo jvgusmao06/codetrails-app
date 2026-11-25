@@ -1,73 +1,72 @@
 {
   "id": "git-branches-02",
-  "title": "Branches Isoladas, git switch, merge e Conflitos",
-  "description": "Crie ramificações seguras com git switch -c, integre código com git merge e entenda como resolver conflitos.",
+  "title": "Branches Isoladas, git switch e merge",
+  "description": "Crie ramificações leves com git switch -c, integre na main com git merge e limpe branches antigas.",
+  "mission": "Missão 3: Integrar a tela de login na branch principal do Nave App sem bagunçar o time.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Trabalhando em Paralelo com Branches e Merge",
-      "content": "No Git, uma **branch** é apenas um ponteiro leve para um commit. Nunca desenvolvemos direto na branch `main`: criamos uma branch isolada com `git switch -c minha-feature` (ou `git checkout -b`). Quando terminamos, voltamos para a `main` (`git switch main`) e rodamos `git merge minha-feature`. Se duas pessoas editaram a mesma linha do mesmo arquivo, o Git marca o conflito com `<<<<<<< HEAD`, `=======` e `>>>>>>>` para você escolher o código final, rodar `git add` e finalizar com `git commit`.",
-      "codeExample": "git switch -c feat/login\n# ... faz commits na branch ...\ngit switch main\ngit merge feat/login\ngit branch -d feat/login  # Remove a branch já mesclada",
+      "title": "Trabalhando em paralelo com switch e merge",
+      "content": "Uma **branch** é uma linha paralela onde você testa ideias sem encostar na `main`. Crie e entre nela com `git switch -c feat/login`.\nQuando terminar, volte para a `main` (`git switch main`), puxe as novidades com `git merge feat/login` e apague a branch temporária com `git branch -d feat/login`!",
+      "codeExample": "git switch -c feat/login\n# ... seus commits ...\ngit switch main\ngit merge feat/login\ngit branch -d feat/login",
+      "expectedOutput": "Updating a1b2c3d..e4f5g6h\nFast-forward\nDeleted branch feat/login",
       "keyTakeaways": [
-        "`git switch -c nome` (Git 2.23+) cria e já muda para a nova branch em um único comando claro.",
-        "Para resolver um conflito de merge: edite o arquivo removendo os marcadores `<<<<<<<`, rode `git add` no arquivo e finalize com `git commit`.",
-        "`git branch -d nome` apaga com segurança uma branch local que já foi integrada."
+        "Para trazer `feat/login` para dentro da `main`, você precisa estar NA `main` antes do `git merge`.",
+        "`git branch -d nome` remove com segurança uma branch que já foi mesclada."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Após editar um arquivo para resolver manualmente os marcadores `<<<<<<< HEAD` de um conflito de merge, quais comandos finalizam a resolução?",
+      "kind": "predict_output",
+      "prompt": "Você está dentro da branch `feat/login` e roda `git branch -d feat/login`. O que acontece?",
+      "codeSnippet": "git switch feat/login\ngit branch -d feat/login",
       "options": [
-        "git conflict --resolve e git push",
-        "git add <arquivo> seguido de git commit",
-        "git init seguido de git rebase",
-        "git reset --hard"
+        "O Git bloqueia com erro porque você não pode deletar a branch em que está agora",
+        "A branch é apagada e você volta para a main automaticamente",
+        "Todos os arquivos da pasta são apagados",
+        "O Git faz merge na main antes de deletar"
       ],
-      "correctIndex": 1,
-      "explanation": "No Git, marcar um conflito como resolvido é simplesmente executar `git add <arquivo>` após limpar os marcadores e concluir com `git commit`."
+      "correctIndex": 0,
+      "hint": "Você não consegue serrar o galho em que está sentado!",
+      "expectedOutput": "error: Cannot delete branch 'feat/login' checked out",
+      "explanation": "Primeiro mude para `main` com `git switch main`, e só depois rode `git branch -d feat/login`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete os comandos para criar e mudar para a branch `feat/api` usando `switch` e, após o merge, excluí-la localmente:",
-      "codeTemplate": "git switch {{blank}} feat/api\n# ... após voltar para main e fazer merge ...\ngit branch {{blank}} feat/api",
+      "prompt": "Complete as flags para criar/entrar na branch `feat/api` e depois deletá-la após o merge:",
+      "codeTemplate": "git switch {{blank}} feat/api\n# ... depois de mesclar na main ...\ngit branch {{blank}} feat/api",
       "blanks": [
         { "answer": "-c", "placeholder": "criar" },
         { "answer": "-d", "placeholder": "deletar" }
       ],
-      "options": ["-c", "-d", "-b", "-m", "-f"],
-      "explanation": "`git switch -c` cria e muda para a nova branch, enquanto `git branch -d` remove com segurança uma branch já mesclada."
+      "options": ["-c", "-d", "-m", "-f"],
+      "hint": "`-c` de *create* no `switch`, e `-d` de *delete* no `branch`.",
+      "expectedOutput": "Switched to a new branch 'feat/api'\nDeleted branch feat/api",
+      "explanation": "Fácil de lembrar: `switch -c` cria e `branch -d` limpa depois do merge!"
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os comandos para voltar para a branch `main`, mesclar a branch `fix-bug` e deletar a branch `fix-bug` local:",
+      "prompt": "Ordene os comandos para integrar a branch `fix-header` na `main` e remover a branch antiga:",
       "blocks": [
-        "git switch main",
-        "git merge fix-bug",
-        "git branch -d fix-bug"
+        "git branch -d fix-header",
+        "git merge fix-header",
+        "git switch main"
       ],
-      "correctOrder": [0, 1, 2],
-      "explanation": "Primeiro mudamos para a branch de destino (`main`), trazemos as alterações com `merge` e por fim limpamos a branch antiga com `branch -d`."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "Um desenvolvedor quer integrar a branch `feat/carrinho` dentro da `main`, mas acabou mesclando `main` dentro de `feat/carrinho` sem perceber! Clique na linha que causou o erro:",
-      "lines": [
-        "git switch feat/carrinho",
-        "git merge main",
-        "git branch -d feat/carrinho"
-      ],
-      "buggyLineIndex": 0,
-      "explanation": "Para trazer `feat/carrinho` para a `main`, é preciso estar na `main` (`git switch main`) antes de rodar `git merge feat/carrinho`. Além disso, não é possível deletar a branch em que você está no momento."
+      "correctOrder": [2, 1, 0],
+      "hint": "Entre primeiro na branch de destino (`main`), faça o merge e só no fim apague `fix-header`.",
+      "expectedOutput": "Switched to branch 'main'\nFast-forward\nDeleted branch fix-header",
+      "explanation": "Ordem impecável: `switch main` -> `merge fix-header` -> `branch -d fix-header`."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva os comandos Git para voltar para a branch `main`, mesclar nela a branch `feat/tema` e remover a branch `feat/tema` após a integração.",
-      "starterCode": "",
+      "prompt": "Complete o encerramento da tarefa: mude para `main`, mescle `feat/tema` e delete a branch `feat/tema`.",
+      "starterCode": "# TODO: volte para main, faça merge de feat/tema e delete a branch\ngit switch main\n",
       "requiredTokens": ["git switch", "main", "git merge", "feat/tema", "git branch", "-d"],
       "sampleSolution": "git switch main\ngit merge feat/tema\ngit branch -d feat/tema",
-      "hint": "Mude para a branch principal primeiro, depois execute o merge da feature e por último remova a branch local.",
-      "explanation": "Integrar na `main` e apagar a branch temporária mantém o repositório local organizado e livre de branches obsoletas."
+      "hint": "Abaixo de `git switch main`, adicione `git merge feat/tema` e `git branch -d feat/tema`.",
+      "expectedOutput": "Fast-forward\nDeleted branch feat/tema",
+      "explanation": "Integração limpa e repositório organizado — sem branches esquecidas acumulando!"
     }
   ]
 }

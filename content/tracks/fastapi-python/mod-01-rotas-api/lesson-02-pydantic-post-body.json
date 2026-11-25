@@ -1,77 +1,74 @@
 {
   "id": "fastapi-pydantic-post-02",
-  "title": "FastAPI + Pydantic v2: POST, Request Body e Validação Automática",
-  "description": "Receba e valide JSON automaticamente em rotas @app.post usando BaseModel e Field() do Pydantic.",
+  "title": "POST e Validação Automática com Pydantic",
+  "description": "Receba e valide payloads JSON sem esforço usando BaseModel, Field() e rotas @app.post.",
+  "mission": "Missão 2: Permitir criar novas tarefas na TaskFlow API validando os campos com Pydantic.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Validando Payloads JSON com Pydantic BaseModel",
-      "content": "No **FastAPI**, você não escreve `if 'email' not in body:` manualmente. Basta declarar uma classe herdando de **`BaseModel`** (do Pydantic) e colocá-la como parâmetro da função da rota `@app.post(...)`! O FastAPI lê o JSON, valida os tipos e regras (como `Field(gt=0)`), retorna erro **422 Unprocessable Entity** detalhado se vier inválido e ainda gera a documentação interativa Swagger (`/docs`)!",
-      "codeExample": "from fastapi import FastAPI\nfrom pydantic import BaseModel, Field\n\napp = FastAPI()\n\nclass ProdutoIn(BaseModel):\n    nome: str = Field(min_length=2)\n    preco: float = Field(gt=0)\n\n@app.post(\"/produtos\", status_code=201)\nasync def criar_produto(produto: ProdutoIn):\n    return {\"criado\": produto.nome, \"preco\": produto.preco}",
+      "title": "Validando JSON no piloto automático com BaseModel",
+      "content": "No FastAPI, você não precisa escrever dezenas de `if` para conferir se o JSON veio certo. Basta criar uma classe herdando de `BaseModel` (do Pydantic) e usá-la como parâmetro da rota `@app.post(..., status_code=201)`!\nSe o cliente mandar um dado inválido (como um preço negativo quando usamos `Field(gt=0)`), o FastAPI já responde **422 Unprocessable Entity** explicando exatamente o que falhou.",
+      "codeExample": "from pydantic import BaseModel, Field\nclass TarefaIn(BaseModel):\n    titulo: str = Field(min_length=2)\n    pontos: int = Field(gt=0)\n\n@app.post(\"/tarefas\", status_code=201)\nasync def criar_tarefa(tarefa: TarefaIn):\n    return {\"criada\": tarefa.titulo, \"pontos\": tarefa.pontos}",
+      "expectedOutput": "HTTP 201 Created -> {\"criada\": \"Estudar FastAPI\", \"pontos\": 10}",
       "keyTakeaways": [
-        "`BaseModel` valida tipos e converte entradas compatíveis automaticamente.",
-        "`Field(gt=0, max_length=100)` adiciona restrições numéricas e de tamanho.",
-        "Use `status_code=201` em rotas `POST` de criação (padrão REST)."
+        "`BaseModel` + `Field(gt=0, min_length=2)` validam o corpo JSON automaticamente.",
+        "Rotas de criação usam `@app.post(..., status_code=201)` e devolvem `422` se o JSON for inválido."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "O que o FastAPI retorna automaticamente se um cliente enviar um JSON com `\"preco\": -10` para uma rota que espera `preco: float = Field(gt=0)`?",
+      "kind": "predict_output",
+      "prompt": "Um cliente envia `POST /produtos` com `{\"nome\": \"Café\", \"preco\": -10}`. O que o FastAPI responde?",
+      "codeSnippet": "class ProdutoIn(BaseModel):\n    nome: str\n    preco: float = Field(gt=0)\n\n@app.post(\"/produtos\", status_code=201)\nasync def criar(produto: ProdutoIn):\n    return produto",
       "options": [
-        "200 OK com preco ajustado para 0",
-        "422 Unprocessable Entity com detalhes do campo inválido",
-        "500 Internal Server Error",
-        "404 Not Found"
+        "HTTP 201 Created com preco ajustado para 0",
+        "HTTP 422 Unprocessable Entity detalhando que preco deve ser > 0",
+        "HTTP 500 Internal Server Error",
+        "HTTP 404 Not Found"
       ],
       "correctIndex": 1,
-      "explanation": "O Pydantic valida automaticamente as regras de `Field(gt=0)` e o FastAPI devolve status 422 com a descrição exata do erro de validação."
+      "hint": "`Field(gt=0)` exige que `preco` seja estritamente maior que zero (`greater than 0`).",
+      "expectedOutput": "HTTP 422 Unprocessable Entity",
+      "explanation": "O Pydantic barra o payload inválido antes mesmo da sua função rodar e devolve status `422` com a explicação pronta!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o schema Pydantic e a rota POST do FastAPI para criar um usuário retornando status 201:",
+      "prompt": "Complete o schema Pydantic e o decorator da rota POST de criação:",
       "codeTemplate": "class UsuarioIn({{blank}}):\n    nome: str\n    idade: int = Field(ge=18)\n\n@app.{{blank}}(\"/usuarios\", status_code=201)\nasync def criar(dados: UsuarioIn):\n    return dados",
       "blanks": [
         { "answer": "BaseModel", "placeholder": "classe base" },
-        { "answer": "post", "placeholder": "método HTTP" }
+        { "answer": "post", "placeholder": "método" }
       ],
-      "options": ["BaseModel", "post", "get", "Model", "Schema"],
-      "explanation": "Schemas Pydantic herdam de `BaseModel` e rotas de criação usam `@app.post(..., status_code=201)`."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "Esta rota deveria receber um corpo JSON para criar um pedido, mas usa o método HTTP inadequado para envio de Request Body. Clique na linha com o bug:",
-      "lines": [
-        "class PedidoIn(BaseModel):",
-        "    quantidade: int = Field(gt=0)",
-        "@app.get(\"/pedidos\", status_code=201)",
-        "async def criar_pedido(pedido: PedidoIn):",
-        "    return {\"qtd\": pedido.quantidade}"
-      ],
-      "buggyLineIndex": 2,
-      "explanation": "Na linha 3, rotas de criação com Request Body devem usar `@app.post(\"/pedidos\", status_code=201)`, e não `@app.get`."
+      "options": ["BaseModel", "post", "get", "Schema"],
+      "hint": "Modelos Pydantic herdam de `BaseModel`, e rotas para criar recursos usam `@app.post`.",
+      "expectedOutput": "HTTP 201 Created -> {\"nome\": \"Py\", \"idade\": 22}",
+      "explanation": "Perfeito! `BaseModel` cuida da validação e `@app.post(..., status_code=201)` segue o padrão REST."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os blocos para definir o modelo Pydantic com validação `Field` e a rota POST de criação:",
+      "prompt": "Ordene os blocos para declarar o schema `ClienteIn` com `Field` e a rota POST que o recebe:",
       "blocks": [
         "    nome: str = Field(min_length=2)",
-        "class ClienteIn(BaseModel):",
         "@app.post(\"/clientes\", status_code=201)",
+        "class ClienteIn(BaseModel):",
         "async def criar_cliente(cliente: ClienteIn):",
         "    return {\"nome\": cliente.nome}"
       ],
-      "correctOrder": [1, 0, 2, 3, 4],
-      "explanation": "Primeiro declaramos a classe `ClienteIn(BaseModel)` com seus campos validados por `Field`, e depois a rota `@app.post` que a recebe como parâmetro."
+      "correctOrder": [2, 0, 1, 3, 4],
+      "hint": "Declare primeiro a classe `ClienteIn` com seu campo e só depois o decorator `@app.post` com a função.",
+      "expectedOutput": "HTTP 201 Created -> {\"nome\": \"Ada\"}",
+      "explanation": "Definimos o modelo `ClienteIn(BaseModel)` antes da rota para usá-lo como tipo do parâmetro `cliente`!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Defina um modelo Pydantic chamado `Item` herdando de `BaseModel` com dois campos: `titulo` (texto) e `preco` (número decimal estritamente maior que zero usando `Field`).",
-      "starterCode": "from pydantic import BaseModel, Field\n",
+      "prompt": "Complete a classe `Item` herdando de `BaseModel` com `titulo: str` e `preco: float = Field(gt=0)`.",
+      "starterCode": "from pydantic import BaseModel, Field\n\n# TODO: crie class Item(BaseModel): com titulo (str) e preco (float > 0)\n",
       "requiredTokens": ["class", "Item(BaseModel):", "titulo: str", "preco: float", "Field(gt=0)"],
-      "sampleSolution": "class Item(BaseModel):\n    titulo: str\n    preco: float = Field(gt=0)",
-      "hint": "Crie uma classe `Item` que herda de `BaseModel` e use `Field` com o argumento `gt=0` no campo `preco`.",
-      "explanation": "O FastAPI usa esse modelo para validar o corpo da requisição e gerar o OpenAPI Schema."
+      "sampleSolution": "from pydantic import BaseModel, Field\n\nclass Item(BaseModel):\n    titulo: str\n    preco: float = Field(gt=0)",
+      "hint": "Escreva `class Item(BaseModel):` e, indentados, `titulo: str` e `preco: float = Field(gt=0)`.",
+      "expectedOutput": "Item(titulo='Café', preco=12.5)",
+      "explanation": "Mandou bem! Agora o FastAPI valida o corpo das requisições e ainda gera a documentação `/docs` de graça."
     }
   ]
 }

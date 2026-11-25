@@ -1,74 +1,72 @@
 {
   "id": "git-reflog-bisect-05",
-  "title": "Resgate de Emergência (git reflog) e Caça a Bugs (git bisect)",
-  "description": "Recupere commits apagados por reset --hard usando git reflog e encontre exatamente qual commit introduziu um bug com busca binária (git bisect).",
+  "title": "Resgate (git reflog) e Caça a Bugs (git bisect)",
+  "description": "Recupere commits que pareciam perdidos com git reflog e encontre o commit culpado por um bug com git bisect.",
+  "mission": "Missão 9: Resgatar um commit perdido após um reset acidental no Nave App!",
   "xp": 45,
   "steps": [
     {
       "type": "theory",
-      "title": "Sua Rede de Segurança: git reflog e git bisect",
-      "content": "Rodou `git reset --hard` por acidente ou deletou uma branch antes de mesclar? Calma: no Git, quase nada que já foi commitado some na hora! O **`git reflog`** registra cada movimento do seu `HEAD` localmente por ~30 dias, permitindo recuperar qualquer commit perdido com `git switch -c resgate <hash>`. Já o **`git bisect`** automatiza uma **Busca Binária** ($O(\\log n)$) no histórico para descobrir exatamente qual dos últimos 1.000 commits quebrou o código: você marca o atual como `bad` e um antigo conhecido como `good`, e o Git vai testando o meio do caminho até apontar o culpado!",
-      "codeExample": "# Ver histórico de todos os movimentos do HEAD (inclusive resets!)\ngit reflog\n# Recuperar commit que parecia perdido\ngit switch -c resgate HEAD@{2}\n\n# Busca binária para achar o commit culpado por um bug\ngit bisect start\ngit bisect bad          # Commit atual tem o bug\ngit bisect good v1.0.0  # Na v1.0.0 funcionava\n# ... após encontrar o commit culpado:\ngit bisect reset",
+      "title": "Sua rede de segurança: reflog e bisect",
+      "content": "Deu `git reset --hard` por engano e achou que perdeu tudo? Respira! O `git reflog` guarda um diário local de todos os lugares por onde seu `HEAD` passou — basta criar uma branch no hash antigo para resgatar tudo.\nE quando um bug aparece do nada, `git bisect` faz uma busca binária nos commits (testando o meio do caminho) até apontar exatamente o culpado!",
+      "codeExample": "# Diário secreto de movimentos do HEAD\ngit reflog\ngit switch -c resgate HEAD@{2}\n\n# Caça binária ao commit que quebrou o app\ngit bisect start\ngit bisect bad\ngit bisect good v1.0.0",
+      "expectedOutput": "a1b2c3d HEAD@{2}: commit: feat: mapa\nSwitched to a new branch 'resgate'",
       "keyTakeaways": [
-        "`git reflog` é o \"Ctrl+Z definitivo\" do Git local para recuperar commits após `reset --hard` ou `rebase` errado.",
-        "`git bisect` testa o meio do caminho repetidamente — em 1.000 commits, acha o culpado em apenas ~10 passos ($O(\\log n)$)!",
-        "Lembre-se de rodar `git bisect reset` ao terminar para voltar à sua branch normal."
+        "`git reflog` é o Ctrl+Z secreto do Git local para resgatar commits após `reset` ou `rebase`.",
+        "`git bisect` acha o commit culpado em ~10 passos mesmo entre 1.000 commits (e `git bisect reset` encerra)."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Você executou `git reset --hard HEAD~3` por engano no seu repositório local e seus últimos 3 commits sumiram do `git log`. Como encontrá-los para recuperar?",
+      "kind": "predict_output",
+      "prompt": "Há 1.024 commits entre a versão boa (`v1.0.0`) e o commit atual quebrado (`bad`). Quantos passos o `git bisect` leva para achar o culpado?",
+      "codeSnippet": "git bisect start\ngit bisect bad\ngit bisect good v1.0.0",
       "options": [
-        "Não há mais como recuperar commits locais",
-        "Rodando `git reflog` para ver o hash anterior do HEAD e criando uma branch nele",
-        "Rodando `git init` novamente",
-        "Rodando `git diff --cached`"
+        "Aproximadamente 10 passos (divide pela metade a cada teste)",
+        "1.024 passos (testa um por um)",
+        "512 passos",
+        "1 passo apenas"
       ],
-      "correctIndex": 1,
-      "explanation": "O `git reflog` guarda o registro local de onde `HEAD` apontava antes do `reset --hard`, permitindo restaurar os commits."
+      "correctIndex": 0,
+      "hint": "Cada resposta (`good` ou `bad`) corta metade dos commits suspeitos: 1024 -> 512 -> 256 -> ...!",
+      "expectedOutput": "Bisecting: 512 revisions left (roughly 10 steps)",
+      "explanation": "A busca binária ($\\log_2 1024 = 10$) encontra o commit exato em cerca de 10 verificações!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete os comandos para iniciar uma investigação com `git bisect` sabendo que o commit atual está quebrado e a tag `v1.0.0` funcionava:",
+      "prompt": "Inicie o `git bisect` e marque o commit atual como quebrado (`bad`):",
       "codeTemplate": "git bisect {{blank}}\ngit bisect {{blank}}\ngit bisect good v1.0.0",
       "blanks": [
         { "answer": "start", "placeholder": "iniciar" },
-        { "answer": "bad", "placeholder": "commit quebrado" }
+        { "answer": "bad", "placeholder": "quebrado" }
       ],
-      "options": ["start", "bad", "good", "reset", "init"],
-      "explanation": "`git bisect start` inicia a busca binária e `git bisect bad` marca o commit atual como defeituoso."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Em um projeto com 1.024 commits entre a última versão estável (`good`) e o commit atual (`bad`), aproximadamente quantos testes o `git bisect` precisa fazer para achar o commit exato do bug?",
-      "options": [
-        "1.024 testes (1 por commit)",
-        "Cerca de 10 testes, pois usa Busca Binária $O(\\log n)$",
-        "512 testes",
-        "Apenas 1 teste"
-      ],
-      "correctIndex": 1,
-      "explanation": "O `git bisect` divide o intervalo de commits pela metade a cada iteração ($\\log_2 1024 = 10$ passos)."
+      "options": ["start", "bad", "good", "reset"],
+      "hint": "Comece com `start` e diga ao Git que o commit atual está `bad`.",
+      "expectedOutput": "Bisecting: 12 revisions left to test",
+      "explanation": "Depois de achar o culpado, lembre de encerrar com `git bisect reset` para voltar ao normal!"
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os comandos para encerrar um `git bisect`, inspecionar o histórico local de movimentos do `HEAD` e resgatar um commit perdido `f9e8d7c` em uma nova branch:",
+      "prompt": "Ordene os comandos para sair do modo bisect, consultar o diário local (`reflog`) e resgatar o commit `f9e8d7c` numa nova branch:",
       "blocks": [
+        "git switch -c resgate f9e8d7c",
         "git bisect reset",
-        "git reflog",
-        "git switch -c resgate f9e8d7c"
+        "git reflog"
       ],
-      "correctOrder": [0, 1, 2],
-      "explanation": "Primeiro saímos do modo bisect com `git bisect reset`, consultamos o `git reflog` e criamos a branch `resgate` apontando para o hash."
+      "correctOrder": [1, 2, 0],
+      "hint": "Encerre o bisect primeiro, ache o hash no `reflog` e crie a branch `resgate`.",
+      "expectedOutput": "Switched to a new branch 'resgate'",
+      "explanation": "Missão de resgate concluída! Com `reflog`, quase nenhum commit local se perde de verdade."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva os comandos Git para listar o histórico local de movimentos do `HEAD` e, em seguida, criar e mudar para uma nova branch chamada `resgate` apontando para o commit `abc1234`.",
-      "starterCode": "",
+      "prompt": "Veja o histórico local de movimentos com `git reflog` e crie a branch `resgate` apontando para o commit `abc1234`.",
+      "starterCode": "# TODO: consulte o reflog e crie a branch resgate no hash abc1234\n",
       "requiredTokens": ["git reflog", "git switch", "-c", "resgate", "abc1234"],
       "sampleSolution": "git reflog\ngit switch -c resgate abc1234",
-      "hint": "Use o comando que exibe o registro de referências locais e depois crie a nova branch passando o nome e o hash.",
-      "explanation": "Criar uma nova branch no hash encontrado no `reflog` restaura seus arquivos e commits instantaneamente."
+      "hint": "Escreva `git reflog` e na linha abaixo `git switch -c resgate abc1234`.",
+      "expectedOutput": "Switched to a new branch 'resgate'",
+      "explanation": "Commits resgatados! Agora você já sabe sair de qualquer emergência no Git."
     }
   ]
 }

@@ -1,75 +1,72 @@
 {
   "id": "go-nativas-02",
-  "title": "Funções Nativas Built-in (make, len, cap, delete) e Desafio Go",
-  "description": "Domine as funções nativas built-in do Go para alocar, medir e remover elementos em slices e maps.",
+  "title": "Caixa Rápida: make, len, cap e delete",
+  "description": "Use as ferramentas prontas do Go para preparar maps e slices com folga, conferir o tamanho e limpar itens sem dor de cabeça.",
+  "mission": "Missão 3: Reservar espaço na esteira de pacotes e limpar entregas já finalizadas.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Funções Built-in do Go: make, len, cap, append e delete",
-      "content": "O Go possui funções nativas embutidas na própria linguagem (sem precisar de import): 'len(x)' retorna o tamanho atual de strings, slices e maps; 'cap(s)' retorna a capacidade alocada na memória de um slice; 'make(tipo, tam, cap)' inicializa slices e maps na memória; 'append(s, item)' adiciona elementos a um slice; e 'delete(mapa, chave)' remove uma chave de um map.",
-      "codeExample": "// Inicializando map e slice pré-alocado com make()\nusuarios := make(map[string]int)\nusuarios[\"Ana\"] = 10\ndelete(usuarios, \"Ana\")\n\nbuffer := make([]int, 0, 100)\nbuffer = append(buffer, 42)\nfmt.Println(len(buffer), cap(buffer)) // 1 100",
+      "title": "Ferramentas nativas sem precisar de import",
+      "content": "O Go já vem com atalhos prontos para coleções: `make` prepara um map ou reserva espaço num slice, `len` conta quantos itens existem agora, `cap` mostra quanto cabe antes de crescer e `delete` remove uma chave do map.\nUm detalhe de ouro: sempre inicialize seu map com `make(map[string]int)` antes de gravar nele!",
+      "codeExample": "entregas := make(map[string]int)\nentregas[\"SP\"] = 3\ndelete(entregas, \"SP\")\n\nfila := make([]string, 0, 5)\nfila = append(fila, \"PKG-1\")\nfmt.Println(len(fila), cap(fila))",
+      "expectedOutput": "1 5",
       "keyTakeaways": [
-        "Um map declarado apenas com 'var m map[string]int' é nil e causa panic ao inserir; use 'make(map[string]int)' ou 'map[string]int{}'.",
-        "len(s) informa quantos itens existem agora no slice; cap(s) informa até quantos itens cabem antes de realocar memória.",
-        "delete(mapa, chave) remove a entrada com segurança mesmo que a chave não exista no map."
+        "`make([]string, 0, 5)` cria um slice vazio (`len = 0`) com espaço já reservado para `5` itens (`cap = 5`).",
+        "Sempre crie maps com `make(map[K]V)` (ou `{}`) antes de gravar, e remova chaves com `delete(m, chave)`."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Complete o código Go usando as funções nativas make, len e delete:",
-      "codeTemplate": "cache := {{blank}}(map[string]string)\ncache[\"token\"] = \"abc\"\ntamanho := {{blank}}(cache)\n{{blank}}(cache, \"token\")",
-      "blanks": [
-        { "answer": "make", "placeholder": "alocador" },
-        { "answer": "len", "placeholder": "tamanho" },
-        { "answer": "delete", "placeholder": "removedor" }
-      ],
-      "options": ["make", "len", "delete", "new", "size", "remove"],
-      "explanation": "make() inicializa o map, len() retorna a quantidade de chaves e delete() apaga uma chave do map."
-    },
-    {
       "type": "multiple_choice",
-      "prompt": "Após criar o slice abaixo com make, o que 'len(s)' e 'cap(s)' retornam respectivamente?",
+      "kind": "predict_output",
+      "prompt": "O que será impresso ao rodar este código?",
       "codeSnippet": "s := make([]int, 2, 5)\nfmt.Println(len(s), cap(s))",
       "options": [
-        "0 e 5",
-        "2 e 5",
-        "5 e 2",
-        "2 e 2"
+        "2 5",
+        "0 5",
+        "5 2",
+        "2 2"
       ],
-      "correctIndex": 1,
-      "explanation": "O segundo argumento de make([]int, 2, 5) define o tamanho inicial (len = 2, preenchido com zero values) e o terceiro define a capacidade total alocada (cap = 5)."
+      "correctIndex": 0,
+      "hint": "Em `make([]int, len, cap)`, o segundo argumento é o tamanho atual e o terceiro é a capacidade.",
+      "expectedOutput": "2 5",
+      "explanation": "O slice nasce com `2` zeros (`len = 2`) e espaço reservado para até `5` elementos (`cap = 5`)."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Prepare o `cache` com `make` e remova a chave `\"token\"` com `delete`:",
+      "codeTemplate": "cache := {{blank}}(map[string]string)\ncache[\"token\"] = \"ok\"\n{{blank}}(cache, \"token\")\nfmt.Println(len(cache))",
+      "blanks": [
+        { "answer": "make", "placeholder": "criar" },
+        { "answer": "delete", "placeholder": "remover" }
+      ],
+      "options": ["make", "delete", "new", "remove"],
+      "hint": "Maps são inicializados com `make` e têm chaves removidas com `delete`.",
+      "expectedOutput": "0",
+      "explanation": "Após criar com `make` e apagar a única chave com `delete`, `len(cache)` volta a ser `0`."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este código compila, mas gera panic em tempo de execução ao tentar inserir uma chave no map. Clique na linha responsável pelo problema:",
+      "prompt": "Ops! Este código compila, mas trava (panic) ao gravar no map porque ele nasceu `nil`. Qual linha causou o problema?",
       "lines": [
-        "var visitas map[string]int",
-        "visitas[\"home\"] = 1",
-        "fmt.Println(len(visitas))"
+        "var entregas map[string]int",
+        "entregas[\"SP\"] = 1",
+        "fmt.Println(len(entregas))"
       ],
       "buggyLineIndex": 0,
-      "explanation": "Um map declarado com 'var visitas map[string]int' começa como nil e não aceita gravação. Inicialize-o com 'visitas := make(map[string]int)'."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para pré-alocar um slice com capacidade 4, adicionar um item com append e exibir tamanho e capacidade:",
-      "blocks": [
-        "fmt.Println(len(itens), cap(itens))",
-        "itens = append(itens, \"go\")",
-        "itens := make([]string, 0, 4)"
-      ],
-      "correctOrder": [2, 1, 0],
-      "explanation": "Primeiro alocamos o slice com make([]string, 0, 4), depois inserimos com append() e por fim consultamos len() e cap()."
+      "hint": "Um `map` declarado só com `var` começa vazio (`nil`) e não aceita gravação até ser criado com `make`.",
+      "expectedOutput": "1",
+      "explanation": "Na linha 1, trocando para `entregas := make(map[string]int)`, o map fica pronto para receber chaves!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie um slice chamado 'fila' de strings com tamanho inicial 0 e capacidade 5 usando 'make'. Em seguida, adicione \"job1\" usando 'append' e imprima o tamanho e a capacidade do slice usando 'len', 'cap' e 'fmt.Println'.",
-      "starterCode": "",
-      "requiredTokens": ["fila", "make", "[]string", "append", "len", "cap", "fmt.Println"],
+      "prompt": "Crie o slice `fila` com `make([]string, 0, 5)`, adicione `\"job1\"` e imprima o tamanho (`len`) e a capacidade (`cap`).",
+      "starterCode": "// TODO: crie `fila` com make([]string, 0, 5)\n\nfila = append(fila, \"job1\")\n// TODO: imprima len(fila) e cap(fila) com fmt.Println\n",
+      "requiredTokens": ["make", "[]string", "len", "cap", "fmt.Println"],
       "sampleSolution": "fila := make([]string, 0, 5)\nfila = append(fila, \"job1\")\nfmt.Println(len(fila), cap(fila))",
-      "hint": "Use make([]string, 0, 5) para pré-alocar o slice, reatribua com append(fila, \"job1\") e passe len(fila) e cap(fila) ao fmt.Println.",
-      "explanation": "Pré-alocar a capacidade com make([]T, 0, cap) evita realocações de memória durante chamadas repetidas de append()."
+      "hint": "Use `fila := make([]string, 0, 5)` e depois `fmt.Println(len(fila), cap(fila))`.",
+      "expectedOutput": "1 5",
+      "explanation": "Ótimo! Reservar capacidade com `make` deixa a esteira de pacotes muito mais rápida."
     }
   ]
 }

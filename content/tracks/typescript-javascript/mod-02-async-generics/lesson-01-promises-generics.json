@@ -1,23 +1,53 @@
 {
   "id": "ts-async-01",
-  "title": "07. Async/Await, Promises e Generics <T>",
-  "description": "Trabalhe com operações assíncronas usando Promise<T> e async/await, e crie funções reutilizáveis com Generics <T>.",
+  "title": "Async/Await, Promises e Generics <T>",
+  "description": "Aguarde operações assíncronas com async/await sem dor de cabeça e crie funções reutilizáveis com <T>.",
+  "mission": "Missão 7: Carregar a playlist da nuvem no TaskBeat com async/await e criar um atalho genérico para pegar o primeiro item.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Promises, Async/Await e Generics <T>",
-      "content": "Operações assíncronas e código genérico tipado são pilares do TypeScript moderno:\n\n1. **`Promise<T>` e `async` / `await`**: Toda função marcada com `async` retorna automaticamente uma `Promise<T>`. Dentro dela, `await` pausa a execução até a Promise resolver, devolvendo o valor do tipo `T` (esquecer `await` deixa a Promise pendente!).\n2. **Generics `<T>`**: Permitem escrever funções ou interfaces que preservam o tipo exato passado pelo chamador, sem perder segurança recorrendo a `any`: `function embrulhar<T>(valor: T): T[] { return [valor]; }`.\n3. **Combinando `async` e Generics**: Podemos tipar funções assíncronas genéricas como `async function buscar<T>(dado: T): Promise<T>`.",
-      "codeExample": "async function carregarNome(): Promise<string> {\n  const nome = await buscarDoBanco();\n  return nome;\n}\n\nfunction primeiro<T>(lista: T[]): T {\n  return lista[0];\n}",
+      "title": "Esperando Promises com await e preservando tipos com <T>",
+      "content": "Toda função `async` devolve uma `Promise<T>` — dentro dela, `await` espera o resultado ficar pronto antes de seguir (esquecer o `await` deixa a caixa fechada!).\nE os **Generics `<T>`** são como uma etiqueta flexível: `function primeiro<T>(lista: T[]): T` funciona para textos, números ou tarefas sem precisar usar `any`.",
+      "codeExample": "function primeiro<T>(lista: T[]): T {\n  return lista[0];\n}\n\nasync function carregarDestaque(): Promise<string> {\n  const faixas = await Promise.resolve([\"Lo-fi\", \"Jazz\"]);\n  return primeiro(faixas);\n}",
+      "expectedOutput": "Lo-fi",
       "keyTakeaways": [
-        "Funções async retornam sempre Promise<T>.",
-        "Use await antes de chamar uma função que retorna Promise para obter o valor resolvido.",
-        "Generics <T> preservam o tipo real do argumento sem usar any."
+        "Funções `async` sempre retornam `Promise<T>`, e `await` abre o valor resolvido.",
+        "Generics `<T>` mantêm o tipo exato do dado que entrou, sem abrir mão da segurança."
       ]
     },
     {
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "O que aparece no console ao executar este código assíncrono?",
+      "codeSnippet": "function embrulhar<T>(item: T): T[] {\n  return [item];\n}\nasync function rodar() {\n  const res = await Promise.resolve(embrulhar(\"Foco\"));\n  console.log(res);\n}\nrodar();",
+      "options": [
+        "[\"Foco\"]",
+        "\"Foco\"",
+        "Promise { [\"Foco\"] }",
+        "Erro de tipo porque T não foi informado"
+      ],
+      "correctIndex": 0,
+      "hint": "`embrulhar(\"Foco\")` devolve `[\"Foco\"]`, e `await` extrai esse valor de dentro da Promise!",
+      "expectedOutput": "[\"Foco\"]",
+      "explanation": "O TypeScript infere `T = string` sozinho, `embrulhar` coloca o texto num array e `await` entrega `[\"Foco\"]`."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a função genérica para receber um item de tipo `T` e retornar um array desse mesmo tipo:",
+      "codeTemplate": "function encapsular{{blank}}(item: {{blank}}): T[] {\n  return [item];\n}",
+      "blanks": [
+        { "answer": "<T>", "placeholder": "genérico" },
+        { "answer": "T", "placeholder": "tipo" }
+      ],
+      "options": ["<T>", "T", "any", "<any>"],
+      "hint": "Declaramos `<T>` logo após o nome da função e usamos `T` no parâmetro.",
+      "expectedOutput": "encapsular(7) -> [7]",
+      "explanation": "Perfeito! `<T>` declara o tipo genérico e `T` conecta a entrada ao retorno `T[]`."
+    },
+    {
       "type": "spot_the_bug",
-      "prompt": "A função abaixo tenta ler o nome de um usuário retornado por uma função assíncrona, mas recebe undefined porque não aguardou a Promise. Qual linha tem o bug?",
+      "prompt": "Ops! O painel imprimiu `undefined` em vez do nome do usuário porque faltou abrir a Promise. Qual linha tem o bug?",
       "lines": [
         "async function exibirUsuario() {",
         "  const user = buscarUsuario(1);",
@@ -25,64 +55,19 @@
         "}"
       ],
       "buggyLineIndex": 1,
-      "explanation": "Faltou 'await' antes de 'buscarUsuario(1)'. Sem await, 'user' é uma Promise pendente, não o objeto do usuário."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual é o tipo de retorno inferido pelo TypeScript para uma função async que retorna a string \"ok\"?",
-      "options": [
-        "string",
-        "Promise<string>",
-        "void",
-        "Async<string>"
-      ],
-      "correctIndex": 1,
-      "explanation": "Toda função declarada com async envolve seu valor de retorno em uma Promise<T>, portanto retorna Promise<string>."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete a assinatura da função genérica em TypeScript que recebe um valor de tipo T e retorna um array desse mesmo tipo:",
-      "codeTemplate": "function encapsular{{blank}}(item: {{blank}}): {{blank}}[] {\n  return [item];\n}",
-      "blanks": [
-        { "answer": "<T>", "placeholder": "parâmetro genérico" },
-        { "answer": "T", "placeholder": "tipo" },
-        { "answer": "T", "placeholder": "tipo" }
-      ],
-      "options": ["<T>", "T", "any", "<any>"],
-      "explanation": "Declaramos <T> após o nome da função e usamos T no parâmetro e no retorno T[]."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para criar uma função async genérica que aguarda um valor e o retorna:",
-      "blocks": [
-        "  const resultado = await promessa;",
-        "async function resolver<T>(promessa: Promise<T>): Promise<T> {",
-        "  return resultado;",
-        "}"
-      ],
-      "correctOrder": [1, 0, 2, 3],
-      "explanation": "A função recebe Promise<T>, retorna Promise<T>, usa await para extrair T e devolve o resultado."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete a função async tipada que aguarda uma lista de usuários e retorna o primeiro usando a função genérica 'primeiro':",
-      "codeTemplate": "{{blank}} function obterLider(): {{blank}}<string> {\n  const nomes = {{blank}} listarNomes();\n  return primeiro<string>(nomes);\n}",
-      "blanks": [
-        { "answer": "async", "placeholder": "assíncrona" },
-        { "answer": "Promise", "placeholder": "promessa" },
-        { "answer": "await", "placeholder": "aguardar" }
-      ],
-      "options": ["async", "Promise", "await", "return"],
-      "explanation": "Marcamos com async, tipamos o retorno como Promise<string> e aguardamos listarNomes() com await."
+      "hint": "`buscarUsuario(1)` retorna uma Promise — falta uma palavra-chave antes da chamada!",
+      "expectedOutput": "Ana",
+      "explanation": "Sem `await`, `user` é uma Promise pendente e não tem `.nome`. Com `await buscarUsuario(1)`, tudo funciona!"
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma função assíncrona genérica chamada 'aguardarItem' que receba um parâmetro 'promessa' do tipo Promise<T> e retorne o valor resolvido após usar await, com a assinatura de retorno devidamente tipada.",
-      "starterCode": "",
+      "prompt": "Complete a função `aguardarItem<T>` para esperar `promessa` com `await` e retornar o valor resolvido.",
+      "starterCode": "// TODO: declare async function aguardarItem<T>(promessa: Promise<T>): Promise<T>\nasync function aguardarItem<T>(promessa: Promise<T>): Promise<T> {\n  // TODO: aguarde `promessa` com await e retorne o valor\n  \n}",
       "requiredTokens": ["async", "function", "aguardarItem", "<T>", "Promise", "await", "return"],
       "sampleSolution": "async function aguardarItem<T>(promessa: Promise<T>): Promise<T> {\n  const valor = await promessa;\n  return valor;\n}",
-      "hint": "Declare 'async function aguardarItem<T>(promessa: Promise<T>): Promise<T>' e use await dentro do corpo.",
-      "explanation": "A função integra async/await, tipagem com Promise<T> e parâmetros de tipo genérico <T>."
+      "hint": "Dentro da função, escreva `const valor = await promessa; return valor;` (ou `return await promessa;`).",
+      "expectedOutput": "Valor resolvido com tipo T preservado",
+      "explanation": "Mandou bem demais! Você juntou `async/await`, `Promise<T>` e Generics `<T>` com maestria."
     }
   ]
 }

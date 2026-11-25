@@ -1,74 +1,72 @@
 {
   "id": "git-pr-forks-opensource-06",
-  "title": "Colaboração Open Source: Fork, Upstream, Pull Request e SSH",
-  "description": "Aprenda a autenticar com chaves SSH e domine o fluxo completo para contribuir em projetos open-source no GitHub usando fork, remote upstream e Pull Requests.",
+  "title": "Open Source: Fork, Upstream, Pull Request e SSH",
+  "description": "Autentique sem senha com chave SSH e contribua em projetos no GitHub usando fork, upstream e Pull Requests.",
+  "mission": "Missão 10: Abrir seu primeiro Pull Request no projeto open-source do Nave App!",
   "xp": 45,
   "steps": [
     {
       "type": "theory",
-      "title": "Autenticação SSH e Contribuição Open Source via Fork + PR",
-      "content": "Para enviar código ao GitHub com segurança sem digitar senha a cada `push`, configuramos uma **chave SSH** moderna (`ssh-keygen -t ed25519`), adicionamos a chave pública (`.pub`) no GitHub e usamos URLs SSH (`git@github.com:org/projeto.git`).\n\nQuando você quer contribuir para um repositório que não é seu no GitHub, você não tem permissão de `push` direto nele. O fluxo padrão é:\n1. Clicar em **Fork** no GitHub (cria uma cópia na sua conta).\n2. Clonar o seu fork (`origin`) e adicionar o projeto original como **`upstream`** (`git remote add upstream <url-original>`).\n3. Criar uma branch dedicada (`git switch -c fix/doc`), commitar e dar `git push -u origin fix/doc`.\n4. Abrir um **Pull Request (PR)** no GitHub para os mantenedores revisarem (Code Review) e aprovarem o merge!",
-      "codeExample": "# Gerar chave SSH segura (Ed25519)\nssh-keygen -t ed25519 -C \"voce@email.com\"\n\n# Clonar seu fork via SSH e configurar o upstream\ngit clone git@github.com:SEU_USER/projeto.git\ncd projeto\ngit remote add upstream git@github.com:ORG/projeto.git\n\n# Sincronizar sua main com o projeto original\ngit fetch upstream\ngit merge upstream/main\n\n# Criar branch para sua contribuição\ngit switch -c feat/nova-trilha",
+      "title": "Contribuindo no GitHub com SSH, Fork e Upstream",
+      "content": "Com uma chave SSH (`ssh-keygen -t ed25519`), seu computador se autentica no GitHub com segurança sem pedir senha em cada `push`.\nPara contribuir num projeto de outra pessoa: faça um **Fork** (sua cópia = `origin`), adicione o projeto original como `upstream`, trabalhe numa branch nova, dê `push` para `origin` e abra o **Pull Request**!",
+      "codeExample": "ssh-keygen -t ed25519 -C \"voce@email.com\"\ngit remote add upstream git@github.com:org/nave.git\ngit fetch upstream\ngit merge upstream/main\ngit switch -c feat/melhoria",
+      "expectedOutput": "Switched to a new branch 'feat/melhoria'",
       "keyTakeaways": [
-        "Chaves SSH (`ed25519`) autenticam seu computador no GitHub de forma criptográfica sem precisar de senha em cada push.",
-        "`origin` aponta para o SEU fork; `upstream` aponta para o repositório ORIGINAL.",
-        "Nunca faça alterações direto na `main` do seu fork — crie sempre uma branch dedicada para cada Pull Request."
+        "`origin` é o SEU fork; `upstream` é o repositório original do projeto.",
+        "Sempre faça `git push -u origin sua-branch` (nunca direto no `upstream`) e abra o Pull Request."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é a principal vantagem de configurar uma chave SSH (`ssh-keygen -t ed25519`) e clonar repositórios usando `git@github.com:...`?",
+      "kind": "predict_output",
+      "prompt": "Você fez fork de um projeto open-source e tentou rodar `git push -u upstream fix/doc`. O que o GitHub responde?",
+      "codeSnippet": "git switch -c fix/doc\ngit commit -m \"docs: corrige typo\"\ngit push -u upstream fix/doc",
       "options": [
-        "Permite fazer push direto na branch `main` de qualquer projeto sem Pull Request",
-        "Autentica sua máquina de forma criptográfica e segura sem precisar digitar usuário/token a cada operação remota",
-        "Substitui a necessidade de criar commits",
-        "Ignora automaticamente arquivos `.env`"
+        "Permission denied (você só tem permissão de push no seu fork origin)",
+        "O Pull Request é aprovado e mesclado na hora",
+        "O repositório original muda de dono",
+        "O commit vai para o git stash"
       ],
-      "correctIndex": 1,
-      "explanation": "A autenticação por par de chaves SSH (pública no GitHub, privada na sua máquina) garante conexões seguras e práticas com o servidor remoto."
+      "correctIndex": 0,
+      "hint": "`upstream` é o repositório dos mantenedores — você envia para o seu `origin` e pede merge via PR!",
+      "expectedOutput": "ERROR: Permission to org/nave.git denied",
+      "explanation": "Envie sempre para `origin` (`git push -u origin fix/doc`) e depois clique em *Open Pull Request* no GitHub."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete os comandos para gerar uma chave SSH Ed25519 e cadastrar o repositório original como remoto `upstream`:",
-      "codeTemplate": "ssh-keygen -t {{blank}} -C \"dev@exemplo.com\"\ngit remote add {{blank}} git@github.com:org/repo.git",
+      "prompt": "Gere uma chave SSH moderna (`ed25519`) e cadastre o repositório original como `upstream`:",
+      "codeTemplate": "ssh-keygen -t {{blank}} -C \"dev@nave.app\"\ngit remote add {{blank}} git@github.com:org/nave.git",
       "blanks": [
-        { "answer": "ed25519", "placeholder": "algoritmo SSH" },
-        { "answer": "upstream", "placeholder": "nome do remoto" }
+        { "answer": "ed25519", "placeholder": "algoritmo" },
+        { "answer": "upstream", "placeholder": "remoto original" }
       ],
-      "options": ["ed25519", "upstream", "origin", "rsa1024", "fork"],
-      "explanation": "`ed25519` é o algoritmo SSH recomendado atualmente, e `upstream` é a convenção para apontar ao repositório original do fork."
+      "options": ["ed25519", "upstream", "origin", "fork"],
+      "hint": "`ed25519` é o algoritmo SSH recomendado hoje, e `upstream` é o apelido do repo original.",
+      "expectedOutput": "Your identification has been saved\nupstream configurado!",
+      "explanation": "Prontinho: SSH seguro configurado e `upstream` conectado para manter seu fork em dia!"
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os passos corretos para sincronizar sua branch local com o repositório original (`upstream`) e iniciar uma nova contribuição:",
+      "prompt": "Ordene os passos para sincronizar sua `main` local com o `upstream` antes de criar sua branch de contribuição:",
       "blocks": [
         "git switch -c feat/melhoria",
-        "git fetch upstream",
-        "git merge upstream/main"
+        "git merge upstream/main",
+        "git fetch upstream"
       ],
-      "correctOrder": [1, 2, 0],
-      "explanation": "Primeiro buscamos as novidades do `upstream`, atualizamos nossa `main` com `merge upstream/main`, e só então criamos a nova branch limpa."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "Ao tentar enviar uma contribuição open-source, o desenvolvedor recebeu erro de permissão (`Permission denied`) porque tentou enviar direto para o repositório original! Clique na linha com o erro:",
-      "lines": [
-        "git switch -c fix/typo",
-        "git add README.md",
-        "git commit -m \"docs: corrige typo\"",
-        "git push -u upstream fix/typo"
-      ],
-      "buggyLineIndex": 3,
-      "explanation": "Você não tem permissão de escrita no `upstream` (repositório original). O push deve ser feito para o SEU fork (`origin`), e depois você abre o Pull Request no GitHub."
+      "correctOrder": [2, 1, 0],
+      "hint": "Primeiro busque (`fetch`), depois integre (`merge`) e só então crie sua nova branch (`switch -c`).",
+      "expectedOutput": "Switched to a new branch 'feat/melhoria'",
+      "explanation": "Começar sua branch sempre atualizada com `upstream/main` evita conflitos na hora do Pull Request!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva os comandos Git para adicionar o repositório remoto `upstream` apontando para `https://github.com/org/app.git` e, em seguida, enviar sua branch `feat/docs` para o remoto `origin` já configurando o rastreamento (`-u`).",
-      "starterCode": "",
+      "prompt": "Cadastre o remoto `upstream` em `https://github.com/org/app.git` e envie sua branch `feat/docs` para o seu fork (`origin`) com `-u`.",
+      "starterCode": "# TODO: adicione o remote upstream e faça push -u origin feat/docs\n",
       "requiredTokens": ["git remote add", "upstream", "git push", "-u", "origin", "feat/docs"],
       "sampleSolution": "git remote add upstream https://github.com/org/app.git\ngit push -u origin feat/docs",
-      "hint": "Primeiro cadastre o novo remoto chamado `upstream` com a URL informada; na linha seguinte faça o push da branch para `origin` com a flag de tracking.",
-      "explanation": "Com `origin` e `upstream` configurados, você mantém seu fork sempre atualizado com o projeto principal e envia branches prontas para Pull Request."
+      "hint": "Escreva `git remote add upstream https://github.com/org/app.git` e depois `git push -u origin feat/docs`.",
+      "expectedOutput": "branch 'feat/docs' set up to track 'origin/feat/docs'",
+      "explanation": "Parabéns! Você concluiu a trilha Git & GitHub e já está pronto para colaborar em qualquer equipe ou projeto open-source!"
     }
   ]
 }

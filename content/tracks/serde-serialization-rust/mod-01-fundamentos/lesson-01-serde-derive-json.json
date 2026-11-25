@@ -1,61 +1,53 @@
 {
   "id": "serde-derive-01",
-  "title": "Serde: #[derive(Serialize, Deserialize)] e serde_json",
-  "description": "Transforme JSON em structs fortemente tipadas em tempo de compilação sem reflection.",
+  "title": "Fichas em JSON: Serde Derive e Atributos",
+  "description": "Transforme structs Rust em JSON (e vice-versa) com serde_json, camelCase e proteção de campos sensíveis.",
+  "mission": "Missão 1: Serializar a ficha do herói Ferris em JSON camelCase sem vazar dados secretos.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Serialização Zero-Overhead com Serde",
-      "content": "O **Serde** (*SERialize / DEserialize*) é uma das bibliotecas mais famosas do Rust. Basta anotar sua struct com **`#[derive(Serialize, Deserialize)]`** e o compilador gera o código otimizado em tempo de compilação! Use **`#[serde(rename_all = \"camelCase\")]`** para converter `nome_completo` em `nomeCompleto` no JSON para seu frontend TypeScript, **`#[serde(default)]`** para preencher campos opcionais ausentes e **`#[serde(skip_serializing)]`** para ocultar campos sensíveis.",
-      "codeExample": "use serde::{Serialize, Deserialize};\n\n#[derive(Serialize, Deserialize)]\n#[serde(rename_all = \"camelCase\")]\nstruct Usuario {\n    user_id: u32,\n    #[serde(default)]\n    ativo: bool,\n}\n\nlet texto = serde_json::to_string(&user)?;\nlet obj: Usuario = serde_json::from_str(&texto)?;",
+      "title": "JSON rápido e sem reflection com Serde",
+      "content": "Com `#[derive(Serialize, Deserialize)]`, o **Serde** gera o código de conversão JSON direto na compilação!\nPrecisa conversar com um frontend JS? Use `#[serde(rename_all = \"camelCase\")]`. Quer ocultar senhas na saída? `#[serde(skip_serializing)]`. E se um campo puder faltar no JSON, `#[serde(default)]` preenche automaticamente!",
+      "codeExample": "#[derive(Serialize, Deserialize)]\n#[serde(rename_all = \"camelCase\")]\nstruct Ficha {\n    hero_id: u32,\n    #[serde(default)] ativo: bool,\n}\nlet json = serde_json::to_string(&Ficha { hero_id: 1, ativo: true })?;",
+      "expectedOutput": "{\"heroId\":1,\"ativo\":true}",
       "keyTakeaways": [
-        "`serde_json::from_str::<T>(&s)` valida o formato e os tipos na hora; se faltar campo obrigatório, retorna `Err`.",
-        "`#[serde(skip_serializing)]` evita vazar campos como `senha_hash` no JSON!",
-        "`#[serde(default)]` preenche campos ausentes com o valor `Default::default()` sem dar erro."
+        "`serde_json::to_string(&val)` gera JSON e `serde_json::from_str(&texto)` lê JSON para sua struct.",
+        "`#[serde(rename_all = \"camelCase\")]`, `#[serde(default)]` e `#[serde(skip_serializing)]` resolvem 99% dos casos reais."
       ]
     },
     {
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "Qual JSON `serde_json::to_string` produz para esta struct com `skip_serializing`?",
+      "codeSnippet": "#[derive(Serialize)]\n#[serde(rename_all = \"camelCase\")]\nstruct Conta {\n    user_id: u32,\n    #[serde(skip_serializing)]\n    senha: String,\n}",
+      "options": [
+        "{\"userId\":7}",
+        "{\"user_id\":7,\"senha\":\"123\"}",
+        "{\"userId\":7,\"senha\":null}",
+        "Erro de compilação"
+      ],
+      "correctIndex": 0,
+      "hint": "`rename_all = \"camelCase\"` muda `user_id` para `userId`, e `skip_serializing` esconde `senha`!",
+      "expectedOutput": "{\"userId\":7}",
+      "explanation": "O campo `user_id` vira `userId` e `senha` nem aparece no JSON — zero risco de vazamento!"
+    },
+    {
       "type": "fill_in_blank",
-      "prompt": "Complete a struct Rust com as macros do Serde e converta para JSON:",
-      "codeTemplate": "#[derive({{blank}}, {{blank}})]\nstruct Ponto { x: i32, y: i32 }\nlet j = serde_json::{{blank}}(&Ponto { x: 1, y: 2 }).unwrap();",
+      "prompt": "Derive `Serialize` e gere a string JSON com `serde_json::to_string`:",
+      "codeTemplate": "#[derive({{blank}}, Deserialize)]\nstruct Ponto { x: i32, y: i32 }\nlet j = serde_json::{{blank}}(&Ponto { x: 1, y: 2 }).unwrap();",
       "blanks": [
         { "answer": "Serialize", "placeholder": "serializar" },
-        { "answer": "Deserialize", "placeholder": "desserializar" },
-        { "answer": "to_string", "placeholder": "para string" }
+        { "answer": "to_string", "placeholder": "para JSON" }
       ],
-      "options": ["Serialize", "Deserialize", "to_string", "Json", "stringify"],
-      "explanation": "`Serialize` e `Deserialize` habilitam conversão bidirecional, e `serde_json::to_string` gera a String JSON."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual atributo do Serde garante que um campo como `senha_hash` nunca seja enviado na resposta JSON, mesmo que a struct seja serializada?",
-      "options": [
-        "#[serde(default)]",
-        "#[serde(rename_all = \"camelCase\")]",
-        "#[serde(skip_serializing)]",
-        "#[serde(private)]"
-      ],
-      "correctIndex": 2,
-      "explanation": "`#[serde(skip_serializing)]` instrui o Serde a omitir o campo ao converter a struct para JSON."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para definir uma struct com nomes em camelCase no JSON e desserializá-la de uma string:",
-      "blocks": [
-        "    user_id: u32,",
-        "#[serde(rename_all = \"camelCase\")]",
-        "#[derive(Serialize, Deserialize)]",
-        "struct Sessao {",
-        "}",
-        "let s: Sessao = serde_json::from_str(json_str)?;"
-      ],
-      "correctOrder": [2, 1, 3, 0, 4, 5],
-      "explanation": "Os atributos `#[derive(...)]` e `#[serde(rename_all = \"camelCase\")]` precedem a definição de `struct Sessao`, que então pode ser lida com `serde_json::from_str`."
+      "options": ["Serialize", "to_string", "Json", "stringify"],
+      "hint": "Para transformar struct em texto JSON usamos o trait `Serialize` e a função `serde_json::to_string`.",
+      "expectedOutput": "{\"x\":1,\"y\":2}",
+      "explanation": "`Serialize` habilita a saída JSON e `serde_json::to_string` devolve a `String` formatada."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Encontre a linha com erro onde a struct `Config` não conseguirá ser desserializada se o campo `ativo` faltar no JSON:",
+      "prompt": "Queríamos que `ativo` assumisse `false` automaticamente se faltasse no JSON de entrada, mas usamos o atributo errado! Qual linha tem o bug?",
       "lines": [
         "#[derive(Serialize, Deserialize)]",
         "struct Config {",
@@ -65,16 +57,19 @@
         "}"
       ],
       "buggyLineIndex": 3,
-      "explanation": "`#[serde(skip_serializing)]` apenas omite o campo na saída; para permitir que ele falte na entrada JSON usando `false` como padrão, é preciso usar `#[serde(default)]`."
+      "hint": "`skip_serializing` só esconde na saída; qual atributo do Serde preenche valores ausentes na entrada?",
+      "expectedOutput": "Config { porta: 8080, ativo: false }",
+      "explanation": "Troque `#[serde(skip_serializing)]` por `#[serde(default)]` na linha 4 para aceitar JSON sem o campo `ativo`!"
     },
     {
       "type": "write_code",
-      "prompt": "Importe os traits de derivação do Serde, declare uma struct `Pedido` com um campo `pedido_id` (`u64`) configurada para usar camelCase no JSON, e faça o parsing de uma string JSON `\"{\\\"pedidoId\\\": 1}\"` para uma variável `p` do tipo `Pedido`.",
-      "starterCode": "",
-      "requiredTokens": ["#[derive(Serialize, Deserialize)]", "#[serde(rename_all = \"camelCase\")]", "struct Pedido", "serde_json::from_str"],
-      "sampleSolution": "use serde::{Serialize, Deserialize};\n\n#[derive(Serialize, Deserialize)]\n#[serde(rename_all = \"camelCase\")]\nstruct Pedido {\n    pedido_id: u64,\n}\n\nlet p: Pedido = serde_json::from_str(\"{\\\"pedidoId\\\": 1}\").unwrap();",
-      "hint": "Anote `struct Pedido { pedido_id: u64 }` com `#[derive(Serialize, Deserialize)]` e `#[serde(rename_all = \"camelCase\")]`, e use `serde_json::from_str`.",
-      "explanation": "O compilador gera um parser especializado para `Pedido` mapeando `pedidoId` do JSON diretamente para `pedido_id` na struct."
+      "prompt": "Adicione `#[serde(rename_all = \"camelCase\")]` em `Pedido` e faça o parsing do JSON `\"{\\\"pedidoId\\\": 1}\"` usando `serde_json::from_str`.",
+      "starterCode": "use serde::{Serialize, Deserialize};\n#[derive(Serialize, Deserialize)]\n// TODO: adicione #[serde(rename_all = \"camelCase\")]\nstruct Pedido { pedido_id: u64 }\n\n// TODO: leia \"{\\\"pedidoId\\\": 1}\" para `let p: Pedido` com serde_json::from_str\n",
+      "requiredTokens": ["#[serde(rename_all = \"camelCase\")]", "serde_json::from_str"],
+      "sampleSolution": "use serde::{Serialize, Deserialize};\n#[derive(Serialize, Deserialize)]\n#[serde(rename_all = \"camelCase\")]\nstruct Pedido { pedido_id: u64 }\n\nlet p: Pedido = serde_json::from_str(\"{\\\"pedidoId\\\": 1}\").unwrap();",
+      "hint": "Coloque `#[serde(rename_all = \"camelCase\")]` acima de `struct Pedido` e use `let p: Pedido = serde_json::from_str(\"{\\\"pedidoId\\\": 1}\").unwrap();`.",
+      "expectedOutput": "Pedido { pedido_id: 1 }",
+      "explanation": "Incrível! O Serde converteu `pedidoId` para `pedido_id` com zero esforço em runtime."
     }
   ]
 }

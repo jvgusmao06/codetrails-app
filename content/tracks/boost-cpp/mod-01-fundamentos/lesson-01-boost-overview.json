@@ -1,79 +1,73 @@
 {
   "id": "boost-overview-01",
-  "title": "Boost C++: Algorithm, Split e Utilitários de String",
-  "description": "Manipule strings com boost::algorithm, divida textos com boost::split e entenda a relação entre Boost e o padrão ISO C++.",
+  "title": "Boost: trim, to_upper e split de Strings",
+  "description": "Limpe espaços, padronize maiúsculas e divida textos em segundos com boost::algorithm.",
+  "mission": "Missão 1: Limpar e separar mensagens de telemetria no decodificador da nave Nova-9.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Por que Boost é Chamado de 'Campo de Provas' do C++?",
-      "content": "Muitos recursos que hoje fazem parte da `std::` (como `shared_ptr`, `filesystem`, `optional`, `variant` e `regex`) nasceram dentro do **Boost**! Mesmo no C++20/23, o Boost continua essencial para utilitários de string (`boost::algorithm::trim`, `boost::to_upper`, `boost::split` com `boost::is_any_of`), grafos (`Boost.Graph`), parsing (`Boost.Spirit`) e containers sem alocação na Heap (`boost::container::flat_map`).",
-      "codeExample": "#include <boost/algorithm/string.hpp>\n#include <string>\n#include <vector>\n\nstd::string texto = \"  C++,Boost,CMake  \";\nboost::trim(texto);\nboost::to_upper(texto);\n\nstd::vector<std::string> partes;\nboost::split(partes, texto, boost::is_any_of(\",\"));",
+      "title": "Ferramentas prontas de string com Boost",
+      "content": "O **Boost** é o famoso laboratório do C++ — vários recursos da `std::` nasceram lá! Com `#include <boost/algorithm/string.hpp>`, você limpa espaços nas pontas com `boost::trim`, converte para maiúsculas com `boost::to_upper` e quebra textos com `boost::split`.\nDetalhe legal: `boost::trim` e `boost::to_upper` modificam a string direto (*in-place*), sem gastar memória extra!",
+      "codeExample": "#include <boost/algorithm/string.hpp>\n#include <iostream>\n\nstd::string msg = \"  nova,9  \";\nboost::trim(msg);\nboost::to_upper(msg);\nstd::cout << msg << \"\\n\";",
+      "expectedOutput": "NOVA,9",
       "keyTakeaways": [
-        "Várias bibliotecas Boost são *header-only* (basta dar `#include`, sem compilar bibliotecas extras).",
-        "`boost::trim(s)` e `boost::to_upper(s)` modificam a string *in-place* (retornam `void`) sem alocar memória extra.",
-        "`boost::split(destino, texto, boost::is_any_of(\",\"))` preenche um `std::vector<std::string>` com os trechos separados.",
-        "Antes de usar algo do Boost, confira se já entrou na `std::` moderna (ex: use `std::filesystem` no C++17+)."
+        "`boost::trim(s)` e `boost::to_upper(s)` alteram `s` direto (*in-place*) e retornam `void`.",
+        "`boost::split(vec, s, boost::is_any_of(\",\"))` separa uma string em um `std::vector<std::string>`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é o papel histórico e prático da coleção Boost no ecossistema C++?",
+      "kind": "predict_output",
+      "prompt": "O que aparece na tela depois de limpar e dividir esta mensagem?",
+      "codeSnippet": "std::string csv = \"  oxigenio,escudo  \";\nboost::trim(csv);\nstd::vector<std::string> partes;\nboost::split(partes, csv, boost::is_any_of(\",\"));\nstd::cout << partes.size() << \" - \" << partes[0] << \"\\n\";",
       "options": [
-        "Substituir o compilador GCC/Clang por um interpretador",
-        "Fornecer bibliotecas revisadas por pares de alta qualidade, muitas das quais posteriormente entram na biblioteca padrão (std::)",
-        "Servir apenas para estilização CSS",
-        "Gerenciar pacotes Python"
+        "2 - oxigenio",
+        "2 -   oxigenio",
+        "1 - oxigenio,escudo",
+        "Erro porque `trim` precisava ser salvo em outra variável"
       ],
-      "correctIndex": 1,
-      "explanation": "Recursos como smart pointers, thread, optional, variant e filesystem foram testados no Boost antes de entrarem no padrão ISO C++."
+      "correctIndex": 0,
+      "hint": "`boost::trim` já removeu os espaços das pontas direto em `csv` antes do `split`!",
+      "expectedOutput": "2 - oxigenio",
+      "explanation": "`csv` virou `\"oxigenio,escudo\"` e `boost::split` separou em 2 itens, com `partes[0]` igual a `\"oxigenio\"`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para limpar espaços das bordas de `linha` e dividi-la por vírgula em `partes`:",
-      "codeTemplate": "std::string linha = \"  a,b,c  \";\nboost::{{blank}}(linha);\nstd::vector<std::string> partes;\nboost::{{blank}}(partes, linha, boost::{{blank}}(\",\"));",
+      "prompt": "Limpe os espaços de `linha` e divida o texto por vírgula dentro de `partes`:",
+      "codeTemplate": "std::string linha = \"  a,b,c  \";\nboost::{{blank}}(linha);\nstd::vector<std::string> partes;\nboost::{{blank}}(partes, linha, boost::is_any_of(\",\"));",
       "blanks": [
         { "answer": "trim", "placeholder": "limpar" },
-        { "answer": "split", "placeholder": "dividir" },
-        { "answer": "is_any_of", "placeholder": "separador" }
+        { "answer": "split", "placeholder": "dividir" }
       ],
-      "options": ["trim", "split", "is_any_of", "strip", "join", "contains"],
-      "explanation": "`boost::trim` remove espaços das extremidades in-place, e `boost::split` usa o predicado `boost::is_any_of` para quebrar a string."
+      "options": ["trim", "split", "strip", "join"],
+      "hint": "Use `trim` para tirar espaços das bordas e `split` para quebrar em partes.",
+      "expectedOutput": "partes == {\"a\", \"b\", \"c\"}",
+      "explanation": "`boost::trim(linha)` limpa as pontas in-place e `boost::split` preenche `partes` com os 3 trechos."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Encontre o erro de uso da API do Boost String Algorithms no trecho abaixo:",
+      "prompt": "Ops! O decodificador não compilou porque tentou guardar o retorno de `boost::trim`. Qual linha tem o bug?",
       "lines": [
         "#include <boost/algorithm/string.hpp>",
-        "#include <string>",
         "std::string nome = \"  boost  \";",
         "std::string limpo = boost::trim(nome);",
         "boost::to_upper(nome);"
       ],
-      "buggyLineIndex": 3,
-      "explanation": "`boost::trim(nome)` modifica a string `nome` *in-place* e retorna `void`, portanto não pode ser atribuído a `std::string limpo` (para cópia existe `boost::trim_copy`)."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene as linhas para incluir o cabeçalho do Boost, limpar espaços e dividir os itens em um vetor:",
-      "blocks": [
-        "boost::split(itens, csv, boost::is_any_of(\",\"));",
-        "#include <boost/algorithm/string.hpp>",
-        "boost::trim(csv);",
-        "std::string csv = \"  x,y,z  \";",
-        "std::vector<std::string> itens;"
-      ],
-      "correctOrder": [1, 3, 2, 4, 0],
-      "explanation": "Incluímos `<boost/algorithm/string.hpp>`, declaramos `csv`, limpamos as pontas com `boost::trim`, criamos o vetor `itens` e chamamos `boost::split`."
+      "buggyLineIndex": 2,
+      "hint": "Lembre-se: `boost::trim` altera a string direto e retorna `void`!",
+      "expectedOutput": "BOOST",
+      "explanation": "Na linha 3, `boost::trim(nome)` retorna `void` e não pode ser atribuído. Basta chamar `boost::trim(nome);` direto (ou usar `boost::trim_copy`)."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Inclua o cabeçalho de algoritmos de string do Boost, declare uma `std::string` chamada `s` com espaços nas extremidades (ex: `\"  ola  \"`) e remova esses espaços *in-place*.",
-      "starterCode": "",
-      "requiredTokens": ["#include <boost/algorithm/string.hpp>", "std::string s", "boost::trim(s)"],
-      "sampleSolution": "#include <boost/algorithm/string.hpp>\nstd::string s = \"  ola  \";\nboost::trim(s);",
-      "hint": "Use `#include <boost/algorithm/string.hpp>`, crie `std::string s = \"  ola  \";` e passe `s` para `boost::trim(...)`.",
-      "explanation": "`boost::trim(s)` modifica `s` diretamente (in-place) eliminando cópias desnecessárias."
+      "prompt": "Complete o código para limpar os espaços de `s` com `boost::trim(s)` e passar para maiúsculas com `boost::to_upper(s)`.",
+      "starterCode": "#include <boost/algorithm/string.hpp>\n#include <iostream>\n#include <string>\n\nint main() {\n    std::string s = \"  ola  \";\n    // TODO: limpe os espaços com boost::trim(s) e converta com boost::to_upper(s)\n    \n    std::cout << s << \"\\n\";\n    return 0;\n}",
+      "requiredTokens": ["boost::trim(s)", "boost::to_upper(s)"],
+      "sampleSolution": "#include <boost/algorithm/string.hpp>\n#include <iostream>\n#include <string>\n\nint main() {\n    std::string s = \"  ola  \";\n    boost::trim(s);\n    boost::to_upper(s);\n    std::cout << s << \"\\n\";\n    return 0;\n}",
+      "hint": "Escreva `boost::trim(s);` e na linha seguinte `boost::to_upper(s);`.",
+      "expectedOutput": "OLA",
+      "explanation": "Sinal decodificado! `boost::trim(s)` e `boost::to_upper(s)` transformaram `\"  ola  \"` em `\"OLA\"` in-place."
     }
   ]
 }

@@ -1,91 +1,73 @@
 {
   "id": "vitest-01",
-  "title": "Suítes de Teste com describe, it, expect e vi.fn()",
-  "description": "Estruture testes expressivos no Vitest, compare objetos com toEqual, teste funções async/await e simule chamadas com spies.",
+  "title": "Testes Rápidos com describe, it, expect e vi.fn()",
+  "description": "Organize testes com describe/it, compare números com toBe e objetos com toEqual, e espione chamadas com vi.fn().",
+  "mission": "Missão 1: Criar a suíte de testes da caixa registradora ShopCheck para garantir contas certas.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Anatomia de um Teste no Vitest",
-      "content": "O **Vitest** é o test runner moderno nativo para projetos TypeScript/Vite. Agrupamos cenários relacionados com **`describe()`**, definimos cada caso com **`it()`** (ou `test()`) e validamos resultados com **`expect()`**. Para comparar valores primitivos usamos `.toBe()`, para objetos/arrays usamos `.toEqual()`, e para espionar chamadas usamos **`vi.fn()`**. Em testes assíncronos, sempre marque o callback com **`async`** e aguarde as Promises com **`await`**!",
-      "codeExample": "import { describe, it, expect, vi } from \"vitest\";\n\ndescribe(\"Carrinho\", () => {\n  it(\"calcula o total e notifica o callback\", () => {\n    const onCheckout = vi.fn();\n    const item = { id: 1, preco: 50 };\n\n    onCheckout(item.preco);\n    expect(item).toEqual({ id: 1, preco: 50 });\n    expect(onCheckout).toHaveBeenCalledWith(50);\n  });\n\n  it(\"busca dados de forma assíncrona\", async () => {\n    const dados = await Promise.resolve({ ok: true });\n    expect(dados.ok).toBe(true);\n  });\n});",
+      "title": "Testando sem drama com Vitest",
+      "content": "No **Vitest**, você agrupa testes relacionados com `describe()`, escreve cada cenário com `it()` e checa o resultado com `expect()`.\nA regra de ouro dos matchers é fácil: `.toBe()` compara valores simples (números, textos), `.toEqual()` compara o conteúdo de objetos/arrays, e `vi.fn()` cria um espião para confirmar se um callback foi chamado!",
+      "codeExample": "import { describe, it, expect, vi } from \"vitest\";\ndescribe(\"ShopCheck\", () => {\n  it(\"calcula total e avisa recibo\", () => {\n    const avisar = vi.fn();\n    avisar(50);\n    expect(avisar).toHaveBeenCalledWith(50);\n  });\n});",
+      "expectedOutput": "✓ ShopCheck > calcula total e avisa recibo (1 passed)",
       "keyTakeaways": [
-        "Use `describe()` para agrupar casos `it()` de um mesmo módulo ou funcionalidade.",
-        "Use `.toBe()` para igualdade estrita (`===`) de números/strings e `.toEqual()` para comparar conteúdo de objetos/arrays.",
-        "`vi.fn()` cria uma função mock/spy que registra quantas vezes e com quais argumentos foi chamada.",
-        "Em testes assíncronos, nunca esqueça de colocar `async () =>` e `await` nas chamadas."
+        "Use `.toBe()` para números/strings/booleans e `.toEqual()` para objetos e arrays.",
+        "`vi.fn()` espiona chamadas de funções, e testes assíncronos sempre usam `async () =>` + `await`."
       ]
     },
     {
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "O que o Vitest mostra ao rodar este teste?",
+      "codeSnippet": "it(\"espiona alerta\", () => {\n  const avisar = vi.fn();\n  avisar(\"pago\");\n  expect(avisar).toHaveBeenCalledWith(\"pago\");\n});",
+      "options": [
+        "PASS — o espião registrou exatamente a chamada com \"pago\"",
+        "FAIL — vi.fn() não aceita argumentos",
+        "FAIL — precisa usar toEqual em vez de toHaveBeenCalledWith",
+        "Erro de sintaxe porque falta describe"
+      ],
+      "correctIndex": 0,
+      "hint": "`avisar(\"pago\")` grava o argumento dentro do spy criado com `vi.fn()`.",
+      "expectedOutput": "✓ espiona alerta (1 passed)",
+      "explanation": "O spy `vi.fn()` anotou a chamada com `\"pago\"`, então `toHaveBeenCalledWith(\"pago\")` passa verdinho!"
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o teste para criar um espião e verificar o argumento recebido:",
+      "codeTemplate": "const notificar = {{blank}}.fn();\nnotificar(\"sucesso\");\nexpect(notificar).{{blank}}(\"sucesso\");",
+      "blanks": [
+        { "answer": "vi", "placeholder": "utilitário" },
+        { "answer": "toHaveBeenCalledWith", "placeholder": "matcher" }
+      ],
+      "options": ["vi", "toHaveBeenCalledWith", "jest", "toBe"],
+      "hint": "No Vitest o utilitário de mocks é `vi`, e o matcher de argumentos é `toHaveBeenCalledWith`.",
+      "expectedOutput": "✓ teste passou",
+      "explanation": "Perfeito! `vi.fn()` cria o espião e `toHaveBeenCalledWith(...)` confere o valor passado."
+    },
+    {
       "type": "spot_the_bug",
-      "prompt": "Este teste falha ao comparar dois objetos com as mesmas propriedades no Vitest. Clique na linha que usa o matcher incorreto para objetos:",
+      "prompt": "Os dois objetos têm exatamente as mesmas chaves e valores, mas este teste falha! Clique na linha com o bug:",
       "lines": [
         "it(\"retorna os dados do usuário\", () => {",
-        "  const res = criarUsuario(\"Ana\");",
+        "  const res = { nome: \"Ana\", ativo: true };",
         "  expect(res).toBe({ nome: \"Ana\", ativo: true });",
         "});"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Na linha 3, `.toBe()` usa `Object.is` (comparação de referência na memória), que sempre dá falso para duas instâncias distintas de objeto. Para comparar o conteúdo de objetos, use `.toEqual()`."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete o teste Vitest para criar uma função spy com `vi.fn()` e verificar se ela foi chamada com o argumento esperado:",
-      "codeTemplate": "const notificar = {{blank}}.fn();\nnotificar(\"sucesso\");\n{{blank}}(notificar).{{blank}}(\"sucesso\");",
-      "blanks": [
-        { "answer": "vi", "placeholder": "utilitário" },
-        { "answer": "expect", "placeholder": "asserção" },
-        { "answer": "toHaveBeenCalledWith", "placeholder": "matcher" }
-      ],
-      "options": ["vi", "expect", "toHaveBeenCalledWith", "jest", "assert", "toBe"],
-      "explanation": "No Vitest usamos `vi.fn()` para criar spies e `expect(fn).toHaveBeenCalledWith(arg)` para verificar o argumento recebido."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual é a função do bloco `describe(\"Nome\", () => { ... })` em um arquivo de testes Vitest?",
-      "options": [
-        "Executar código apenas em produção",
-        "Agrupar vários casos de teste (`it` / `test`) relacionados em uma suíte organizada",
-        "Substituir o `expect()` em testes de API",
-        "Criar um spy de função"
-      ],
-      "correctIndex": 1,
-      "explanation": "`describe()` organiza testes relacionados sob um título comum no relatório de execução."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "Este teste assíncrono no Vitest termina antes da Promise resolver e compara uma `Promise` com `200`! Clique na linha com o bug:",
-      "lines": [
-        "it(\"retorna status 200\", () => {",
-        "  const status = buscarStatus();",
-        "  expect(status).toBe(200);",
-        "});"
-      ],
-      "buggyLineIndex": 0,
-      "explanation": "Faltou declarar o callback como `async () =>` e usar `await buscarStatus()` na linha 2."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para montar uma suíte Vitest completa com `describe`, `it`, `vi.fn()` e `expect`:",
-      "blocks": [
-        "describe(\"Notificador\", () => {",
-        "  it(\"envia alerta\", () => {",
-        "    const spy = vi.fn();",
-        "    spy(\"erro\");",
-        "    expect(spy).toHaveBeenCalledWith(\"erro\");",
-        "  });\n});"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4, 5],
-      "explanation": "Abrimos a suíte com `describe`, definimos o caso com `it`, criamos e chamamos o spy `vi.fn()` e validamos com `expect`."
+      "hint": "Qual matcher compara o conteúdo de dois objetos em vez da referência na memória?",
+      "expectedOutput": "✓ retorna os dados do usuário",
+      "explanation": "`.toBe()` compara referência na memória (`===`). Para comparar propriedades de objetos, troque para `.toEqual()`!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva uma suíte Vitest usando `describe` para `\"Matematica\"` contendo um caso `it` que valide com `expect` e igualdade estrita que `somar(2, 3)` retorna `5`.",
-      "starterCode": "",
+      "prompt": "Complete a suíte `describe(\"Matematica\", ...)` com um teste `it` checando que `somar(2, 3)` é igual a `5` com `.toBe(5)`.",
+      "starterCode": "import { describe, it, expect } from \"vitest\";\nconst somar = (a: number, b: number) => a + b;\n\n// TODO: crie describe(\"Matematica\", ...) com it(...) e expect(somar(2, 3)).toBe(5)\n",
       "requiredTokens": ["describe(", "it(", "expect(", "somar(2, 3)", "toBe(5)"],
-      "sampleSolution": "describe(\"Matematica\", () => {\n  it(\"soma dois números\", () => {\n    expect(somar(2, 3)).toBe(5);\n  });\n});",
-      "hint": "Agrupe com `describe(\"Matematica\", () => { ... })`, crie um caso `it(...)` dentro e use `expect(somar(2, 3)).toBe(5)`.",
-      "explanation": "`describe`, `it`, `expect` e `.toBe()` formam a estrutura idiomática de testes unitários no Vitest."
+      "sampleSolution": "import { describe, it, expect } from \"vitest\";\nconst somar = (a: number, b: number) => a + b;\n\ndescribe(\"Matematica\", () => {\n  it(\"soma dois números\", () => {\n    expect(somar(2, 3)).toBe(5);\n  });\n});",
+      "hint": "Escreva `describe(\"Matematica\", () => { it(\"soma\", () => { expect(somar(2, 3)).toBe(5); }); });`.",
+      "expectedOutput": "✓ Matematica > soma dois números (1 passed)",
+      "explanation": "Tudo verde! Você já sabe estruturar testes limpos e confiáveis no Vitest."
     }
   ]
 }

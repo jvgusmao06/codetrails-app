@@ -1,7 +1,7 @@
 {
   "id": "tracing-telemetry-rust",
   "title": "Tracing (Logs & Telemetria Rust)",
-  "description": "Instrumente APIs assíncronas Tokio/Axum com spans, eventos estruturados e #[instrument] para observabilidade em produção.",
+  "description": "Monitore cada batalha e requisição do Servidor RPG do Ferris com spans, eventos estruturados e #[instrument] usando Tracing.",
   "category": "library",
   "languageId": "rust-systems",
   "prerequisites": ["rust-systems"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: Spans, Eventos Estruturados e #[instrument]",
-      "description": "Substitua println! por telemetria estruturada pronta para JSON e OpenTelemetry.",
+      "title": "Módulo 1: Spans, Eventos e #[instrument]",
+      "description": "Crie telemetria estruturada com tracing::info!, subscriber e skip() para dados sensíveis.",
       "lessons": ["lesson-01-tracing-instrument-spans"]
     }
   ]

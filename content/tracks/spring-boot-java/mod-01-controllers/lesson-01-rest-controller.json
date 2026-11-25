@@ -1,81 +1,70 @@
 {
   "id": "java-spring-01",
-  "title": "Criando um @RestController",
-  "description": "Transformando classes Java em endpoints REST com mapeamento de rotas, parâmetros e corpo JSON.",
+  "title": "Criando seu Primeiro @RestController",
+  "description": "Transforme classes Java em endpoints REST usando @RestController, @GetMapping, @PathVariable e @RequestBody.",
+  "mission": "Missão 1: Colocar no ar o primeiro endpoint da API de Entregas para consultar pedidos pela URL.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Anotações Declarativas no Spring Boot",
-      "content": "No ecossistema Java, o Spring Boot elimina configurações complexas usando anotações (`@`). Ao marcar uma classe com `@RestController` e definir uma rota base com `@RequestMapping(\"/recurso\")`, cada método anotado com `@GetMapping` ou `@PostMapping` vira um endpoint HTTP.\n\nPara capturar dados da requisição, use `@PathVariable` para segmentos da URL (como `/pedidos/{id}`) e `@RequestBody` para desserializar o JSON enviado no corpo de requisições POST/PUT.",
-      "codeExample": "@RestController\n@RequestMapping(\"/saude\")\npublic class HealthController {\n  @GetMapping(\"/ping/{id}\")\n  public String ping(@PathVariable Long id) {\n    return \"pong-\" + id;\n  }\n\n  @PostMapping\n  public String registrar(@RequestBody String payload) {\n    return \"Recebido: \" + payload;\n  }\n}",
+      "title": "Rotas HTTP sem complicação com anotações @",
+      "content": "No Spring Boot, bastam algumas anotações `@` para transformar uma classe Java em uma API web pronta.\n`@RestController` e `@RequestMapping(\"/entregas\")` definem a porta de entrada, enquanto `@GetMapping` e `@PostMapping` ligam cada método a um verbo HTTP.\nPara ler um número direto da URL, use `@PathVariable`; para receber JSON no corpo do POST, use `@RequestBody`!",
+      "codeExample": "@RestController\n@RequestMapping(\"/entregas\")\npublic class EntregaController {\n  @GetMapping(\"/{id}\")\n  public String rastrear(@PathVariable Long id) {\n    return \"Entrega #\" + id + \" a caminho!\";\n  }\n}",
+      "expectedOutput": "GET /entregas/42 -> 200 OK: \"Entrega #42 a caminho!\"",
       "keyTakeaways": [
-        "`@RestController` combina `@Controller` e `@ResponseBody`, serializando o retorno diretamente na resposta HTTP.",
-        "`@RequestMapping` define o prefixo de rota da classe, enquanto `@GetMapping` e `@PostMapping` mapeiam os verbos HTTP.",
-        "`@PathVariable` extrai variáveis da URL e `@RequestBody` converte o corpo JSON para um objeto Java."
+        "`@RestController` + `@RequestMapping` definem a rota base; `@GetMapping` e `@PostMapping` mapeiam os endpoints.",
+        "`@PathVariable` lê valores da URL (`/entregas/{id}`) e `@RequestBody` lê JSON enviado no corpo."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Anote a classe Java como controlador REST e mapeie o método `status` para requisições HTTP GET:",
-      "codeTemplate": "@{{blank}}\npublic class ApiController {\n  @{{blank}}(\"/status\")\n  public String status() {\n    return \"OK\";\n  }\n}",
-      "blanks": [
-        {
-          "answer": "RestController",
-          "placeholder": "anotação classe"
-        },
-        {
-          "answer": "GetMapping",
-          "placeholder": "mapeamento HTTP"
-        }
-      ],
-      "options": ["RestController", "GetMapping", "Service", "PostMapping", "Entity"],
-      "explanation": "`@RestController` registra a classe como controlador REST e `@GetMapping` mapeia requisições HTTP GET para o método."
-    },
-    {
       "type": "multiple_choice",
-      "prompt": "Em um endpoint `@PostMapping` do Spring Boot, qual anotação deve ser colocada no parâmetro do método para receber e desserializar um objeto JSON enviado no corpo da requisição?",
+      "kind": "predict_output",
+      "prompt": "Qual resposta HTTP a API devolve quando alguém chama `GET /entregas/7` no controller abaixo?",
+      "codeSnippet": "@RestController\n@RequestMapping(\"/entregas\")\npublic class EntregaController {\n  @GetMapping(\"/{id}\")\n  public String status(@PathVariable Long id) {\n    return \"Pedido #\" + id + \" saiu para entrega\";\n  }\n}",
       "options": [
-        "@PathVariable",
-        "@RequestBody",
-        "@RequestMapping",
-        "@ResponseBody"
+        "Pedido #7 saiu para entrega",
+        "Pedido #{id} saiu para entrega",
+        "Erro 404 porque faltou @RequestBody",
+        "Pedido #null saiu para entrega"
       ],
-      "correctIndex": 1,
-      "explanation": "`@RequestBody` instrui o Spring a ler o corpo HTTP (JSON) e convertê-lo para o tipo do parâmetro Java."
+      "correctIndex": 0,
+      "hint": "`@PathVariable Long id` pega automaticamente o `7` da URL `/entregas/7`.",
+      "expectedOutput": "Pedido #7 saiu para entrega",
+      "explanation": "O Spring casa `{id}` com o `7` da URL, injeta em `Long id` via `@PathVariable` e retorna `Pedido #7 saiu para entrega`!"
     },
     {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para formar um controlador REST com rota base `/pedidos` e um endpoint GET que recebe o `id` pela URL:",
-      "blocks": [
-        "  @GetMapping(\"/{id}\")\n  public String buscar(@PathVariable Long id) {",
-        "@RestController\n@RequestMapping(\"/pedidos\")",
-        "    return \"Pedido \" + id;\n  }\n}",
-        "public class PedidoController {"
+      "type": "fill_in_blank",
+      "prompt": "Anote a classe como controlador REST e ligue o método `status` a uma requisição HTTP GET:",
+      "codeTemplate": "@{{blank}}\npublic class ApiController {\n  @{{blank}}(\"/status\")\n  public String status() { return \"API Online!\"; }\n}",
+      "blanks": [
+        { "answer": "RestController", "placeholder": "classe REST" },
+        { "answer": "GetMapping", "placeholder": "rota GET" }
       ],
-      "correctOrder": [1, 3, 0, 2],
-      "explanation": "Primeiro vêm as anotações de classe (`@RestController` e `@RequestMapping`), depois a declaração da classe, seguida pelo método `@GetMapping` com `@PathVariable` e o fechamento."
+      "options": ["RestController", "GetMapping", "PostMapping", "Service"],
+      "hint": "Use `@RestController` na classe e `@GetMapping` para responder a requisições GET.",
+      "expectedOutput": "GET /status -> 200 OK: \"API Online!\"",
+      "explanation": "`@RestController` ativa a resposta HTTP direta e `@GetMapping(\"/status\")` expõe a rota GET."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Identifique a linha com erro que impede o parâmetro `id` da URL de ser injetado corretamente no método:",
+      "prompt": "A rota `/pedidos/10` está chegando com `id` nulo porque faltou uma anotação no parâmetro! Clique na linha com o bug:",
       "lines": [
         "@RestController",
-        "@RequestMapping(\"/usuarios\")",
-        "public class UsuarioController {",
+        "@RequestMapping(\"/pedidos\")",
+        "public class PedidoController {",
         "  @GetMapping(\"/{id}\")",
         "  public String buscar(Long id) {",
-        "    return \"Usuário \" + id;",
-        "  }",
-        "}"
+        "    return \"Pedido #\" + id;"
       ],
       "buggyLineIndex": 4,
-      "explanation": "Na linha 5 (`public String buscar(Long id)`), faltou a anotação `@PathVariable` antes de `Long id` para vincular o `{id}` da rota ao parâmetro."
+      "hint": "Compare o parâmetro da linha 5 com a anotação que extrai `{id}` da URL.",
+      "expectedOutput": "GET /pedidos/10 -> \"Pedido #10\"",
+      "explanation": "Na linha 5, faltou `@PathVariable` antes de `Long id` (`public String buscar(@PathVariable Long id)`) para ligar o `{id}` da URL ao parâmetro!"
     },
     {
       "type": "write_code",
-      "prompt": "Crie um controlador REST chamado `ProdutoController` com rota base `/produtos` e um endpoint GET que receba um `id` do tipo `Long` pela URL e retorne uma `String`.",
-      "starterCode": "",
+      "prompt": "Complete o `ProdutoController` adicionando `@RestController`, `@RequestMapping(\"/produtos\")` e o endpoint `@GetMapping(\"/{id}\")` com `@PathVariable`.",
+      "starterCode": "// TODO: anote com @RestController e @RequestMapping(\"/produtos\")\npublic class ProdutoController {\n  // TODO: adicione @GetMapping(\"/{id}\") e @PathVariable no parâmetro\n  public String buscarPorId(Long id) {\n    return \"Produto #\" + id;\n  }\n}",
       "requiredTokens": [
         "@RestController",
         "@RequestMapping(\"/produtos\")",
@@ -83,9 +72,10 @@
         "@PathVariable",
         "ProdutoController"
       ],
-      "sampleSolution": "@RestController\n@RequestMapping(\"/produtos\")\npublic class ProdutoController {\n  @GetMapping(\"/{id}\")\n  public String buscarPorId(@PathVariable Long id) {\n    return \"Produto \" + id;\n  }\n}",
-      "hint": "Use `@RestController` e `@RequestMapping(\"/produtos\")` na classe, e `@GetMapping(\"/{id}\")` com `@PathVariable Long id` no método.",
-      "explanation": "Combinar `@RestController`, `@RequestMapping`, `@GetMapping` e `@PathVariable` permite criar endpoints REST limpos e tipados no Spring Boot."
+      "sampleSolution": "@RestController\n@RequestMapping(\"/produtos\")\npublic class ProdutoController {\n  @GetMapping(\"/{id}\")\n  public String buscarPorId(@PathVariable Long id) {\n    return \"Produto #\" + id;\n  }\n}",
+      "hint": "Coloque `@RestController` e `@RequestMapping(\"/produtos\")` sobre a classe, `@GetMapping(\"/{id}\")` sobre o método e `@PathVariable` antes de `Long id`.",
+      "expectedOutput": "GET /produtos/5 -> 200 OK: \"Produto #5\"",
+      "explanation": "Mandou bem! Seu primeiro endpoint REST no Spring Boot já está pronto para atender requisições!"
     }
   ]
 }

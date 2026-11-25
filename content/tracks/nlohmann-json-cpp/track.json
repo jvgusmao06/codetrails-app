@@ -1,7 +1,7 @@
 {
   "id": "nlohmann-json-cpp",
   "title": "nlohmann/json (JSON Moderno C++)",
-  "description": "Leia, monte e serialize JSON em C++ com a mesma simplicidade do Python usando nlohmann::json.",
+  "description": "Leia e grave a caixa-preta JSON da nave Nova-9 em C++ com a simplicidade do Python usando nlohmann::json.",
   "category": "library",
   "languageId": "c-cpp-systems",
   "prerequisites": ["c-cpp-systems"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: Parse, Dump e Serialização Automática de Structs",
-      "description": "Manipule JSON como objeto nativo em C++ header-only.",
+      "title": "Módulo 1: Caixa-Preta JSON (parse, value e dump)",
+      "description": "Transforme texto em objetos JSON, leia campos com fallback seguro e serialize com .dump().",
       "lessons": ["lesson-01-parse-dump-structs"]
     }
   ]

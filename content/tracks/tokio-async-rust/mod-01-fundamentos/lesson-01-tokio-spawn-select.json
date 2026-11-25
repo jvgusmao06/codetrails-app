@@ -1,60 +1,53 @@
 {
   "id": "tokio-async-01",
-  "title": "Tokio: #[tokio::main], tokio::spawn e Concorrência com tokio::join!",
-  "description": "Crie tasks assíncronas leves, rode chamadas em paralelo com tokio::join! e evite bloquear threads do executor.",
+  "title": "Tarefas em Paralelo: tokio::spawn e tokio::join!",
+  "description": "Dispare tasks assíncronas com tokio::spawn, espere resultados juntos com tokio::join! e evite travar threads.",
+  "mission": "Missão 1: Buscar o inventário e o ranking do herói ao mesmo tempo no Servidor RPG do Ferris.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Futures Preguiçosas e Tasks no Tokio",
-      "content": "Diferente de Promises em JS, uma **`Future`** em Rust não faz nada até você dar **`.await`**! O **Tokio** é o runtime assíncrono que agenda milhares de tasks em poucas threads de OS. Usamos **`#[tokio::main]`** no `main()`, **`tokio::spawn`** para rodar em background e **`tokio::join!(fut1, fut2)`** para aguardar várias chamadas concorrentemente ao mesmo tempo!",
-      "codeExample": "#[tokio::main]\nasync fn main() {\n    let h1 = tokio::spawn(async { 10 });\n    let h2 = tokio::spawn(async { 20 });\n    let (a, b) = tokio::join!(h1, h2);\n    println!(\"{:?} {:?}\", a, b);\n}",
+      "title": "Futures preguiçosas e concorrência com Tokio",
+      "content": "Em Rust, uma função `async fn` só roda quando você usa `.await` ou entrega para o **Tokio**!\nCom `#[tokio::main]` no topo, você lança tarefas em segundo plano usando `tokio::spawn(async { ... })` e espera várias ao mesmo tempo com `tokio::join!(t1, t2)`.",
+      "codeExample": "#[tokio::main]\nasync fn main() {\n    let ouro = tokio::spawn(async { 50 });\n    let xp = tokio::spawn(async { 120 });\n    let (a, b) = tokio::join!(ouro, xp);\n    println!(\"{:?} {:?}\", a, b);\n}",
+      "expectedOutput": "Ok(50) Ok(120)",
       "keyTakeaways": [
-        "Em Rust, `async fn` retorna uma `Future` preguiçosa — precisa de `.await` ou `tokio::spawn` para executar.",
-        "NUNCA chame `std::thread::sleep` dentro de uma task Tokio (trava o worker); use `tokio::time::sleep(...)`!",
-        "`tokio::join!(h1, h2)` aguarda múltiplas futures concorrentemente sem esperar uma terminar para iniciar a outra."
+        "`tokio::spawn` cria uma task leve em paralelo, e `tokio::join!` aguarda todas simultaneamente.",
+        "Nunca use `std::thread::sleep` dentro do Tokio — use `tokio::time::sleep(...).await` para não travar a thread!"
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é o erro grave ao usar `std::thread::sleep` dentro de uma `async fn` rodando no Tokio?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal ao rodar estas duas tasks com `tokio::join!`?",
+      "codeSnippet": "let t1 = tokio::spawn(async { 10 });\nlet t2 = tokio::spawn(async { 20 });\nlet (r1, r2) = tokio::join!(t1, t2);\nprintln!(\"{} + {}\", r1.unwrap(), r2.unwrap());",
       "options": [
-        "O código não compila",
-        "Bloqueia a thread inteira do executor do Tokio, paralisando outras tasks assíncronas compartilhadas naquela thread",
-        "Converte o código para Python",
-        "Apaga variáveis da Heap"
+        "10 + 20",
+        "20 + 10",
+        "0 + 0",
+        "Erro porque tokio::join! não aceita handles"
       ],
-      "correctIndex": 1,
-      "explanation": "`std::thread::sleep` trava a thread do sistema operacional; o correto no runtime Tokio é `tokio::time::sleep(...).await`."
+      "correctIndex": 0,
+      "hint": "`tokio::join!(t1, t2)` sempre devolve a tupla na mesma ordem dos argumentos `(r1, r2)`!",
+      "expectedOutput": "10 + 20",
+      "explanation": "Mesmo que `t2` termine antes, `tokio::join!` garante `r1 = Ok(10)` e `r2 = Ok(20)`, imprimindo `10 + 20`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a função principal assíncrona executando duas tasks em paralelo com Tokio:",
-      "codeTemplate": "#[{{blank}}]\nasync fn main() {\n    let h1 = tokio::{{blank}}(async { 1 });\n    let h2 = tokio::spawn(async { 2 });\n    let (r1, r2) = tokio::{{blank}}(h1, h2);\n}",
+      "prompt": "Lance a tarefa em background com `spawn` e espere as duas juntas com `join!`:",
+      "codeTemplate": "#[tokio::main]\nasync fn main() {\n    let h1 = tokio::{{blank}}(async { 1 });\n    let h2 = tokio::spawn(async { 2 });\n    let (r1, r2) = tokio::{{blank}}(h1, h2);\n}",
       "blanks": [
-        { "answer": "tokio::main", "placeholder": "atributo" },
-        { "answer": "spawn", "placeholder": "lançar task" },
-        { "answer": "join!", "placeholder": "macro" }
+        { "answer": "spawn", "placeholder": "lançar" },
+        { "answer": "join!", "placeholder": "aguardar juntas" }
       ],
-      "options": ["tokio::main", "tokio::test", "spawn", "run", "join!", "select_all!"],
-      "explanation": "`#[tokio::main]` inicia o runtime, `tokio::spawn` cria tasks concorrentes e `tokio::join!` aguarda todas juntas."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para inicializar o runtime Tokio, lançar uma task assíncrona e aguardar seu retorno:",
-      "blocks": [
-        "    let handle = tokio::spawn(async { 42 });",
-        "async fn main() {",
-        "    let res = handle.await;",
-        "#[tokio::main]",
-        "}"
-      ],
-      "correctOrder": [3, 1, 0, 2, 4],
-      "explanation": "O atributo `#[tokio::main]` decora `async fn main()`, dentro dela `tokio::spawn` devolve um `JoinHandle` que aguardamos com `.await`."
+      "options": ["spawn", "join!", "run", "wait!"],
+      "hint": "Usamos `tokio::spawn` para iniciar tasks e a macro `tokio::join!` (com `!`) para aguardar ambas.",
+      "expectedOutput": "(Ok(1), Ok(2))",
+      "explanation": "`tokio::spawn` agenda no executor multi-thread e `tokio::join!` coleta todos os resultados em paralelo."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Encontre a linha que bloqueia o executor assíncrono do Tokio durante uma pausa:",
+      "prompt": "Ops! A pausa abaixo trava a thread inteira do Tokio e congela os outros jogadores! Qual linha tem o bug?",
       "lines": [
         "#[tokio::main]",
         "async fn main() {",
@@ -63,16 +56,19 @@
         "}"
       ],
       "buggyLineIndex": 2,
-      "explanation": "`std::thread::sleep` bloqueia a thread do sistema operacional. Dentro de código Tokio assíncrono, deve-se usar `tokio::time::sleep(...).await`."
+      "hint": "Dentro de código assíncrono Tokio, devemos usar o `sleep` do próprio Tokio com `.await`!",
+      "expectedOutput": "pronto",
+      "explanation": "Troque `std::thread::sleep(...)` por `tokio::time::sleep(...).await` para pausar a task sem travar a thread!"
     },
     {
       "type": "write_code",
-      "prompt": "Crie o ponto de entrada assíncrono com Tokio que lance duas tarefas concorrentes retornando `10` e `20`, e aguarde ambas simultaneamente armazenando os resultados em `(a, b)`.",
-      "starterCode": "",
-      "requiredTokens": ["#[tokio::main]", "async fn main()", "tokio::spawn", "tokio::join!"],
+      "prompt": "Complete `main` com `#[tokio::main]`, lance `h1` (retornando `10`) e `h2` (retornando `20`) via `tokio::spawn`, e aguarde ambas com `tokio::join!`.",
+      "starterCode": "// TODO: adicione o atributo #[tokio::main]\nasync fn main() {\n    // TODO: crie h1 e h2 usando tokio::spawn(async { ... })\n    // TODO: aguarde com let (a, b) = tokio::join!(h1, h2);\n}",
+      "requiredTokens": ["#[tokio::main]", "tokio::spawn", "tokio::join!"],
       "sampleSolution": "#[tokio::main]\nasync fn main() {\n    let h1 = tokio::spawn(async { 10 });\n    let h2 = tokio::spawn(async { 20 });\n    let (a, b) = tokio::join!(h1, h2);\n}",
-      "hint": "Anote `async fn main()` com `#[tokio::main]`, crie duas tasks com `tokio::spawn(async { ... })` e aguarde-as juntas com `tokio::join!`.",
-      "explanation": "O macro `#[tokio::main]` inicializa o runtime multi-thread, `tokio::spawn` agenda as tasks e `tokio::join!` aguarda ambas concorrentemente."
+      "hint": "Coloque `#[tokio::main]` acima de `async fn main()`, crie `h1` e `h2` com `tokio::spawn` e junte com `tokio::join!(h1, h2)`.",
+      "expectedOutput": "(Ok(10), Ok(20))",
+      "explanation": "Show! Agora o servidor do Ferris executa tarefas concorrentes sem bloquear nenhuma thread."
     }
   ]
 }

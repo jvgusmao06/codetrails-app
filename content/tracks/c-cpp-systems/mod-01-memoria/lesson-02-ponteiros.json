@@ -1,89 +1,73 @@
 {
   "id": "cpp-ptr-02",
-  "title": "Ponteiros e Endereços de Memória",
-  "description": "Referenciando e desreferenciando variáveis na memória.",
+  "title": "Ponteiros: Endereços na Memória (& e *)",
+  "description": "Descubra como guardar endereços de variáveis com & e alterar valores à distância usando *.",
+  "mission": "Missão 2: Ajustar a energia do reator direto no endereço de memória.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Acesso Direto à Memória com Ponteiros",
-      "content": "Um ponteiro é uma variável que armazena o endereço de memória de outra variável, em vez de guardar um valor comum. Para declarar um ponteiro para `int`, escrevemos `int* ptr` (ou `int *ptr`). Usamos o operador unário `&` (address-of) para obter o endereço onde uma variável está alocada na RAM, e o operador `*` (dereference) antes do ponteiro para ler ou alterar o valor guardado naquele endereço.",
-      "codeExample": "int x = 10;\nint* ptr = &x; // ptr guarda o endereço de x\nint copia = *ptr; // lê o valor 10 via ponteiro\n*ptr = 99;        // altera o valor de x para 99!",
+      "title": "Guardando o endereço (&) e mexendo no valor (*)",
+      "content": "Um ponteiro (`int*`) não guarda o número em si — ele guarda a **localização** da variável na memória RAM.\nUse `&` para descobrir o endereço de uma variável e `*` antes do ponteiro para ler ou mudar o valor guardado lá dentro.",
+      "codeExample": "int energia = 50;\nint* ptr = &energia; // guarda o endereço de energia\n*ptr = 95;           // muda energia para 95!\nstd::cout << energia << \"\\n\";",
+      "expectedOutput": "95",
       "keyTakeaways": [
-        "int* ptr declara um ponteiro capaz de guardar o endereço de um int.",
-        "&variavel retorna o endereço de memória onde a variável está alocada.",
-        "*ponteiro acessa ou modifica diretamente o valor guardado no endereço apontado."
+        "`&variavel` pega o endereço na memória e guarda em um ponteiro (`int* ptr`).",
+        "`*ptr` abre a caixinha naquele endereço para ler ou atualizar o valor original."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual operador unário retorna o ENDEREÇO de memória de uma variável em C/C++?",
-      "codeSnippet": "int valor = 42;\n// Queremos guardar o endereço de 'valor' em um ponteiro",
+      "kind": "predict_output",
+      "prompt": "O que aparece na tela depois de alterar o valor pelo ponteiro?",
+      "codeSnippet": "int escudo = 40;\nint* p = &escudo;\n*p = *p + 20;\nstd::cout << escudo << \"\\n\";",
       "options": [
-        "O operador asterisco (*)",
-        "O operador e-comercial (&)",
-        "O operador seta (->)",
-        "O operador de fluxo (<<)"
+        "60",
+        "40",
+        "20",
+        "O endereço de memória de escudo"
       ],
-      "correctIndex": 1,
-      "explanation": "O operador unário '&' (address-of) obtém o endereço de memória onde a variável está armazenada."
+      "correctIndex": 0,
+      "hint": "`*p` acessa diretamente o valor de `escudo` (40) e grava o novo resultado lá dentro.",
+      "expectedOutput": "60",
+      "explanation": "Como `p` aponta para `escudo`, `*p = *p + 20` soma 20 direto na variável original, que passa a valer `60`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a declaração do ponteiro `ptr` para que ele receba o endereço da variável `x`:",
-      "codeTemplate": "int x = 10;\nint{{blank}} ptr = {{blank}}x;",
+      "prompt": "Conecte o ponteiro `p` ao endereço de `energia` e atualize o valor para `100`:",
+      "codeTemplate": "int energia = 50;\nint* p = {{blank}}energia;\n{{blank}}p = 100;",
       "blanks": [
-        { "answer": "*", "placeholder": "tipo ponteiro" },
-        { "answer": "&", "placeholder": "endereço" }
+        { "answer": "&", "placeholder": "endereço" },
+        { "answer": "*", "placeholder": "valor" }
       ],
-      "options": ["*", "&", "->", "<<"],
-      "explanation": "O '*' no tipo declara um ponteiro (int*) e o '&' antes da variável extrai seu endereço na memória."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Desreferencie o ponteiro `ptr` para alterar o valor guardado no endereço apontado para 99:",
-      "codeTemplate": "int x = 10;\nint* ptr = &x;\n{{blank}}ptr = 99;",
-      "blanks": [
-        {
-          "answer": "*",
-          "placeholder": "operador"
-        }
-      ],
-      "options": ["*", "&", "->", "$"],
-      "explanation": "O operador '*' antes de um ponteiro (dereference) acessa ou modifica diretamente o valor contido no endereço."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "O código abaixo tenta alterar `x` para `50` usando o ponteiro `p`, mas comete um erro grave de tipos/atribuição. Clique na linha com bug:",
-      "lines": [
-        "int x = 10;",
-        "int* p = &x;",
-        "p = 50;",
-        "std::cout << x << std::endl;"
-      ],
-      "buggyLineIndex": 2,
-      "explanation": "Escrever 'p = 50;' tenta trocar o endereço armazenado em p pelo número 50 (erro de compilação). Para alterar o valor apontado, é preciso desreferenciar com '*p = 50;'."
+      "options": ["&", "*", "->", "<<"],
+      "hint": "`&` pega o endereço da variável; `*` desreferencia o ponteiro para mudar o valor.",
+      "expectedOutput": "100",
+      "explanation": "`&energia` entrega o endereço para `p`, e `*p = 100` grava o novo valor direto em `energia`."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene as linhas para declarar uma variável, apontar para ela, dobrar seu valor via ponteiro e imprimir o resultado:",
+      "prompt": "Coloque os passos na ordem certa para apontar para `carga`, dobrar seu valor via ponteiro e mostrar o resultado:",
       "blocks": [
-        "int pontos = 20;",
-        "int* ptr = &pontos;",
         "*ptr = *ptr * 2;",
-        "std::cout << pontos << std::endl;"
+        "int carga = 25;",
+        "std::cout << carga << \"\\n\";",
+        "int* ptr = &carga;"
       ],
-      "correctOrder": [0, 1, 2, 3],
-      "explanation": "Primeiro declaramos 'pontos', depois guardamos seu endereço em 'ptr', lemos e atualizamos via '*ptr' e por fim imprimimos 'pontos' (que agora vale 40)."
+      "correctOrder": [1, 3, 0, 2],
+      "hint": "Primeiro crie `carga`, depois pegue seu endereço com `&carga`, altere com `*ptr` e só então imprima.",
+      "expectedOutput": "50",
+      "explanation": "Na ordem certa, `carga` nasce com 25, `ptr` guarda seu endereço, `*ptr * 2` dobra para 50 e `std::cout` mostra `50`."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva um programa em C++ (com `<iostream>` e `main`) que declare um inteiro `saldo` com valor `100`, crie um ponteiro `p` apontando para o endereço dessa variável, altere o valor armazenado através do ponteiro para `250` e imprima o novo valor de `saldo` usando `std::cout`.",
-      "starterCode": "",
-      "requiredTokens": ["#include", "<iostream>", "int saldo", "int*", "&saldo", "*p", "std::cout", "return 0"],
-      "sampleSolution": "#include <iostream>\n\nint main() {\n    int saldo = 100;\n    int* p = &saldo;\n    *p = 250;\n    std::cout << saldo << std::endl;\n    return 0;\n}",
-      "hint": "Use '&saldo' para inicializar o ponteiro 'int* p' e '*p =' para modificar o valor original na memória.",
-      "explanation": "Como 'p' guarda o endereço de 'saldo', escrever '*p = 250;' altera diretamente o conteúdo de 'saldo' na RAM."
+      "prompt": "Crie um ponteiro `p` apontando para `saldo` e mude o valor para `250` usando `*p`.",
+      "starterCode": "#include <iostream>\n\nint main() {\n    int saldo = 100;\n    // TODO: crie int* p apontando para saldo e mude *p para 250\n    \n    std::cout << saldo << \"\\n\";\n    return 0;\n}",
+      "requiredTokens": ["int*", "&saldo", "*p", "250"],
+      "sampleSolution": "#include <iostream>\n\nint main() {\n    int saldo = 100;\n    int* p = &saldo;\n    *p = 250;\n    std::cout << saldo << \"\\n\";\n    return 0;\n}",
+      "hint": "Escreva `int* p = &saldo;` e na linha seguinte `*p = 250;`.",
+      "expectedOutput": "250",
+      "explanation": "Reator calibrado! Alterar `*p` mudou `saldo` diretamente na RAM, exibindo `250`."
     }
   ]
 }

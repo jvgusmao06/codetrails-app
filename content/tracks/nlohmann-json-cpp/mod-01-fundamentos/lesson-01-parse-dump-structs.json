@@ -1,47 +1,53 @@
 {
   "id": "nlohmann-json-01",
-  "title": "nlohmann/json: json::parse(), .dump() e Acesso Seguro (.value)",
-  "description": "Transforme strings JSON em objetos C++ ergonômicos, extraia campos com fallback seguro e serialize structs.",
+  "title": "nlohmann/json: parse(), .value() e .dump()",
+  "description": "Leia strings JSON com json::parse, proteja campos opcionais com .value() e serialize de volta com .dump().",
+  "mission": "Missão 1: Ler e salvar as configurações da caixa-preta da nave Nova-9 em JSON.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "JSON Como Cidadão de Primeira Classe em C++",
-      "content": "A biblioteca **nlohmann/json** (`#include <nlohmann/json.hpp>`) é a mais amada do C++ para JSON por ser *header-only* e ter sintaxe intuitiva como um dicionário! Use **`json::parse(texto)`** para ler JSON, **`j.dump(2)`** para converter em string formatada (ou `j.dump()` para compacto) e **`.value(\"chave\", padrao)`** para ler campos opcionais sem lançar exceção!",
-      "codeExample": "#include <nlohmann/json.hpp>\nusing json = nlohmann::json;\n\njson j = json::parse(R\"({\"nome\": \"Ana\", \"nivel\": 5})\");\nstd::string nome = j.value(\"nome\", \"Visitante\");\n\nj[\"ativo\"] = true;\nstd::cout << j.dump(2); // Serializa identado com 2 espaços",
+      "title": "JSON simples e seguro em C++",
+      "content": "Com `nlohmann/json` (`using json = nlohmann::json;`), manipular JSON em C++ parece brincar com um dicionário! `json::parse(texto)` transforma texto em objeto e `j.dump()` transforma de volta em texto.\nPara campos opcionais, prefira `j.value(\"chave\", padrao)`: se a chave faltar, ele devolve o valor padrão sem lançar exceção!",
+      "codeExample": "using json = nlohmann::json;\n\njson cfg = json::parse(R\"({\"nave\": \"Nova-9\"})\");\nint porta = cfg.value(\"porta\", 8080);\nstd::cout << cfg[\"nave\"] << \":\" << porta << \"\\n\";",
+      "expectedOutput": "\"Nova-9\":8080",
       "keyTakeaways": [
-        "Prefira `j.value(\"chave\", padrao)` ou `j.contains(\"chave\")` antes de ler chaves que podem não existir.",
-        "`j.dump(2)` gera JSON bonito com indentação de 2 espaços; `j.dump()` gera compacto para tráfego de rede.",
-        "Use `NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(MeuStruct, campo1, campo2)` para converter structs direto para/de `json`!"
+        "`json::parse(str)` lê JSON e `j.dump()` (ou `j.dump(2)` identado) serializa de volta para texto.",
+        "`j.value(\"chave\", padrao)` lê campos opcionais com fallback seguro, evitando exceções."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é a principal vantagem de usar `j.value(\"porta\", 8080)` em vez de `j[\"porta\"].get<int>()` ao ler um JSON de configuração?",
+      "kind": "predict_output",
+      "prompt": "O que aparece na tela ao ler a chave `\"modo\"`, que não existe no JSON?",
+      "codeSnippet": "json cfg = json::parse(R\"({\"id\": 9})\");\nstd::string modo = cfg.value(\"modo\", \"seguro\");\nstd::cout << modo << \"\\n\";",
       "options": [
-        "`.value()` converte automaticamente XML para JSON",
-        "Se a chave `\"porta\"` não existir, `.value()` retorna `8080` com segurança em vez de lançar exceção",
-        "`.value()` salva o arquivo no disco automaticamente",
-        "Não há diferença entre os dois"
+        "seguro",
+        "null",
+        "Lança uma exceção porque \"modo\" não existe",
+        "9"
       ],
-      "correctIndex": 1,
-      "explanation": "Acessar uma chave ausente com `operator[]` + `.get<T>()` lança `json::out_of_range` / `type_error`; `.value(chave, padrao)` devolve o fallback seguro."
+      "correctIndex": 0,
+      "hint": "O segundo argumento de `.value(chave, padrao)` entra em ação justamente quando a chave está ausente!",
+      "expectedOutput": "seguro",
+      "explanation": "Como `\"modo\"` não está no JSON, `.value(\"modo\", \"seguro\")` devolve `\"seguro\"` sem nenhum erro!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código C++ para fazer parsing da string JSON, ler `\"porta\"` com fallback `8080` e serializar de volta para string:",
-      "codeTemplate": "auto cfg = json::{{blank}}(texto);\nint porta = cfg.{{blank}}(\"porta\", 8080);\nstd::string saida = cfg.{{blank}}();",
+      "prompt": "Faça o parse do JSON e leia `\"porta\"` com fallback seguro para `8080`:",
+      "codeTemplate": "auto cfg = json::{{blank}}(texto);\nint porta = cfg.{{blank}}(\"porta\", 8080);\nstd::cout << cfg.dump() << \"\\n\";",
       "blanks": [
-        { "answer": "parse", "placeholder": "analisar" },
-        { "answer": "value", "placeholder": "ler seguro" },
-        { "answer": "dump", "placeholder": "serializar" }
+        { "answer": "parse", "placeholder": "ler JSON" },
+        { "answer": "value", "placeholder": "com fallback" }
       ],
-      "options": ["parse", "value", "dump", "stringify", "get"],
-      "explanation": "`json::parse()` lê o JSON, `.value(k, default)` acessa com valor padrão e `.dump()` serializa para string."
+      "options": ["parse", "value", "dump", "get"],
+      "hint": "Convertemos texto com `json::parse` e lemos com fallback usando `.value`.",
+      "expectedOutput": "{\"porta\":8080}",
+      "explanation": "`json::parse` analisa a string e `.value(\"porta\", 8080)` garante um número válido mesmo se a chave faltar."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Identifique a linha arriscada que pode lançar exceção se o campo opcional `\"tema\"` não vier no payload JSON:",
+      "prompt": "Atenção! Se `\"tema\"` não vier no JSON, uma linha vai lançar exceção e derrubar o painel. Clique na linha arriscada:",
       "lines": [
         "using json = nlohmann::json;",
         "json cfg = json::parse(payload);",
@@ -49,28 +55,19 @@
         "std::cout << cfg.dump(2);"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Se `\"tema\"` estiver ausente ou nulo no JSON, `cfg[\"tema\"].get<std::string>()` lança exceção. O correto para campos opcionais é `cfg.value(\"tema\", \"claro\")`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para incluir a biblioteca, criar o alias `json`, fazer o parse e imprimir o JSON formatado:",
-      "blocks": [
-        "std::cout << j.dump(2);",
-        "#include <nlohmann/json.hpp>",
-        "json j = json::parse(R\"({\"ok\": true})\");",
-        "using json = nlohmann::json;"
-      ],
-      "correctOrder": [1, 3, 2, 0],
-      "explanation": "Incluímos `<nlohmann/json.hpp>`, definimos o alias `json`, fazemos `json::parse(...)` e serializamos com `j.dump(2)`."
+      "hint": "Qual linha lê um campo opcional diretamente sem fallback seguro?",
+      "expectedOutput": "Tema carregado com fallback seguro",
+      "explanation": "Na linha 3, `cfg[\"tema\"].get<std::string>()` lança exceção se `\"tema\"` faltar. Troque por `cfg.value(\"tema\", \"escuro\")`!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Em C++ com `nlohmann::json`, defina o alias `json`, crie um objeto `user`, atribua `1` à chave `\"id\"` e imprima a string JSON compacta usando `std::cout`.",
-      "starterCode": "",
-      "requiredTokens": ["using json = nlohmann::json;", "json user;", "user[\"id\"] = 1", "std::cout", "user.dump()"],
-      "sampleSolution": "using json = nlohmann::json;\njson user;\nuser[\"id\"] = 1;\nstd::cout << user.dump();",
-      "hint": "Declare `using json = nlohmann::json;`, crie `json user;`, defina `user[\"id\"] = 1;` e envie `user.dump()` para `std::cout`.",
-      "explanation": "A sobrecarga de `operator[]` em `nlohmann::json` permite construir payloads JSON dinamicamente com legibilidade máxima."
+      "prompt": "Complete o código para criar `json user;`, definir `user[\"id\"] = 1;` e imprimir `user.dump()` com `std::cout`.",
+      "starterCode": "#include <iostream>\n#include <nlohmann/json.hpp>\nusing json = nlohmann::json;\n\nint main() {\n    // TODO: crie `json user;`, defina user[\"id\"] = 1 e imprima user.dump() com std::cout\n    \n    return 0;\n}",
+      "requiredTokens": ["json user;", "user[\"id\"]", "std::cout", "user.dump()"],
+      "sampleSolution": "#include <iostream>\n#include <nlohmann/json.hpp>\nusing json = nlohmann::json;\n\nint main() {\n    json user;\n    user[\"id\"] = 1;\n    std::cout << user.dump() << \"\\n\";\n    return 0;\n}",
+      "hint": "Escreva `json user;`, `user[\"id\"] = 1;` e `std::cout << user.dump() << \"\\n\";`.",
+      "expectedOutput": "{\"id\":1}",
+      "explanation": "Caixa-preta gravada! `nlohmann::json` montou e serializou o JSON em apenas 3 linhas limpas."
     }
   ]
 }

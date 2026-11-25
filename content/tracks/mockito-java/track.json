@@ -1,7 +1,7 @@
 {
   "id": "mockito-java",
   "title": "Mockito (Mocks & Isolamento)",
-  "description": "Domine testes unitários isolados em Java com @Mock, @InjectMocks, when().thenReturn(), verify() e ArgumentCaptor.",
+  "description": "Eleve seus testes Java com @Mock, @InjectMocks, verify(times/never) e ArgumentCaptor simulando entregas sem tocar em serviços reais.",
   "category": "tool",
   "languageId": "java-basics",
   "prerequisites": ["java-basics"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: Stubbing, Verify e ArgumentCaptor",
-      "description": "Simule dependências externas e valide interações com precisão no Mockito.",
+      "title": "Módulo 1: @InjectMocks, verify() e ArgumentCaptor",
+      "description": "Injete dublês automaticamente e confira quantas vezes e com quais dados suas dependências foram chamadas.",
       "lessons": ["lesson-01-mockito-verify-captor"]
     }
   ]

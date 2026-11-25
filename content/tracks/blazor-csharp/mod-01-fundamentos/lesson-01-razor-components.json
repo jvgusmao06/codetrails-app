@@ -1,47 +1,53 @@
 {
   "id": "blazor-comp-01",
-  "title": "Blazor: Componentes .razor, [Parameter], @bind e @onclick",
-  "description": "Reaproveite componentes web escritos 100% em C# compartilhando os mesmos DTOs entre frontend e backend.",
+  "title": "Blazor: Componentes .razor, @bind e @onclick",
+  "description": "Crie telas interativas no navegador escrevendo HTML e C# no mesmo arquivo .razor.",
+  "mission": "Missão 1: Montar o contador de itens do painel admin da PixelShop 100% em C# com Blazor.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Componentes Web em C# com Blazor",
-      "content": "Com o **Blazor**, você cria componentes `.razor` misturando HTML e C# (`@variavel`). A diretiva `@page \"/rota\"` transforma o componente em uma página navegável, `@onclick=\"Metodo\"` dispara métodos C# no clique, `@bind=\"campo\"` cria two-way data binding em `<input>` automaticamente, e `[Parameter]` permite receber valores de componentes pai dentro do bloco `@code { ... }`.",
-      "codeExample": "@page \"/contador\"\n\n<h3>Contador: @contagem</h3>\n<input @bind=\"nome\" placeholder=\"Seu nome\" />\n<button @onclick=\"Somar\">+1</button>\n\n@code {\n    [Parameter] public int Passo { get; set; } = 1;\n    private int contagem = 0;\n    private string nome = \"\";\n    private void Somar() => contagem += Passo;\n}",
+      "title": "HTML + C# reativo no arquivo .razor",
+      "content": "No **Blazor**, você mistura HTML e variáveis C# com `@` no mesmo arquivo `.razor`! Use `@page \"/rota\"` para virar página navegável, `@bind=\"campo\"` para ligar `<input>` em duas vias e `@onclick=\"Metodo\"` para reagir a cliques.\nToda a lógica C# fica no bloco `@code { ... }`, e propriedades públicas com `[Parameter]` recebem dados do componente pai.",
+      "codeExample": "@page \"/estoque\"\n<h3>Em estoque: @qtd</h3>\n<input @bind=\"jogo\" placeholder=\"Jogo\" />\n<button @onclick=\"Somar\">+1</button>\n@code {\n    private int qtd = 0; private string jogo = \"\";\n    private void Somar() => qtd++;\n}",
+      "expectedOutput": "Página /estoque renderizada; cada clique em +1 atualiza o número na tela",
       "keyTakeaways": [
-        "`@page \"/sobre\"` transforma um componente `.razor` em uma rota navegável.",
-        "`[Parameter]` em propriedades públicas equivale às `props` do React.",
-        "`@bind` sincroniza automaticamente o valor do `<input>` com a variável C# e `@onclick` liga eventos de clique ao bloco `@code`."
+        "`@bind` sincroniza `<input>` com sua variável C#; `@onclick` executa métodos C# e redesenha a tela.",
+        "`[Parameter]` precisa estar em propriedades `public` para receber valores de componentes pai."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Em um componente Blazor (`.razor`), qual atributo C# permite que um componente pai passe um valor para o componente filho (como `props` no React)?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no `<h3>` depois que o usuário clica 2 vezes no botão `+1`?",
+      "codeSnippet": "<h3>Cliques: @total</h3>\n<button @onclick=\"Somar\">+1</button>\n@code {\n    private int total = 5;\n    private void Somar() => total += 1;\n}",
       "options": [
-        "[Inject]",
-        "[Parameter]",
-        "[SerializeField]",
-        "[Route]"
+        "Cliques: 7",
+        "Cliques: 5",
+        "Cliques: 2",
+        "Cliques: @total"
       ],
-      "correctIndex": 1,
-      "explanation": "`[Parameter]` marca propriedades públicas do componente como parâmetros recebíveis via atributos HTML no pai."
+      "correctIndex": 0,
+      "hint": "`total` começa em `5` e cada clique chama `Somar()`, que adiciona `1` e atualiza a tela!",
+      "expectedOutput": "Cliques: 7",
+      "explanation": "Começou em 5, somou +1 duas vezes = 7 — e o Blazor atualiza o `<h3>` automaticamente após o `@onclick`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o componente Razor roteável com two-way data binding no input e evento de clique no botão:",
-      "codeTemplate": "{{blank}} \"/cadastro\"\n\n<input {{blank}}=\"nome\" />\n<button {{blank}}=\"Enviar\">Enviar</button>\n\n@code {\n    private string nome = \"\";\n    private void Enviar() {}\n}",
+      "prompt": "Ligue o campo `nome` ao `<input>` com `@bind` e o botão ao método `Salvar` com `@onclick`:",
+      "codeTemplate": "<input {{blank}}=\"nome\" />\n<button {{blank}}=\"Salvar\">Salvar</button>",
       "blanks": [
-        { "answer": "@page", "placeholder": "diretiva rota" },
-        { "answer": "@bind", "placeholder": "binding" },
-        { "answer": "@onclick", "placeholder": "evento" }
+        { "answer": "@bind", "placeholder": "two-way binding" },
+        { "answer": "@onclick", "placeholder": "evento clique" }
       ],
-      "options": ["@page", "@bind", "@onclick", "@route", "@model", "@onpress"],
-      "explanation": "`@page` define a rota do componente, `@bind` faz two-way binding com `nome` e `@onclick` aciona o método `Enviar`."
+      "options": ["@bind", "@onclick", "@model", "@onpress"],
+      "hint": "No Blazor, diretivas de binding e eventos começam com `@`: `@bind` e `@onclick`.",
+      "expectedOutput": "Input sincronizado + botão disparando Salvar()",
+      "explanation": "Facinho! Com `@bind` e `@onclick`, o Blazor cuida da sincronização sem uma linha de JavaScript."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Identifique a linha que impede o componente pai de passar o parâmetro `Titulo` para o filho:",
+      "prompt": "Ops! O componente pai não consegue passar o `Titulo` para este card Blazor. Clique na linha com o bug:",
       "lines": [
         "<h2>@Titulo</h2>",
         "@code {",
@@ -50,33 +56,19 @@
         "}"
       ],
       "buggyLineIndex": 3,
-      "explanation": "Propriedades decoradas com `[Parameter]` no Blazor devem ser `public` (não `private`) para que o framework consiga atribuir o valor vindo do componente pai."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para montar um componente Razor de contador com rota `/contador` e botão `@onclick`:",
-      "blocks": [
-        "<button @onclick=\"Somar\">+1</button>",
-        "@page \"/contador\"",
-        "@code {\n    private int total = 0;\n    private void Somar() => total++;\n}",
-        "<h3>Total: @total</h3>"
-      ],
-      "correctOrder": [1, 3, 0, 2],
-      "explanation": "Diretivas como `@page` ficam no topo, seguidas pelo markup HTML/Razor (`<h3>` e `<button>`) e pelo bloco `@code` ao final."
+      "hint": "O Blazor consegue definir um `[Parameter]` se a propriedade for `private`?",
+      "expectedOutput": "<h2>PixelShop Admin</h2>",
+      "explanation": "Na linha 4, propriedades com `[Parameter]` precisam ser `public` (`public string Titulo`) para o componente pai poder preenchê-las!"
     },
     {
       "type": "write_code",
-      "prompt": "Escreva um componente Razor com um botão que dispare o método `Salvar` ao ser clicado e defina o método `Salvar` dentro do bloco de código C# do componente.",
-      "starterCode": "",
-      "requiredTokens": [
-        "<button",
-        "@onclick=\"Salvar\"",
-        "@code",
-        "void Salvar()"
-      ],
-      "sampleSolution": "<button @onclick=\"Salvar\">Salvar</button>\n\n@code {\n    private void Salvar() {}\n}",
-      "hint": "Use a diretiva `@onclick=\"Salvar\"` no `<button>` e declare `private void Salvar() {}` dentro de `@code { ... }`.",
-      "explanation": "O Blazor atualiza o DOM automaticamente após a execução do manipulador `@onclick`."
+      "prompt": "Complete o componente conectando `@onclick=\"Salvar\"` no `<button>` e implementando `private void Salvar()` dentro de `@code`.",
+      "starterCode": "<!-- TODO: adicione @onclick=\"Salvar\" no botão abaixo -->\n<button>Salvar</button>\n\n@code {\n    private string msg = \"\";\n    // TODO: crie private void Salvar() => msg = \"Salvo!\";\n}",
+      "requiredTokens": ["@onclick=\"Salvar\"", "@code", "void Salvar()"],
+      "sampleSolution": "<button @onclick=\"Salvar\">Salvar</button>\n\n@code {\n    private string msg = \"\";\n    private void Salvar() => msg = \"Salvo!\";\n}",
+      "hint": "Deixe o botão como `<button @onclick=\"Salvar\">Salvar</button>` e escreva `private void Salvar() => msg = \"Salvo!\";` dentro do `@code`.",
+      "expectedOutput": "Clique no botão executa Salvar() e define msg = \"Salvo!\"",
+      "explanation": "Pronto! Seu primeiro componente interativo em Blazor está funcionando 100% em C#."
     }
   ]
 }

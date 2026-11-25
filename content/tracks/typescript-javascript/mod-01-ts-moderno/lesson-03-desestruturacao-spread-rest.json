@@ -1,47 +1,53 @@
 {
   "id": "ts-destructuring-spread-03",
-  "title": "06. Desestruturação, Spread (...) e Rest (...args)",
-  "description": "Extraia valores com Destructuring de objetos e arrays, copie dados de forma imutável com Spread (...) e receba argumentos variáveis com Rest (...args).",
+  "title": "Desestruturação, Spread (...) e Rest",
+  "description": "Puxe campos direto de objetos e arrays, clone dados sem alterar o original com ... e receba quantos argumentos quiser.",
+  "mission": "Missão 6: Atualizar o perfil do usuário e juntar duas playlists no TaskBeat sem mutar as originais.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Desestruturação, Spread (...) e Rest (...args)",
-      "content": "Três recursos essenciais do JS/TS moderno para manipular objetos, arrays e parâmetros:\n\n1. **Desestruturação (Destructuring)**:\n   - De **objetos** (pelo nome da chave): `const { nome, idade } = usuario;`.\n   - De **arrays** (pela posição): `const [primeiro, segundo] = lista;`.\n2. **Operador Spread (`...`)**: Espalha propriedades ou elementos para criar cópias imutáveis ou combinar estruturas: `const copia = { ...perfil, ativo: true };` ou `const junto = [...a, ...b];`.\n3. **Parâmetro Rest (`...args`)**: Agrupa múltiplos argumentos passados a uma função em um array tipado (deve ser sempre o **último** parâmetro): `function somar(...nums: number[]): number`.",
-      "codeExample": "const user = { nome: \"Ana\", cargo: \"Dev\" };\nconst { nome } = user;\nconst atualizado = { ...user, cargo: \"Tech Lead\" };\n\nconst [primeiro, segundo] = [10, 20, 30];\nconst combinados = [...[1, 2], ...[3, 4]];\n\nconst somar = (...nums: number[]): number => nums.reduce((a, b) => a + b, 0);",
+      "title": "Tirando valores e copiando sem bagunça",
+      "content": "Com **desestruturação**, você extrai valores de uma vez: `{ nome }` puxa de objetos e `[primeiro]` puxa de arrays.\nJá os três pontinhos `...` fazem duas mágicas: como **Spread**, espalham itens para copiar objetos/arrays sem alterar o original; como **Rest** (sempre no último parâmetro da função), juntam argumentos extras num array!",
+      "codeExample": "const perfil = { nome: \"Ana\", nivel: 2 };\nconst { nome } = perfil;\nconst subiu = { ...perfil, nivel: 3 };\n\nconst [primeira] = [\"Lo-fi\", \"Rock\"];\nconst juntas = [...[\"Pop\"], primeira];\nconsole.log(nome, subiu.nivel, juntas);",
+      "expectedOutput": "Ana 3 [\"Pop\", \"Lo-fi\"]",
       "keyTakeaways": [
-        "Destructuring em objetos usa { chaves } e em arrays usa [posicoes].",
-        "Spread (...) cria cópias rasas imutáveis de objetos e arrays.",
-        "Rest (...args) coleta argumentos restantes em um array e deve ser o último parâmetro."
+        "`{ chave }` desestrutura objetos; `[primeiro]` desestrutura arrays pela posição.",
+        "`...` cria cópias imutáveis (Spread) e, no último parâmetro de uma função, coleta extras (Rest)."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Complete o código para desestruturar 'nome' de 'perfil' e criar 'perfilAtualizado' com Spread mantendo as demais propriedades:",
-      "codeTemplate": "const perfil = { nome: \"Lia\", nivel: 3 };\nconst {{blank}} nome {{blank}} = perfil;\nconst perfilAtualizado = { {{blank}}perfil, nivel: 4 };",
-      "blanks": [
-        { "answer": "{", "placeholder": "abrir" },
-        { "answer": "}", "placeholder": "fechar" },
-        { "answer": "...", "placeholder": "spread" }
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "O que aparece no console ao executar este código?",
+      "codeSnippet": "const base = { tema: \"claro\", som: true };\nconst novo = { ...base, tema: \"escuro\" };\nconst [a, b] = [10, 20, 30];\nconsole.log(novo.tema, a + b);",
+      "options": [
+        "escuro 30",
+        "claro 30",
+        "escuro 60",
+        "Erro porque faltou a terceira variável no array"
       ],
-      "options": ["{", "}", "[", "]", "..."],
-      "explanation": "Desestruturação de objeto usa { nome } e Spread usa ...perfil para copiar as propriedades."
+      "correctIndex": 0,
+      "hint": "No Spread, a propriedade escrita depois sobrescreve a anterior; no array, `a` pega `10` e `b` pega `20`.",
+      "expectedOutput": "escuro 30",
+      "explanation": "`tema: \"escuro\"` substitui o valor de `base` apenas na cópia `novo`, e `10 + 20` dá `30`."
     },
     {
-      "type": "multiple_choice",
-      "prompt": "Em const [a, b] = [100, 200, 300], quais são os valores de a e b?",
-      "options": [
-        "a = 100 e b = [200, 300]",
-        "a = 100 e b = 200",
-        "a = 0 e b = 1",
-        "Gera erro porque faltou o terceiro elemento"
+      "type": "fill_in_blank",
+      "prompt": "Desestruture `nome` de `perfil` e crie `atualizado` copiando o resto com Spread:",
+      "codeTemplate": "const perfil = { nome: \"Lia\", nivel: 3 };\nconst { {{blank}} } = perfil;\nconst atualizado = { {{blank}}perfil, nivel: 4 };",
+      "blanks": [
+        { "answer": "nome", "placeholder": "campo" },
+        { "answer": "...", "placeholder": "spread" }
       ],
-      "correctIndex": 1,
-      "explanation": "A desestruturação de array atribui por posição: a recebe o índice 0 (100) e b recebe o índice 1 (200)."
+      "options": ["nome", "...", "nivel", "::"],
+      "hint": "Extraia o campo `nome` e use `...` para espalhar `perfil` no novo objeto.",
+      "expectedOutput": "{ nome: \"Lia\", nivel: 4 }",
+      "explanation": "Lindo! `perfil` continua intacto no nível 3 enquanto `atualizado` já está no nível 4."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "A função abaixo tenta usar o parâmetro Rest (...extras) antes do parâmetro fixo, causando erro de sintaxe. Qual linha tem o bug?",
+      "prompt": "Esta função com parâmetro Rest (`...extras`) não compila! Clique na linha que está na posição errada:",
       "lines": [
         "function registrar(",
         "  ...extras: string[],",
@@ -51,39 +57,19 @@
         "}"
       ],
       "buggyLineIndex": 1,
-      "explanation": "Um parâmetro Rest (...extras) deve ser obrigatoriamente o ÚLTIMO parâmetro da função."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para definir uma função com Rest (...notas) que filtre notas >= 7 e retorne a lista filtrada:",
-      "blocks": [
-        "  return notas.filter((n) => n >= 7);",
-        "function apenasAprovadas(...notas: number[]): number[] {",
-        "}"
-      ],
-      "correctOrder": [1, 0, 2],
-      "explanation": "Combinamos Rest (...notas: number[]) com o método .filter() da lição anterior."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete a desestruturação de array e a combinação com Spread:",
-      "codeTemplate": "const {{blank}}primeiro{{blank}} = [\"TS\", \"JS\"];\nconst todos = [{{blank}}[\"Python\"], primeiro];",
-      "blanks": [
-        { "answer": "[", "placeholder": "abrir" },
-        { "answer": "]", "placeholder": "fechar" },
-        { "answer": "...", "placeholder": "spread" }
-      ],
-      "options": ["[", "]", "{", "}", "..."],
-      "explanation": "Extraímos o primeiro item com [primeiro] e espalhamos o outro array com ... dentro de [ ]."
+      "hint": "O parâmetro Rest (`...`) sempre precisa ser o ÚLTIMO da lista de parâmetros.",
+      "expectedOutput": "[\"Estudo\", \"Lo-fi\", \"Café\"]",
+      "explanation": "O Rest `...extras` precisa vir por último: `function registrar(titulo: string, ...extras: string[])`."
     },
     {
       "type": "write_code",
-      "prompt": "Crie uma função 'juntarListas' que receba dois arrays numéricos 'a' e 'b' e retorne um novo array 'todos' combinando todos os elementos de ambos e acrescentando o número 99 ao final usando Spread. Em seguida, desestruture o primeiro elemento de 'todos' em uma constante.",
-      "starterCode": "",
-      "requiredTokens": ["function", "juntarListas", "...", "return", "const", "["],
-      "sampleSolution": "function juntarListas(a: number[], b: number[]): number[] {\n  const todos = [...a, ...b, 99];\n  return todos;\n}\n\nconst [primeiro] = juntarListas([1, 2], [3, 4]);",
-      "hint": "Use o operador '...' para espalhar os dois arrays dentro de um novo array literal com 99 ao final, e depois use [primeiro] = ... para desestruturar.",
-      "explanation": "Combinamos funções tipadas, Spread em arrays e desestruturação por posição."
+      "prompt": "Complete `juntarListas` espalhando `a`, `b` e o número `99`, e depois desestruture o primeiro item em `primeiro`.",
+      "starterCode": "function juntarListas(a: number[], b: number[]): number[] {\n  // TODO: retorne um novo array espalhando a, b e 99 com ...\n  \n}\n\n// TODO: desestruture o primeiro item em `const [primeiro] = ...`\nconst [primeiro] = \nconsole.log(primeiro);",
+      "requiredTokens": ["function", "juntarListas", "...", "99", "return", "const", "["],
+      "sampleSolution": "function juntarListas(a: number[], b: number[]): number[] {\n  return [...a, ...b, 99];\n}\n\nconst [primeiro] = juntarListas([1, 2], [3, 4]);\nconsole.log(primeiro);",
+      "hint": "Use `return [...a, ...b, 99];` dentro da função e `juntarListas([1, 2], [3, 4]);` abaixo.",
+      "expectedOutput": "1",
+      "explanation": "Mandou bem! Você juntou arrays sem mutar nenhum deles e já puxou o primeiro valor com desestruturação."
     }
   ]
 }

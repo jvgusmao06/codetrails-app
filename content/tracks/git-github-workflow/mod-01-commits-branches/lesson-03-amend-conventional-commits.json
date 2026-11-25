@@ -1,74 +1,72 @@
 {
   "id": "git-conventional-amend-03",
-  "title": "Conventional Commits, git commit --amend e git restore",
-  "description": "Padronize mensagens com feat:/fix:, corrija o último commit com --amend e descarte alterações locais com git restore.",
+  "title": "Conventional Commits, --amend e git restore",
+  "description": "Escreva commits claros (feat:/fix:), corrija o último commit local com --amend e desfaça edições com git restore.",
+  "mission": "Missão 4: Deixar o histórico do Nave App limpo antes de abrir a revisão para a equipe.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Boas Mensagens de Commit e Correções Rápidas",
-      "content": "Em projetos reais e open-source, seguimos o padrão **Conventional Commits**: prefixos como `feat:` (nova funcionalidade), `fix:` (correção de bug), `docs:` (documentação) e `refactor:` tornam o histórico legível e permitem gerar changelogs automáticos. Se você esqueceu um arquivo ou errou a mensagem do **último commit local** (antes do push), use **`git commit --amend`**. E se editou um arquivo por acidente e quer descartar as mudanças antes do commit, use **`git restore arquivo`** (ou `git restore --staged arquivo` apenas para tirá-lo da Staging Area).",
-      "codeExample": "# Padrão Conventional Commits\ngit commit -m \"feat: adiciona login com Google\"\ngit commit -m \"fix: corrige calculo de frete\"\n\n# Adicionar arquivo esquecido ao último commit local\ngit add esquecido.ts\ngit commit --amend --no-edit\n\n# Descartar alterações não-commitadas em um arquivo\ngit restore src/app.ts",
+      "title": "Commits claros e correções sem estresse",
+      "content": "No padrão **Conventional Commits**, começamos a mensagem com `feat:` (novidade), `fix:` (correção) ou `docs:` (documentação) para o time entender tudo batendo o olho.\nEsqueceu um arquivo no último commit local? Rode `git add` e `git commit --amend --no-edit`. Editou um arquivo por engano? `git restore arquivo` limpa as mudanças na hora!",
+      "codeExample": "git commit -m \"fix: corrige botão de voltar\"\n\n# Incluir arquivo esquecido no último commit local\ngit add logo.svg\ngit commit --amend --no-edit\n\n# Descartar edição local acidental\ngit restore debug.log",
+      "expectedOutput": "[feat/ui 7d8e9f0] fix: corrige botão de voltar\n 2 files changed",
       "keyTakeaways": [
-        "Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`) ajudam equipes e ferramentas de versionamento semântico.",
-        "Só use `git commit --amend` em commits que ainda NÃO foram enviados (`push`) para uma branch compartilhada.",
-        "`git restore --staged arquivo` tira um arquivo da Staging Area sem apagar suas edições."
+        "Use `feat:` para novas funções e `fix:` para bugs; use `--amend` só em commits ainda não enviados (`push`).",
+        "`git restore arquivo` descarta edições locais; `git restore --staged arquivo` só tira da Staging Area."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Você acabou de fazer um commit local e percebeu que esqueceu de incluir o arquivo `README.md`. Qual sequência corrige o último commit sem criar um segundo commit?",
+      "kind": "predict_output",
+      "prompt": "Você rodou `git add app.ts` por engano, mas quer manter suas edições no arquivo e apenas tirá-lo da Staging Area. O que acontece com este comando?",
+      "codeSnippet": "git restore --staged app.ts\ngit status",
       "options": [
-        "git add README.md && git commit --amend --no-edit",
-        "git revert HEAD && git add README.md",
-        "git push --force README.md",
-        "git restore README.md"
+        "app.ts sai da Staging Area, mas suas edições continuam intactas no arquivo",
+        "Todas as suas edições em app.ts são apagadas",
+        "app.ts é deletado do disco",
+        "O último commit é desfeito"
       ],
       "correctIndex": 0,
-      "explanation": "`git add README.md` coloca o arquivo na Staging Area e `git commit --amend --no-edit` o incorpora ao último commit mantendo a mensagem."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Seguindo o padrão **Conventional Commits**, qual mensagem descreve corretamente a correção de um erro no cálculo de desconto?",
-      "options": [
-        "update: mexi no desconto",
-        "fix: corrige calculo de desconto",
-        "feat: corrige bug no desconto",
-        "bugfix! desconto arrumado"
-      ],
-      "correctIndex": 1,
-      "explanation": "O prefixo `fix:` indica correção de bug, enquanto `feat:` é reservado para novas funcionalidades."
+      "hint": "A flag `--staged` mexe só na área de preparação, sem tocar no seu código salvo!",
+      "expectedOutput": "Changes not staged for commit:\n  modified: app.ts",
+      "explanation": "`git restore --staged` é super seguro: ele só desmarca o arquivo do próximo commit, preservando suas alterações."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete os comandos para tirar `config.json` da Staging Area sem perder as edições e descartar completamente as mudanças de `temp.log`:",
+      "prompt": "Tire `config.json` da Staging Area sem perder as edições e descarte as mudanças de `temp.log`:",
       "codeTemplate": "git restore {{blank}} config.json\ngit {{blank}} temp.log",
       "blanks": [
         { "answer": "--staged", "placeholder": "tirar do stage" },
         { "answer": "restore", "placeholder": "descartar" }
       ],
-      "options": ["--staged", "restore", "--amend", "reset", "--hard"],
-      "explanation": "`git restore --staged` remove o arquivo da Staging Area preservando o arquivo editado; `git restore <arquivo>` descarta as alterações locais."
+      "options": ["--staged", "restore", "--amend", "reset"],
+      "hint": "Use `--staged` para preservar a edição e `git restore` puro para descartar `temp.log`.",
+      "expectedOutput": "config.json unstaged | temp.log restored",
+      "explanation": "Você acabou de dominar o `git restore`, o jeito moderno e seguro de desfazer edições antes do commit."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os comandos para descartar um arquivo editado por acidente (`debug.txt`), adicionar um arquivo esquecido (`tests.ts`) e emendar o último commit local:",
+      "prompt": "Ordene os comandos para descartar `debug.txt`, adicionar `tests.ts` esquecido e emendar o último commit local:",
       "blocks": [
+        "git commit --amend --no-edit",
         "git restore debug.txt",
-        "git add tests.ts",
-        "git commit --amend --no-edit"
+        "git add tests.ts"
       ],
-      "correctOrder": [0, 1, 2],
-      "explanation": "Primeiro descartamos o arquivo indesejado com `git restore`, depois preparamos `tests.ts` e incorporamos ao último commit com `--amend --no-edit`."
+      "correctOrder": [1, 2, 0],
+      "hint": "Limpe `debug.txt`, coloque `tests.ts` no stage e depois faça o `--amend`.",
+      "expectedOutput": "[feat/ui 9a8b7c6] feat: adiciona testes",
+      "explanation": "Sem criar commit lixo! Tudo entrou limpinho no último commit."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva os comandos Git para descartar todas as alterações locais do arquivo `index.ts` e, em seguida, registrar um commit de correção de bug seguindo o padrão Conventional Commits.",
-      "starterCode": "",
+      "prompt": "Descarte as edições acidentais de `index.ts` com `git restore` e grave um commit de correção usando o prefixo `fix:`.",
+      "starterCode": "# TODO: restaure index.ts e faça um commit Conventional com prefixo fix:\n",
       "requiredTokens": ["git restore", "index.ts", "git commit", "-m", "fix:"],
       "sampleSolution": "git restore index.ts\ngit commit -m \"fix: corrige validacao\"",
-      "hint": "Use o comando moderno de restauração no arquivo `index.ts` e depois faça um commit com o prefixo apropriado para correção de bugs.",
-      "explanation": "O comando `git restore` substituiu o antigo `git checkout -- arquivo` para restaurar arquivos com mais clareza, e `fix:` padroniza commits de correção."
+      "hint": "Escreva `git restore index.ts` e na linha abaixo `git commit -m \"fix: corrige bug\"`.",
+      "expectedOutput": "[feat/ui 3c4d5e6] fix: corrige validacao",
+      "explanation": "Histórico impecável! Sua equipe vai agradecer por commits tão fáceis de ler."
     }
   ]
 }

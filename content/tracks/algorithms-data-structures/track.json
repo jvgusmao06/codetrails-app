@@ -1,7 +1,7 @@
 {
   "id": "algorithms-data-structures",
   "title": "Algoritmos & Estruturas (Big O)",
-  "description": "Compreenda desde o zero como Arrays funcionam na memória, complexidade O(1) vs O(n), Busca Binária, Pilhas (LIFO), Filas (FIFO), Hash Maps, Recursão e Ordenação O(n log n).",
+  "description": "Guie o robô Bit pela Ilha do Tesouro aprendendo Big O, Busca Binária, Pilhas, Filas, Árvores, Grafos e DP em lições curtinhas e visuais.",
   "category": "concept",
   "color": "#EC4899",
   "icon": "🧠",
@@ -9,8 +9,8 @@
   "modules": [
     {
       "id": "mod-01-complexidade",
-      "title": "Módulo 1: Memória, Notação Big O e Estruturas Clássicas",
-      "description": "Entenda arrays na RAM, busca linear vs binária, pilhas, filas e tabelas hash O(1).",
+      "title": "Módulo 1: Mapa, Memória e Estruturas Clássicas",
+      "description": "Entenda arrays na RAM, Busca Binária em O(log n), Pilhas, Filas, Hash Maps e Listas Ligadas com exemplos práticos.",
       "lessons": [
         "lesson-00-arrays-memoria",
         "lesson-01-big-o-busca",
@@ -20,8 +20,8 @@
     },
     {
       "id": "mod-02-recursao-ordenacao",
-      "title": "Módulo 2: Recursão, Call Stack, Ordenação e Two Pointers",
-      "description": "Divida problemas com recursão segura, compare O(n²) vs O(n log n) e aplique a técnica de Dois Ponteiros.",
+      "title": "Módulo 2: Rotas Rápidas, Árvores, Grafos e DP",
+      "description": "Domine Recursão segura, Dois Ponteiros, Janela Deslizante, Árvores BST, Grafos/Dijkstra e Programação Dinâmica.",
       "lessons": [
         "lesson-01-recursao-callstack",
         "lesson-02-ordenacao-two-pointers",

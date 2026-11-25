@@ -1,0 +1,73 @@
+{
+  "id": "rust-mut-00b",
+  "title": "Subindo de Nível (let mut)",
+  "description": "Descubra por que variáveis em Rust vêm travadas por segurança e como liberar mudanças com mut.",
+  "mission": "Missão 2: Atualizar o XP e o placar do herói após derrotar um slime.",
+  "xp": 20,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Travado por padrão: let vs let mut",
+      "content": "No Rust, toda variável criada com `let` é **imutável** (não muda de valor depois de criada). Isso evita bugs silenciosos em projetos grandes.\nQuando um valor **precisa** mudar — como a vida ou os pontos de um jogador — basta destravar com `mut` (`let mut`).",
+      "codeExample": "let mut xp = 10;\nxp += 15;\nprintln!(\"XP atual: {}\", xp);",
+      "expectedOutput": "XP atual: 25",
+      "keyTakeaways": [
+        "`let pontos = 10;` não pode ser alterado depois.",
+        "`let mut pontos = 10;` pode ser atualizado normalmente (`pontos += 5;`)."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "O que aparece na tela ao rodar este trecho?",
+      "codeSnippet": "let mut moedas = 20;\nmoedas += 10;\nmoedas -= 5;\nprintln!(\"Moedas: {}\", moedas);",
+      "options": [
+        "Moedas: 25",
+        "Moedas: 20",
+        "Moedas: 35",
+        "Erro de compilação"
+      ],
+      "correctIndex": 0,
+      "hint": "Como usamos `let mut`, as duas operações funcionam: 20 + 10 - 5.",
+      "expectedOutput": "Moedas: 25",
+      "explanation": "Começa em 20, soma 10 (vai para 30) e tira 5 — resultado: `Moedas: 25`!"
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O herói levou dano, mas o compilador reclamou que `hp` não pode ser alterado. Clique na linha que precisa do `mut`:",
+      "lines": [
+        "fn main() {",
+        "    let hp = 100;",
+        "    hp -= 20;",
+        "    println!(\"HP: {}\", hp);",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "hint": "Onde a variável `hp` foi criada sem a palavra `mut`?",
+      "expectedOutput": "HP: 80",
+      "explanation": "Trocando a linha 2 para `let mut hp = 100;`, o herói pode receber dano e curar sem erro!"
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Destrave a variável `nivel` para que o herói consiga subir de nível:",
+      "codeTemplate": "let {{blank}} nivel = 1;\nnivel += 1;\nprintln!(\"Novo nível: {}\", nivel);",
+      "blanks": [
+        { "answer": "mut", "placeholder": "destravar" }
+      ],
+      "options": ["mut", "var", "const", "change"],
+      "hint": "Qual palavrinha curta vai logo depois de `let` para permitir alteração?",
+      "expectedOutput": "Novo nível: 2",
+      "explanation": "`let mut nivel = 1;` libera a variável para subir de 1 para 2."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Faça o herói começar com `10` pontos em uma variável mutável `pontos` e somar `5` antes de imprimir.",
+      "starterCode": "fn main() {\n    // TODO: declare `pontos` como mutável valendo 10 e some 5\n    \n    println!(\"Pontos: {}\", pontos);\n}",
+      "requiredTokens": ["let", "mut", "pontos", "10", "5"],
+      "sampleSolution": "fn main() {\n    let mut pontos = 10;\n    pontos += 5;\n    println!(\"Pontos: {}\", pontos);\n}",
+      "hint": "Use `let mut pontos = 10;` e na linha seguinte `pontos += 5;`.",
+      "expectedOutput": "Pontos: 15",
+      "explanation": "Excelente! Declarando com `let mut`, você deixa claro para quem lê o código que `pontos` vai mudar."
+    }
+  ]
+}

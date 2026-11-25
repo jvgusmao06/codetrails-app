@@ -1,7 +1,7 @@
 {
   "id": "cmake-build-system",
   "title": "CMake & Build C/C++",
-  "description": "Configure projetos C e C++ multiplataforma modernos com CMakeLists.txt, targets executáveis, bibliotecas e flags de compilação.",
+  "description": "Monte o estaleiro de build da nave Nova-9 com CMakeLists.txt moderno: targets, bibliotecas e linkagem sem dor de cabeça.",
   "category": "tool",
   "languageId": "c-cpp-systems",
   "prerequisites": ["c-cpp-systems"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-cmakelists",
-      "title": "Módulo 1: CMakeLists.txt, Targets e Linkagem",
-      "description": "Automatize a compilação de projetos C/C++ em qualquer sistema operacional.",
+      "title": "Módulo 1: CMakeLists.txt no Estaleiro",
+      "description": "Configure C++20, separe código em bibliotecas e conecte tudo com target_link_libraries.",
       "lessons": ["lesson-01-cmake-targets"]
     }
   ]

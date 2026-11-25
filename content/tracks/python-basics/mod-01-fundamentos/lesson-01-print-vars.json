@@ -1,85 +1,72 @@
 {
   "id": "py-vars-01",
-  "title": "01. Variáveis e print()",
-  "description": "Aprenda a exibir mensagens no console com print(), criar strings entre aspas e armazenar dados em variáveis.",
+  "title": "Olá, Py! Variáveis e print()",
+  "description": "Dê seu primeiro passo sem complicação: guarde valores em variáveis e mostre mensagens no terminal com print().",
+  "mission": "Missão 1: Apresentar a heroína Py no painel inicial do jogo.",
   "xp": 20,
   "steps": [
     {
       "type": "theory",
-      "title": "Como o Python Exibe Dados e Cria Variáveis",
-      "content": "Diferente de linguagens verbosas, o Python foi desenhado para ser lido de forma simples e direta.\n\n1. **Saída com `print()`**: Para mostrar qualquer texto ou número no terminal, chamamos a função nativa `print(valor)`. Textos (chamados de **strings**) devem ficar sempre entre aspas simples (`'...'`) ou duplas (`\"...\"`).\n2. **Variáveis**: Para guardar um valor na memória, basta escrever `nome = valor`, sem precisar de palavras como `var`, `let` ou `int`. Por convenção em Python (PEP 8), usamos letras minúsculas e underline (`snake_case`), como `pontuacao_maxima = 100`.\n3. **Múltiplos argumentos no `print()`**: Você pode passar vários valores separados por vírgula, como `print(\"Nível:\", nivel)` — o Python adiciona um espaço automaticamente entre eles.",
-      "codeExample": "nome = \"Ada\"\nidade = 28\nprint(\"Olá, mundo!\")\nprint(\"Usuária:\", nome, \"Idade:\", idade)",
+      "title": "Guardando dados e exibindo com print()",
+      "content": "Em Python, criar uma variável é super direto: basta escrever `nome = valor`, sem `let`, `var` ou tipo antes.\nPara mostrar qualquer texto (entre aspas) ou número na tela, use `print()` — você pode até passar vários valores separados por vírgula que o Python coloca espaço automaticamente!",
+      "codeExample": "heroi = \"Py\"\nnivel = 1\nprint(\"Bem-vinda ao reino!\")\nprint(heroi, \"entrou no nível\", nivel)",
+      "expectedOutput": "Bem-vinda ao reino!\nPy entrou no nível 1",
       "keyTakeaways": [
-        "print() envia textos, números ou variáveis para o console.",
-        "Strings (textos) precisam estar entre aspas simples ou duplas.",
-        "Variáveis são criadas diretamente com nome = valor (sem var ou let)."
+        "`nome = valor` cria uma variável direto, sem palavras extras.",
+        "`print()` exibe textos (entre aspas) e variáveis no terminal."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual função nativa usamos em Python para exibir uma mensagem na tela?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal ao rodar este código?",
+      "codeSnippet": "heroi = \"Py\"\nouro = 50\nprint(heroi, \"tem\", ouro, \"moedas\")",
       "options": [
-        "console.log()",
-        "print()",
-        "echo()",
-        "System.out.println()"
+        "Py tem 50 moedas",
+        "heroi tem ouro moedas",
+        "Pytem50moedas",
+        "Erro porque faltou declarar o tipo de ouro"
       ],
-      "correctIndex": 1,
-      "explanation": "Em Python, a função embutida print() exibe mensagens e valores no console."
+      "correctIndex": 0,
+      "hint": "Quando passamos vários itens separados por vírgula no `print()`, o Python coloca um espaço entre eles.",
+      "expectedOutput": "Py tem 50 moedas",
+      "explanation": "O Python troca `heroi` por `Py`, `ouro` por `50` e separa cada item com um espaço automaticamente!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para exibir o texto 'Olá, Dev!' no console:",
-      "codeTemplate": "{{blank}}({{blank}})",
+      "prompt": "Complete o placar inicial para guardar o `hp` e mostrar a mensagem na tela:",
+      "codeTemplate": "hp = 100\n{{blank}}({{blank}}, hp)",
       "blanks": [
         { "answer": "print", "placeholder": "função" },
-        { "answer": "'Olá, Dev!'", "placeholder": "texto entre aspas" }
+        { "answer": "\"HP inicial:\"", "placeholder": "texto" }
       ],
-      "options": ["print", "echo", "'Olá, Dev!'", "Olá, Dev!"],
-      "explanation": "Chamamos print() passando a string entre aspas simples ou duplas."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Como declaramos corretamente uma variável chamada 'nivel' com o valor inteiro 5 em Python?",
-      "options": [
-        "let nivel = 5",
-        "int nivel = 5",
-        "nivel = 5",
-        "var nivel := 5"
-      ],
-      "correctIndex": 2,
-      "explanation": "Python usa tipagem dinâmica e não utiliza palavras-chave como var, let ou int para declarar variáveis."
+      "options": ["print", "echo", "\"HP inicial:\"", "HP inicial:"],
+      "hint": "Use `print` para exibir na tela e lembre das aspas no texto.",
+      "expectedOutput": "HP inicial: 100",
+      "explanation": "Simples assim: `print()` recebe o texto entre aspas e a variável `hp` separados por vírgula."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O código abaixo tenta guardar um texto em uma variável e exibi-lo, mas gera um erro. Qual linha tem o bug?",
+      "prompt": "Ops! A ficha da Py deu erro porque faltou um detalhe ao guardar o texto. Clique na linha com o bug:",
       "lines": [
-        "linguagem = Python",
-        "versao = 3",
-        "print(linguagem, versao)"
+        "classe = Maga",
+        "nivel = 2",
+        "print(classe, nivel)"
       ],
       "buggyLineIndex": 0,
-      "explanation": "Na linha 1, Python está sem aspas, então o interpretador procura uma variável chamada Python em vez de criar uma string."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para criar a variável 'curso', definir a variável 'modulo' e imprimir ambos juntos:",
-      "blocks": [
-        "print(\"Curso:\", curso, \"Módulo:\", modulo)",
-        "modulo = 1",
-        "curso = \"Python\""
-      ],
-      "correctOrder": [2, 1, 0],
-      "explanation": "Primeiro declaramos as variáveis curso e modulo; só depois podemos passá-las ao print()."
+      "hint": "Textos (strings) em Python precisam sempre estar entre aspas simples ou duplas.",
+      "expectedOutput": "Maga 2",
+      "explanation": "Na linha 1, `Maga` está sem aspas, então o Python procura uma variável com esse nome em vez de guardar o texto `\"Maga\"`."
     },
     {
       "type": "write_code",
-      "prompt": "Crie uma variável chamada 'linguagem' com o texto \"Python\" e uma variável 'ano' com o número 2026. Em seguida, exiba as duas variáveis usando print().",
-      "starterCode": "",
-      "requiredTokens": ["linguagem", "ano", "print"],
-      "sampleSolution": "linguagem = \"Python\"\nano = 2026\nprint(linguagem, ano)",
-      "hint": "Atribua cada variável com '=' (lembrando das aspas na string) e depois chame print(linguagem, ano).",
-      "explanation": "Em Python não precisamos declarar tipos: linguagem recebe uma string entre aspas, ano recebe um inteiro e print() aceita ambos separados por vírgula."
+      "prompt": "Complete o código para criar a variável `heroi` com `\"Py\"` e exibir a saudação no terminal com `print()`.",
+      "starterCode": "# TODO: crie a variável heroi com \"Py\"\n\nnivel = 1\n# TODO: exiba heroi e nivel usando print()\n",
+      "requiredTokens": ["heroi", "Py", "print"],
+      "sampleSolution": "heroi = \"Py\"\nnivel = 1\nprint(heroi, nivel)",
+      "hint": "Escreva `heroi = \"Py\"` e depois `print(heroi, nivel)`.",
+      "expectedOutput": "Py 1",
+      "explanation": "Mandou bem! Você criou sua primeira variável em Python e já exibiu o status inicial da Py."
     }
   ]
 }

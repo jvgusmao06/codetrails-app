@@ -1,91 +1,73 @@
 {
   "id": "rust-ownership-move-01",
-  "title": "Ownership: Move vs Copy (Stack e Heap)",
-  "description": "Entenda as regras de posse do Rust: por que atribuir uma String move a posse, enquanto i32 é copiado.",
+  "title": "Quem é o Dono? (Copy vs Move)",
+  "description": "Entenda a regra mais famosa do Rust de um jeito simples: números copiam; textos String mudam de dono.",
+  "mission": "Missão 8: Transferir a espada lendária do baú para o herói sem perder o controle da memória.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Todo Valor Tem Exatamente Um Dono",
-      "content": "No Rust não há Garbage Collector: a memória é liberada automaticamente quando o **dono** (*owner*) sai de escopo. Valores simples de tamanho fixo na Stack (como `i32`, `bool`, `char`) implementam `Copy`: fazer `let b = a;` cria uma cópia independente. Já valores alocados na Heap (como `String`) sofrem **Move**: `let s2 = s1;` transfere a posse para `s2` e invalida `s1` para evitar dupla liberação de memória. Se você realmente quiser duplicar uma `String`, use `s1.clone()`.",
-      "codeExample": "let x = 10;\nlet y = x; // Copy: x e y são válidos\nprintln!(\"{} {}\", x, y);\n\nlet s1 = String::from(\"Rust\");\nlet s2 = s1; // Move: s1 deixa de ser válido!\n// println!(\"{}\", s1); // ERRO: value borrowed here after move\nprintln!(\"{}\", s2);",
+      "title": "Números copiam, Strings mudam de dono",
+      "content": "No Rust, todo valor tem **um único dono** — quando o dono acaba, a memória é limpa na hora (sem precisar de Garbage Collector!).\n• Valores leves como `i32` e `bool` são **copiados** (`Copy`): `let b = a;` deixa os dois válidos.\n• Valores maiores como `String` são **movidos** (`Move`): `let heroi = bau;` passa o item para `heroi` e o `bau` fica vazio! Quer realmente duplicar? Use `.clone()`.",
+      "codeExample": "let ouro = 50;\nlet bonus = ouro; // Copy: os dois valem 50!\n\nlet bau = String::from(\"Espada\");\nlet mao = bau; // Move: agora `mao` é a dona!\nprintln!(\"{} + {} moedas\", mao, bonus);",
+      "expectedOutput": "Espada + 50 moedas",
       "keyTakeaways": [
-        "Cada valor em Rust tem um único dono; quando o dono sai de escopo, a memória é liberada.",
-        "Tipos primitivos na Stack (`i32`, `bool`, `f64`) são copiados (`Copy`); tipos na Heap (`String`, `Vec`) são movidos (`Move`).",
-        "Use `.clone()` apenas quando precisar explicitamente duplicar dados da Heap."
+        "`i32`, `bool`, `f64` são copiados (`Copy`); `String` muda de dono (`Move`).",
+        "Precisa manter os dois válidos com `String`? Use `.clone()`."
       ]
     },
     {
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "O que acontece ao rodar este código?",
+      "codeSnippet": "let a = 10;\nlet b = a;\nprintln!(\"{} e {}\", a, b);",
+      "options": [
+        "10 e 10",
+        "Erro porque `a` foi movido para `b`",
+        "0 e 10",
+        "10 e 0"
+      ],
+      "correctIndex": 0,
+      "hint": "`10` é um número simples (`i32`), então o Rust faz `Copy` automaticamente!",
+      "expectedOutput": "10 e 10",
+      "explanation": "Números simples implementam `Copy`: `a` e `b` ficam ambos válidos e valendo `10`."
+    },
+    {
       "type": "spot_the_bug",
-      "prompt": "Este código não compila com o erro `borrow of moved value: nome`. Clique na linha que causa o erro de compilação:",
+      "prompt": "A espada foi movida de `bau` para `heroi`, mas o código tentou usar `bau` depois! Clique na linha que causa o erro:",
       "lines": [
         "fn main() {",
-        "    let nome = String::from(\"Ferris\");",
-        "    let outro = nome;",
-        "    println!(\"{}\", nome);",
+        "    let bau = String::from(\"Espada\");",
+        "    let heroi = bau;",
+        "    println!(\"No baú: {}\", bau);",
         "}"
       ],
       "buggyLineIndex": 3,
-      "explanation": "Na linha 3, a posse da `String` foi movida de `nome` para `outro`. Tentar ler `nome` na linha 4 falha porque `nome` não é mais válido."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Por que `let b = a;` permite continuar usando `a` quando `a` é `i32`, mas invalida `a` quando `a` é `String`?",
-      "options": [
-        "Porque `i32` implementa `Copy` na Stack, enquanto `String` gerencia memória na Heap e sofre `Move`",
-        "Porque `String` é sempre imutável em Rust",
-        "Porque `i32` é alocado pelo Garbage Collector",
-        "Porque `String` não pode ser passada para variáveis locais"
-      ],
-      "correctIndex": 0,
-      "explanation": "Tipos escalares simples implementam `Copy` (cópia barata na Stack). `String` aponta para um buffer na Heap, então Rust move a posse para impedir `double free`."
+      "hint": "Depois da linha 3 (`let heroi = bau;`), a variável `bau` não tem mais a espada.",
+      "expectedOutput": "Com o herói: Espada",
+      "explanation": "Na linha 4, `bau` já ficou vazio após o `Move`. Usar `heroi` (ou clonar `bau.clone()`) resolve na hora!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para duplicar os dados de `s1` na Heap, mantendo tanto `s1` quanto `s2` válidos:",
-      "codeTemplate": "let s1 = {{blank}}::from(\"Rust\");\nlet s2 = s1.{{blank}}();\nprintln!(\"{} {}\", s1, s2);",
+      "prompt": "Duplique a poção para que tanto `bau` quanto `mochila` continuem válidos:",
+      "codeTemplate": "let bau = String::from(\"Poção\");\nlet mochila = bau.{{blank}}();\nprintln!(\"{} e {}\", bau, mochila);",
       "blanks": [
-        { "answer": "String", "placeholder": "tipo" },
-        { "answer": "clone", "placeholder": "método" }
+        { "answer": "clone", "placeholder": "duplicar" }
       ],
-      "options": ["String", "clone", "copy", "str", "move"],
-      "explanation": "`String::from(...)` cria uma `String` na Heap e `.clone()` faz uma cópia explícita dos dados sem invalidar `s1`."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "Passar uma `String` por valor para uma função também transfere a posse (*move*). Clique na linha que falha ao compilar:",
-      "lines": [
-        "fn exibir(texto: String) { println!(\"{}\", texto); }",
-        "fn main() {",
-        "    let msg = String::from(\"Olá\");",
-        "    exibir(msg);",
-        "    println!(\"{}\", msg);",
-        "}"
-      ],
-      "buggyLineIndex": 4,
-      "explanation": "Na linha 4, `msg` foi movido para dentro da função `exibir`. Tentar usar `msg` novamente na linha 5 gera erro de compilação."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para criar uma `String`, cloná-la para outra variável e imprimir ambas:",
-      "blocks": [
-        "    println!(\"{} {}\", a, b);",
-        "    let b = a.clone();",
-        "fn main() {",
-        "    let a = String::from(\"Ferris\");",
-        "}"
-      ],
-      "correctOrder": [2, 3, 1, 0, 4],
-      "explanation": "Abrimos `fn main()`, criamos `a`, clonamos para `b` e imprimimos `a` e `b`."
+      "options": ["clone", "copy", "move", "dup"],
+      "hint": "Qual método duplica uma `String` explicitamente em Rust?",
+      "expectedOutput": "Poção e Poção",
+      "explanation": "`.clone()` cria uma cópia independente, mantendo `bau` e `mochila` válidos."
     },
     {
       "type": "write_code",
-      "prompt": "Crie uma `String` chamada `original` com o texto `\"Rust\"`, duplique-a explicitamente na Heap para outra variável chamada `copia` sem invalidar `original` e imprima ambas no console.",
-      "starterCode": "",
-      "requiredTokens": ["let", "original", "String::from", "copia", ".clone()", "println!"],
-      "sampleSolution": "let original = String::from(\"Rust\");\nlet copia = original.clone();\nprintln!(\"{} {}\", original, copia);",
-      "hint": "Use `String::from(\"Rust\")`, depois `original.clone()`, e imprima as duas variáveis com `println!`.",
-      "explanation": "`.clone()` duplica o buffer da Heap, permitindo que `original` e `copia` tenham seus próprios dados independentes."
+      "prompt": "Crie a variável `copia` duplicando `original` com `.clone()` para que o `println!` funcione com as duas.",
+      "starterCode": "fn main() {\n    let original = String::from(\"Ferris\");\n    // TODO: crie `copia` clonando `original`\n    \n    println!(\"{} & {}\", original, copia);\n}",
+      "requiredTokens": ["let", "copia", "original.clone()"],
+      "sampleSolution": "fn main() {\n    let original = String::from(\"Ferris\");\n    let copia = original.clone();\n    println!(\"{} & {}\", original, copia);\n}",
+      "hint": "Escreva `let copia = original.clone();`.",
+      "expectedOutput": "Ferris & Ferris",
+      "explanation": "Mandou bem! Agora você sabe exatamente quando o Rust copia, move ou clona dados."
     }
   ]
 }

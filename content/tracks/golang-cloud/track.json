@@ -1,7 +1,7 @@
 {
   "id": "golang-cloud",
   "title": "Go (Golang)",
-  "description": "Aprenda Go do zero às funções nativas: variáveis (var/:=), condicionais, for, slices, maps, make/len/cap, structs, ponteiros e goroutines.",
+  "description": "Aprenda Go construindo a Central de Entregas Cloud do Gopher passo a passo: lições curtinhas, sem pressão, com saída visual e código guiado.",
   "category": "language",
   "color": "#00ADD8",
   "icon": "🐹",
@@ -9,8 +9,8 @@
   "modules": [
     {
       "id": "mod-00-sintaxe",
-      "title": "Módulo 1: Do Zero a Slices, Maps, Loops e Funções Nativas",
-      "description": "Variáveis (var vs :=), tipos, if/switch, for, slices, maps, defer e funções built-in (make, len, cap, delete).",
+      "title": "Módulo 1: Primeiros Passos (Central do Gopher)",
+      "description": "Comece leve: variáveis (var e :=), if/switch, slices, maps, funções nativas e múltiplos retornos.",
       "lessons": [
         "lesson-00-variaveis-tipos-if",
         "lesson-01-sintaxe-slices",
@@ -20,8 +20,8 @@
     },
     {
       "id": "mod-01-concorrencia",
-      "title": "Módulo 2: Concorrência com Goroutines e Channels",
-      "description": "Execute tarefas em paralelo com a palavra reservada go e sincronize via channels.",
+      "title": "Módulo 2: Entregas em Paralelo (Goroutines e Channels)",
+      "description": "Despache tarefas simultâneas com go, canais (chan), WaitGroup, Mutex, select e prazos com context.",
       "lessons": [
         "lesson-01-go-basico",
         "lesson-02-select-waitgroup-mutex",
@@ -30,8 +30,8 @@
     },
     {
       "id": "mod-02-interfaces-erros",
-      "title": "Módulo 3: Structs, Interfaces, Ponteiros e Erros",
-      "description": "Métodos receptores, interfaces implícitas, ponteiros seguros e visibilidade por maiúsculas.",
+      "title": "Módulo 3: Arquitetura Limpa (Structs, Interfaces e Testes)",
+      "description": "Crie contratos simples com interfaces implícitas, ponteiros seguros, Generics, JSON e testes nativos.",
       "lessons": [
         "lesson-01-interfaces-err",
         "lesson-02-ponteiros-pacotes-go",

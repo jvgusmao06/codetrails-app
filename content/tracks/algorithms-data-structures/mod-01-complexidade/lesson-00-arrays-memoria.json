@@ -1,89 +1,74 @@
 {
   "id": "algo-arrays-memoria-00",
-  "title": "Do Zero: Algoritmos, Arrays na Memória e Acesso O(1) vs O(n)",
-  "description": "Entenda como arrays ficam guardados em blocos contíguos na memória RAM, por que ler pelo índice é instantâneo O(1) e por que buscar um item sem saber a posição custa O(n).",
+  "title": "Arrays na Memória: Acesso O(1) vs Busca O(n)",
+  "description": "Veja como arrays ficam lado a lado na RAM, por que ler um índice é instantâneo O(1) e como funciona a Busca Linear O(n).",
+  "mission": "Missão 1: Ajudar o robô Bit a conferir os baús do mapa sem desperdiçar bateria.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "O que é um Algoritmo e Como um Array Funciona na RAM",
-      "content": "Um algoritmo é uma sequência finita de passos bem definidos para transformar uma entrada em uma saída. A estrutura de dados mais fundamental é o Array (Vetor/Lista): uma sequência de elementos armazenados lado a lado na memória RAM. Como cada posição tem um endereço previsível a partir do índice 0, acessar `notas[3]` é instantâneo — tempo constante $O(1)$, não importa se o array tem 10 ou 10 milhões de itens! Já procurar se o número `42` existe em um array desordenado exige olhar elemento por elemento até achar (Busca Linear, tempo proporcional ao tamanho $O(n)$). Da mesma forma, inserir ou remover no início do array custa $O(n)$, pois exige deslocar todos os elementos seguintes na memória.",
-      "codeExample": "notas = [85, 92, 78, 99, 64]\n\n# Acesso direto por índice -> O(1) (Instantâneo!)\nquarto_elemento = notas[3]  # 99\n\n# Busca Linear -> O(n) (No pior caso, olha todos os n itens)\ndef contem(lista, alvo):\n    for item in lista:\n        if item == alvo:\n            return True\n    return False",
+      "title": "Baús lado a lado na memória",
+      "content": "Um **Array** (lista em Python) guarda itens lado a lado na memória começando no índice `0` — por isso ler `baus[2]` é instantâneo (**O(1)**), mesmo com 1 milhão de baús!\nJá quando você não sabe a posição do tesouro, precisa olhar baú por baú até achar: é a **Busca Linear**, que custa **O(n)**.",
+      "codeExample": "baus = [10, 50, 99, 25]\nprint(baus[2])  # O(1): vai direto no índice 2!\n\ndef contem(lista, alvo):\n    for item in lista:\n        if item == alvo:\n            return True\n    return False",
+      "expectedOutput": "99",
       "keyTakeaways": [
-        "Todo array começa no índice 0: o primeiro elemento está em `arr[0]` e o último em `arr[len(arr) - 1]`.",
-        "Acesso por índice `arr[i]` custa $O(1)$ (tempo constante) porque o computador calcula o endereço de memória direto.",
-        "Busca linear em array desordenado e inserção/remoção no INÍCIO (`arr[0]`) custam $O(n)$."
+        "Ler por índice `lista[i]` custa O(1) (tempo constante); índices sempre começam em `0`.",
+        "Procurar um item sem saber a posição custa O(n) porque pode precisar olhar a lista toda."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Em um array com 1.000.000 de números armazenados na memória, qual é a complexidade de tempo para ler diretamente o valor na posição `numeros[500000]`?",
+      "kind": "predict_output",
+      "prompt": "O robô Bit executou o código abaixo na mochila de moedas. O que aparece na tela?",
+      "codeSnippet": "moedas = [5, 10, 25, 50]\nprint(moedas[0] + moedas[3])",
       "options": [
-        "O(1) — Tempo constante, pois o endereço é calculado diretamente pelo índice",
-        "O(n) — Precisa percorrer 500.000 elementos antes de chegar lá",
-        "O(log n) — Faz uma busca binária até o índice",
-        "O(n²) — Multiplica o índice pelo tamanho do array"
+        "55",
+        "30",
+        "35",
+        "Erro de índice fora do limite"
       ],
       "correctIndex": 0,
-      "explanation": "Em um array contíguo na memória, acessar qualquer posição pelo seu índice numérico é uma operação aritmética direta de endereço, levando tempo constante O(1)."
+      "hint": "Lembre que o índice `0` é o primeiro item (`5`) e o índice `3` é o quarto item (`50`).",
+      "expectedOutput": "55",
+      "explanation": "`moedas[0]` é `5` e `moedas[3]` é `50` — ambos lidos em tempo instantâneo O(1), somando `55`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a função de Busca Linear em Python para percorrer todos os itens e retornar se o alvo foi encontrado:",
-      "codeTemplate": "def contem(lista, alvo):\n    for item in {{blank}}:\n        if item == alvo:\n            return {{blank}}\n    return False",
+      "prompt": "Complete a Busca Linear para percorrer `baus` e retornar `True` assim que achar o tesouro:",
+      "codeTemplate": "def contem(baus, alvo):\n    for item in {{blank}}:\n        if item == alvo:\n            return {{blank}}\n    return False",
       "blanks": [
-        { "answer": "lista", "placeholder": "coleção" },
-        { "answer": "True", "placeholder": "encontrado" }
+        { "answer": "baus", "placeholder": "lista" },
+        { "answer": "True", "placeholder": "achou" }
       ],
-      "options": ["lista", "True", "False", "alvo", "0"],
-      "explanation": "A busca linear percorre cada `item` em `lista` e retorna `True` assim que encontra o `alvo`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Por que inserir um novo elemento no INÍCIO de um array grande (`arr.insert(0, x)`) tem custo $O(n)$, enquanto acessar `arr[0]` custa $O(1)$?",
-      "options": [
-        "Porque o índice 0 é protegido pelo sistema operacional",
-        "Porque todos os elementos existentes precisam ser deslocados uma posição para a direita na memória",
-        "Porque o Python ordena o array automaticamente após cada inserção",
-        "Porque arrays não permitem armazenar novos valores após serem criados"
-      ],
-      "correctIndex": 1,
-      "explanation": "Como os elementos são contíguos na RAM, abrir espaço na posição 0 obriga a mover os N elementos seguintes uma casa adiante."
+      "options": ["baus", "True", "False", "alvo"],
+      "hint": "Percorra a lista `baus` e retorne `True` quando encontrar `alvo`.",
+      "expectedOutput": "contem([10, 50, 99], 50) -> True",
+      "explanation": "Se encontrar no caminho, já devolve `True` na hora; se terminar o loop sem achar, devolve `False`."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Esta busca linear retorna `False` antes mesmo de verificar o restante da lista! Clique na linha onde está o erro lógico:",
+      "prompt": "O robô Bit desistiu cedo demais! Esta busca retorna `False` logo no primeiro baú se ele não for o alvo. Clique na linha com bug:",
       "lines": [
-        "def busca_linear(lista, alvo):",
-        "    for item in lista:",
+        "def busca_linear(baus, alvo):",
+        "    for item in baus:",
         "        if item == alvo:",
         "            return True",
         "        else: return False"
       ],
       "buggyLineIndex": 4,
-      "explanation": "Colocar `return False` dentro do `else` do loop encerra a função logo no primeiro elemento diferente do alvo! O `return False` deve ficar fora do `for`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para montar uma função que soma o primeiro elemento (acesso O(1)) apenas se o alvo existir na lista (busca O(n)):",
-      "blocks": [
-        "def soma_se_contem(lista, alvo):",
-        "    for item in lista:",
-        "        if item == alvo:",
-        "            return lista[0] + alvo",
-        "    return -1"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4],
-      "explanation": "Primeiro definimos a função, percorremos a lista em O(n), testamos a igualdade e combinamos com o acesso O(1) a `lista[0]`; se o loop terminar sem encontrar, retornamos `-1`."
+      "hint": "Quando devemos retornar `False` — no primeiro item diferente ou só depois de checar todos?",
+      "expectedOutput": "busca_linear([10, 50, 99], 99) -> True",
+      "explanation": "O `return False` deve ficar fora do `for`! Dentro do `else`, o loop para já no índice 0."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Implemente uma função `busca_linear(lista, alvo)` em Python que percorra os elementos de uma lista e retorne um booleano indicando se o alvo está presente.",
-      "starterCode": "",
-      "requiredTokens": ["def", "busca_linear", "for", "if", "return", "True", "False"],
-      "sampleSolution": "def busca_linear(lista, alvo):\n    for x in lista:\n        if x == alvo:\n            return True\n    return False",
-      "hint": "Defina a função recebendo `(lista, alvo)`, use um laço `for` para comparar cada item com `alvo` e só retorne `False` depois que o laço terminar.",
-      "explanation": "A busca linear visita até N elementos no pior caso (quando o item está no final ou não existe), caracterizando complexidade O(n)."
+      "prompt": "Complete a função `busca_linear(lista, alvo)` para percorrer `lista`, retornar `True` se encontrar `alvo` e `False` no final.",
+      "starterCode": "def busca_linear(lista, alvo):\n    # TODO: percorra lista e retorne True se item == alvo\n    \n    return False",
+      "requiredTokens": ["for", "in", "if", "alvo", "return", "True"],
+      "sampleSolution": "def busca_linear(lista, alvo):\n    for item in lista:\n        if item == alvo:\n            return True\n    return False",
+      "hint": "Use `for item in lista:` e dentro dele `if item == alvo: return True`.",
+      "expectedOutput": "busca_linear([10, 50, 99], 99) -> True",
+      "explanation": "Primeira missão concluída! Agora você enxerga claramente a diferença entre O(1) e O(n)."
     }
   ]
 }

@@ -1,58 +1,53 @@
 {
   "id": "algo-arvores-bst-04",
-  "title": "Árvores Binárias de Busca (BST), DFS (Profundidade) e BFS (Largura)",
-  "description": "Modele dados hierárquicos com Árvores Binárias e domine os dois algoritmos universais de travessia: DFS e BFS.",
+  "title": "Árvores Binárias (BST), DFS e BFS",
+  "description": "Navegue por dados hierárquicos com Árvores Binárias de Busca e domine as travessias DFS e BFS.",
+  "mission": "Missão 8: Explorar a árvore de cavernas numeradas da Ilha do Tesouro usando DFS e BFS!",
   "xp": 45,
   "steps": [
     {
       "type": "theory",
-      "title": "Árvores Binárias, BST e Travessias DFS vs BFS",
-      "content": "Uma **Árvore Binária** é composta por nós onde cada nó tem no máximo dois filhos: `left` (esquerda) e `right` (direita). Em uma **Árvore Binária de Busca (BST)**, tudo à esquerda é **menor** que o nó atual e tudo à direita é **maior** — permitindo buscas em **$O(\\log n)$** quando balanceada! Para percorrer árvores usamos:\n- **DFS (Busca em Profundidade)**: mergulha até o fundo de um ramo antes de voltar (usa **Pilha / Recursão**).\n- **BFS (Busca em Largura)**: visita nível por nível de cima para baixo (usa **Fila / Queue** com `collections.deque`).",
-      "codeExample": "from collections import deque\n\nclass TreeNode:\n    def __init__(self, val, left=None, right=None):\n        self.val = val\n        self.left = left\n        self.right = right\n\n# DFS Pre-Order (Recursão / Pilha)\ndef dfs(no):\n    if not no: return\n    print(no.val)\n    dfs(no.left)\n    dfs(no.right)\n\n# Busca em BST -> O(log n) se balanceada\ndef buscar_bst(no, alvo):\n    if not no or no.val == alvo: return no\n    if alvo < no.val: return buscar_bst(no.left, alvo)\n    return buscar_bst(no.right, alvo)",
+      "title": "Menores à esquerda, maiores à direita (BST)",
+      "content": "Numa **Árvore Binária de Busca (BST)**, cada nó tem até dois caminhos (`left` e `right`): tudo à esquerda é **menor** e tudo à direita é **maior**, acelerando buscas para **O(log n)**!\nPara visitar todos os nós, usamos **DFS** (mergulha fundo com recursão/pilha) ou **BFS** (visita andar por andar com uma fila `deque`).",
+      "codeExample": "def dfs(no):\n    if not no: return\n    print(no.val)\n    dfs(no.left)\n    dfs(no.right)\ndef buscar_bst(no, alvo):\n    if not no or no.val == alvo: return no\n    return buscar_bst(no.left if alvo < no.val else no.right, alvo)",
+      "expectedOutput": "10\n5\n15",
       "keyTakeaways": [
-        "Em uma BST, o percurso *In-Order* (`left` -> `raiz` -> `right`) visita os números em ordem crescente!",
-        "DFS usa Pilha (ou recursão); BFS usa Fila (`collections.deque`).",
-        "Bancos de dados usam árvores balanceadas (B-Trees) para manter buscas em $O(\\log n)$."
+        "Na BST, `alvo < no.val` desce para `no.left`; `alvo > no.val` desce para `no.right`.",
+        "DFS usa recursão/Pilha (profundidade); BFS usa Fila `deque` (nível por nível)."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual estrutura de dados é usada para implementar uma Busca em Largura (**BFS** — nível por nível) em uma árvore ou grafo?",
+      "kind": "predict_output",
+      "prompt": "A árvore tem raiz `10`, filho esquerdo `5` e filho direito `15`. O que esta função DFS (In-Order) imprime?",
+      "codeSnippet": "def in_order(no):\n    if not no: return\n    in_order(no.left)\n    print(no.val)\n    in_order(no.right)",
       "options": [
-        "Pilha (Stack / LIFO)",
-        "Fila (Queue / FIFO)",
-        "Bubble Sort",
-        "Tabela ASCII"
+        "5, 10, 15 (em ordem crescente!)",
+        "10, 5, 15",
+        "15, 10, 5",
+        "5, 15, 10"
       ],
-      "correctIndex": 1,
-      "explanation": "A Fila (FIFO) garante que todos os nós do nível atual sejam processados antes de avançar para os filhos do próximo nível."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Em uma Árvore Binária de Busca (BST), qual ordem de travessia DFS visita todos os valores em ordem **crescente**?",
-      "options": [
-        "Pre-Order (raiz -> left -> right)",
-        "In-Order (left -> raiz -> right)",
-        "Post-Order (left -> right -> raiz)",
-        "Ordem aleatória"
-      ],
-      "correctIndex": 1,
-      "explanation": "Como todos os menores ficam à esquerda e os maiores à direita, visitar `left`, depois a `raiz` e depois `right` (In-Order) produz a sequência ordenada."
+      "correctIndex": 0,
+      "hint": "Ela visita primeiro `no.left` (5), depois imprime a raiz (10) e por fim `no.right` (15)!",
+      "expectedOutput": "5\n10\n15",
+      "explanation": "O percurso *In-Order* (`left` -> `raiz` -> `right`) sempre imprime uma BST em ordem crescente!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a função recursiva de travessia DFS (Pre-Order) em uma árvore binária:",
+      "prompt": "Complete o caso base e a chamada para o filho esquerdo na travessia DFS:",
       "codeTemplate": "def dfs(no):\n    if not {{blank}}:\n        return\n    print(no.val)\n    dfs(no.{{blank}})\n    dfs(no.right)",
       "blanks": [
-        { "answer": "no", "placeholder": "caso base" },
-        { "answer": "left", "placeholder": "filho esquerdo" }
+        { "answer": "no", "placeholder": "parada" },
+        { "answer": "left", "placeholder": "esquerdo" }
       ],
-      "options": ["no", "left", "right", "val", "None"],
-      "explanation": "Se `no` for `None` (`if not no:`), retornamos (caso base); caso contrário, processamos `no.val` e mergulhamos em `no.left` e `no.right`."
+      "options": ["no", "left", "right", "val"],
+      "hint": "Pare quando `no` for `None` (`if not no:`) e visite primeiro `no.left`.",
+      "expectedOutput": "10\n5\n15",
+      "explanation": "Em só 6 linhas, você já sabe explorar qualquer árvore binária inteira!"
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Esta função de busca em uma BST nunca encontra valores menores que a raiz! Clique na linha com o bug:",
+      "prompt": "O robô Bit nunca encontra cavernas com número menor que a raiz na BST! Clique na linha com bug:",
       "lines": [
         "def buscar_bst(no, alvo):",
         "    if not no or no.val == alvo:",
@@ -62,30 +57,19 @@
         "    return buscar_bst(no.right, alvo)"
       ],
       "buggyLineIndex": 4,
-      "explanation": "Na linha 5, quando `alvo < no.val`, a busca deve descer pela subárvore esquerda (`no.left`), não pela direita (`no.right`)."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para implementar uma travessia BFS (nível por nível) em uma árvore binária a partir da `raiz`:",
-      "blocks": [
-        "fila = deque([raiz])",
-        "while fila:",
-        "    atual = fila.popleft()",
-        "    print(atual.val)",
-        "    if atual.left: fila.append(atual.left)",
-        "    if atual.right: fila.append(atual.right)"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4, 5],
-      "explanation": "A BFS coloca a raiz na fila, desenfileira com `popleft()`, processa o nó e enfileira os filhos esquerdo e direito existentes."
+      "hint": "Quando `alvo < no.val`, devemos ir para a direita ou para a esquerda?",
+      "expectedOutput": "buscar_bst(raiz_10, 5) -> Node(5)",
+      "explanation": "Na linha 5, trocando `no.right` por `no.left`, a busca desce pelo lado dos valores menores!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Implemente uma função recursiva `dfs(no)` em Python para percorrer uma árvore binária (com atributos `.val`, `.left` e `.right`) imprimindo o valor de cada nó.",
-      "starterCode": "",
-      "requiredTokens": ["def", "dfs", "if", "return", "print", "no.val", "no.left", "no.right"],
+      "prompt": "Complete a função recursiva `dfs(no)` tratando o caso base, imprimindo `no.val` e visitando `no.left` e `no.right`.",
+      "starterCode": "def dfs(no):\n    # TODO: pare se not no, imprima no.val e chame dfs para left e right\n    pass",
+      "requiredTokens": ["if", "return", "print", "no.val", "no.left", "no.right"],
       "sampleSolution": "def dfs(no):\n    if not no:\n        return\n    print(no.val)\n    dfs(no.left)\n    dfs(no.right)",
-      "hint": "Comece tratando o caso base quando o nó é nulo; em seguida imprima o valor e chame a função recursivamente para a esquerda e para a direita.",
-      "explanation": "Em apenas 6 linhas, a recursão implementa a busca em profundidade completa em qualquer árvore binária."
+      "hint": "Escreva `if not no: return`, depois `print(no.val)`, `dfs(no.left)` e `dfs(no.right)`.",
+      "expectedOutput": "10\n5\n15",
+      "explanation": "Árvore explorada! A mesma ideia de árvores alimenta índices B-Tree do PostgreSQL que você viu em SQL."
     }
   ]
 }

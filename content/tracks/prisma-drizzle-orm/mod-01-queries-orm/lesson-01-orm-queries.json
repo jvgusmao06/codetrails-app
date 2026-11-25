@@ -1,78 +1,74 @@
 {
   "id": "orm-queries-01",
-  "title": "Consultas Type-Safe, Include/With e o Problema N+1",
-  "description": "Busque registros filtrados com Prisma/Drizzle e evite disparar centenas de queries repetidas no banco.",
+  "title": "Queries Type-Safe, Include e Adeus N+1",
+  "description": "Filtre registros com where, limite com take e carregue relações de uma vez com include para manter o banco voando.",
+  "mission": "Missão 1: Listar autores ativos e seus livros no catálogo BookShelf em uma única consulta rápida.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "ORMs Type-Safe e Prevenção do Problema N+1",
-      "content": "ORMs modernos para TypeScript (como Prisma e Drizzle) inferem os tipos das colunas diretamente do schema do banco. Um dos erros mais graves em produção é o 'Problema de Query N+1': buscar uma lista de N usuários e, dentro de um loop 'for', fazer uma nova query para buscar os posts de cada usuário. A solução é carregar a relação de uma vez usando 'include' (Prisma) ou 'with' (Drizzle).",
-      "codeExample": "// Bom: Carrega usuários + seus posts em uma única operação (Eager Loading)\nconst usuarios = await prisma.user.findMany({\n  where: { ativo: true },\n  include: { posts: true },\n  take: 20,\n});",
+      "title": "Trazendo relações de uma vez (sem cair no N+1)",
+      "content": "Com Prisma ou Drizzle, o TypeScript conhece todas as colunas do banco. Um erro clássico de performance é o **N+1**: buscar N autores e fazer mais N queries dentro de um `for` para pegar os livros de cada um.\nA solução é simples: peça as relações já na primeira consulta com `include` (Prisma) ou `with` (Drizzle), filtre com `where` e limite com `take`!",
+      "codeExample": "const usuarios = await prisma.user.findMany({\n  where: { ativo: true },\n  include: { posts: true },\n  take: 10,\n});\nconsole.log(usuarios.length);",
+      "expectedOutput": "Até 10 usuários ativos já com seus posts carregados (sem loop N+1)",
       "keyTakeaways": [
-        "findMany({ where, include, take }) filtra, carrega relações e limita o número de registros.",
-        "Nunca execute queries de banco ('await prisma...') dentro de um loop for sobre resultados anteriores (N+1).",
-        "Use 'select' quando precisar apenas de 2 ou 3 colunas para economizar tráfego de rede."
+        "`findMany({ where, include, take })` filtra, traz relações e pagina numa tacada só.",
+        "Nunca rode `await prisma...` dentro de um loop `for` para buscar filhos — use `include` (ou `select` para poucas colunas)."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Quando uma tabela tem 30 colunas mas o endpoint precisa retornar apenas `id` e `email`, qual opção do Prisma devemos usar para reduzir o tráfego de rede?",
+      "kind": "predict_output",
+      "prompt": "Se existem 50 autores cadastrados, quantas viagens ao banco este código dispara se rodar com um loop `for`?",
+      "codeSnippet": "const autores = await db.author.findMany();\nfor (const autor of autores) {\n  await db.book.findMany({ where: { authorId: autor.id } });\n}",
       "options": [
-        "take",
-        "select",
-        "include",
-        "groupBy"
+        "51 queries (1 para autores + 50 dentro do loop — problema N+1!)",
+        "Apenas 1 query automática",
+        "2 queries no total",
+        "Nenhuma, pois o Prisma cancela loops"
       ],
-      "correctIndex": 1,
-      "explanation": "`select: { id: true, email: true }` traz apenas as colunas necessárias do banco, evitando trafegar campos pesados desnecessariamente."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "Este código sofre do clássico problema de performance N+1 (executa 1 query para buscar autores e +N queries dentro do loop). Clique na linha que dispara as queries repetidas dentro do laço:",
-      "lines": [
-        "const autores = await db.author.findMany();",
-        "for (const autor of autores) {",
-        "  const livros = await db.book.findMany({ where: { authorId: autor.id } });",
-        "  console.log(autor.nome, livros.length);",
-        "}"
-      ],
-      "buggyLineIndex": 2,
-      "explanation": "Na linha 3, executar 'await db.book.findMany' dentro do loop dispara uma viagem ao banco para cada autor. Deve-se usar 'include: { books: true }' na primeira query!"
+      "correctIndex": 0,
+      "hint": "A primeira linha faz 1 query, e o `for` faz mais 1 query para cada um dos 50 autores!",
+      "expectedOutput": "51 queries disparadas (1 + 50)",
+      "explanation": "Esse é o famoso N+1! Trocando o loop por `include: { books: true }` na primeira chamada, o banco resolve tudo sem essa enxurrada."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a consulta Prisma para buscar usuários ativos incluindo seus pedidos (orders) em uma só chamada:",
-      "codeTemplate": "const lista = await prisma.user.{{blank}}({\n  {{blank}}: { ativo: true },\n  {{blank}}: { orders: true }\n});",
+      "prompt": "Complete a query do Prisma para filtrar usuários ativos e já trazer seus pedidos (`orders`):",
+      "codeTemplate": "const lista = await prisma.user.findMany({\n  {{blank}}: { ativo: true },\n  {{blank}}: { orders: true },\n});",
       "blanks": [
-        { "answer": "findMany", "placeholder": "método" },
         { "answer": "where", "placeholder": "filtro" },
         { "answer": "include", "placeholder": "relação" }
       ],
-      "options": ["findMany", "where", "include", "selectAll", "filter", "join"],
-      "explanation": "No Prisma Client usamos findMany(), 'where' para condições de filtro e 'include' para trazer tabelas relacionadas."
+      "options": ["where", "include", "filter", "join"],
+      "hint": "No Prisma, filtramos com `where` e carregamos tabelas relacionadas com `include`.",
+      "expectedOutput": "Usuários ativos com lista de pedidos embutida",
+      "explanation": "Na mosca! `where` filtra as linhas e `include` já anexa os pedidos relacionados."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os blocos para montar uma consulta paginada no Prisma filtrando usuários ativos e trazendo seus posts:",
+      "prompt": "Ordene os blocos para montar uma busca paginada de usuários ativos com seus posts:",
       "blocks": [
-        "  include: { posts: true },",
-        "const usuarios = await prisma.user.findMany({",
         "  take: 20,",
+        "const usuarios = await prisma.user.findMany({",
+        "  include: { posts: true },",
         "  where: { ativo: true },",
         "});"
       ],
-      "correctOrder": [1, 3, 0, 2, 4],
-      "explanation": "Abrimos `prisma.user.findMany({`, configuramos `where`, `include` e `take`, e fechamos o objeto de opções."
+      "correctOrder": [1, 3, 2, 0, 4],
+      "hint": "Comece abrindo `prisma.user.findMany({`, coloque `where`, `include`, `take` e feche com `});`.",
+      "expectedOutput": "Lista de até 20 usuários com posts",
+      "explanation": "Lindo! Consulta limpa, filtrada, com relações carregadas e paginada com `take: 20`."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Usando o Prisma Client (`prisma`), busque assincronamente na entidade `user` os usuários ativos (`ativo: true`), carregando seus `posts` relacionados em uma única operação e limitando o retorno a `10` registros.",
-      "starterCode": "",
+      "prompt": "Complete a consulta `prisma.user.findMany` com `where: { ativo: true }`, `include: { posts: true }` e `take: 10`.",
+      "starterCode": "// TODO: passe where, include e take dentro de prisma.user.findMany({ ... })\nconst usuarios = await prisma.user.findMany({\n  \n});",
       "requiredTokens": ["await", "prisma.user.findMany(", "where:", "include:", "take:"],
       "sampleSolution": "const usuarios = await prisma.user.findMany({\n  where: { ativo: true },\n  include: { posts: true },\n  take: 10,\n});",
-      "hint": "Chame `await prisma.user.findMany({ ... })` passando as chaves `where`, `include` e `take`.",
-      "explanation": "Combinar `where`, `include` e `take` garante consultas filtradas, paginadas e livres do problema N+1."
+      "hint": "Adicione `where: { ativo: true },`, `include: { posts: true },` e `take: 10,` dentro das chaves.",
+      "expectedOutput": "Até 10 usuários ativos + posts carregados sem N+1",
+      "explanation": "Mandou bem! O catálogo BookShelf agora consulta o banco rapidinho e 100% tipado."
     }
   ]
 }

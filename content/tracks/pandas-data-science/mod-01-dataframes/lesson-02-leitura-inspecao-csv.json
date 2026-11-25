@@ -1,75 +1,72 @@
 {
   "id": "pandas-leitura-inspecao-02",
-  "title": "Lendo Dados (read_csv) e Inspecionando com head(), info() e describe()",
-  "description": "Carregue arquivos CSV/JSON em DataFrames e faça uma análise exploratória inicial em 4 comandos.",
+  "title": "Lendo CSV e Fazendo o Raio-X do Dataset",
+  "description": "Carregue uma tabela com pd.read_csv() e descubra tamanho, tipos e estatísticas com head(), shape, info() e describe().",
+  "mission": "Missão 2: Abrir a planilha de pedidos da cafeteria e fazer o raio-X inicial em 4 comandos.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Os Primeiros 4 Comandos ao Abrir Qualquer Dataset",
-      "content": "Todo projeto de Data Science começa carregando uma tabela com **`pd.read_csv(\"dados.csv\")`** (ou `read_parquet`, `read_excel`). Antes de qualquer gráfico ou modelo, todo analista roda 4 inspeções:\n- **`df.head(5)`**: mostra as 5 primeiras linhas.\n- **`df.shape`**: tupla `(linhas, colunas)` (atributo, sem parênteses!).\n- **`df.info()`**: mostra tipos (`int64`, `float64`, `object`) e quantos valores **não-nulos** existem.\n- **`df.describe()`**: estatísticas resumidas (média, desvio padrão, mínimo, máximo, quartis) das colunas numéricas.",
-      "codeExample": "import pandas as pd\n\ndf = pd.read_csv(\"vendas.csv\")\nprint(df.shape)      # ex: (10000, 6)\nprint(df.head(3))    # 3 primeiras linhas\ndf.info()            # Tipos e valores ausentes\nprint(df.describe()) # Média, min, max, quartis",
+      "title": "Os 4 comandos iniciais de qualquer análise",
+      "content": "Antes de criar gráficos ou relatórios, você abre o arquivo com **`pd.read_csv()`** e faz um check-up rápido.\nUse **`df.head(3)`** para espiar as primeiras linhas, **`df.shape`** para ver `(linhas, colunas)` (sem parênteses!), **`df.info()`** para checar tipos e valores ausentes, e **`df.describe()`** para médias e extremos.",
+      "codeExample": "import pandas as pd\n\ndf = pd.read_csv(\"pedidos.csv\")\nprint(df.shape)    # (500, 4)\nprint(df.head(2))  # 2 primeiras linhas\ndf.info()          # Tipos e valores não-nulos",
+      "expectedOutput": "(500, 4)\n   id    bebida  preco  pago\n0   1  Expresso    8.0  True\n1   2     Latte   14.0  True",
       "keyTakeaways": [
-        "Use `df.info()` logo no início para descobrir colunas com tipos errados (ex: preço salvo como texto `object`) ou muitos nulos.",
-        "`df.shape` é um atributo (sem parênteses), enquanto `df.head()`, `df.info()` e `df.describe()` são métodos.",
-        "Para colunas de texto/categóricas, use `df[\"categoria\"].value_counts()` para contar frequências."
+        "`df.shape` é um atributo (sem parênteses); `head()`, `info()` e `describe()` são métodos.",
+        "`df.info()` revela na hora colunas com valores nulos ou tipos inesperados."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual comando abaixo exibe a quantidade de valores não-nulos e os tipos (`dtypes`) de cada coluna de um DataFrame?",
+      "kind": "predict_output",
+      "prompt": "O que será impresso ao checar o `.shape` desta tabela da cafeteria?",
+      "codeSnippet": "import pandas as pd\ndf = pd.DataFrame({\"cafe\": [\"Expresso\", \"Latte\", \"Mocha\"], \"qtd\": [3, 5, 2]})\nprint(df.shape)",
       "options": [
-        "df.shape",
-        "df.head(5)",
-        "df.info()",
-        "df.describe()"
+        "(3, 2)",
+        "(2, 3)",
+        "6",
+        "Erro porque faltou parênteses em shape()"
       ],
-      "correctIndex": 2,
-      "explanation": "`df.info()` imprime o resumo estrutural completo: número de entradas, nomes das colunas, contagem de não-nulos e `dtype` de cada coluna."
+      "correctIndex": 0,
+      "hint": "`.shape` sempre devolve `(número de linhas, número de colunas)`.",
+      "expectedOutput": "(3, 2)",
+      "explanation": "A tabela tem 3 linhas (cafés) e 2 colunas (`cafe` e `qtd`), portanto `df.shape` imprime `(3, 2)`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código Pandas para ler `clientes.csv`, ver as 5 primeiras linhas e exibir o resumo estatístico:",
-      "codeTemplate": "df = pd.{{blank}}(\"clientes.csv\")\nprint(df.{{blank}}())\nprint(df.{{blank}}())",
+      "prompt": "Complete o código para abrir `pedidos.csv` e exibir o resumo de tipos e nulos:",
+      "codeTemplate": "df = pd.{{blank}}(\"pedidos.csv\")\ndf.{{blank}}()",
       "blanks": [
-        { "answer": "read_csv", "placeholder": "ler csv" },
-        { "answer": "head", "placeholder": "topo" },
-        { "answer": "describe", "placeholder": "estatísticas" }
+        { "answer": "read_csv", "placeholder": "abrir csv" },
+        { "answer": "info", "placeholder": "resumo" }
       ],
-      "options": ["read_csv", "head", "describe", "open_csv", "top", "stats"],
-      "explanation": "`pd.read_csv()` carrega o CSV, `.head()` mostra as primeiras linhas e `.describe()` calcula estatísticas descritivas."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "Identifique a linha que gera `TypeError: 'tuple' object is not callable` ao inspecionar o DataFrame:",
-      "lines": [
-        "import pandas as pd",
-        "df = pd.read_csv(\"vendas.csv\")",
-        "print(df.shape())",
-        "print(df[\"categoria\"].value_counts())"
-      ],
-      "buggyLineIndex": 2,
-      "explanation": "`df.shape` é um atributo (uma tupla `(linhas, colunas)`), e não um método — portanto deve ser acessado sem parênteses."
+      "options": ["read_csv", "info", "open_csv", "shape", "summary"],
+      "hint": "Lemos CSV com `pd.read_csv` e inspecionamos tipos/nulos com `.info()`.",
+      "expectedOutput": "<class 'pandas.core.frame.DataFrame'>\nRangeIndex: 500 entries, 0 to 499",
+      "explanation": "`pd.read_csv()` carrega os dados na tabela e `df.info()` mostra o esquema completo em segundos."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os blocos para carregar o CSV, auditar os tipos/nulos e contar a frequência da coluna `categoria`:",
+      "prompt": "Ordene os blocos para carregar a planilha de pedidos, auditar os tipos e contar quantas vezes cada bebida saiu:",
       "blocks": [
-        "print(df[\"categoria\"].value_counts())",
-        "df = pd.read_csv(\"vendas.csv\")",
+        "print(df[\"bebida\"].value_counts())",
+        "df = pd.read_csv(\"pedidos.csv\")",
         "df.info()"
       ],
       "correctOrder": [1, 2, 0],
-      "explanation": "Carregamos o DataFrame com `pd.read_csv`, inspecionamos os tipos/nulos com `df.info()` e contamos categorias com `.value_counts()`."
+      "hint": "Primeiro carregue o arquivo em `df`, depois faça o check-up com `info()` e conte as bebidas.",
+      "expectedOutput": "Latte       210\nExpresso    180\nMocha       110",
+      "explanation": "Essa sequência (carregar -> auditar com `info()` -> contar categorias) é o ritual clássico de análise exploratória!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Importe o Pandas com o alias `pd`, carregue o arquivo `\"pedidos.csv\"` na variável `df` e exiba o resumo de tipos e valores não-nulos das colunas.",
-      "starterCode": "",
-      "requiredTokens": ["import pandas as pd", "pd.read_csv", "\"pedidos.csv\"", "df.info()"],
-      "sampleSolution": "import pandas as pd\ndf = pd.read_csv(\"pedidos.csv\")\ndf.info()",
-      "hint": "Use `import pandas as pd`, carregue o arquivo com `pd.read_csv(\"pedidos.csv\")` e chame `df.info()`.",
-      "explanation": "`df.info()` é a maneira mais rápida de auditar schema e nulos em um DataFrame."
+      "prompt": "Carregue o arquivo `\"pedidos.csv\"` na variável `df`, imprima `df.shape` e rode `df.info()`.",
+      "starterCode": "import pandas as pd\n\n# TODO: leia \"pedidos.csv\" em `df`, imprima o shape e chame df.info()\ndf = \n",
+      "requiredTokens": ["pd.read_csv", "pedidos.csv", "df.shape", "df.info()"],
+      "sampleSolution": "import pandas as pd\n\ndf = pd.read_csv(\"pedidos.csv\")\nprint(df.shape)\ndf.info()",
+      "hint": "Use `pd.read_csv(\"pedidos.csv\")`, depois `print(df.shape)` e `df.info()`.",
+      "expectedOutput": "(500, 4)\n<class 'pandas.core.frame.DataFrame'>",
+      "explanation": "Mandou bem! Em 3 linhas você já conhece o tamanho, os tipos e se faltam dados na sua tabela."
     }
   ]
 }

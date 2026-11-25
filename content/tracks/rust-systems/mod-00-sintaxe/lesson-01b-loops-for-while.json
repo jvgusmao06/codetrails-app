@@ -1,0 +1,74 @@
+{
+  "id": "rust-loops-01b",
+  "title": "Turnos de Batalha (for e while)",
+  "description": "Repita ações facilmente com for (1..4 vs 1..=4) e while sem precisar gerenciar índices na mão.",
+  "mission": "Missão 5: Simular os 3 turnos de ataque do herói na arena.",
+  "xp": 25,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Repetindo com for (.. vs ..=) e while",
+      "content": "Para contar um número fixo de voltas, `for` é o favorito em Rust:\n• `1..4` vai de 1 até **3** (para antes do último).\n• `1..=4` vai de 1 até **4** (o `=` inclui o último!).\nQuando você quer repetir *enquanto* uma condição for verdadeira, use `while`.",
+      "codeExample": "for turno in 1..=3 {\n    println!(\"Turno {}: ataque!\", turno);\n}",
+      "expectedOutput": "Turno 1: ataque!\nTurno 2: ataque!\nTurno 3: ataque!",
+      "keyTakeaways": [
+        "`1..4` gera 1, 2, 3; `1..=4` inclui o 4 (1, 2, 3, 4).",
+        "`while condicao { ... }` repete enquanto a condição for `true`."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "Quantas linhas vão aparecer com o intervalo `1..4` (sem o `=`)?",
+      "codeSnippet": "for n in 1..4 {\n    println!(\"Passo {}\", n);\n}",
+      "options": [
+        "Passo 1, Passo 2, Passo 3",
+        "Passo 1, Passo 2, Passo 3, Passo 4",
+        "Passo 0, Passo 1, Passo 2, Passo 3",
+        "Nenhuma linha"
+      ],
+      "correctIndex": 0,
+      "hint": "Sem o `=`, o número da direita fica de fora.",
+      "expectedOutput": "Passo 1\nPasso 2\nPasso 3",
+      "explanation": "`1..4` é exclusivo no final: percorre 1, 2 e 3. Para incluir o 4, usaríamos `1..=4`."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o `for` para executar exatamente 3 ondas de inimigos (1, 2 e 3):",
+      "codeTemplate": "{{blank}} onda in {{blank}} {\n    println!(\"Onda {} iniciada!\", onda);\n}",
+      "blanks": [
+        { "answer": "for", "placeholder": "laço" },
+        { "answer": "1..=3", "placeholder": "1 até 3" }
+      ],
+      "options": ["for", "1..=3", "1..3", "while"],
+      "hint": "Use `for` e o intervalo inclusivo `1..=3`.",
+      "expectedOutput": "Onda 1 iniciada!\nOnda 2 iniciada!\nOnda 3 iniciada!",
+      "explanation": "`for onda in 1..=3` percorre exatamente 1, 2 e 3."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Este `while` conta 3 golpes, mas não compila por causa de uma palavra que faltou. Clique na linha com o bug:",
+      "lines": [
+        "let golpes = 0;",
+        "while golpes < 3 {",
+        "    golpes += 1;",
+        "    println!(\"Golpe {}!\", golpes);",
+        "}"
+      ],
+      "buggyLineIndex": 0,
+      "hint": "`golpes` muda de valor dentro do `while` — ele foi destravado com `mut`?",
+      "expectedOutput": "Golpe 1!\nGolpe 2!\nGolpe 3!",
+      "explanation": "Na linha 1 faltou `mut`: como `golpes += 1` altera a variável, precisamos de `let mut golpes = 0;`."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Complete o laço `for` para somar o ouro coletado nas fases `1` até `5` (incluindo a fase `5`) dentro de `total`.",
+      "starterCode": "fn main() {\n    let mut total = 0;\n    // TODO: faça um `for fase in 1..=5` somando `fase` em `total`\n    \n    println!(\"Ouro total: {}\", total);\n}",
+      "requiredTokens": ["for", "1..=5", "total +="],
+      "sampleSolution": "fn main() {\n    let mut total = 0;\n    for fase in 1..=5 {\n        total += fase;\n    }\n    println!(\"Ouro total: {}\", total);\n}",
+      "hint": "Escreva `for fase in 1..=5 { total += fase; }`.",
+      "expectedOutput": "Ouro total: 15",
+      "explanation": "1 + 2 + 3 + 4 + 5 = 15 moedas! Você dominou laços com intervalos inclusivos em Rust."
+    }
+  ]
+}

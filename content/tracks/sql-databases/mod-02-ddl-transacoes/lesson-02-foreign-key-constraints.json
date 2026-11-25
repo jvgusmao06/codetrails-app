@@ -1,88 +1,73 @@
 {
   "id": "sql-constraints-fk-02",
-  "title": "08. Integridade: PRIMARY KEY, FOREIGN KEY, UNIQUE e CHECK",
-  "description": "Garanta dados consistentes no banco com restrições de chave primária, chave estrangeira (REFERENCES), unicidade (UNIQUE) e validação (CHECK).",
+  "title": "08. Integridade: PRIMARY KEY, FOREIGN KEY e CHECK",
+  "description": "Proteja seus dados no próprio banco com chaves estrangeiras (REFERENCES), UNIQUE e validações CHECK.",
+  "mission": "Missão 9: Impedir pedidos fantasma e preços negativos na PixelQuest Store.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Garantindo Consistência com Constraints no Banco",
-      "content": "Nunca dependa apenas da validação do frontend! O SQL garante integridade diretamente na definição da tabela com **Constraints**:\n\n1. **`PRIMARY KEY`**: Identifica unicamente cada linha (equivale a `UNIQUE` + `NOT NULL`).\n2. **`FOREIGN KEY` (`REFERENCES`)**: Liga uma coluna à chave primária de outra tabela, impedindo registros órfãos (ex: `aluno_id INT REFERENCES alunos(id)`). Pode incluir `ON DELETE CASCADE` para apagar filhos automaticamente ao remover o pai.\n3. **`UNIQUE`**: Impede valores duplicados na coluna (ex: `email TEXT UNIQUE NOT NULL`) e cria um índice único automaticamente.\n4. **`CHECK`**: Impõe uma regra booleana que toda linha precisa satisfazer (ex: `CHECK (idade >= 18)` ou `CHECK (preco > 0)`).",
-      "codeExample": "CREATE TABLE alunos (\n    id SERIAL PRIMARY KEY,\n    email TEXT UNIQUE NOT NULL,\n    idade INT CHECK (idade >= 16)\n);\n\nCREATE TABLE matriculas (\n    id SERIAL PRIMARY KEY,\n    aluno_id INT NOT NULL REFERENCES alunos(id) ON DELETE CASCADE,\n    nota NUMERIC CHECK (nota >= 0 AND nota <= 10)\n);",
+      "title": "Regras de segurança direto na tabela",
+      "content": "Mesmo que um bug passe pelo app, o PostgreSQL protege seus dados com **Constraints**.\n`REFERENCES tabela(id)` liga tabelas impedindo IDs inexistentes (chave estrangeira), `UNIQUE` barra duplicatas (como e-mails repetidos) e `CHECK (preco > 0)` bloqueia valores inválidos antes mesmo de gravar.",
+      "codeExample": "CREATE TABLE pedidos (\n  id SERIAL PRIMARY KEY,\n  cliente_id INT NOT NULL REFERENCES clientes(id),\n  total NUMERIC NOT NULL CHECK (total > 0)\n);",
+      "expectedOutput": "CREATE TABLE (com PK, FK e CHECK ativos)",
       "keyTakeaways": [
-        "REFERENCES tabela(id) cria uma chave estrangeira impedindo referências a IDs inexistentes.",
-        "UNIQUE bloqueia duplicatas na coluna; NOT NULL proíbe valores nulos.",
-        "CHECK (condicao) valida regras de negócio diretamente no banco antes de aceitar INSERT/UPDATE."
+        "`REFERENCES tabela(id)` garante integridade referencial (sem registros órfãos).",
+        "`UNIQUE` evita duplicatas e `CHECK (condicao)` valida regras de negócio no banco."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Complete a definição da tabela 'alunos' garantindo chave primária, email único e idade mínima de 18 anos:",
-      "codeTemplate": "CREATE TABLE alunos (\n    id SERIAL {{blank}},\n    email TEXT {{blank}} NOT NULL,\n    idade INT {{blank}} (idade >= 18)\n);",
-      "blanks": [
-        { "answer": "PRIMARY KEY", "placeholder": "chave" },
-        { "answer": "UNIQUE", "placeholder": "único" },
-        { "answer": "CHECK", "placeholder": "validação" }
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "A tabela `jogos` tem `preco NUMERIC CHECK (preco > 0)`. O que acontece ao rodar o `INSERT` abaixo?",
+      "codeSnippet": "INSERT INTO jogos (titulo, preco)\nVALUES ('Bug Game', -15.00);",
+      "options": [
+        "O banco rejeita o INSERT com erro de violação da constraint CHECK",
+        "O jogo é salvo com preço 0 automaticamente",
+        "O jogo é salvo com preço -15.00",
+        "A tabela jogos é apagada"
       ],
-      "options": ["PRIMARY KEY", "UNIQUE", "CHECK", "REFERENCES"],
-      "explanation": "PRIMARY KEY identifica a linha, UNIQUE proíbe emails repetidos e CHECK valida a regra idade >= 18."
+      "correctIndex": 0,
+      "hint": "`-15.00` não satisfaz a regra `preco > 0` definida no `CHECK`.",
+      "expectedOutput": "ERROR: new row violates check constraint",
+      "explanation": "O banco barra o dado inválido na hora! É a última linha de defesa contra bugs."
     },
     {
-      "type": "multiple_choice",
-      "prompt": "O que a constraint REFERENCES clientes(id) faz em uma coluna cliente_id da tabela pedidos?",
-      "options": [
-        "Copia todos os dados do cliente para a tabela pedidos",
-        "Impede inserir um pedido com um cliente_id que não exista na tabela clientes",
-        "Ordena os pedidos pelo id do cliente",
-        "Permite que cliente_id tenha valores duplicados apenas uma vez"
+      "type": "fill_in_blank",
+      "prompt": "Complete a tabela `itens` ligando `jogo_id` à tabela `jogos` e exigindo `quantidade > 0`:",
+      "codeTemplate": "CREATE TABLE itens (\n  id SERIAL PRIMARY KEY,\n  jogo_id INT NOT NULL {{blank}} jogos(id),\n  quantidade INT NOT NULL {{blank}} (quantidade > 0)\n);",
+      "blanks": [
+        { "answer": "REFERENCES", "placeholder": "chave estrangeira" },
+        { "answer": "CHECK", "placeholder": "validação" }
       ],
-      "correctIndex": 1,
-      "explanation": "A chave estrangeira (REFERENCES) garante integridade referencial, bloqueando pedidos apontando para clientes inexistentes."
+      "options": ["REFERENCES", "CHECK", "UNIQUE", "CASCADE"],
+      "hint": "Qual palavra aponta para `jogos(id)` e qual valida `quantidade > 0`?",
+      "expectedOutput": "CREATE TABLE",
+      "explanation": "`REFERENCES jogos(id)` cria a chave estrangeira e `CHECK (quantidade > 0)` barra quantidades zeradas ou negativas."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "A tabela abaixo tenta criar uma regra CHECK para impedir salários negativos, mas usa sintaxe inválida. Qual linha tem o bug?",
+      "prompt": "A tabela de avaliações tentou validar notas entre 1 e 5, mas usou uma palavra-chave que não existe em SQL. Qual linha tem o bug?",
       "lines": [
-        "CREATE TABLE cargos (",
-        "    id SERIAL PRIMARY KEY,",
-        "    salario NUMERIC VALIDATE (salario > 0)",
+        "CREATE TABLE avaliacoes (",
+        "  id SERIAL PRIMARY KEY,",
+        "  nota INT VALIDATE (nota BETWEEN 1 AND 5)",
         ");"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Em SQL não existe a palavra-chave VALIDATE; a constraint correta é CHECK (salario > 0)."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete a tabela 'pedidos' com chave estrangeira para 'clientes' (removendo pedidos se o cliente for excluído) e valor positivo:",
-      "codeTemplate": "CREATE TABLE pedidos (\n    id SERIAL PRIMARY KEY,\n    cliente_id INT NOT NULL {{blank}} clientes(id) ON DELETE {{blank}},\n    valor NUMERIC {{blank}} (valor > 0)\n);",
-      "blanks": [
-        { "answer": "REFERENCES", "placeholder": "FK" },
-        { "answer": "CASCADE", "placeholder": "efeito" },
-        { "answer": "CHECK", "placeholder": "regra" }
-      ],
-      "options": ["REFERENCES", "CASCADE", "CHECK", "UNIQUE"],
-      "explanation": "REFERENCES cria a FK, ON DELETE CASCADE propaga a exclusão e CHECK (valor > 0) garante valores positivos."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para criar a tabela 'produtos' antes da tabela 'itens_pedido' que a referencia:",
-      "blocks": [
-        "    produto_id INT NOT NULL REFERENCES produtos(id)",
-        "CREATE TABLE produtos (id SERIAL PRIMARY KEY, sku TEXT UNIQUE);",
-        "CREATE TABLE itens_pedido (",
-        ");"
-      ],
-      "correctOrder": [1, 2, 0, 3],
-      "explanation": "A tabela referenciada (produtos) precisa existir antes da tabela que declara REFERENCES produtos(id)."
+      "hint": "Qual é a constraint certa do SQL para validar uma expressão booleana?",
+      "expectedOutput": "CREATE TABLE",
+      "explanation": "Não existe `VALIDATE` em SQL — trocando por `CHECK (nota BETWEEN 1 AND 5)` funciona perfeitamente!"
     },
     {
       "type": "write_code",
-      "prompt": "Crie uma tabela chamada 'itens' com uma coluna 'id' chave primária autoincremental, uma coluna 'produto_id' inteira referenciando a coluna 'id' da tabela 'produtos', e uma coluna 'quantidade' inteira com restrição que exija valor maior que zero.",
-      "starterCode": "",
-      "requiredTokens": ["CREATE", "TABLE", "itens", "PRIMARY KEY", "REFERENCES", "produtos", "CHECK"],
-      "sampleSolution": "CREATE TABLE itens (\n    id SERIAL PRIMARY KEY,\n    produto_id INT NOT NULL REFERENCES produtos(id),\n    quantidade INT NOT NULL CHECK (quantidade > 0)\n);",
-      "hint": "Combine SERIAL PRIMARY KEY, REFERENCES produtos(id) e CHECK (quantidade > 0) dentro do CREATE TABLE itens.",
-      "explanation": "A definição aplica integridade de entidade (PRIMARY KEY), integridade referencial (REFERENCES) e regra de domínio (CHECK)."
+      "prompt": "Complete a tabela `itens` adicionando `jogo_id` referenciando `jogos(id)` e `quantidade` com `CHECK (quantidade > 0)`.",
+      "starterCode": "CREATE TABLE itens (\n  id SERIAL PRIMARY KEY,\n  -- TODO: adicione jogo_id com REFERENCES jogos(id) e quantidade com CHECK\n);",
+      "requiredTokens": ["REFERENCES", "jogos", "quantidade", "CHECK"],
+      "sampleSolution": "CREATE TABLE itens (\n  id SERIAL PRIMARY KEY,\n  jogo_id INT NOT NULL REFERENCES jogos(id),\n  quantidade INT NOT NULL CHECK (quantidade > 0)\n);",
+      "hint": "Escreva `jogo_id INT NOT NULL REFERENCES jogos(id),` e `quantidade INT NOT NULL CHECK (quantidade > 0)`.",
+      "expectedOutput": "CREATE TABLE",
+      "explanation": "Banco blindado! Nenhuma venda quebrada ou quantidade negativa entra na PixelQuest Store."
     }
   ]
 }

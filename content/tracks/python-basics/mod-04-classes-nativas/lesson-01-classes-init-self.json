@@ -1,93 +1,74 @@
 {
   "id": "py-classes-01",
-  "title": "08. Classes e Objetos (POO)",
-  "description": "Modele entidades com class, inicialize atributos no construtor __init__ usando self e crie métodos de instância.",
+  "title": "Classes, __init__ e self (POO)",
+  "description": "Crie moldes de personagens com class, inicialize atributos em __init__ com self e adicione métodos.",
+  "mission": "Missão 8: Criar a classe Heroi para gerar personagens com atributos e ações próprias.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Objetos em Python: class, __init__ e self",
-      "content": "Na Programação Orientada a Objetos (POO), agrupamos dados (atributos) e comportamentos (métodos) em uma estrutura chamada **classe**.\n\n1. **Declarando uma `class`**: Usamos `class NomeDaClasse:` (por convenção em `PascalCase`). Para instanciar um objeto, **não** usamos `new`: basta chamar `Conta(\"Ana\")` como uma função.\n2. **Construtor `__init__`**: O método especial `__init__` roda automaticamente toda vez que um objeto é criado, servindo para inicializar seus atributos.\n3. **O parâmetro `self`**: Todo método de instância recebe `self` como primeiro parâmetro, representando o próprio objeto atual (equivalente ao `this` em outras linguagens). Para salvar um atributo no objeto, fazemos `self.titular = titular`.",
-      "codeExample": "class ContaBancaria:\n    def __init__(self, titular: str, saldo: float = 0.0):\n        self.titular = titular\n        self.saldo = saldo\n\n    def depositar(self, valor: float) -> None:\n        self.saldo += valor\n\nconta = ContaBancaria(\"Ana\", 100.0)\nconta.depositar(50.0)\nprint(conta.saldo)  # 150.0",
+      "title": "Moldando objetos com class, __init__ e self",
+      "content": "Uma `class` junta dados (atributos) e ações (métodos) no mesmo lugar. O método especial `__init__` roda automaticamente quando você cria um objeto — sem usar `new`!\nO primeiro parâmetro de todo método é sempre `self`, que representa o próprio objeto e permite salvar atributos como `self.nome = nome`.",
+      "codeExample": "class Heroi:\n    def __init__(self, nome: str, hp: int = 80):\n        self.nome = nome\n        self.hp = hp\n    def curar(self, qtd: int) -> None:\n        self.hp += qtd\npy = Heroi(\"Py\")\npy.curar(20); print(py.nome, py.hp)",
+      "expectedOutput": "Py 100",
       "keyTakeaways": [
-        "Classes são declaradas com 'class Nome:' e instanciadas sem a palavra 'new'.",
-        "__init__ é o método construtor chamado automaticamente na criação do objeto.",
-        "self é sempre o primeiro parâmetro dos métodos de instância e dá acesso aos atributos do objeto."
+        "`__init__` inicializa o objeto e você instancia direto com `Heroi(\"Py\")` (sem `new`).",
+        "`self` é o primeiro parâmetro de todo método e guarda os atributos do objeto."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é o nome oficial do método construtor que inicializa os atributos de um objeto em Python?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal ao executar este código?",
+      "codeSnippet": "class Jogador:\n    def __init__(self, nome: str):\n        self.nome = nome\n        self.xp = 10\n\n    def treinar(self):\n        self.xp += 25\n\np = Jogador(\"Py\")\np.treinar()\nprint(p.nome, p.xp)",
       "options": [
-        "constructor",
-        "__init__",
-        "__new_object__",
-        "init()"
+        "Py 10",
+        "Py 35",
+        "Py 25",
+        "Erro porque faltou usar new Jogador"
       ],
       "correctIndex": 1,
-      "explanation": "Em Python, __init__ (com dois underlines antes e depois) é o método inicializador executado ao instanciar a classe."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Como criamos uma instância da classe Usuario em Python?",
-      "options": [
-        "new Usuario(\"Lia\")",
-        "create Usuario(\"Lia\")",
-        "Usuario(\"Lia\")",
-        "Usuario.new(\"Lia\")"
-      ],
-      "correctIndex": 2,
-      "explanation": "Python não possui a palavra-chave 'new'; chamamos o nome da classe diretamente com parênteses."
+      "hint": "`__init__` começa `self.xp` em `10`, e depois `p.treinar()` soma `25`.",
+      "expectedOutput": "Py 35",
+      "explanation": "O objeto nasce com `xp = 10` e `p.treinar()` soma `25` em `self.xp`, exibindo `Py 35`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a classe Produto com seu construtor e atribuição de atributo na instância:",
-      "codeTemplate": "{{blank}} Produto:\n    def {{blank}}({{blank}}, nome: str):\n        {{blank}}.nome = nome",
+      "prompt": "Complete o construtor da classe `Item` para salvar `nome` no objeto:",
+      "codeTemplate": "class Item:\n    def {{blank}}(self, nome: str):\n        {{blank}}.nome = nome",
       "blanks": [
-        { "answer": "class", "placeholder": "palavra-chave" },
         { "answer": "__init__", "placeholder": "construtor" },
-        { "answer": "self", "placeholder": "instância" },
         { "answer": "self", "placeholder": "instância" }
       ],
-      "options": ["class", "__init__", "self", "this"],
-      "explanation": "Declaramos 'class Produto:', o construtor 'def __init__(self, ...):' e atribuímos via 'self.nome = nome'."
+      "options": ["__init__", "constructor", "self", "this"],
+      "hint": "O construtor em Python tem dois underlines antes e depois (`__init__`), e o objeto atual é `self`.",
+      "expectedOutput": "Espada",
+      "explanation": "`__init__` prepara o objeto recém-criado e `self.nome = nome` guarda o dado na instância."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O código abaixo tenta definir um método na classe Contador, mas falha ao ser chamado. Qual linha tem o bug?",
+      "prompt": "O método `subir_nivel` falha quando tentamos chamá-lo em um objeto. Clique na linha com o bug:",
       "lines": [
-        "class Contador:",
+        "class Heroi:",
         "    def __init__(self):",
-        "        self.valor = 0",
-        "    def incrementar():",
-        "        self.valor += 1"
+        "        self.nivel = 1",
+        "    def subir_nivel():",
+        "        self.nivel += 1"
       ],
       "buggyLineIndex": 3,
-      "explanation": "Na linha 4, o método 'incrementar()' esqueceu de receber 'self' como primeiro parâmetro."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para criar a classe Jogador, adicionar um método ganhar_xp e instanciar um objeto:",
-      "blocks": [
-        "    def ganhar_xp(self, qtd: int) -> None:",
-        "class Jogador:",
-        "        self.xp += qtd",
-        "    def __init__(self, nome: str):",
-        "        self.nome = nome",
-        "        self.xp = 0",
-        "p1 = Jogador(\"Kai\")"
-      ],
-      "correctOrder": [1, 3, 4, 5, 0, 2, 6],
-      "explanation": "Primeiro definimos a classe, depois __init__ inicializando nome e xp, em seguida o método ganhar_xp, e por fim instanciamos fora da classe."
+      "hint": "Todo método de instância precisa receber um parâmetro especial entre os parênteses!",
+      "expectedOutput": "2",
+      "explanation": "Na linha 4 faltou `self`: o correto é `def subir_nivel(self):` para conseguir alterar `self.nivel`."
     },
     {
       "type": "write_code",
-      "prompt": "Crie uma classe chamada 'Usuario' com um construtor que receba 'nome' e armazene esse valor no objeto, além de um método 'saudar' que retorne uma f-string cumprimentando o usuário pelo nome.",
-      "starterCode": "",
-      "requiredTokens": ["class", "Usuario", "__init__", "self", "def", "saudar", "return"],
-      "sampleSolution": "class Usuario:\n    def __init__(self, nome: str):\n        self.nome = nome\n\n    def saudar(self) -> str:\n        return f\"Olá, {self.nome}!\"",
-      "hint": "Defina 'class Usuario:', implemente '__init__(self, nome)' salvando em 'self.nome' e crie o método 'saudar(self)' retornando a f-string.",
-      "explanation": "A classe encapsula o atributo nome em self.nome e expõe o comportamento saudar(self) usando f-string."
+      "prompt": "Complete a classe `Usuario` salvando `self.nome = nome` no `__init__` e criando o método `saudar(self)` que retorna `f\"Olá, {self.nome}!\"`.",
+      "starterCode": "class Usuario:\n    def __init__(self, nome: str):\n        # TODO: salve nome em self.nome\n        \n    # TODO: crie o método saudar(self) retornando uma f-string\n\nu = Usuario(\"Py\")\nprint(u.saudar())\n",
+      "requiredTokens": ["class", "Usuario", "__init__", "self.nome", "def", "saudar", "return"],
+      "sampleSolution": "class Usuario:\n    def __init__(self, nome: str):\n        self.nome = nome\n\n    def saudar(self) -> str:\n        return f\"Olá, {self.nome}!\"\n\nu = Usuario(\"Py\")\nprint(u.saudar())",
+      "hint": "Guarde `self.nome = nome` e defina `def saudar(self) -> str:` com `return f\"Olá, {self.nome}!\"`.",
+      "expectedOutput": "Olá, Py!",
+      "explanation": "Mandou super bem! Agora você já modela objetos reais com classes, `__init__` e `self`."
     }
   ]
 }

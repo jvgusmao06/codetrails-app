@@ -1,7 +1,7 @@
 {
   "id": "junit-mockito",
   "title": "JUnit 5 & Mockito",
-  "description": "Teste aplicações Java com @Test, assertions expressivas e isolamento de dependências usando @Mock e Mockito.",
+  "description": "Teste a Cafeteria do Duke sem medo de quebrar nada: crie testes rápidos com @Test, assertEquals, assertThrows e mocks do Mockito.",
   "category": "tool",
   "languageId": "java-basics",
   "prerequisites": ["java-basics"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-junit-mocks",
-      "title": "Módulo 1: @Test, assertEquals e Mocks",
-      "description": "Construa testes unitários isolados na JVM com JUnit 5 e Mockito.",
+      "title": "Módulo 1: Oficina de Testes com JUnit 5 e Mockito",
+      "description": "Valide regras de negócio em milissegundos usando @Test, assertEquals e dependências simuladas com Mockito.",
       "lessons": ["lesson-01-junit5-mockito"]
     }
   ]

@@ -1,7 +1,7 @@
 {
   "id": "fastapi-python",
   "title": "FastAPI & APIs REST",
-  "description": "Construa APIs assíncronas de alta performance em Python com validação automática e rotas tipadas.",
+  "description": "Construa a TaskFlow API em Python passo a passo: rotas GET/POST, validação Pydantic, erros 404, Depends() e tarefas em segundo plano em lições leves.",
   "category": "framework",
   "languageId": "python-basics",
   "prerequisites": ["python-basics"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-rotas-api",
-      "title": "Módulo 1: Rotas HTTP e Decorators",
-      "description": "Criando endpoints GET e POST rápidos em Python.",
+      "title": "Módulo 1: Construindo a TaskFlow API",
+      "description": "Do primeiro endpoint GET até validação Pydantic, Depends(), APIRouter e BackgroundTasks sem complicação.",
       "lessons": [
         "lesson-01-get-endpoint",
         "lesson-02-pydantic-post-body",

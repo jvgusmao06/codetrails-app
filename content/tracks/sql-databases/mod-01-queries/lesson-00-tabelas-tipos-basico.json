@@ -1,85 +1,73 @@
 {
   "id": "sql-basico-00",
-  "title": "00. Tabelas, Tipos de Dados e Operadores SQL",
-  "description": "Entenda a estrutura de tabelas relacionais, os tipos de dados do PostgreSQL e os operadores de filtro IN, BETWEEN e LIKE.",
+  "title": "00. Filtros SQL: Tipos, IN, BETWEEN e LIKE",
+  "description": "Conheça os tipos básicos do PostgreSQL e filtre o catálogo de games com IN, BETWEEN e LIKE.",
+  "mission": "Missão 1: Encontrar jogos indie em promoção na vitrine da PixelQuest Store.",
   "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "Tabelas, Tipos de Dados e Operadores de Filtro",
-      "content": "Em um banco de dados relacional (como o PostgreSQL), as informações são organizadas em **Tabelas**, onde cada **linha** é um registro e cada **coluna** possui um tipo de dado fixo:\n\n1. **Tipos de Dados Principais**:\n   - `INTEGER` (ou `INT`): números inteiros (ex: `42`).\n   - `TEXT` ou `VARCHAR`: textos, que em SQL usam **sempre aspas simples** (`'ativo'`), nunca aspas duplas.\n   - `NUMERIC`: valores decimais exatos, ideais para dinheiro (ex: `199.90`).\n   - `BOOLEAN`: valores lógicos `true` ou `false`.\n2. **Operadores Lógicos**: Combinamos condições com `AND` (ambas verdadeiras), `OR` (pelo menos uma verdadeira) e `NOT` (negação).\n3. **Operadores de Filtro (`IN`, `BETWEEN`, `LIKE`)**:\n   - `IN ('a', 'b')`: verifica se o valor está em uma lista.\n   - `BETWEEN 10 AND 20`: verifica intervalo **inclusivo** nas duas pontas (`>= 10 AND <= 20`).\n   - `LIKE 'Camisa%'`: busca padrões em texto, onde `%` representa qualquer sequência de caracteres.",
-      "codeExample": "-- Exemplos de expressões de filtro em SQL:\nstatus IN ('ativo', 'promo')\nAND preco BETWEEN 50 AND 200\nAND nome LIKE 'Notebook%'\nAND NOT bloqueado",
+      "title": "Filtrando jogos sem complicação",
+      "content": "No PostgreSQL, cada coluna guarda um tipo fixo (`INT`, `TEXT`, `NUMERIC` para preços e `BOOLEAN`), e textos usam sempre **aspas simples** (`'rpg'`).\nPara filtrar rapidinho, combine `IN` (lista de opções), `BETWEEN` (faixa inclusiva) e `LIKE` com `%` para buscar parte de um texto.",
+      "codeExample": "SELECT titulo, preco\nFROM jogos\nWHERE genero IN ('rpg', 'indie')\n  AND preco BETWEEN 20 AND 80\n  AND titulo LIKE 'Pixel%';",
+      "expectedOutput": "titulo          | preco\nPixel Quest     | 49.90\nPixel Kart      | 29.90",
       "keyTakeaways": [
-        "Textos literais em SQL usam sempre aspas simples ('texto').",
-        "Use INTEGER, TEXT/VARCHAR, NUMERIC (dinheiro) e BOOLEAN para tipar colunas.",
-        "BETWEEN é inclusivo; IN testa uma lista; LIKE usa '%' como curinga de texto."
+        "Textos em SQL usam sempre aspas simples (`'rpg'`), nunca aspas duplas.",
+        "`IN` testa uma lista, `BETWEEN` inclui as duas pontas e `LIKE 'Pixel%'` busca pelo prefixo."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual tipo de dado é mais recomendado em PostgreSQL para armazenar preços em dinheiro sem erros de arredondamento?",
+      "kind": "predict_output",
+      "prompt": "A tabela `jogos` tem: Pixel Quest (50), Super Pixel (120) e Pixel Kart (20). O que esta consulta retorna?",
+      "codeSnippet": "SELECT titulo\nFROM jogos\nWHERE titulo LIKE 'Pixel%'\n  AND preco BETWEEN 20 AND 50;",
       "options": [
-        "TEXT",
-        "BOOLEAN",
-        "NUMERIC",
-        "INTEGER"
+        "Pixel Quest e Pixel Kart",
+        "Apenas Pixel Quest (BETWEEN exclui 20 e 50)",
+        "Pixel Quest, Super Pixel e Pixel Kart",
+        "Nenhum jogo"
       ],
-      "correctIndex": 2,
-      "explanation": "NUMERIC armazena decimais exatos, evitando imprecisões de ponto flutuante em cálculos financeiros."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "A condição SQL abaixo tenta filtrar produtos pela categoria e faixa de preço, mas usa aspas inválidas para texto literal. Qual linha tem o bug?",
-      "lines": [
-        "ativo = true",
-        "AND categoria = \"eletronicos\"",
-        "AND preco BETWEEN 100 AND 500"
-      ],
-      "buggyLineIndex": 1,
-      "explanation": "Em SQL, strings literais devem usar aspas simples ('eletronicos'). Aspas duplas são reservadas para nomes de identificadores."
+      "correctIndex": 0,
+      "hint": "`'Pixel%'` exige começar com Pixel, e `BETWEEN 20 AND 50` inclui tanto o 20 quanto o 50.",
+      "expectedOutput": "Pixel Quest\nPixel Kart",
+      "explanation": "`BETWEEN` é sempre inclusivo nas duas pontas, e `'Pixel%'` casa com títulos que começam com `'Pixel'`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a condição para aceitar apenas os status 'pago' ou 'enviado' e valores entre 50 e 200:",
-      "codeTemplate": "status {{blank}} ('pago', 'enviado')\nAND total {{blank}} 50 AND 200",
+      "prompt": "Complete o filtro para achar jogos de `'rpg'` ou `'acao'` com preço entre 30 e 100 reais:",
+      "codeTemplate": "SELECT titulo, preco\nFROM jogos\nWHERE genero {{blank}} ('rpg', 'acao')\n  AND preco {{blank}} 30 AND 100;",
       "blanks": [
         { "answer": "IN", "placeholder": "lista" },
-        { "answer": "BETWEEN", "placeholder": "intervalo" }
+        { "answer": "BETWEEN", "placeholder": "faixa" }
       ],
       "options": ["IN", "BETWEEN", "LIKE", "OR"],
-      "explanation": "IN verifica pertinência em uma lista de valores e BETWEEN verifica se o número está dentro do intervalo inclusivo."
+      "hint": "Use `IN` para comparar com uma lista e `BETWEEN` para faixa numérica.",
+      "expectedOutput": "titulo        | preco\nChrono Blade  | 79.90\nPixel Quest   | 49.90",
+      "explanation": "Perfeito! `IN` verifica se o gênero está na lista e `BETWEEN` confere o intervalo inclusivo de preço."
     },
     {
-      "type": "multiple_choice",
-      "prompt": "O que a expressão email LIKE '%@empresa.com' verifica em SQL?",
-      "options": [
-        "Emails que começam com '@empresa.com'",
-        "Emails que terminam exatamente com '@empresa.com'",
-        "Emails iguais ao texto '%@empresa.com'",
-        "Emails que não contêm '@'"
+      "type": "spot_the_bug",
+      "prompt": "Ops! O filtro da vitrine deu erro no PostgreSQL por causa das aspas no texto. Clique na linha com bug:",
+      "lines": [
+        "SELECT titulo, preco",
+        "FROM jogos",
+        "WHERE genero = \"indie\"",
+        "  AND preco BETWEEN 10 AND 60;"
       ],
-      "correctIndex": 1,
-      "explanation": "O curinga '%' no início significa qualquer sequência de caracteres antes de '@empresa.com'."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para montar uma condição lógica válida combinando booleano, faixa de preço e padrão de texto:",
-      "blocks": [
-        "AND nome LIKE 'Curso%'",
-        "ativo = true",
-        "AND preco BETWEEN 20 AND 150"
-      ],
-      "correctOrder": [1, 2, 0],
-      "explanation": "Começamos com a condição inicial (ativo = true) e encadeamos as demais condições com AND."
+      "buggyLineIndex": 2,
+      "hint": "Dê uma olhada nas aspas ao redor da palavra indie.",
+      "expectedOutput": "titulo      | preco\nPixel Kart  | 29.90",
+      "explanation": "Em SQL, textos literais usam aspas simples (`'indie'`). Aspas duplas são reservadas para nomes de colunas ou tabelas."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma expressão condicional SQL (apenas os filtros, combinados com AND) que exija: 'ativo' igual a verdadeiro, 'categoria' dentro da lista ('livros', 'cursos'), 'preco' entre 30 e 120 inclusive, e 'titulo' começando com 'SQL'.",
-      "starterCode": "",
-      "requiredTokens": ["ativo", "AND", "IN", "BETWEEN", "LIKE"],
-      "sampleSolution": "ativo = true\nAND categoria IN ('livros', 'cursos')\nAND preco BETWEEN 30 AND 120\nAND titulo LIKE 'SQL%'",
-      "hint": "Combine as quatro condições com AND, lembrando de usar aspas simples nos textos e '%' ao final do padrão de LIKE.",
-      "explanation": "A expressão integra BOOLEAN (= true), IN para lista, BETWEEN para intervalo inclusivo e LIKE com curinga '%' para prefixo."
+      "prompt": "Complete os filtros para mostrar jogos ativos cujo `genero` esteja em `('rpg', 'indie')` e o `titulo` comece com `'Pixel'`.",
+      "starterCode": "SELECT titulo, preco\nFROM jogos\nWHERE ativo = true\n  -- TODO: adicione os filtros com IN e LIKE\n  ;",
+      "requiredTokens": ["genero", "IN", "AND", "titulo", "LIKE", "'Pixel%'"],
+      "sampleSolution": "SELECT titulo, preco\nFROM jogos\nWHERE ativo = true\n  AND genero IN ('rpg', 'indie')\n  AND titulo LIKE 'Pixel%';",
+      "hint": "Escreva `AND genero IN ('rpg', 'indie')` e `AND titulo LIKE 'Pixel%'`.",
+      "expectedOutput": "titulo       | preco\nPixel Quest  | 49.90\nPixel Kart   | 29.90",
+      "explanation": "Mandou bem! Você já filtra o catálogo da PixelQuest Store combinando `IN` e `LIKE` como um pro."
     }
   ]
 }

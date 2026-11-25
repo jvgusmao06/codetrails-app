@@ -1,88 +1,73 @@
 {
   "id": "sql-select-01",
   "title": "01. Consultas SELECT, WHERE e ORDER BY",
-  "description": "Aprenda a anatomia de uma consulta SQL com SELECT, FROM, WHERE e ORDER BY.",
+  "description": "Monte consultas limpas escolhendo colunas com SELECT, filtrando com WHERE e ordenando com ORDER BY.",
+  "mission": "Missão 2: Exibir os jogos mais bem avaliados da PixelQuest Store no topo da vitrine.",
   "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "Anatomia de uma Query SQL",
-      "content": "O SQL (Structured Query Language) segue uma ordem rígida de cláusulas ao consultar dados:\n\n1. **`SELECT` e `FROM`**: `SELECT` define quais colunas retornar (ex: `SELECT nome, email`, ou `SELECT *` para todas), e `FROM` indica de qual tabela ler os dados.\n2. **`WHERE`**: Filtra as linhas antes de retorná-las, aplicando condições (como `WHERE ativo = true` ou `WHERE preco > 100`).\n3. **`ORDER BY`**: Ordena o resultado por uma ou mais colunas. Por padrão é crescente (`ASC`); para ordenar do maior para o menor, usamos `DESC`.",
-      "codeExample": "SELECT nome, xp\nFROM usuarios\nWHERE ativo = true\nORDER BY xp DESC;",
+      "title": "A receita básica de toda consulta SQL",
+      "content": "Toda consulta de leitura segue uma ordem bem amigável: `SELECT` escolhe as colunas, `FROM` indica a tabela, `WHERE` filtra as linhas e `ORDER BY` organiza o resultado.\nPara colocar os maiores valores no topo, basta adicionar `DESC` no final do `ORDER BY`.",
+      "codeExample": "SELECT titulo, nota\nFROM jogos\nWHERE estoque > 0\nORDER BY nota DESC;",
+      "expectedOutput": "titulo        | nota\nPixel Quest   | 9.8\nStar Runner   | 9.2",
       "keyTakeaways": [
-        "A ordem sintática é sempre: SELECT -> FROM -> WHERE -> ORDER BY.",
-        "WHERE filtra linhas com base em condições.",
-        "ORDER BY coluna DESC ordena de forma decrescente; ASC ordena de forma crescente."
+        "Siga sempre a ordem: `SELECT` -> `FROM` -> `WHERE` -> `ORDER BY`.",
+        "`ORDER BY coluna DESC` ordena do maior para o menor; `ASC` ordena do menor para o maior."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual cláusula SQL é responsável por filtrar apenas as linhas que atendem a uma condição?",
+      "kind": "predict_output",
+      "prompt": "Temos os jogos: Kart (preco 30, estoque 5), Quest (preco 90, estoque 2) e Dragon (preco 120, estoque 0). Qual é o primeiro título retornado?",
+      "codeSnippet": "SELECT titulo, preco\nFROM jogos\nWHERE estoque > 0\nORDER BY preco DESC;",
       "options": [
-        "SELECT",
-        "FROM",
-        "WHERE",
-        "ORDER BY"
+        "Quest (90)",
+        "Dragon (120)",
+        "Kart (30)",
+        "Erro porque falta ASC"
       ],
-      "correctIndex": 2,
-      "explanation": "WHERE aplica critérios de filtro sobre as linhas da tabela indicada em FROM."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos SQL na sequência sintática correta para buscar os usuários ativos com maior XP:",
-      "blocks": [
-        "ORDER BY xp DESC;",
-        "SELECT nome, xp",
-        "WHERE ativo = true",
-        "FROM usuarios"
-      ],
-      "correctOrder": [1, 3, 2, 0],
-      "explanation": "Uma query SQL segue estritamente a ordem: SELECT -> FROM -> WHERE -> ORDER BY."
+      "correctIndex": 0,
+      "hint": "Primeiro o `WHERE` elimina quem tem `estoque = 0`, depois o `ORDER BY preco DESC` põe o mais caro primeiro.",
+      "expectedOutput": "titulo | preco\nQuest  | 90\nKart   | 30",
+      "explanation": "Dragon é descartado pelo `WHERE estoque > 0`. Entre os disponíveis, `Quest` (90) vem primeiro com `DESC`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a consulta para retornar nome e preço dos produtos com preço maior que 100, do mais caro para o mais barato:",
-      "codeTemplate": "{{blank}} nome, preco\n{{blank}} produtos\n{{blank}} preco > 100\nORDER BY preco {{blank}};",
+      "prompt": "Complete a consulta para listar jogos com `preco > 50`, do mais caro para o mais barato:",
+      "codeTemplate": "SELECT titulo, preco\nFROM jogos\n{{blank}} preco > 50\nORDER BY preco {{blank}};",
       "blanks": [
-        { "answer": "SELECT", "placeholder": "colunas" },
-        { "answer": "FROM", "placeholder": "tabela" },
         { "answer": "WHERE", "placeholder": "filtro" },
         { "answer": "DESC", "placeholder": "direção" }
       ],
-      "options": ["SELECT", "FROM", "WHERE", "DESC", "ASC"],
-      "explanation": "SELECT escolhe as colunas, FROM aponta a tabela, WHERE filtra preco > 100 e DESC ordena do maior para o menor."
+      "options": ["WHERE", "DESC", "ASC", "FROM"],
+      "hint": "Qual cláusula filtra linhas e qual palavra ordena do maior para o menor?",
+      "expectedOutput": "titulo        | preco\nChrono Blade  | 119.90\nStar Runner   | 79.90",
+      "explanation": "`WHERE` mantém só os jogos acima de 50 e `DESC` coloca os maiores preços no topo."
     },
     {
-      "type": "spot_the_bug",
-      "prompt": "A query abaixo tenta filtrar produtos em estoque e ordená-los, mas as cláusulas estão fora de ordem. Qual linha está na posição errada?",
-      "lines": [
-        "SELECT nome, preco",
-        "FROM produtos",
-        "ORDER BY preco ASC",
-        "WHERE estoque > 0;"
+      "type": "order_code",
+      "prompt": "Monte a consulta na ordem certa para mostrar os jogos em estoque ordenados pela maior nota:",
+      "blocks": [
+        "ORDER BY nota DESC;",
+        "SELECT titulo, nota",
+        "WHERE estoque > 0",
+        "FROM jogos"
       ],
-      "buggyLineIndex": 2,
-      "explanation": "ORDER BY deve vir sempre depois de WHERE, nunca antes."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Combine SELECT, WHERE e os operadores IN/BETWEEN aprendidos na lição anterior:",
-      "codeTemplate": "SELECT titulo, preco\nFROM cursos\nWHERE categoria {{blank}} ('sql', 'python')\n  AND preco {{blank}} 50 AND 150;",
-      "blanks": [
-        { "answer": "IN", "placeholder": "lista" },
-        { "answer": "BETWEEN", "placeholder": "faixa" }
-      ],
-      "options": ["IN", "BETWEEN", "LIKE", "ORDER BY"],
-      "explanation": "Dentro do WHERE podemos combinar múltiplos operadores como IN e BETWEEN."
+      "correctOrder": [1, 3, 2, 0],
+      "hint": "Lembre da receita: `SELECT` -> `FROM` -> `WHERE` -> `ORDER BY`.",
+      "expectedOutput": "titulo        | nota\nPixel Quest   | 9.8\nStar Runner   | 9.2",
+      "explanation": "Essa ordem fixa deixa o SQL previsível e fácil de ler em qualquer banco."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma consulta SQL que selecione as colunas 'nome' e 'salario' da tabela 'funcionarios', filtrando apenas quem tem 'ativo' igual a verdadeiro e ordenando pelo 'salario' em ordem decrescente.",
-      "starterCode": "",
-      "requiredTokens": ["SELECT", "nome", "salario", "FROM", "funcionarios", "WHERE", "ORDER BY", "DESC"],
-      "sampleSolution": "SELECT nome, salario\nFROM funcionarios\nWHERE ativo = true\nORDER BY salario DESC;",
-      "hint": "Siga a ordem SELECT -> FROM -> WHERE -> ORDER BY ... DESC.",
-      "explanation": "A consulta combina seleção de colunas específicas, origem na tabela, filtro booleano no WHERE e ordenação decrescente."
+      "prompt": "Complete a consulta para filtrar apenas jogos com `ativo = true` e ordenar por `preco` do maior para o menor.",
+      "starterCode": "SELECT titulo, preco\nFROM jogos\n-- TODO: filtre ativo = true e ordene por preco DESC\n",
+      "requiredTokens": ["WHERE", "ativo", "ORDER BY", "preco", "DESC"],
+      "sampleSolution": "SELECT titulo, preco\nFROM jogos\nWHERE ativo = true\nORDER BY preco DESC;",
+      "hint": "Adicione `WHERE ativo = true` e na linha seguinte `ORDER BY preco DESC;`.",
+      "expectedOutput": "titulo        | preco\nChrono Blade  | 119.90\nPixel Quest   | 49.90",
+      "explanation": "Vitrine organizada! Com `SELECT`, `FROM`, `WHERE` e `ORDER BY` você já resolve boa parte do dia a dia em SQL."
     }
   ]
 }

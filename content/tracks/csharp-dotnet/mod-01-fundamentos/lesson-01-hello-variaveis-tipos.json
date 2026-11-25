@@ -1,88 +1,73 @@
 {
   "id": "csharp-vars-01",
-  "title": "Primeiros Passos: Console.WriteLine, Variáveis, Tipos e $ Interpolação",
-  "description": "Comece do zero em C# moderno com Top-level statements, tipos primitivos, var, const e strings interpoladas.",
+  "title": "Olá, PixelShop! var, decimal e $ Interpolação",
+  "description": "Dê o primeiro passo em C# moderno: guarde dados com var e decimal e exiba mensagens limpas com Console.WriteLine.",
+  "mission": "Missão 1: Montar a primeira etiqueta de preço da loja indie PixelShop no terminal.",
   "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "Criando Variáveis e Exibindo Saída em C# Moderno",
-      "content": "No C# moderno (.NET 8+), você não precisa mais escrever `class Program { static void Main() {} }` só para começar — o **Top-level statement** permite programar direto! Os principais tipos são **`int`**, **`double`**, **`decimal`** (obrigatório para dinheiro, usando sufixo `m`), **`bool`** e **`string`**. Usamos **`var`** para inferência estática de tipo, **`const`** para constantes imutáveis em compilação e **`$\"...{var}\"`** para interpolar strings com `Console.WriteLine`.",
-      "codeExample": "const string Versao = \"8.0\";\nstring nome = \"Ana\";\nvar idade = 25;             // Compilador infere int\ndecimal preco = 19.90m;     // Sufixo 'm' para decimal financeiro\nbool ativo = true;\n\nConsole.WriteLine($\"Olá {nome}, versão {Versao}, ativo: {ativo}, R$ {preco}\");",
+      "title": "Variáveis, preços em decimal e strings com $",
+      "content": "No C# moderno você já começa programando direto no arquivo, sem cerimônia! Use `var` para deixar o compilador descobrir o tipo, `const` para valores fixos e `decimal` (com `m` no fim) sempre que trabalhar com dinheiro.\nColocando `$` antes das aspas, você encaixa qualquer variável direto dentro de `{}` no texto.",
+      "codeExample": "const string Loja = \"PixelShop\";\nvar jogo = \"StarRunner\";\ndecimal preco = 29.90m;\n\nConsole.WriteLine($\"{Loja}: {jogo} por R$ {preco}\");",
+      "expectedOutput": "PixelShop: StarRunner por R$ 29.90",
       "keyTakeaways": [
-        "`var` em C# continua sendo **100% fortemente tipado** — o tipo é fixado pelo compilador na inicialização.",
-        "Para valores financeiros (preços, saldos), use sempre `decimal` (sufixo `m`) em vez de `double` para evitar erros de arredondamento.",
-        "Prefixar strings com `$` permite inserir expressões diretamente dentro de `{}`."
+        "`var` continua fortemente tipado; para dinheiro use `decimal` com sufixo `m` (ex: `29.90m`).",
+        "`$\"Texto {variavel}\"` insere variáveis direto na string de forma super legível."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual tipo numérico e sufixo devem ser usados em C# para armazenar preços e saldos financeiros sem erros de arredondamento binário?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal ao rodar este código da PixelShop?",
+      "codeSnippet": "var item = \"Mousepad\";\ndecimal valor = 45.50m;\nConsole.WriteLine($\"{item} - R$ {valor}\");",
       "options": [
-        "double com sufixo d",
-        "float com sufixo f",
-        "decimal com sufixo m",
-        "var sem sufixo"
+        "Mousepad - R$ 45.50",
+        "{item} - R$ {valor}",
+        "Mousepad - R$ 45.50m",
+        "Erro porque faltou declarar string antes de item"
       ],
-      "correctIndex": 2,
-      "explanation": "`decimal` (ex: `19.90m`) usa representação decimal de alta precisão, evitando imprecisões de ponto flutuante binário (`float`/`double`)."
+      "correctIndex": 0,
+      "hint": "O `$` ativa a interpolação de `{item}` e `{valor}`, e o sufixo `m` não aparece na impressão.",
+      "expectedOutput": "Mousepad - R$ 45.50",
+      "explanation": "`var` inferiu `string` automaticamente, o `m` só avisa o compilador que o número é `decimal`, e `$` trocou `{item}` e `{valor}` pelos seus valores!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código C# declarando uma constante, um valor monetário `decimal` e exibindo uma string interpolada:",
-      "codeTemplate": "{{blank}} int MaxItens = 10;\n{{blank}} valor = 49.90m;\nConsole.WriteLine({{blank}}\"Total: {valor}\");",
+      "prompt": "Complete a etiqueta da promoção usando `decimal` para o preço e `$` para interpolar o texto:",
+      "codeTemplate": "{{blank}} preco = 19.90m;\nConsole.WriteLine({{blank}}\"Promoção: R$ {preco}\");",
       "blanks": [
-        { "answer": "const", "placeholder": "constante" },
-        { "answer": "decimal", "placeholder": "tipo financeiro" },
+        { "answer": "decimal", "placeholder": "tipo monetário" },
         { "answer": "$", "placeholder": "interpolação" }
       ],
-      "options": ["const", "decimal", "$", "float", "let", "@"],
-      "explanation": "`const` define constante em compilação, `decimal` garante precisão monetária e `$\"...\"` ativa interpolação."
+      "options": ["decimal", "$", "double", "@"],
+      "hint": "Preços em C# usam `decimal` (combinando com o `m`) e strings interpoladas começam com `$`.",
+      "expectedOutput": "Promoção: R$ 19.90",
+      "explanation": "Perfeito! `decimal` evita erros de centavos e `$\"...\"` coloca o valor de `preco` direto na frase."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este código C# não compila porque tenta alterar um valor imutável. Clique na linha com erro:",
+      "prompt": "Ops! O código da vitrine não compilou porque tentou mudar um valor fixo (`const`). Clique na linha com o bug:",
       "lines": [
-        "const int Limite = 100;",
-        "var nome = \"CodeTrails\";",
-        "Limite = 200;",
-        "Console.WriteLine($\"{nome}: {Limite}\");"
+        "const int LimiteCarrinho = 10;",
+        "var cliente = \"Ana\";",
+        "LimiteCarrinho = 20;",
+        "Console.WriteLine($\"{cliente}: até {LimiteCarrinho} itens\");"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Na linha 3, `Limite` foi declarado com `const`, portanto seu valor não pode ser reatribuído após a declaração."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para criar um programa top-level válido que declara uma constante, um preço e exibe a saída interpolada:",
-      "blocks": [
-        "const string Moeda = \"BRL\";",
-        "var item = \"Mouse\";",
-        "decimal preco = 89.90m;",
-        "Console.WriteLine($\"{item}: {Moeda} {preco}\");"
-      ],
-      "correctOrder": [0, 1, 2, 3],
-      "explanation": "Em top-level statements, declaramos as constantes e variáveis antes de usá-las no `Console.WriteLine` com interpolação `$`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Analisando `var ativo = true;` seguido de `ativo = \"sim\";`, o que acontece em C#?",
-      "options": [
-        "Funciona normalmente porque `var` é tipagem dinâmica",
-        "Erro de compilação, pois `var` fixou `ativo` como `bool` na inicialização",
-        "Converte `\"sim\"` automaticamente para `true`",
-        "Lança exceção apenas em tempo de execução"
-      ],
-      "correctIndex": 1,
-      "explanation": "`var` realiza inferência estática de tipo em tempo de compilação: `ativo` é `bool` e não aceita `string`."
+      "hint": "Uma variável declarada com `const` nunca pode receber outro valor depois.",
+      "expectedOutput": "Ana: até 10 itens",
+      "explanation": "Na linha 3, `LimiteCarrinho` é `const` e não pode ser alterado. Removendo a reatribuição (ou usando `int`), tudo compila!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Em top-level statements, declare uma constante inteira `Taxa` com valor `5`, uma variável `preco` do tipo `decimal` com valor `29.90m`, uma variável `produto` usando `var` com o texto `\"Teclado\"`, e imprima tudo em uma frase interpolada com `Console.WriteLine`.",
-      "starterCode": "",
-      "requiredTokens": ["const int Taxa", "decimal", "29.90m", "var", "Console.WriteLine", "$\""],
-      "sampleSolution": "const int Taxa = 5;\ndecimal preco = 29.90m;\nvar produto = \"Teclado\";\nConsole.WriteLine($\"Produto: {produto}, Preço: {preco}, Taxa: {Taxa}%\");",
-      "hint": "Combine `const int`, `decimal` com sufixo `m`, `var` para inferência de string e `Console.WriteLine($\"...\")`.",
-      "explanation": "Top-level statements + `const`, `decimal`, `var` e interpolação `$\"...\"` formam a base concisa e fortemente tipada do C# moderno."
+      "prompt": "Complete a etiqueta do produto criando `preco` como `decimal` (`39.90m`) e exibindo a mensagem interpolada com `$`.",
+      "starterCode": "var produto = \"Teclado Indie\";\n// TODO: crie `decimal preco = 39.90m;` e exiba com Console.WriteLine($\"...\")\n",
+      "requiredTokens": ["decimal", "39.90m", "Console.WriteLine", "$\""],
+      "sampleSolution": "var produto = \"Teclado Indie\";\ndecimal preco = 39.90m;\nConsole.WriteLine($\"{produto}: R$ {preco}\");",
+      "hint": "Escreva `decimal preco = 39.90m;` e depois `Console.WriteLine($\"{produto}: R$ {preco}\");`.",
+      "expectedOutput": "Teclado Indie: R$ 39.90",
+      "explanation": "Mandou bem! Você acabou de montar sua primeira etiqueta em C# moderno com `decimal` e interpolação."
     }
   ]
 }

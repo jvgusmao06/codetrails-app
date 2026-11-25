@@ -1,83 +1,74 @@
 {
   "id": "ts-es6-01",
-  "title": "04. Métodos de Array (.map, .filter e .find)",
-  "description": "Transforme, filtre e localize elementos em arrays de forma declarativa com .map(), .filter() e .find().",
+  "title": "Arrays com .map, .filter e .find",
+  "description": "Transforme listas com .map(), filtre itens com .filter() e ache o primeiro match com .find() sem alterar o array original.",
+  "mission": "Missão 4: Filtrar tarefas concluídas e listar só os títulos no painel do TaskBeat.",
   "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "Transformação e Busca com .map(), .filter() e .find()",
-      "content": "No JS/TS moderno, evitamos loops imperativos com `push` quando queremos transformar ou filtrar arrays:\n\n1. **`.map(fn)`**: Aplica a função a cada elemento e retorna um **novo array** do mesmo tamanho com os valores transformados.\n2. **`.filter(fn)`**: Retorna um **novo array** contendo apenas os itens para os quais a função retornou `true`.\n3. **`.find(fn)`**: Retorna o **primeiro elemento** que satisfaz a condição (ou `undefined` se nenhum atender), parando a busca assim que encontra.",
-      "codeExample": "const nums = [1, 2, 3, 4];\nconst dobros = nums.map((n) => n * 2);        // [2, 4, 6, 8]\nconst pares = nums.filter((n) => n % 2 === 0); // [2, 4]\nconst maior = nums.find((n) => n > 2);         // 3",
+      "title": "Transforme e filtre listas em uma linha",
+      "content": "Em vez de criar arrays vazios e dar `.push()`, o JS/TS oferece três atalhos que nunca estragam a lista original:\n`.map()` transforma cada item, `.filter()` mantém só quem passa no teste, e `.find()` devolve apenas o primeiro item encontrado!",
+      "codeExample": "const pontos = [10, 20, 30];\nconst dobros = pontos.map((n) => n * 2);         // [20, 40, 60]\nconst altos = pontos.filter((n) => n >= 20);     // [20, 30]\nconst primeiro = pontos.find((n) => n > 15);     // 20\nconsole.log(altos, primeiro);",
+      "expectedOutput": "[20, 30] 20",
       "keyTakeaways": [
-        ".map() transforma cada item mantendo o tamanho do array sem mutar o original.",
-        ".filter() seleciona todos os itens que passam no teste booleano.",
-        ".find() devolve apenas o primeiro item encontrado (ou undefined)."
+        "`.map()` cria um novo array transformado; `.filter()` cria um novo array só com itens aprovados.",
+        "`.find()` para assim que acha o primeiro item (ou retorna `undefined`)."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Use o método de array que transforma cada item em um novo array com os valores dobrados:",
-      "codeTemplate": "const valores = [5, 10, 15];\nconst dobrados = valores.{{blank}}((n) => n * 2);",
-      "blanks": [
-        { "answer": "map", "placeholder": "método" }
-      ],
-      "options": ["map", "filter", "find", "forEach"],
-      "explanation": ".map() aplica a função de transformação a cada item e devolve o novo array resultante."
-    },
-    {
       "type": "multiple_choice",
-      "prompt": "Qual método devemos usar quando queremos obter APENAS o primeiro usuário com id === 42 de um array?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no console ao rodar este filtro encadeado?",
+      "codeSnippet": "const notas = [4, 8, 10];\nconst bonus = notas\n  .filter((n) => n >= 7)\n  .map((n) => n + 1);\nconsole.log(bonus);",
       "options": [
-        ".map()",
-        ".filter()",
-        ".find()",
-        ".join()"
+        "[9, 11]",
+        "[5, 9, 11]",
+        "[8, 10]",
+        "9"
       ],
-      "correctIndex": 2,
-      "explanation": ".find() retorna o primeiro objeto que satisfaz a condição (ou undefined), enquanto .filter() sempre retorna um array."
+      "correctIndex": 0,
+      "hint": "Primeiro `.filter` mantém só `8` e `10`; depois `.map` soma `1` em cada um.",
+      "expectedOutput": "[9, 11]",
+      "explanation": "O `.filter` deixa passar `[8, 10]` e o `.map` soma `1` em cada número, resultando em `[9, 11]`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para manter apenas os produtos com estoque maior que zero:",
-      "codeTemplate": "const disponiveis = produtos.{{blank}}((p) => p.estoque > 0);",
+      "prompt": "Complete para filtrar só os itens em estoque e depois extrair apenas os nomes:",
+      "codeTemplate": "const nomes = itens\n  .{{blank}}((i) => i.estoque > 0)\n  .{{blank}}((i) => i.nome);",
       "blanks": [
-        { "answer": "filter", "placeholder": "método" }
+        { "answer": "filter", "placeholder": "filtrar" },
+        { "answer": "map", "placeholder": "transformar" }
       ],
-      "options": ["filter", "map", "find", "every"],
-      "explanation": ".filter() cria um novo array contendo somente os elementos cuja função de callback retorna true."
+      "options": ["filter", "map", "find", "forEach"],
+      "hint": "Primeiro filtramos com `filter`, depois transformamos cada objeto no seu nome com `map`.",
+      "expectedOutput": "[\"Café\", \"Caneca\"]",
+      "explanation": "Combinação clássica: `.filter()` seleciona quem passa e `.map()` projeta só o campo desejado."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O código abaixo tenta filtrar os números maiores que 10, mas o callback do filter não retorna nada. Qual linha tem o bug?",
+      "prompt": "O código quer filtrar números maiores que 10, mas retorna `[]` porque o callback esqueceu de retornar o resultado! Clique na linha com o bug:",
       "lines": [
         "const nums = [5, 12, 20];",
         "const altos = nums.filter((n) => {",
         "  n > 10;",
-        "});"
+        "});",
+        "console.log(altos);"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Quando usamos chaves { } em uma arrow function, o retorno não é mais implícito: falta 'return n > 10;' (ou remover as chaves)."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para filtrar pedidos pagos e depois extrair apenas os seus IDs com .map():",
-      "blocks": [
-        "  .map((p) => p.id);",
-        "const idsPagos = pedidos",
-        "  .filter((p) => p.pago === true)"
-      ],
-      "correctOrder": [1, 2, 0],
-      "explanation": "Encadeamos .filter() para selecionar os pagos e .map() para extrair apenas a propriedade id."
+      "hint": "Quando abrimos chaves `{ }` numa arrow function, o retorno deixa de ser automático.",
+      "expectedOutput": "[12, 20]",
+      "explanation": "Dentro de `{ }`, faltou `return n > 10;` (ou remover as chaves e escrever `(n) => n > 10`)."
     },
     {
       "type": "write_code",
-      "prompt": "Dado um array de objetos 'alunos' (com propriedades 'nome' e 'nota'), crie uma constante 'nomesAprovados' filtrando apenas quem tem nota maior ou igual a 7 e transformando o resultado em um array contendo somente os nomes.",
-      "starterCode": "",
+      "prompt": "Complete `nomesAprovados` filtrando quem tem `nota >= 7` e pegando apenas o `nome` com `.map()`.",
+      "starterCode": "const alunos = [\n  { nome: \"Bia\", nota: 9 },\n  { nome: \"Léo\", nota: 5 },\n];\n// TODO: filtre nota >= 7 e extraia apenas o nome\nconst nomesAprovados = alunos\n  \nconsole.log(nomesAprovados);",
       "requiredTokens": ["const", "nomesAprovados", "filter", "map", "nota", "nome"],
-      "sampleSolution": "const nomesAprovados = alunos\n  .filter((a) => a.nota >= 7)\n  .map((a) => a.nome);",
-      "hint": "Encadeie .filter(...) para verificar a nota >= 7 e .map(...) para retornar apenas a propriedade nome.",
-      "explanation": "Combinamos .filter() e .map() com arrow functions para filtrar e projetar dados sem mutar o array original."
+      "sampleSolution": "const alunos = [\n  { nome: \"Bia\", nota: 9 },\n  { nome: \"Léo\", nota: 5 },\n];\nconst nomesAprovados = alunos\n  .filter((a) => a.nota >= 7)\n  .map((a) => a.nome);\nconsole.log(nomesAprovados);",
+      "hint": "Encadeie `.filter((a) => a.nota >= 7).map((a) => a.nome);`.",
+      "expectedOutput": "[\"Bia\"]",
+      "explanation": "Incrível! Encadear `.filter()` e `.map()` deixa seu código super legível e sem mutações."
     }
   ]
 }

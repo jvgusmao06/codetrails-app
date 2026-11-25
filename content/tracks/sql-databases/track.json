@@ -1,7 +1,7 @@
 {
   "id": "sql-databases",
   "title": "SQL & PostgreSQL",
-  "description": "Domine SQL do zero às funções nativas: tipos, SELECT, WHERE, JOINs, GROUP BY, HAVING, COALESCE, CASE WHEN, CREATE TABLE e Transações ACID.",
+  "description": "Aprenda SQL gerenciando a PixelQuest Store, uma loja de games retrô: consultas leves, rankings, tabelas seguras e saída visual passo a passo.",
   "category": "language",
   "color": "#38BDF8",
   "icon": "🐬",
@@ -9,8 +9,8 @@
   "modules": [
     {
       "id": "mod-01-queries",
-      "title": "Módulo 1: Do Zero a SELECT, JOINs, GROUP BY e Funções Nativas",
-      "description": "Tabelas, tipos, operadores (IN/BETWEEN/LIKE), JOINs, COALESCE, CASE WHEN e agrupamentos com GROUP BY / HAVING.",
+      "title": "Módulo 1: Consultando a Vitrine da PixelQuest Store",
+      "description": "Filtre jogos, conecte clientes e pedidos com JOINs, calcule totais e monte rankings com CTEs e Window Functions.",
       "lessons": [
         "lesson-00-tabelas-tipos-basico",
         "lesson-01-select-where",
@@ -23,8 +23,8 @@
     },
     {
       "id": "mod-02-ddl-transacoes",
-      "title": "Módulo 2: Modelagem DDL, DML e Transações ACID",
-      "description": "Crie tabelas, insira dados com segurança e use transações e índices.",
+      "title": "Módulo 2: Blindando e Acelerando o Banco da Loja",
+      "description": "Crie tabelas com regras automáticas, proteja vendas com transações ACID e acelere buscas com Views e Índices.",
       "lessons": [
         "lesson-01-create-transactions",
         "lesson-02-foreign-key-constraints",

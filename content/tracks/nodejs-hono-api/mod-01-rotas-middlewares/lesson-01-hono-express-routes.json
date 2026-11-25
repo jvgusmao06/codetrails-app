@@ -1,61 +1,53 @@
 {
   "id": "hono-routes-01",
-  "title": "Rotas REST, Parâmetros, JSON e Middlewares",
-  "description": "Crie endpoints GET e POST usando padrões Web Standard (Request/Response) com Hono e Node.js.",
+  "title": "Rotas REST, JSON e Middlewares no Hono",
+  "description": "Crie endpoints GET e POST em TypeScript lendo parâmetros com c.req.param, corpo com await c.req.json() e respondendo com c.json().",
+  "mission": "Missão 1: Criar os endpoints de pedidos da lanchonete BiteAPI com status 201 e middleware de tempo.",
   "xp": 50,
   "steps": [
     {
       "type": "theory",
-      "title": "APIs Backend em TypeScript com Hono / Express",
-      "content": "Frameworks backend em TypeScript como Hono mapeiam verbos HTTP (`app.get`, `app.post`) para funções handler usando padrões Web Standard. O objeto de contexto `c` centraliza tudo: `c.req.param('id')` lê parâmetros dinâmicos da URL (`:id`), `await c.req.json()` lê o corpo JSON de forma assíncrona, e `c.json(dados, status)` retorna a resposta JSON.\n\nAlém disso, **middlewares** registrados com `app.use('*', async (c, next) => { ... })` interceptam requisições antes e depois da rota final: chamar `await next()` passa o controle para o próximo handler e permite executar lógica (como logs de tempo ou autenticação) antes e após o processamento.",
-      "codeExample": "import { Hono } from \"hono\";\n\nconst app = new Hono();\n\napp.use(\"*\", async (c, next) => {\n  const inicio = Date.now();\n  await next();\n  console.log(`Tempo: ${Date.now() - inicio}ms`);\n});\n\napp.get(\"/users/:id\", (c) => {\n  const id = c.req.param(\"id\");\n  return c.json({ id, ativo: true }, 200);\n});\n\napp.post(\"/users\", async (c) => {\n  const body = await c.req.json();\n  return c.json({ criado: body.nome }, 201);\n});",
+      "title": "Rotas limpas com o contexto `c` no Hono",
+      "content": "No Hono, o objeto `c` concentra tudo da requisição: `c.req.param(\"id\")` lê a URL dinâmica (`:id`), `await c.req.json()` lê o JSON enviado no `POST`, e `c.json(dados, 201)` devolve a resposta com status Created!\nJá um middleware (`app.use`) roda antes e depois da rota — basta chamar `await next()` para deixar o pedido seguir viagem.",
+      "codeExample": "import { Hono } from \"hono\";\nconst app = new Hono();\n\napp.post(\"/pedidos/:clienteId\", async (c) => {\n  const clienteId = c.req.param(\"clienteId\");\n  const body = await c.req.json();\n  return c.json({ clienteId, item: body.item }, 201);\n});",
+      "expectedOutput": "POST /pedidos/7 {\"item\":\"Burger\"} -> 201 {\"clienteId\":\"7\",\"item\":\"Burger\"}",
       "keyTakeaways": [
-        "Rotas dinâmicas usam ':nome' na URL (ex: '/produtos/:id') e são lidas via c.req.param('id').",
-        "Ler o corpo JSON de um POST é uma operação assíncrona: 'const body = await c.req.json()'.",
-        "Status HTTP 201 (Created) é o padrão semântico ao criar um recurso com sucesso via POST.",
-        "Middlewares com app.use('*', async (c, next) => ...) precisam chamar 'await next()' para continuar o fluxo até a rota."
+        "Use `c.req.param(\"nome\")` para ler `:nome` da URL e `await c.req.json()` para ler o corpo JSON.",
+        "Em `POST` que cria recurso, devolva status `201`; em middlewares, sempre chame `await next()`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Em uma rota `app.get('/produtos/:codigo', (c) => ...)`, qual método do contexto `c` extrai o valor do parâmetro `:codigo` da URL?",
+      "kind": "predict_output",
+      "prompt": "Se um cliente chamar `GET /lanches/42`, o que esta rota devolve?",
+      "codeSnippet": "app.get(\"/lanches/:id\", (c) => {\n  const id = c.req.param(\"id\");\n  return c.json({ id, disponivel: true }, 200);\n});",
       "options": [
-        "c.req.param(\"codigo\")",
-        "c.req.json(\"codigo\")",
-        "c.body(\"codigo\")",
-        "c.route.get(\"codigo\")"
+        "Status 200 com JSON {\"id\": \"42\", \"disponivel\": true}",
+        "Status 201 com texto \"42\"",
+        "Status 404 porque :id é string",
+        "undefined, pois faltou await"
       ],
       "correctIndex": 0,
-      "explanation": "No Hono, parâmetros dinâmicos de rota definidos com ':' são lidos por meio de `c.req.param('nome')`."
+      "hint": "`c.req.param(\"id\")` captura `\"42\"` da URL e `c.json(..., 200)` devolve JSON com status 200.",
+      "expectedOutput": "200 OK {\"id\":\"42\",\"disponivel\":true}",
+      "explanation": "O Hono extrai `\"42\"` do segmento `:id` e responde com o JSON certinho e status 200."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o endpoint POST no Hono para ler o JSON do corpo da requisição e retornar status 201:",
-      "codeTemplate": "app.{{blank}}(\"/tarefas\", async (c) => {\n  const dados = await c.req.{{blank}}();\n  return c.json({ ok: true, dados }, {{blank}});\n});",
+      "prompt": "Complete a rota `POST` para ler o corpo JSON e retornar status `201`:",
+      "codeTemplate": "app.post(\"/tarefas\", async (c) => {\n  const dados = await c.req.{{blank}}();\n  return c.json({ ok: true, dados }, {{blank}});\n});",
       "blanks": [
-        { "answer": "post", "placeholder": "verbo" },
-        { "answer": "json", "placeholder": "parser" },
+        { "answer": "json", "placeholder": "ler corpo" },
         { "answer": "201", "placeholder": "status" }
       ],
-      "options": ["post", "json", "201", "get", "body", "404"],
-      "explanation": "Usamos app.post() para criação, await c.req.json() para extrair o payload e c.json(..., 201) para retornar Created."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene as linhas de um middleware de medição de tempo (logger) em Hono:",
-      "blocks": [
-        "app.use(\"*\", async (c, next) => {",
-        "  const inicio = Date.now();",
-        "  await next();",
-        "  console.log(`Tempo: ${Date.now() - inicio}ms`);",
-        "});"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4],
-      "explanation": "O middleware registra o horário inicial, aguarda 'await next()' processar a rota e calcula a diferença de tempo na volta."
+      "options": ["json", "201", "body", "404"],
+      "hint": "Lemos JSON com `c.req.json()` e criação bem-sucedida usa status HTTP `201`.",
+      "expectedOutput": "201 Created {\"ok\":true,\"dados\":...}",
+      "explanation": "Certinho! `await c.req.json()` lê o payload e `201` sinaliza que o recurso foi criado."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este endpoint POST combinando leitura de parâmetro, JSON e resposta falha em tempo de execução. Clique na linha com o bug:",
+      "prompt": "Ops! O pedido chega sem `titulo` porque a leitura do corpo não esperou a Promise! Clique na linha com o bug:",
       "lines": [
         "app.post(\"/projetos/:id/tarefas\", async (c) => {",
         "  const projetoId = c.req.param(\"id\");",
@@ -64,28 +56,19 @@
         "});"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Na linha 3, faltou `await` antes de `c.req.json()`. Como o parsing do corpo da requisição é assíncrono, `body` seria uma Promise e `body.titulo` ficaria `undefined`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "O que acontece se um middleware registrado com `app.use(\"*\", async (c, next) => { ... })` esquecer de chamar `await next()`?",
-      "options": [
-        "O Hono chama a rota seguinte automaticamente após 100ms",
-        "A requisição trava ou não chega ao handler da rota correspondente (a menos que o middleware retorne uma resposta)",
-        "O parâmetro c.req.param() deixa de funcionar apenas em rotas POST",
-        "O status HTTP muda automaticamente para 201"
-      ],
-      "correctIndex": 1,
-      "explanation": "Sem `await next()`, a cadeia de execução é interrompida no middleware e o handler da rota nunca é executado."
+      "hint": "`c.req.json()` é assíncrono — está faltando uma palavra-chave antes dele na linha 3!",
+      "expectedOutput": "201 {\"projetoId\":\"1\",\"titulo\":\"Pão\"}",
+      "explanation": "Com `const body = await c.req.json();`, esperamos o JSON ser lido antes de acessar `body.titulo`."
     },
     {
       "type": "write_code",
-      "prompt": "Crie uma rota POST para \"/pedidos/:clienteId\" no objeto `app` (já instanciado). Leia o parâmetro dinâmico da URL, faça o parse assíncrono do corpo JSON e retorne uma resposta JSON contendo o identificador do cliente e o campo `item` do corpo, com status HTTP 201.",
-      "starterCode": "",
+      "prompt": "Complete a rota `POST /pedidos/:clienteId` lendo `clienteId` com `c.req.param`, o corpo com `await c.req.json()` e retornando `c.json(..., 201)`.",
+      "starterCode": "// `app` já está instanciado com new Hono()\napp.post(\"/pedidos/:clienteId\", async (c) => {\n  // TODO: leia clienteId via c.req.param(\"clienteId\")\n  \n  // TODO: leia body via await c.req.json()\n  \n  // TODO: retorne c.json({ clienteId, item: body.item }, 201)\n  \n});",
       "requiredTokens": ["app.post(", ":clienteId", "async", "c.req.param(", "await", "c.req.json()", "c.json(", "201"],
       "sampleSolution": "app.post(\"/pedidos/:clienteId\", async (c) => {\n  const clienteId = c.req.param(\"clienteId\");\n  const body = await c.req.json();\n  return c.json({ clienteId, item: body.item }, 201);\n});",
-      "hint": "Use `app.post(\"/pedidos/:clienteId\", async (c) => ...)` combinando `c.req.param(\"clienteId\")`, `await c.req.json()` e `c.json(..., 201)`.",
-      "explanation": "O desafio combina rota POST assíncrona, extração de parâmetro de URL via `c.req.param`, leitura do payload com `await c.req.json()` e resposta semântica 201 com `c.json`."
+      "hint": "Use `c.req.param(\"clienteId\")`, `await c.req.json()` e `return c.json({ clienteId, item: body.item }, 201);`.",
+      "expectedOutput": "201 {\"clienteId\":\"9\",\"item\":\"Suco\"}",
+      "explanation": "Mandou bem! A BiteAPI já aceita pedidos tipados e responde com o status HTTP certo."
     }
   ]
 }

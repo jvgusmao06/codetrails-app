@@ -1,104 +1,73 @@
 {
   "id": "react-jsx-01",
-  "title": "Componentes e JSX",
-  "description": "Criando funções em PascalCase que recebem props e retornam marcação JSX.",
+  "title": "Componentes, Props e JSX",
+  "description": "Crie blocos reutilizáveis de interface em PascalCase, receba dados via props e exiba valores com chaves { }.",
+  "mission": "Missão 1: Criar o card de faixa musical e a etiqueta de gênero no player BeatBox.",
   "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "Componentes Funcionais, Props e Interpolação JSX",
-      "content": "No React, interfaces são divididas em componentes reutilizáveis — funções JavaScript que retornam marcação JSX. Todo componente React deve começar com letra Maiúscula (**PascalCase**) para não ser confundido com tags HTML comuns. Os dados entram no componente por meio de **props**, geralmente desestruturadas nos parâmetros da função (`function Header({ titulo })`). Para exibir variáveis ou expressões dentro do JSX, usamos chaves `{ }`.",
-      "codeExample": "function Header({ titulo }) {\n  return <h1>{titulo}</h1>;\n}",
+      "title": "Peças de Lego da UI: Componentes e Props",
+      "content": "No React, um componente é só uma função em **PascalCase** (primeira letra maiúscula) que retorna HTML turbinado chamado **JSX**.\nOs dados entram como **props** desestruturadas nos parâmetros (`function Faixa({ titulo })`), e dentro do JSX você usa chaves `{ }` para mostrar qualquer variável na tela!",
+      "codeExample": "function Faixa({ titulo }: { titulo: string }) {\n  return <h2>Tocando: {titulo}</h2>;\n}\n\n// Uso na tela:\n<Faixa titulo=\"Lo-fi Beats\" />",
+      "expectedOutput": "Renderiza: <h2>Tocando: Lo-fi Beats</h2>",
       "keyTakeaways": [
-        "Componentes React usam PascalCase (ex: `<Header />` vs `<header>`).",
-        "Props são passadas como atributos JSX e desestruturadas nos parâmetros da função.",
-        "Chaves `{ }` avaliam expressões JavaScript dentro do JSX."
+        "Componentes React sempre começam com letra maiúscula (`<Faixa />`), diferente de tags HTML (`<h2>`).",
+        "Props entram desestruturadas (`{ titulo }`) e aparecem no JSX entre chaves `{titulo}`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Por que os nomes de componentes em React devem sempre começar com letra MAIÚSCULA?",
+      "kind": "predict_output",
+      "prompt": "O que aparece renderizado na tela ao usar `<Saudacao nome=\"Lia\" />`?",
+      "codeSnippet": "function Saudacao({ nome }: { nome: string }) {\n  return <p>Olá, {nome}!</p>;\n}",
       "options": [
-        "Apenas por convenção estética",
-        "Para o React diferenciar elementos HTML nativos (como <div>) de componentes customizados (como <Botao />)",
-        "Porque o JavaScript não permite funções com letra minúscula",
-        "Para aumentar a performance do CSS"
+        "Olá, Lia!",
+        "Olá, {nome}!",
+        "Olá, nome!",
+        "Nada, pois falta a palavra props"
       ],
-      "correctIndex": 1,
-      "explanation": "Tags em minúsculo são tratadas pelo JSX como tags HTML nativas do DOM, enquanto PascalCase indica um componente React."
+      "correctIndex": 0,
+      "hint": "No JSX, as chaves `{nome}` trocam a variável pelo valor passado na prop.",
+      "expectedOutput": "<p>Olá, Lia!</p>",
+      "explanation": "A prop `nome` chega com `\"Lia\"` e `{nome}` renderiza esse texto dentro do `<p>`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Receba a prop `nome` por desestruturação no componente `Saudacao`:",
-      "codeTemplate": "function Saudacao({{blank}} nome {{blank}}) {\n  return <p>Olá, {nome}</p>;\n}",
+      "prompt": "Desestruture a prop `titulo` e exiba seu valor dentro do `<h1>`:",
+      "codeTemplate": "function Header({ {{blank}} }) {\n  return <h1>{{blank}}titulo}</h1>;\n}",
       "blanks": [
-        {
-          "answer": "{",
-          "placeholder": "abre"
-        },
-        {
-          "answer": "}",
-          "placeholder": "fecha"
-        }
+        { "answer": "titulo", "placeholder": "prop" },
+        { "answer": "{", "placeholder": "abrir chave" }
       ],
-      "options": ["{", "}", "[", "]"],
-      "explanation": "No React, as props chegam em um único objeto como primeiro argumento da função, por isso desestruturamos com `{ nome }`."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Exiba a prop `titulo` dinamicamente dentro da tag `<h1>`:",
-      "codeTemplate": "function Header({ titulo }) {\n  return <h1>{{blank}}titulo{{blank}}</h1>;\n}",
-      "blanks": [
-        {
-          "answer": "{",
-          "placeholder": "abre"
-        },
-        {
-          "answer": "}",
-          "placeholder": "fecha"
-        }
-      ],
-      "options": ["{", "}", "(", ")"],
-      "explanation": "No JSX, usamos chaves `{ }` para interpolar expressões JavaScript dentro da marcação."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para formar um componente React funcional que recebe uma prop e a exibe em JSX:",
-      "blocks": [
-        "}",
-        "function Card({ texto }) {",
-        "  return <div>{texto}</div>;",
-        "// uso: <Card texto=\"Oi\" />"
-      ],
-      "correctOrder": [1, 2, 0, 3],
-      "explanation": "Definimos a função em PascalCase desestruturando `{ texto }`, retornamos o JSX interpolando `{texto}`, fechamos a função e podemos renderizá-la com `<Card ... />`."
+      "options": ["titulo", "{", "props", "$"],
+      "hint": "Receba `titulo` dentro das chaves do parâmetro e abra `{` antes de `titulo}` no JSX.",
+      "expectedOutput": "<h1>BeatBox</h1>",
+      "explanation": "Certinho! Desestruturação `{ titulo }` nos parâmetros e `{titulo}` dentro da tag."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Encontre a linha com erro em um componente que deveria receber a prop `titulo` e renderizá-la em JSX:",
+      "prompt": "Ops! O React está tratando este componente como uma tag HTML desconhecida em vez de renderizá-lo. Clique na linha com o bug:",
       "lines": [
         "function aviso({ titulo }) {",
         "  return <span>{titulo}</span>;",
         "}",
-        "const el = <aviso titulo=\"Atenção\" />;"
+        "const el = <aviso titulo=\"Ao vivo\" />;"
       ],
       "buggyLineIndex": 0,
-      "explanation": "O componente foi declarado com letra minúscula (`aviso`). Em React, componentes devem usar PascalCase (`Aviso`) para o JSX não tratá-lo como tag HTML."
+      "hint": "Dê uma olhada na primeira letra do nome da função `aviso`...",
+      "expectedOutput": "<span>Ao vivo</span>",
+      "explanation": "Componentes React precisam começar com maiúscula (`Aviso`) para o JSX saber que não é uma tag HTML comum!"
     },
     {
       "type": "write_code",
-      "prompt": "Crie um componente funcional chamado `Badge` que receba uma prop `label` desestruturada e retorne um elemento `<span>` exibindo o valor dessa prop.",
-      "starterCode": "",
-      "requiredTokens": [
-        "function Badge",
-        "{ label }",
-        "return",
-        "<span>",
-        "{label}"
-      ],
+      "prompt": "Complete o componente `Badge` para receber `{ label }` nas props e retornar `<span>{label}</span>`.",
+      "starterCode": "// TODO: complete o componente Badge recebendo { label } e retornando <span>{label}</span>\nfunction Badge(  ) {\n  return \n}",
+      "requiredTokens": ["function Badge", "{ label }", "return", "<span>", "{label}"],
       "sampleSolution": "function Badge({ label }) {\n  return <span>{label}</span>;\n}",
-      "hint": "Use `function Badge({ label })` em PascalCase e retorne `<span>{label}</span>`.",
-      "explanation": "O componente `Badge` segue PascalCase, recebe `{ label }` via desestruturação de props e interpola `{label}` no JSX."
+      "hint": "Coloque `{ label }` nos parênteses da função e `<span>{label}</span>;` no `return`.",
+      "expectedOutput": "<span>Jazz</span>",
+      "explanation": "Show de bola! Você criou um componente React reutilizável em PascalCase com props e JSX."
     }
   ]
 }

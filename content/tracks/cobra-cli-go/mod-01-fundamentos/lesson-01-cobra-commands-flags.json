@@ -1,78 +1,75 @@
 {
   "id": "lesson-01-cobra-commands-flags",
-  "title": "cobra.Command e Flags",
-  "description": "Defina comandos, subcomandos com AddCommand e flags com Flags().StringVarP.",
+  "title": "CLI Profissional com cobra.Command e Flags",
+  "description": "Crie comandos e subcomandos com AddCommand, ligue flags a variáveis e rode tudo com Execute().",
+  "mission": "Missão 1: Construir a CLI `gopher-cli` para despachar entregas direto do terminal.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "O padrão ouro para CLIs em Go",
-      "content": "O **Cobra** (`github.com/spf13/cobra`) alimenta algumas das CLIs mais famosas do mundo: `kubectl`, `docker`, `gh` e `hugo`.\n\nCada comando é uma struct `&cobra.Command` com:\n- `Use`: nome do comando na linha de comando (ex: `\"deploy\"`).\n- `Short`: descrição curta exibida no `--help`.\n- `RunE` (ou `Run`): função executada quando o comando é chamado.\n- `Flags().StringVarP(&var, ...)` / `IntVarP(&var, ...)`: vincula uma flag (com ponteiro `&`) a uma variável Go.\n- `rootCmd.AddCommand(subCmd)` aninha subcomandos e `rootCmd.Execute()` inicia a CLI.",
-      "codeExample": "var env string\n\nvar deployCmd = &cobra.Command{\n    Use:   \"deploy\",\n    Short: \"Faz deploy da aplicação\",\n    RunE: func(cmd *cobra.Command, args []string) error {\n        fmt.Println(\"Deploy em:\", env)\n        return nil\n    },\n}\n\nfunc init() {\n    deployCmd.Flags().StringVarP(&env, \"env\", \"e\", \"staging\", \"Ambiente alvo\")\n    rootCmd.AddCommand(deployCmd)\n}"
+      "title": "A biblioteca por trás de Docker e kubectl",
+      "content": "Com o **Cobra**, cada comando da sua CLI é um `&cobra.Command` com `Use` (nome), `Short` (ajuda) e `Run` (o que ele executa).\nVocê conecta subcomandos com `rootCmd.AddCommand(subCmd)`, liga flags com `Flags().StringVarP(&env, ...)` e inicia tudo com `rootCmd.Execute()`!",
+      "codeExample": "var env string\nvar deployCmd = &cobra.Command{\n    Use:   \"deploy\",\n    Short: \"Publica a central\",\n    Run:   func(cmd *cobra.Command, args []string) { fmt.Println(\"Env:\", env) },\n}\ndeployCmd.Flags().StringVarP(&env, \"env\", \"e\", \"prod\", \"Ambiente\")\nrootCmd.AddCommand(deployCmd)",
+      "expectedOutput": "Env: prod",
+      "keyTakeaways": [
+        "`&cobra.Command` define o comando (`Use`, `Short`, `Run`) e `rootCmd.AddCommand(sub)` encaixa subcomandos.",
+        "Flags como `StringVarP` e `IntVarP` sempre recebem o ponteiro (`&variavel`) para preencher o valor."
+      ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual método conecta um subcomando (ex: deployCmd) ao comando principal (rootCmd) no Cobra?",
+      "kind": "predict_output",
+      "prompt": "Se o usuário rodar `gopher-cli deploy` sem passar nenhuma flag, o que aparece no terminal?",
+      "codeSnippet": "var env string\ndeployCmd.Flags().StringVarP(&env, \"env\", \"e\", \"staging\", \"Ambiente\")\n// Dentro do Run:\nfmt.Println(\"Deploy em:\", env)",
       "options": [
-        "rootCmd.AddCommand(deployCmd)",
-        "rootCmd.Register(deployCmd)",
-        "cobra.Attach(rootCmd, deployCmd)",
-        "deployCmd.SetParent(rootCmd)"
+        "Deploy em: staging",
+        "Deploy em: ",
+        "Erro porque --env não foi informado",
+        "Deploy em: prod"
       ],
       "correctIndex": 0,
-      "explanation": "AddCommand registra um ou mais *cobra.Command como subcomandos do comando pai."
+      "hint": "O quarto argumento (`\"staging\"`) em `StringVarP` é o valor padrão da flag!",
+      "expectedOutput": "Deploy em: staging",
+      "explanation": "Quando o usuário omite `--env`, o Cobra preenche automaticamente o valor padrão `\"staging\"`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a definição do comando Cobra e sua execução na função main:",
-      "codeTemplate": "var rootCmd = &cobra.{{blank}}{\n    Use:   \"meuapp\",\n    Short: \"CLI de exemplo\",\n    {{blank}}: func(cmd *cobra.Command, args []string) {\n        fmt.Println(\"Olá Cobra!\")\n    },\n}\n\nfunc main() {\n    rootCmd.{{blank}}()\n}",
+      "prompt": "Complete o comando raiz do Cobra e dispare a CLI no `main`:",
+      "codeTemplate": "var rootCmd = &cobra.{{blank}}{\n    Use: \"gopher-cli\",\n    Run: func(cmd *cobra.Command, args []string) { fmt.Println(\"Online!\") },\n}\nfunc main() {\n    rootCmd.{{blank}}()\n}",
       "blanks": [
-        { "answer": "Command" },
-        { "answer": "Run" },
-        { "answer": "Execute" }
+        { "answer": "Command", "placeholder": "struct" },
+        { "answer": "Execute", "placeholder": "iniciar" }
       ],
-      "options": ["Command", "CLI", "Run", "Exec", "Execute", "Start"],
-      "explanation": "Define-se &cobra.Command com Use, Short e Run (ou RunE), e chama-se rootCmd.Execute() no main."
+      "options": ["Command", "Execute", "CLI", "Start"],
+      "hint": "Todo comando é um `&cobra.Command` e a CLI começa chamando `rootCmd.Execute()`.",
+      "expectedOutput": "Online!",
+      "explanation": "`&cobra.Command` define o comando e `rootCmd.Execute()` interpreta argumentos, flags e `--help` automaticamente."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Identifique a linha com erro ao registrar a flag `--port` no comando Cobra:",
+      "prompt": "A flag `--port` não compila porque esqueceu o ponteiro `&` na hora de ligar à variável! Qual linha tem o bug?",
       "lines": [
         "var port int",
-        "var serveCmd = &cobra.Command{Use: \"serve\", Run: func(cmd *cobra.Command, args []string) { fmt.Println(port) }}",
+        "var serveCmd = &cobra.Command{Use: \"serve\"}",
         "func init() {",
-        "    serveCmd.Flags().IntVarP(port, \"port\", \"p\", 8080, \"Porta HTTP\")",
+        "    serveCmd.Flags().IntVarP(port, \"port\", \"p\", 8080, \"Porta\")",
         "    rootCmd.AddCommand(serveCmd)",
         "}"
       ],
       "buggyLineIndex": 3,
-      "explanation": "`IntVarP` exige um ponteiro (`&port`) para conseguir preencher a variável `port` quando a flag for passada."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene as linhas para criar um comando Cobra com flag --port e executá-lo:",
-      "blocks": [
-        "rootCmd.Execute()",
-        "rootCmd.Flags().IntVarP(&port, \"port\", \"p\", 8080, \"Porta HTTP\")",
-        "var port int",
-        "var rootCmd = &cobra.Command{Use: \"serve\", Run: func(cmd *cobra.Command, args []string) { fmt.Println(port) }}"
-      ],
-      "correctOrder": [2, 3, 1, 0],
-      "explanation": "Primeiro declaramos a variável port, depois criamos rootCmd, registramos a flag com Flags().IntVarP e por fim chamamos rootCmd.Execute()."
+      "hint": "Olhe o primeiro argumento de `IntVarP`: como o Cobra altera `port` sem o endereço `&`?",
+      "expectedOutput": "Porta: 8080",
+      "explanation": "Na linha 4, `IntVarP` exige `&port` para conseguir salvar o número digitado no terminal."
     },
     {
       "type": "write_code",
-      "prompt": "Crie o comando raiz `rootCmd` (para o app) e um subcomando `versionCmd` no Cobra com nome `version`, descrição curta e função de execução que imprime `\"v1.0.0\"`, registrando `versionCmd` dentro de `rootCmd`.",
-      "starterCode": "",
-      "requiredTokens": [
-        "&cobra.Command",
-        "Use:",
-        "Run:",
-        "rootCmd.AddCommand("
-      ],
-      "sampleSolution": "rootCmd := &cobra.Command{Use: \"app\"}\nversionCmd := &cobra.Command{\n    Use:   \"version\",\n    Short: \"Mostra a versão\",\n    Run: func(cmd *cobra.Command, args []string) {\n        fmt.Println(\"v1.0.0\")\n    },\n}\nrootCmd.AddCommand(versionCmd)",
-      "hint": "Defina `rootCmd` e `versionCmd` como `&cobra.Command` com `Use`, `Short` e `Run: func(cmd *cobra.Command, args []string) { ... }`, e conecte-os via `AddCommand`.",
-      "explanation": "O Cobra gera automaticamente `app version --help` a partir dos metadados Use e Short."
+      "prompt": "Crie o subcomando `versionCmd` (`Use: \"version\"`) imprimindo `\"v1.0.0\"` no `Run` e adicione-o ao `rootCmd` com `AddCommand`.",
+      "starterCode": "rootCmd := &cobra.Command{Use: \"gopher-cli\"}\n// TODO: crie versionCmd := &cobra.Command com Use: \"version\" e Run imprimindo \"v1.0.0\"\n\n// TODO: conecte versionCmd em rootCmd usando AddCommand\n",
+      "requiredTokens": ["versionCmd", "&cobra.Command", "Use:", "Run:", "rootCmd.AddCommand("],
+      "sampleSolution": "rootCmd := &cobra.Command{Use: \"gopher-cli\"}\nversionCmd := &cobra.Command{\n    Use:   \"version\",\n    Short: \"Mostra a versão\",\n    Run: func(cmd *cobra.Command, args []string) {\n        fmt.Println(\"v1.0.0\")\n    },\n}\nrootCmd.AddCommand(versionCmd)",
+      "hint": "Defina `versionCmd := &cobra.Command{ Use: \"version\", Run: func(cmd *cobra.Command, args []string) { fmt.Println(\"v1.0.0\") } }` e chame `rootCmd.AddCommand(versionCmd)`.",
+      "expectedOutput": "v1.0.0",
+      "explanation": "Incrível! Sua CLI já suporta `gopher-cli version` e ainda ganhou `--help` de graça!"
     }
   ]
 }

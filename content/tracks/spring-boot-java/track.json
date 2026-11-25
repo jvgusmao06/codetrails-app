@@ -1,7 +1,7 @@
 {
   "id": "spring-boot-java",
   "title": "Spring Boot",
-  "description": "Crie microsserviços e APIs corporativas em Java com injeção de dependência e anotações @RestController.",
+  "description": "Coloque sua API Express de Entregas no ar com Spring Boot: lições leves com @RestController, rotas REST, código guiado e resposta visual.",
   "category": "framework",
   "languageId": "java-basics",
   "prerequisites": ["java-basics"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-controllers",
-      "title": "Módulo 1: REST Controllers e Anotações",
-      "description": "Expondo rotas HTTP na JVM com Spring Web.",
+      "title": "Módulo 1: Primeira Rota na API de Entregas",
+      "description": "Transforme uma classe Java em endpoints HTTP limpos com @RestController, @GetMapping e @PathVariable.",
       "lessons": ["lesson-01-rest-controller"]
     }
   ]

@@ -1,91 +1,74 @@
 {
   "id": "rust-fluxo-loops-01",
-  "title": "Condicionais (if/else) e Loops (for, while, loop)",
-  "description": "Use if/else como expressão, percorra intervalos com for (0..5 vs 0..=5), repita com while e retorne valores de loop.",
+  "title": "Decisões na Arena (if / else)",
+  "description": "Tome decisões limpas com if/else sem parênteses e descubra como guardar o resultado direto em um let.",
+  "mission": "Missão 4: Decidir se o herói venceu o desafio ou precisa recarregar energia.",
   "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "Decisões e Repetições em Rust",
-      "content": "Em Rust, `if` não precisa de parênteses na condição e funciona como **expressão** — pode devolver um valor direto para um `let`. Para repetir código, temos três laços:\n1. `for i in 0..5` (exclusivo: 0 a 4) ou `0..=5` (inclusivo: 0 a 5).\n2. `while condicao { ... }`.\n3. `loop { ... }`: laço infinito que encerra com `break` (podendo até retornar um valor: `break resultado;`).",
-      "codeExample": "let pontos = 8;\nlet status = if pontos >= 5 { \"Aprovado\" } else { \"Reprovado\" };\n\nfor i in 1..=3 {\n    println!(\"{}: {}\", i, status);\n}",
+      "title": "if / else direto ao ponto (e como expressão!)",
+      "content": "Em Rust, o `if` não precisa de parênteses na condição: `if hp > 0 { ... }`.\nE o mais legal: `if / else` devolve um valor! Você pode atribuir o resultado direto para uma variável `let` (sem precisar de operador ternário `? :`).",
+      "codeExample": "let pontos = 80;\nlet rank = if pontos >= 50 { \"Ouro\" } else { \"Prata\" };\nprintln!(\"Rank conquistado: {}\", rank);",
+      "expectedOutput": "Rank conquistado: Ouro",
       "keyTakeaways": [
-        "`if cond { a } else { b }` pode ser atribuído diretamente a uma variável com `let`.",
-        "`1..5` vai de 1 até 4; `1..=5` inclui o 5.",
-        "`loop` é o laço infinito nativo e pode sair retornando um valor com `break valor;`."
+        "Sem parênteses: `if pontos >= 50 { ... }`.",
+        "`let rank = if cond { a } else { b };` devolve o valor escolhido direto para `rank`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual intervalo em Rust percorre os números `1, 2, 3, 4, 5` (incluindo o `5`)?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal com `hp = 15`?",
+      "codeSnippet": "let hp = 15;\nlet alerta = if hp <= 20 { \"Crítico!\" } else { \"Seguro\" };\nprintln!(\"Status: {}\", alerta);",
       "options": [
-        "1..5",
-        "1..=5",
-        "1 to 5",
-        "range(1, 5)"
+        "Status: Crítico!",
+        "Status: Seguro",
+        "Status: 15",
+        "Erro porque falta return"
       ],
-      "correctIndex": 1,
-      "explanation": "O operador `..=` cria um intervalo inclusivo (`1..=5` inclui o 5), enquanto `1..5` para no 4."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual estrutura de repetição do Rust é ideal para rodar indefinidamente até encontrar uma condição interna e ainda poder retornar um valor com `break valor;`?",
-      "options": [
-        "for",
-        "while",
-        "loop",
-        "repeat"
-      ],
-      "correctIndex": 2,
-      "explanation": "`loop` cria um laço infinito nativo e aceita `break valor;` para sair devolvendo um resultado para uma variável `let`."
+      "correctIndex": 0,
+      "hint": "15 é menor ou igual a 20, então o primeiro bloco é escolhido.",
+      "expectedOutput": "Status: Crítico!",
+      "explanation": "Como `15 <= 20` é verdadeiro, a expressão `if` devolve `\"Crítico!\"` para `alerta`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para classificar `nota` com `if/else` como expressão e contar de `1` até `3` (inclusivo):",
-      "codeTemplate": "let msg = {{blank}} nota >= 7 { \"Ok\" } else { \"Revisar\" };\n{{blank}} n in {{blank}} {\n    println!(\"{}\", n);\n}",
+      "prompt": "Complete a decisão que verifica se o jogador tem ouro suficiente para comprar uma poção:",
+      "codeTemplate": "let acao = {{blank}} ouro >= 30 { \"Comprou poção!\" } {{blank}} { \"Ouro insuficiente\" };\nprintln!(\"{}\", acao);",
       "blanks": [
-        { "answer": "if", "placeholder": "condicional" },
-        { "answer": "for", "placeholder": "laço" },
-        { "answer": "1..=3", "placeholder": "intervalo" }
+        { "answer": "if", "placeholder": "se" },
+        { "answer": "else", "placeholder": "senão" }
       ],
-      "options": ["if", "for", "1..=3", "1..3", "while", "when"],
-      "explanation": "`if ... else` retorna o valor do ramo escolhido para `msg`, e `for n in 1..=3` percorre 1, 2 e 3."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "Este laço `while` deveria incrementar `contador` até 3, mas não compila. Clique na linha com o erro:",
-      "lines": [
-        "let contador = 0;",
-        "while contador < 3 {",
-        "    contador += 1;",
-        "    println!(\"{}\", contador);",
-        "}"
-      ],
-      "buggyLineIndex": 0,
-      "explanation": "Na linha 1, `contador` foi declarado sem `mut`. Como ele é alterado dentro do `while`, é obrigatório usar `let mut contador = 0;`."
+      "options": ["if", "else", "when", "then"],
+      "hint": "É o par clássico `if ... { ... } else { ... }`.",
+      "expectedOutput": "Comprou poção!",
+      "explanation": "`if ... else` como expressão deixa o código super limpo e evita criar variável mutável à toa."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os blocos para criar um `loop` que incrementa `n` até `3` e retorna o valor com `break`:",
+      "prompt": "Monte a verificação que abre o portão se `chaves > 0`:",
       "blocks": [
-        "    if n == 3 { break n; }",
-        "let resultado = loop {",
-        "    n += 1;",
-        "let mut n = 0;",
-        "};",
-        "println!(\"{}\", resultado);"
+        "    \"Portão aberto!\"",
+        "let msg = if chaves > 0 {",
+        "} else {",
+        "    \"Trancado\"",
+        "};"
       ],
-      "correctOrder": [3, 1, 2, 0, 4, 5],
-      "explanation": "Inicializamos `let mut n = 0;`, abrimos `let resultado = loop {`, incrementamos `n`, saímos com `break n`, fechamos `};` e imprimimos `resultado`."
+      "correctOrder": [1, 0, 2, 3, 4],
+      "hint": "Comece com `let msg = if chaves > 0 {`, coloque o caso verdadeiro, depois `} else {` e feche com `};`.",
+      "expectedOutput": "Portão aberto!",
+      "explanation": "Repare no `;` no final do `};` — ele encerra o `let msg = ...;`."
     },
     {
       "type": "write_code",
-      "prompt": "Crie uma variável mutável `soma` iniciada em `0`, use um laço `for` para somar os números de `1` até `5` (incluindo o `5`) em `soma` e imprima o resultado final.",
-      "starterCode": "",
-      "requiredTokens": ["let", "mut", "soma", "for", "1..=5", "println!"],
-      "sampleSolution": "let mut soma = 0;\nfor i in 1..=5 {\n    soma += i;\n}\nprintln!(\"{}\", soma);",
-      "hint": "Declare `let mut soma = 0;`, faça `for i in 1..=5 { soma += i; }` e finalize com `println!(\"{}\", soma);`.",
-      "explanation": "Combinamos `let mut` para acumular o total, `for i in 1..=5` para o intervalo inclusivo e `println!` para exibir a soma."
+      "prompt": "Complete a variável `status` usando `if / else`: se `energia >= 50`, devolva `\"Pronto\"`, senão devolva `\"Cansado\"`.",
+      "starterCode": "fn main() {\n    let energia = 60;\n    // TODO: use `if energia >= 50 { ... } else { ... }`\n    let status = \n    println!(\"Herói: {}\", status);\n}",
+      "requiredTokens": ["if", "energia >= 50", "Pronto", "else", "Cansado"],
+      "sampleSolution": "fn main() {\n    let energia = 60;\n    let status = if energia >= 50 { \"Pronto\" } else { \"Cansado\" };\n    println!(\"Herói: {}\", status);\n}",
+      "hint": "Complete a linha com `if energia >= 50 { \"Pronto\" } else { \"Cansado\" };`.",
+      "expectedOutput": "Herói: Pronto",
+      "explanation": "Perfeito! Em Rust, `if/else` substitui o ternário com muito mais legibilidade."
     }
   ]
 }

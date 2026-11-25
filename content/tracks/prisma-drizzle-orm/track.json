@@ -1,7 +1,7 @@
 {
   "id": "prisma-drizzle-orm",
   "title": "Prisma & Drizzle ORM",
-  "description": "Consulte bancos SQL a partir do TypeScript com autocompletar total, migrações seguras e prevenção de N+1 queries.",
+  "description": "Monte o catálogo da biblioteca BookShelf com ORM type-safe em TypeScript: filtros com where, relações com include e adeus ao N+1.",
   "category": "library",
   "languageId": "typescript-javascript",
   "prerequisites": ["typescript-javascript", "sql-databases"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-queries-orm",
-      "title": "Módulo 1: Schemas Tipados, Relações e N+1",
-      "description": "Domine consultas type-safe em TypeScript integradas ao SQL.",
+      "title": "Módulo 1: Consultas Type-Safe no BookShelf",
+      "description": "Busque autores, livros e usuários paginados sem disparar dezenas de queries repetidas no banco.",
       "lessons": ["lesson-01-orm-queries"]
     }
   ]

@@ -1,83 +1,74 @@
 {
   "id": "py-fastapi-01",
-  "title": "Criando seu Primeiro Endpoint GET",
-  "description": "Usando decorators @app.get para responder JSON automaticamente.",
+  "title": "Seu Primeiro Endpoint GET",
+  "description": "Coloque um servidor FastAPI no ar e responda JSON automaticamente usando @app.get.",
+  "mission": "Missão 1: Colocar a TaskFlow API no ar com um endpoint GET de status em JSON.",
   "xp": 20,
   "steps": [
     {
       "type": "theory",
-      "title": "APIs Modernas em Python com FastAPI",
-      "content": "Após dominar os fundamentos do Python, você pode criar servidores web com o FastAPI. Primeiro importamos `FastAPI` e criamos a instância principal (`app = FastAPI()`). Em seguida, usamos decoradores como `@app.get(\"/rota\")` acima de funções Python comuns (`def`), e o FastAPI converte dicionários ou listas retornados diretamente em respostas JSON.",
-      "codeExample": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get(\"/status\")\ndef ler_status():\n    return {\"online\": True}",
+      "title": "Rotas rápidas com FastAPI e @app.get",
+      "content": "Com o FastAPI, criar uma API em Python leva só algumas linhas: você instancia `app = FastAPI()` e coloca `@app.get(\"/rota\")` acima de uma função comum.\nO melhor? Basta retornar um dicionário ou lista Python que o FastAPI transforma tudo em resposta JSON automaticamente!",
+      "codeExample": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get(\"/status\")\ndef ler_status():\n    return {\"app\": \"TaskFlow\", \"online\": True}",
+      "expectedOutput": "HTTP 200 OK -> {\"app\": \"TaskFlow\", \"online\": true}",
       "keyTakeaways": [
-        "`FastAPI()` inicializa a aplicação web.",
-        "`@app.get('/rota')` associa uma URL HTTP GET à função logo abaixo.",
-        "Dicionários e listas Python retornados são serializados para JSON automaticamente."
+        "`app = FastAPI()` cria a aplicação e `@app.get(\"/rota\")` registra uma rota HTTP GET.",
+        "Dicionários e listas retornados pela função viram JSON automaticamente."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Complete a inicialização do servidor FastAPI e o decorator para uma rota HTTP GET em '/usuarios':",
-      "codeTemplate": "from fastapi import FastAPI\n\napp = {{blank}}()\n\n@app.{{blank}}(\"/usuarios\")\ndef listar_usuarios():\n    return [\"Ada\", \"Alan\"]",
-      "blanks": [
-        {
-          "answer": "FastAPI",
-          "placeholder": "classe"
-        },
-        {
-          "answer": "get",
-          "placeholder": "método http"
-        }
-      ],
-      "options": ["FastAPI", "get", "route", "post", "Server"],
-      "explanation": "`FastAPI()` cria a instância da aplicação e `@app.get()` registra uma rota que responde a requisições HTTP GET."
-    },
-    {
       "type": "multiple_choice",
-      "prompt": "O que o FastAPI faz automaticamente quando uma função decorada com `@app.get(\"/status\")` retorna o dicionário `{\"online\": True}`?",
+      "kind": "predict_output",
+      "prompt": "Quando alguém acessa `GET /tarefas`, o que o FastAPI devolve na resposta?",
+      "codeSnippet": "@app.get(\"/tarefas\")\ndef listar_tarefas():\n    return {\"total\": 2, \"itens\": [\"Estudar\", \"Café\"]}",
       "options": [
-        "Retorna erro porque HTTP só aceita strings",
-        "Serializa o dicionário Python para uma resposta JSON automaticamente",
-        "Converte o dicionário em uma página HTML",
-        "Salva o dicionário em um arquivo .json no disco"
+        "HTTP 200 com JSON: {\"total\": 2, \"itens\": [\"Estudar\", \"Café\"]}",
+        "Erro porque HTTP só aceita strings e não dicionários",
+        "Uma página HTML com uma lista",
+        "Salva um arquivo tarefas.json no servidor"
       ],
-      "correctIndex": 1,
-      "explanation": "O FastAPI serializa automaticamente dicionários e listas Python para JSON com o cabeçalho `Content-Type: application/json`."
+      "correctIndex": 0,
+      "hint": "O FastAPI serializa dicionários Python para JSON automaticamente!",
+      "expectedOutput": "{\"total\": 2, \"itens\": [\"Estudar\", \"Café\"]}",
+      "explanation": "Você só retorna um `dict` Python normal e o FastAPI já envia `200 OK` com `Content-Type: application/json`."
     },
     {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para montar uma API FastAPI completa com um endpoint GET em '/ola':",
-      "blocks": [
-        "def ler_saudacao():",
-        "from fastapi import FastAPI",
-        "    return {\"mensagem\": \"Olá\"}",
-        "@app.get(\"/ola\")",
-        "app = FastAPI()"
+      "type": "fill_in_blank",
+      "prompt": "Complete a criação da aplicação e o decorator da rota GET `/usuarios`:",
+      "codeTemplate": "from fastapi import FastAPI\n\napp = {{blank}}()\n\n@app.{{blank}}(\"/usuarios\")\ndef listar_usuarios():\n    return [\"Ada\", \"Py\"]",
+      "blanks": [
+        { "answer": "FastAPI", "placeholder": "classe" },
+        { "answer": "get", "placeholder": "método" }
       ],
-      "correctOrder": [1, 4, 3, 0, 2],
-      "explanation": "Primeiro importamos `FastAPI`, depois criamos `app = FastAPI()`, aplicamos o decorator `@app.get(\"/ola\")` e definimos a função com seu `return`."
+      "options": ["FastAPI", "get", "route", "Server"],
+      "hint": "Instanciamos `FastAPI()` e registramos rotas de leitura com `@app.get(...)`.",
+      "expectedOutput": "[\"Ada\", \"Py\"]",
+      "explanation": "Pronto! `app = FastAPI()` cria o app e `@app.get(\"/usuarios\")` expõe a lista em JSON."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Esta rota FastAPI usa um decorator de outro framework e não registra um endpoint GET válido no FastAPI. Clique na linha com o bug:",
+      "prompt": "Esta rota misturou sintaxe de outro framework e não funciona no FastAPI. Clique na linha com o bug:",
       "lines": [
         "from fastapi import FastAPI",
         "app = FastAPI()",
-        "@app.route(\"/produtos\")",
-        "def listar_produtos():",
-        "    return {\"produtos\": []}"
+        "@app.route(\"/tarefas\")",
+        "def listar_tarefas():",
+        "    return {\"tarefas\": []}"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Na linha 3, `@app.route` é sintaxe do Flask. No FastAPI, usamos `@app.get(\"/produtos\")` para registrar um endpoint HTTP GET."
+      "hint": "`@app.route` é do Flask! No FastAPI, o decorator já traz o método HTTP no nome.",
+      "expectedOutput": "{\"tarefas\": []}",
+      "explanation": "Na linha 3, troque `@app.route(\"/tarefas\")` por `@app.get(\"/tarefas\")`."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie uma aplicação FastAPI na variável `app` e registre um endpoint GET na rota `\"/saude\"` que retorne um dicionário indicando que o serviço está ativo.",
-      "starterCode": "",
+      "prompt": "Complete a TaskFlow API registrando uma rota GET em `\"/saude\"` que retorne `{\"ok\": True}`.",
+      "starterCode": "from fastapi import FastAPI\n\napp = FastAPI()\n\n# TODO: adicione @app.get(\"/saude\") e a função retornando {\"ok\": True}\n",
       "requiredTokens": ["FastAPI()", "@app.get(\"/saude\")", "def ", "return "],
       "sampleSolution": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get(\"/saude\")\ndef verificar_saude():\n    return {\"ok\": True}",
-      "hint": "Importe FastAPI, instancie `app`, use o decorator de rota GET para `\"/saude\"` e retorne um dicionário Python.",
-      "explanation": "`FastAPI()` cria a aplicação, `@app.get(\"/saude\")` registra a rota GET e o dicionário retornado é convertido em JSON automaticamente."
+      "hint": "Escreva `@app.get(\"/saude\")`, depois `def verificar_saude():` e `return {\"ok\": True}`.",
+      "expectedOutput": "HTTP 200 OK -> {\"ok\": true}",
+      "explanation": "Servidor no ar! Sua primeira rota FastAPI já responde JSON limpinho."
     }
   ]
 }

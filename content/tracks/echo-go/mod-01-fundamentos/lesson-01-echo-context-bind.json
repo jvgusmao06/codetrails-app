@@ -1,73 +1,74 @@
 {
   "id": "lesson-01-echo-context-bind",
   "title": "Rotas, Bind e JSON no Echo",
-  "description": "Use echo.Context para fazer bind de JSON em structs e responder com c.JSON(http.StatusOK, ...).",
+  "description": "Use echo.Context para ler parâmetros da URL, preencher structs com c.Bind(&dto) e responder com c.JSON.",
+  "mission": "Missão 1: Subir o gateway de consultas de pedidos da Central do Gopher usando Echo.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Minimalismo e extensibilidade com Echo",
-      "content": "O **Echo** (`github.com/labstack/echo/v4`) é um dos frameworks web mais maduros do ecossistema Go, usando `net/http` padrão com roteador de alocação zero:\n\n- `e := echo.New()` cria a instância.\n- Handlers recebem `c echo.Context` (interface, sem ponteiro!) e retornam `error`.\n- `c.Param(\"id\")` extrai parâmetros de rota definidos como `\"/users/:id\"`.\n- `c.Bind(&dto)` faz parse automático do corpo JSON/query/form para sua struct (exige ponteiro `&`).\n- `c.JSON(http.StatusOK, data)` envia a resposta com o status code explícito.",
-      "codeExample": "e := echo.New()\n\ne.GET(\"/users/:id\", func(c echo.Context) error {\n    id := c.Param(\"id\")\n    return c.JSON(http.StatusOK, map[string]string{\"id\": id})\n})\n\ne.POST(\"/orders\", func(c echo.Context) error {\n    var req CreateOrderReq\n    if err := c.Bind(&req); err != nil {\n        return c.JSON(http.StatusBadRequest, map[string]string{\"error\": err.Error()})\n    }\n    return c.JSON(http.StatusCreated, req)\n})",
+      "title": "Rotas limpas e explícitas no Echo",
+      "content": "No **Echo**, você cria o servidor com `e := echo.New()` e registra rotas com `e.GET` ou `e.POST`. Um detalhe bacana: `c echo.Context` é uma interface, então vai **sem `*`**!\nPara ler parâmetros da URL usamos `c.Param(\"id\")` (no singular) e para ler o JSON do corpo usamos `c.Bind(&dto)`.",
+      "codeExample": "e := echo.New()\ne.GET(\"/pedidos/:id\", func(c echo.Context) error {\n    id := c.Param(\"id\")\n    return c.JSON(http.StatusOK, map[string]string{\"id\": id})\n})",
+      "expectedOutput": "HTTP 200 {\"id\":\"7\"}",
       "keyTakeaways": [
-        "`echo.New()` inicializa o servidor e handlers recebem `c echo.Context` (sem `*`) retornando `error`.",
-        "Use `c.Param(\"nome\")` no singular para ler parâmetros de rota como `\"/users/:id\"`.",
-        "`c.Bind(&structVar)` precisa de um ponteiro (`&`) para preencher os campos da struct."
+        "Handlers Echo recebem `c echo.Context` (sem `*`) e retornam `error` via `return c.JSON(status, dados)`.",
+        "Use `c.Param(\"id\")` para parâmetros de URL e `c.Bind(&dto)` (com `&`) para ler o corpo JSON."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual método de echo.Context preenche automaticamente uma struct Go a partir do JSON enviado no body da requisição?",
+      "kind": "predict_output",
+      "prompt": "Qual resposta o Echo devolve quando alguém chama `GET /ping`?",
+      "codeSnippet": "e.GET(\"/ping\", func(c echo.Context) error {\n    return c.JSON(http.StatusOK, map[string]string{\"msg\": \"pong\"})\n})",
       "options": [
-        "c.Bind(&structVar)",
-        "c.ParseJSON(&structVar)",
-        "c.DecodeBody(&structVar)",
-        "c.ReadStruct(&structVar)"
+        "HTTP 200 {\"msg\":\"pong\"}",
+        "HTTP 201 \"pong\"",
+        "HTTP 404 Not Found",
+        "Erro porque falta ponteiro em echo.Context"
       ],
       "correctIndex": 0,
-      "explanation": "c.Bind(&target) detecta o Content-Type (como application/json) e popula os campos exportados da struct."
+      "hint": "`http.StatusOK` equivale a `200`, e `c.JSON` serializa o map em JSON.",
+      "expectedOutput": "HTTP 200 {\"msg\":\"pong\"}",
+      "explanation": "`echo.Context` é uma interface (não usa `*`) e `c.JSON` devolve status 200 com `{\"msg\":\"pong\"}`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o endpoint GET do Echo para retornar uma mensagem JSON com status 200:",
-      "codeTemplate": "e := echo.{{blank}}()\ne.GET(\"/ping\", func(c echo.{{blank}}) error {\n    return c.{{blank}}(http.StatusOK, map[string]string{\"msg\": \"pong\"})\n})",
+      "prompt": "Complete a inicialização do Echo e o envio da resposta JSON:",
+      "codeTemplate": "e := echo.{{blank}}()\ne.GET(\"/ping\", func(c echo.Context) error {\n    return c.{{blank}}(http.StatusOK, map[string]string{\"msg\": \"pong\"})\n})",
       "blanks": [
-        { "answer": "New" },
-        { "answer": "Context" },
-        { "answer": "JSON" }
+        { "answer": "New", "placeholder": "criar" },
+        { "answer": "JSON", "placeholder": "responder" }
       ],
-      "options": ["New", "Create", "Context", "Ctx", "JSON", "Send"],
-      "explanation": "echo.New() cria o servidor, o handler recebe echo.Context e c.JSON(status, payload) envia a resposta."
+      "options": ["New", "JSON", "Create", "Send"],
+      "hint": "Criamos o servidor com `echo.New()` e enviamos JSON com `c.JSON(...)`.",
+      "expectedOutput": "HTTP 200 {\"msg\":\"pong\"}",
+      "explanation": "`echo.New()` prepara o roteador e `c.JSON` serializa o payload com o status HTTP escolhido."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Encontre o erro na chamada de binding do Echo:",
+      "prompt": "O `c.Bind` falhou porque recebeu uma cópia da struct em vez do ponteiro! Qual linha tem o bug?",
       "lines": [
-        "e.POST(\"/users\", func(c echo.Context) error {",
-        "    var u User",
-        "    if err := c.Bind(u); err != nil {",
-        "        return err",
-        "    }",
-        "    return c.JSON(http.StatusCreated, u)",
+        "e.POST(\"/pedidos\", func(c echo.Context) error {",
+        "    var p Pedido",
+        "    if err := c.Bind(p); err != nil { return err }",
+        "    return c.JSON(http.StatusCreated, p)",
         "})"
       ],
       "buggyLineIndex": 2,
-      "explanation": "c.Bind precisa de um ponteiro (&u) para conseguir modificar os campos da struct User."
+      "hint": "Para o Echo conseguir preencher os campos de `p`, precisamos passar o endereço `&p`.",
+      "expectedOutput": "HTTP 201 {\"item\":\"Livro\"}",
+      "explanation": "Na linha 3, troque `c.Bind(p)` por `c.Bind(&p)` para permitir que o Echo escreva os dados na struct!"
     },
     {
       "type": "write_code",
-      "prompt": "Crie uma instância do Echo e registre uma rota GET para \"/users/:id\" que leia o parâmetro de rota id e retorne status 200 com um JSON contendo esse id.",
-      "starterCode": "",
-      "requiredTokens": [
-        "echo.New()",
-        ".GET(\"/users/:id\"",
-        "echo.Context",
-        "c.Param(\"id\")",
-        "c.JSON("
-      ],
+      "prompt": "Complete a rota `GET /users/:id` no Echo lendo `c.Param(\"id\")` e retornando status `http.StatusOK` em JSON.",
+      "starterCode": "e := echo.New()\ne.GET(\"/users/:id\", func(c echo.Context) error {\n    // TODO: leia o parâmetro \"id\" com c.Param\n    // TODO: retorne c.JSON(http.StatusOK, map[string]string{\"id\": id})\n})",
+      "requiredTokens": ["c.Param(\"id\")", "return", "c.JSON(", "http.StatusOK"],
       "sampleSolution": "e := echo.New()\ne.GET(\"/users/:id\", func(c echo.Context) error {\n    id := c.Param(\"id\")\n    return c.JSON(http.StatusOK, map[string]string{\"id\": id})\n})",
-      "hint": "Inicialize com echo.New(), registre a rota GET recebendo c echo.Context, extraia o parâmetro com c.Param(\"id\") e retorne com c.JSON(http.StatusOK, ...).",
-      "explanation": "Diferente do Fiber (c.Params), o Echo usa c.Param(\"nome\") para parâmetros de caminho e retorna c.JSON(status, payload)."
+      "hint": "Faça `id := c.Param(\"id\")` e na linha seguinte `return c.JSON(http.StatusOK, map[string]string{\"id\": id})`.",
+      "expectedOutput": "HTTP 200 {\"id\":\"42\"}",
+      "explanation": "Mandou bem! Seu endpoint Echo está limpo, tipado e pronto para o gateway de entregas."
     }
   ]
 }

@@ -1,23 +1,53 @@
 {
   "id": "algo-recursao-01",
-  "title": "Recursão, Caso Base e a Pilha de Chamadas (Call Stack)",
-  "description": "Compreenda como uma função pode chamar a si mesma para dividir problemas complexos e por que o Caso Base evita o famoso erro Stack Overflow.",
+  "title": "Recursão, Caso Base e Call Stack",
+  "description": "Divida problemas chamando a própria função com segurança usando um Caso Base que evita Stack Overflow.",
+  "mission": "Missão 5: Abrir bonecas russas de pistas na Ilha do Tesouro até encontrar o mapa final!",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Dividir para Conquistar: Caso Base + Passo Recursivo",
-      "content": "Uma função **recursiva** é aquela que chama a si mesma para resolver uma versão menor do mesmo problema. Toda recursão correta PRECISA de duas partes obrigatórias:\n1. **Caso Base (Condição de Parada)**: O caso mais simples possível, que retorna a resposta diretamente sem fazer novas chamadas.\n2. **Passo Recursivo**: A chamada para a própria função com um argumento reduzido que se aproxima do Caso Base.\nCada chamada fica empilhada na memória (**Call Stack**), que funciona como uma Pilha (LIFO). Se você esquecer o Caso Base ou não reduzir o argumento, a pilha cresce até estourar a memória (**Stack Overflow / RecursionError**)!",
-      "codeExample": "def fatorial(n):\n    # 1. Caso Base (Condição de parada obrigatória!)\n    if n <= 1:\n        return 1\n    # 2. Passo Recursivo (reduz n -> n - 1)\n    return n * fatorial(n - 1)\n\nprint(fatorial(4))  # 4 * 3 * 2 * 1 = 24",
+      "title": "Caso Base + Passo Recursivo = Recursão segura",
+      "content": "Uma função **recursiva** resolve um problema grande chamando a si mesma com uma versão menor dele.\nPara nunca estourar a pilha de chamadas (**Stack Overflow**), ela precisa sempre de duas peças: um **Caso Base** (quando parar) e um **Passo Recursivo** que diminui o valor até chegar lá!",
+      "codeExample": "def fatorial(n):\n    if n <= 1:              # Caso Base: hora de parar!\n        return 1\n    return n * fatorial(n - 1)  # Passo Recursivo\n\nprint(fatorial(4))",
+      "expectedOutput": "24",
       "keyTakeaways": [
-        "Sem Caso Base (ou se o passo recursivo não avançar em direção ao caso base), ocorre Stack Overflow (estouro da pilha).",
-        "A Call Stack funciona como uma Pilha (LIFO): a última chamada a ser empilhada é a primeira a retornar.",
-        "Recursão é a base para percorrer árvores e algoritmos como Merge Sort e Quick Sort."
+        "Sem Caso Base (ou sem diminuir o argumento), ocorre `RecursionError` (Stack Overflow).",
+        "A Call Stack funciona como uma Pilha (LIFO): a última chamada empilhada retorna primeiro."
       ]
     },
     {
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "Qual valor `soma_ate(3)` retorna ao rodar este código?",
+      "codeSnippet": "def soma_ate(n):\n    if n <= 0:\n        return 0\n    return n + soma_ate(n - 1)\n\nprint(soma_ate(3))",
+      "options": [
+        "6 (3 + 2 + 1 + 0)",
+        "3",
+        "0",
+        "Erro de Stack Overflow"
+      ],
+      "correctIndex": 0,
+      "hint": "Acompanhe: `3 + soma_ate(2)` -> `3 + 2 + soma_ate(1)` -> `3 + 2 + 1 + 0`!",
+      "expectedOutput": "6",
+      "explanation": "A recursão desce até o caso base `0` e depois desempilha somando `1 + 2 + 3 = 6`."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o Caso Base (parar em `0`) e o Passo Recursivo (diminuir `n`) da contagem regressiva:",
+      "codeTemplate": "def contagem(n):\n    if n <= {{blank}}:\n        return\n    print(n)\n    contagem({{blank}})",
+      "blanks": [
+        { "answer": "0", "placeholder": "parada" },
+        { "answer": "n - 1", "placeholder": "diminuir" }
+      ],
+      "options": ["0", "n - 1", "n", "n + 1"],
+      "hint": "Pare quando `n <= 0` e chame de novo com `n - 1`.",
+      "expectedOutput": "3\n2\n1",
+      "explanation": "Com `n <= 0` para parar e `n - 1` para diminuir, a contagem sempre termina certinho!"
+    },
+    {
       "type": "spot_the_bug",
-      "prompt": "Esta função recursiva para somar de 1 até N trava o programa com 'RecursionError: maximum recursion depth exceeded' (Stack Overflow). Clique na linha onde está o erro:",
+      "prompt": "Ops! Esta função recursiva deu `RecursionError` (Stack Overflow) porque nunca chega ao Caso Base. Clique na linha com bug:",
       "lines": [
         "def soma_ate(n):",
         "    if n <= 0:",
@@ -25,51 +55,19 @@
         "    return n + soma_ate(n)"
       ],
       "buggyLineIndex": 3,
-      "explanation": "Na linha 4, a função chama `soma_ate(n)` com o mesmo valor `n` em vez de `soma_ate(n - 1)`! Como `n` nunca diminui, nunca chega ao caso base `n <= 0`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Por que a memória usada durante chamadas recursivas é chamada de **Call Stack** (Pilha de Chamadas)?",
-      "options": [
-        "Porque as funções são executadas em ordem alfabética",
-        "Porque segue o modelo LIFO: a última chamada empilhada é a primeira a terminar e retornar seu valor",
-        "Porque segue o modelo FIFO: a primeira chamada termina antes das demais",
-        "Porque armazena apenas variáveis globais"
-      ],
-      "correctIndex": 1,
-      "explanation": "Cada chamada recursiva é empilhada no topo da Call Stack; ao atingir o Caso Base, as chamadas vão retornando do topo para a base (LIFO)."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete a função recursiva de contagem regressiva definindo o Caso Base e o Passo Recursivo:",
-      "codeTemplate": "def contagem(n):\n    if n <= {{blank}}:\n        return\n    print(n)\n    contagem({{blank}})",
-      "blanks": [
-        { "answer": "0", "placeholder": "parada" },
-        { "answer": "n - 1", "placeholder": "passo" }
-      ],
-      "options": ["0", "n - 1", "n", "n + 1", "1"],
-      "explanation": "Quando `n <= 0` a função para (Caso Base), e `contagem(n - 1)` reduz o problema a cada chamada até atingir o caso base."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para implementar a função recursiva de potência `potencia(base, exp)`:",
-      "blocks": [
-        "def potencia(base, exp):",
-        "    if exp == 0:",
-        "        return 1",
-        "    return base * potencia(base, exp - 1)"
-      ],
-      "correctOrder": [0, 1, 2, 3],
-      "explanation": "O Caso Base (`exp == 0` retorna `1`) vem sempre antes do Passo Recursivo (`exp - 1`), garantindo que a Call Stack não estoure."
+      "hint": "Olhe o argumento passado dentro de `soma_ate(...)` na linha 4.",
+      "expectedOutput": "soma_ate(3) -> 6",
+      "explanation": "Chamar `soma_ate(n)` sem diminuir nunca aproxima de `0`! O certo é `soma_ate(n - 1)`."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Implemente a função recursiva `fatorial(n)` em Python, tratando o caso base para valores menores ou iguais a 1 e aplicando o passo recursivo.",
-      "starterCode": "",
-      "requiredTokens": ["def", "fatorial", "if", "return", "*", "fatorial("],
+      "prompt": "Complete a função recursiva `fatorial(n)` retornando `1` no caso base (`n <= 1`) e `n * fatorial(n - 1)` no passo recursivo.",
+      "starterCode": "def fatorial(n):\n    # TODO: adicione o caso base (n <= 1) e o retorno recursivo\n    pass",
+      "requiredTokens": ["if", "return", "1", "*", "fatorial("],
       "sampleSolution": "def fatorial(n):\n    if n <= 1:\n        return 1\n    return n * fatorial(n - 1)",
-      "hint": "Verifique primeiro se `n <= 1` para retornar `1`; caso contrário, multiplique `n` pelo resultado da própria função com `n - 1`.",
-      "explanation": "O caso base `if n <= 1: return 1` interrompe a recursão e desempilha as multiplicações na Call Stack."
+      "hint": "Troque `pass` por `if n <= 1: return 1` seguido de `return n * fatorial(n - 1)`.",
+      "expectedOutput": "fatorial(4) -> 24",
+      "explanation": "Mandou bem! Recursão limpa e segura abre as portas para árvores, grafos e algoritmos de ordenação."
     }
   ]
 }

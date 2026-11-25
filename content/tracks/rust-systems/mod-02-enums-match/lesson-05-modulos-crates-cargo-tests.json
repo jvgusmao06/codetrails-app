@@ -1,91 +1,74 @@
 {
   "id": "rust-modulos-cargo-tests-04",
-  "title": "Módulos (mod, pub, use), Cargo e Testes (#[test])",
-  "description": "Organize projetos Rust em módulos com visibilidade pub, importe com use e escreva testes unitários com #[test] e assert_eq!.",
+  "title": "Organizando e Testando (pub, use, #[test])",
+  "description": "Exponha funções de módulos com pub, importe com use e garanta que seu jogo não quebra usando #[test] e assert_eq!.",
+  "mission": "Missão Final: Escrever o primeiro teste automático para o motor de combate do RPG.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Organizando Código com mod/pub/use e Testando com cargo test",
-      "content": "Em Rust, **tudo é privado por padrão** dentro de um módulo (`mod`). Para expor uma função ou struct para fora do módulo, marcamos com **`pub`** (`pub fn`, `pub struct`), e importamos caminhos com **`use`**. O gerenciador **Cargo** (`Cargo.toml`) compila o projeto e roda testes unitários nativos: basta anotar funções com **`#[test]`** e validar resultados com `assert_eq!(esperado, obtido)`.",
-      "codeExample": "mod matematica {\n    pub fn somar(a: i32, b: i32) -> i32 { a + b }\n}\n\nuse matematica::somar;\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n    #[test]\n    fn testa_soma() {\n        assert_eq!(somar(2, 3), 5);\n    }\n}",
+      "title": "Módulos (pub / use) e testes nativos (#[test])",
+      "content": "Dentro de um módulo (`mod`), tudo é **privado por padrão**. Quer usar fora? Marque com `pub` e importe com `use`.\nE o melhor: Rust já vem com testes embutidos! Basta colocar `#[test]` em cima de uma função, checar com `assert_eq!(obtido, esperado)` e rodar `cargo test`.",
+      "codeExample": "mod combate {\n    pub fn dano(base: i32) -> i32 { base * 2 }\n}\n\n#[test]\nfn testa_dano() {\n    assert_eq!(combate::dano(10), 20);\n}",
+      "expectedOutput": "test testa_dano ... ok\ntest result: ok. 1 passed; 0 failed",
       "keyTakeaways": [
-        "Funções e campos de struct são privados por padrão; adicione `pub` para torná-los públicos.",
-        "`use caminho::item;` traz itens de outro módulo para o escopo atual.",
-        "`cargo test` executa funções anotadas com `#[test]` usando macros como `assert_eq!`."
+        "`pub` libera uma função do módulo; `use` importa para o seu código.",
+        "`#[test]` + `assert_eq!(a, b)` validam seu código automaticamente com `cargo test`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é a visibilidade padrão de uma função declarada dentro de um módulo `mod util { fn helper() {} }` em Rust?",
+      "kind": "predict_output",
+      "prompt": "O que acontece ao rodar `cargo test` nesta função?",
+      "codeSnippet": "#[test]\nfn testa_cura() {\n    let hp = 40 + 20;\n    assert_eq!(hp, 60);\n}",
       "options": [
-        "Privada ao módulo; é preciso adicionar `pub` para acessá-la de fora",
-        "Pública para todo o projeto automaticamente",
-        "Pública apenas dentro do arquivo `Cargo.toml`",
-        "Acessível apenas por macros"
+        "test testa_cura ... ok (passou!)",
+        "test testa_cura ... FAILED",
+        "Nada, porque faltou fn main()",
+        "Erro de compilação por usar assert_eq!"
       ],
       "correctIndex": 0,
-      "explanation": "Em Rust, tudo dentro de um `mod` é privado por padrão; `pub` expõe explicitamente o item."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual comando do Cargo compila e executa todas as funções anotadas com `#[test]`?",
-      "options": [
-        "cargo run",
-        "cargo test",
-        "cargo check",
-        "cargo build --release"
-      ],
-      "correctIndex": 1,
-      "explanation": "`cargo test` compila o código de teste (`#[cfg(test)]`) e executa todas as funções marcadas com `#[test]`."
+      "hint": "`40 + 20` é igual a `60`, então `assert_eq!(hp, 60)` passa!",
+      "expectedOutput": "test testa_cura ... ok",
+      "explanation": "Como `hp == 60`, o teste fica verdinho na hora com `cargo test`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o módulo e o teste unitário expondo a função com `pub`, importando com `use` e anotando o teste:",
-      "codeTemplate": "mod util {\n    {{blank}} fn dobro(x: i32) -> i32 { x * 2 }\n}\n{{blank}} util::dobro;\n\n{{blank}}\nfn testa_dobro() { assert_eq!(dobro(4), 8); }",
+      "prompt": "Exponha `dobro` com `pub` e anote o teste com `#[test]`:",
+      "codeTemplate": "mod combate {\n    {{blank}} fn dobro(x: i32) -> i32 { x * 2 }\n}\n\n{{blank}}\nfn testa_dobro() { assert_eq!(combate::dobro(5), 10); }",
       "blanks": [
         { "answer": "pub", "placeholder": "público" },
-        { "answer": "use", "placeholder": "importar" },
         { "answer": "#[test]", "placeholder": "atributo" }
       ],
-      "options": ["pub", "use", "#[test]", "export", "import", "@Test"],
-      "explanation": "`pub` torna visível, `use` importa para o escopo e `#[test]` registra a função no `cargo test`."
+      "options": ["pub", "#[test]", "export", "@Test"],
+      "hint": "Rust usa `pub` para tornar público e `#[test]` para marcar testes.",
+      "expectedOutput": "test testa_dobro ... ok",
+      "explanation": "`pub` torna a função acessível fora de `mod combate` e `#[test]` registra o teste no Cargo."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O `main` tenta importar e chamar `somar`, mas o compilador diz que a função é privada. Clique na linha dentro do módulo que precisa de `pub`:",
+      "prompt": "`main` tentou chamar `combate::somar`, mas o compilador disse que a função é privada! Clique na linha que precisa de `pub`:",
       "lines": [
-        "mod matematica {",
+        "mod combate {",
         "    fn somar(a: i32, b: i32) -> i32 { a + b }",
         "}",
-        "use matematica::somar;",
-        "fn main() { println!(\"{}\", somar(2, 3)); }"
+        "use combate::somar;",
+        "fn main() { println!(\"{}\", somar(4, 6)); }"
       ],
       "buggyLineIndex": 1,
-      "explanation": "Na linha 2, `fn somar` é privada por padrão dentro de `mod matematica`. É necessário escrever `pub fn somar`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para montar um módulo de testes unitários válido em Rust:",
-      "blocks": [
-        "    #[test]",
-        "    use super::*;",
-        "mod tests {",
-        "#[cfg(test)]",
-        "    fn testa_soma() { assert_eq!(somar(1, 2), 3); }",
-        "}"
-      ],
-      "correctOrder": [3, 2, 1, 0, 4, 5],
-      "explanation": "Anotamos `#[cfg(test)]` acima de `mod tests`, importamos os itens do módulo pai com `use super::*;` e escrevemos o `#[test]`."
+      "hint": "Qual linha dentro de `mod combate` esqueceu da palavra `pub`?",
+      "expectedOutput": "10",
+      "explanation": "Na linha 2, trocando para `pub fn somar(...)`, a função fica disponível para `use combate::somar;`."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma função de teste unitário chamada `testa_ok` (sem parâmetros) usando o atributo de teste do Rust e a macro de asserção de igualdade para verificar que `2 + 2` resulta em `4`.",
-      "starterCode": "",
+      "prompt": "Complete o teste `testa_ok` usando `#[test]` e `assert_eq!(2 + 2, 4);`.",
+      "starterCode": "// TODO: adicione o atributo `#[test]` acima da função e valide `2 + 2` igual a `4`\nfn testa_ok() {\n    \n}",
       "requiredTokens": ["#[test]", "fn", "testa_ok()", "assert_eq!", "2 + 2", "4"],
       "sampleSolution": "#[test]\nfn testa_ok() {\n    assert_eq!(2 + 2, 4);\n}",
-      "hint": "Coloque `#[test]` na linha acima de `fn testa_ok() { assert_eq!(2 + 2, 4); }`.",
-      "explanation": "O suporte nativo a testes no compilador e no `cargo test` incentiva testar cada módulo desde o início."
+      "hint": "Coloque `#[test]` antes de `fn testa_ok()` e `assert_eq!(2 + 2, 4);` dentro.",
+      "expectedOutput": "test testa_ok ... ok\ntest result: ok. 1 passed; 0 failed",
+      "explanation": "Parabéns! Você zerou a trilha de Rust — de `println!` até Ownership, Traits e `cargo test`!"
     }
   ]
 }

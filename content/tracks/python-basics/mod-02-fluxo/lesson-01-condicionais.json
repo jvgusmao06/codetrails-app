@@ -1,88 +1,72 @@
 {
   "id": "py-flow-01",
-  "title": "03. Condicionais (if, elif e else)",
-  "description": "Tome decisões no código usando if, elif, else, operadores de comparação e indentação obrigatória.",
+  "title": "Decisões com if, elif e else",
+  "description": "Ensine seu programa a escolher caminhos usando if, elif, else, dois-pontos e indentação.",
+  "mission": "Missão 3: Fazer a Py decidir automaticamente como reagir ao nível de HP na batalha.",
   "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "Tomada de Decisão e Indentação Obrigatória",
-      "content": "Na maioria das linguagens usamos chaves `{ }` para delimitar um bloco condicional. O Python usa **dois-pontos (`:`)** ao final da condição e **indentação** (recuo de 4 espaços) para definir quais linhas pertencem ao bloco.\n\n1. **`if` e comparações**: Testamos condições com operadores como `==` (igual), `!=` (diferente), `>`, `>=`, `<`, `<=`. Ex: `if nota >= 7:`.\n2. **`elif`**: Abreviação oficial de *else if* em Python. Permite testar novas condições em sequência quando a anterior for falsa.\n3. **`else`**: Bloco executado quando nenhuma das condições anteriores (`if` e `elif`) foi satisfeita.",
-      "codeExample": "nota = 8.5\n\nif nota >= 9:\n    print(\"Excelente\")\nelif nota >= 7:\n    print(\"Aprovado\")\nelse:\n    print(\"Recuperação\")",
+      "title": "Escolhendo caminhos com if, elif e else",
+      "content": "No Python não existem chaves `{ }` para blocos: você termina a condição com **dois-pontos (`:`)** e recua as linhas de dentro (4 espaços).\nUse `if` para a primeira condição, `elif` (*else if*) para checar outra opção e `else` para o caso restante. Para comparar igualdade, use sempre dois iguais (`==`).",
+      "codeExample": "hp = 45\n\nif hp >= 80:\n    print(\"Py está cheia de energia!\")\nelif hp >= 30:\n    print(\"Hora de usar uma poção.\")\nelse:\n    print(\"Perigo! HP crítico!\")",
+      "expectedOutput": "Hora de usar uma poção.",
       "keyTakeaways": [
-        "Toda linha com if, elif ou else termina obrigatoriamente com dois-pontos (:).",
-        "O recuo (indentação de 4 espaços) delimita o bloco em vez de { }.",
-        "elif testa condições alternativas; else trata o caso padrão quando todas falham."
+        "`if`, `elif` e `else` terminam com `:` e usam recuo (indentação) para definir o bloco.",
+        "Use `==` para comparar igualdade (um único `=` serve só para guardar valor)."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Como o Python delimita o bloco de código que pertence a um 'if'?",
+      "kind": "predict_output",
+      "prompt": "Qual mensagem aparece no terminal quando rodamos este código?",
+      "codeSnippet": "pontos = 75\nif pontos >= 90:\n    print(\"Ouro\")\nelif pontos >= 70:\n    print(\"Prata\")\nelse:\n    print(\"Bronze\")",
       "options": [
-        "Com chaves { }",
-        "Com begin e end",
-        "Com dois-pontos (:) e indentação (recuo)",
-        "Com parênteses ( )"
+        "Ouro",
+        "Prata",
+        "Bronze",
+        "Prata e Bronze"
       ],
-      "correctIndex": 2,
-      "explanation": "Em Python, blocos de código são abertos por dois-pontos (:) e definidos pelo recuo consistente (geralmente 4 espaços)."
+      "correctIndex": 1,
+      "hint": "O Python testa de cima para baixo e executa apenas o primeiro bloco verdadeiro.",
+      "expectedOutput": "Prata",
+      "explanation": "`75 >= 90` é falso, então ele testa `elif pontos >= 70`, que é verdadeiro! Imprime `Prata` e ignora o `else`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a estrutura condicional para testar uma segunda condição quando a primeira falhar:",
-      "codeTemplate": "if idade >= 18:\n    print(\"Adulto\")\n{{blank}} idade >= 13{{blank}}\n    print(\"Adolescente\")\n{{blank}}:\n    print(\"Criança\")",
+      "prompt": "Complete o verificador de fase para testar uma segunda faixa de nível:",
+      "codeTemplate": "if nivel >= 10:\n    print(\"Mestre\")\n{{blank}} nivel >= 5{{blank}}\n    print(\"Aventureira\")",
       "blanks": [
         { "answer": "elif", "placeholder": "senão se" },
-        { "answer": ":", "placeholder": "delimitador" },
-        { "answer": "else", "placeholder": "senão" }
+        { "answer": ":", "placeholder": "delimitador" }
       ],
-      "options": ["elif", "else if", ":", ";", "else"],
-      "explanation": "Em Python usamos 'elif' para testar outra condição, sempre com ':' no final, e 'else:' para o caso restante."
+      "options": ["elif", "else if", ":", ";"],
+      "hint": "Em Python, 'senão se' é abreviado para `elif` e toda condição termina com dois-pontos.",
+      "expectedOutput": "Aventureira",
+      "explanation": "Perfeito! `elif nivel >= 5:` abre a condição alternativa com a sintaxe oficial do Python."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O código abaixo verifica se o usuário é administrador, mas tem um erro de sintaxe. Qual linha está errada?",
+      "prompt": "A porta secreta não abriu por causa de um erro de sintaxe na comparação. Clique na linha com o bug:",
       "lines": [
-        "perfil = \"admin\"",
-        "if perfil = \"admin\":",
-        "    print(\"Acesso total\")"
+        "chave = \"dourada\"",
+        "if chave = \"dourada\":",
+        "    print(\"Porta secreta aberta!\")"
       ],
       "buggyLineIndex": 1,
-      "explanation": "Na linha 2 foi usado '=' (atribuição) em vez de '==' (comparação de igualdade)."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para classificar uma temperatura como Quente (>= 30), Agradável (>= 20) ou Frio:",
-      "blocks": [
-        "    print(\"Frio\")",
-        "if temp >= 30:",
-        "else:",
-        "    print(\"Quente\")",
-        "elif temp >= 20:",
-        "    print(\"Agradável\")"
-      ],
-      "correctOrder": [1, 3, 4, 5, 2, 0],
-      "explanation": "A ordem lógica testa primeiro >= 30 (if), depois >= 20 (elif) e por fim o caso restante (else)."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete o código usando variável, comparação e f-string dentro do bloco condicional:",
-      "codeTemplate": "saldo = 150\nif saldo {{blank}} 100:\n    print({{blank}}\"Saldo suficiente: {saldo}\")",
-      "blanks": [
-        { "answer": ">=", "placeholder": "operador" },
-        { "answer": "f", "placeholder": "prefixo" }
-      ],
-      "options": [">=", "=>", "f", "s"],
-      "explanation": "O operador 'maior ou igual' é '>=', e o prefixo 'f' permite interpolar {saldo} na mensagem."
+      "hint": "Repare no operador entre `chave` e `\"dourada\"` na linha 2.",
+      "expectedOutput": "Porta secreta aberta!",
+      "explanation": "Na linha 2 foi usado `=` (atribuição) em vez de `==` (comparação): `if chave == \"dourada\":`."
     },
     {
       "type": "write_code",
-      "prompt": "Crie uma variável 'pontos' com um valor numérico e escreva uma estrutura com if, elif e else: imprima \"Ouro\" se pontos >= 90, \"Prata\" se pontos >= 70, e \"Bronze\" caso contrário.",
-      "starterCode": "",
-      "requiredTokens": ["pontos", "if", "elif", "else", "print"],
+      "prompt": "Complete a classificação de medalhas usando `elif` (para `pontos >= 70`) e `else` (para o restante).",
+      "starterCode": "pontos = 85\nif pontos >= 90:\n    print(\"Ouro\")\n# TODO: adicione elif para pontos >= 70 (\"Prata\") e else (\"Bronze\")\n",
+      "requiredTokens": ["elif", "else", "print"],
       "sampleSolution": "pontos = 85\nif pontos >= 90:\n    print(\"Ouro\")\nelif pontos >= 70:\n    print(\"Prata\")\nelse:\n    print(\"Bronze\")",
-      "hint": "Lembre-se dos dois-pontos (:) ao final de if, elif e else, e da indentação de 4 espaços antes de cada print.",
-      "explanation": "Encadeamos condições da mais restritiva (>= 90) para a mais geral (>= 70) e finalizamos com else."
+      "hint": "Escreva `elif pontos >= 70:` com `print(\"Prata\")` indentado e depois `else:` com `print(\"Bronze\")`.",
+      "expectedOutput": "Prata",
+      "explanation": "Excelente! Você encadeou `if`, `elif` e `else` com indentação limpinha."
     }
   ]
 }

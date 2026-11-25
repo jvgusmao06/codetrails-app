@@ -1,58 +1,53 @@
 {
   "id": "pytorch-save-sklearn-05",
-  "title": "Salvando Modelos (state_dict) e ML Clássico com Scikit-Learn",
-  "description": "Salve apenas os pesos com state_dict() com segurança e saiba quando usar Scikit-Learn (fit/predict) em dados tabulares.",
+  "title": "Salvando Pesos (state_dict) e Atalho Scikit-Learn",
+  "description": "Salve apenas os pesos do modelo com state_dict() com segurança e saiba quando usar Scikit-Learn em tabelas.",
+  "mission": "Missão 5: Salvar o cérebro treinado do CineIA com state_dict e conhecer o atalho do Scikit-Learn.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Persistência Segura no PyTorch e Quando Usar Scikit-Learn",
-      "content": "Para salvar um modelo PyTorch após horas de treino, a prática recomendada é salvar apenas os **pesos (`model.state_dict()`)** com `torch.save(model.state_dict(), \"pesos.pt\")` e recarregar depois com `model.load_state_dict(torch.load(\"pesos.pt\", weights_only=True))` (evita quebrar se você renomear arquivos e protege contra execução arbitrária).\n\nE uma dica de ouro de engenheiro sênior: para **dados tabulares** (CSVs de clientes, vendas, crédito), bibliotecas como **Scikit-Learn** (`train_test_split`, `RandomForestClassifier`, `.fit(X_train, y_train)` e `.predict(X_test)`) costumam vencer redes neurais com muito menos código!",
-      "codeExample": "# Salvando e carregando pesos no PyTorch\ntorch.save(model.state_dict(), \"modelo.pt\")\nmodel.load_state_dict(torch.load(\"modelo.pt\", weights_only=True))\n\n# Pipeline clássico no Scikit-Learn:\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import RandomForestClassifier\n\nX_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42)\nclf = RandomForestClassifier().fit(X_tr, y_tr)\npreds = clf.predict(X_te)",
+      "title": "Salvando só os pesos (e escolhendo a ferramenta certa)",
+      "content": "Depois de treinar sua rede, salve apenas o dicionário de pesos (**`model.state_dict()`**) com `torch.save(model.state_dict(), \"pesos.pt\")` e carregue com **`weights_only=True`** para segurança!\nE uma dica de ouro: para planilhas tabulares (vendas, crédito, clientes), o **Scikit-Learn** (`train_test_split`, `RandomForestClassifier`, `.fit()` e `.predict()`) costuma ser mais rápido e simples que redes neurais.",
+      "codeExample": "import torch\n\ntorch.save(model.state_dict(), \"pesos.pt\")\npesos = torch.load(\"pesos.pt\", weights_only=True)\nmodel.load_state_dict(pesos)\nprint(\"Pesos restaurados com sucesso!\")",
+      "expectedOutput": "Pesos restaurados com sucesso!",
       "keyTakeaways": [
-        "Salve `model.state_dict()` em vez do objeto inteiro (`torch.save(model)`), e carregue com `weights_only=True`.",
-        "Sempre separe dados em Treino e Teste (`train_test_split`) ANTES de normalizar, evitando *Data Leakage*!",
-        "Scikit-Learn tem API uniforme: `.fit(X, y)` para treinar e `.predict(X_teste)` para prever."
+        "Salve `model.state_dict()` em vez do objeto inteiro e carregue sempre com `weights_only=True`.",
+        "Para dados tabulares, experimente Scikit-Learn (`train_test_split` -> `.fit()` -> `.predict()`)."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é a forma recomendada pela documentação do PyTorch para salvar e carregar um modelo treinado?",
+      "kind": "predict_output",
+      "prompt": "Quais chaves existem dentro do `state_dict()` de uma camada `nn.Linear(4, 2)`?",
+      "codeSnippet": "import torch.nn as nn\ncamada = nn.Linear(4, 2)\nprint(list(camada.state_dict().keys()))",
       "options": [
-        "Converter os pesos para arquivo .txt manualmente",
-        "Salvar e carregar apenas o `model.state_dict()` (dicionário de pesos) com `weights_only=True`",
-        "Usar `print(model)` e copiar do terminal",
-        "Salvar em variável global"
+        "['weight', 'bias']",
+        "['input', 'output']",
+        "['loss', 'grad']",
+        "['train', 'eval']"
       ],
-      "correctIndex": 1,
-      "explanation": "Salvar apenas `state_dict()` é mais portável, seguro (`weights_only=True`) e não depende da estrutura exata de pastas do pickle."
+      "correctIndex": 0,
+      "hint": "Uma camada linear guarda apenas dois tensores treináveis: os pesos (*weight*) e o viés (*bias*).",
+      "expectedOutput": "['weight', 'bias']",
+      "explanation": "O `state_dict()` é um dicionário simples com os tensores `weight` e `bias` de cada camada — limpo e portável!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para salvar os pesos do modelo PyTorch e carregá-los com segurança:",
-      "codeTemplate": "torch.{{blank}}(model.state_dict(), \"modelo.pt\")\nmodel.{{blank}}(torch.load(\"modelo.pt\", weights_only=True))",
+      "prompt": "Complete o código para salvar os pesos do CineIA em disco e recarregá-los com segurança:",
+      "codeTemplate": "torch.{{blank}}(model.state_dict(), \"cineia.pt\")\nmodel.{{blank}}(torch.load(\"cineia.pt\", weights_only=True))",
       "blanks": [
         { "answer": "save", "placeholder": "salvar" },
         { "answer": "load_state_dict", "placeholder": "carregar" }
       ],
       "options": ["save", "load_state_dict", "eval", "state_dict", "fit"],
-      "explanation": "`torch.save(model.state_dict(), ...)` grava os pesos e `model.load_state_dict(...)` restaura o dicionário carregado com `torch.load(..., weights_only=True)`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Ao preparar dados tabulares no Scikit-Learn, por que devemos executar `train_test_split(X, y)` ANTES de aplicar normalização (`Scaler`)?",
-      "options": [
-        "Para evitar Data Leakage (vazamento de estatísticas do conjunto de teste para o treino)",
-        "Porque o Scikit-Learn não aceita arrays NumPy",
-        "Para aumentar o número de épocas do PyTorch",
-        "Porque `.predict()` só funciona sem normalização"
-      ],
-      "correctIndex": 0,
-      "explanation": "Separar treino e teste antes de normalizar impede que média e desvio padrão do conjunto de teste influenciem o treinamento."
+      "hint": "Gravamos com `torch.save(...)` e restauramos no modelo com `model.load_state_dict(...)`.",
+      "expectedOutput": "<All keys matched successfully>",
+      "explanation": "Com `state_dict()` e `weights_only=True`, seu modelo fica seguro e independente da estrutura de pastas."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os blocos para montar um fluxo clássico do Scikit-Learn: dividir dados, instanciar o modelo, treinar e prever:",
+      "prompt": "Ordene os blocos para rodar um modelo tabular clássico no Scikit-Learn (dividir, criar, treinar e prever):",
       "blocks": [
         "modelo.fit(X_tr, y_tr)",
         "X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42)",
@@ -60,16 +55,19 @@
         "modelo = RandomForestClassifier()"
       ],
       "correctOrder": [1, 3, 0, 2],
-      "explanation": "Primeiro dividimos os dados com `train_test_split`, instanciamos o classificador, treinamos com `.fit(X_tr, y_tr)` e prevemos com `.predict(X_te)`."
+      "hint": "Sempre separe treino/teste primeiro, instancie o modelo, chame `.fit()` e só então `.predict()`.",
+      "expectedOutput": "Previsões geradas no conjunto de teste!",
+      "explanation": "Dividir antes do `.fit()` evita vazamento de dados (*Data Leakage*) e deixa o fluxo impecável!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Salve no arquivo `\"pesos.pt\"` apenas o dicionário de pesos do modelo PyTorch `model` usando a função de persistência do PyTorch.",
-      "starterCode": "import torch\n",
-      "requiredTokens": ["torch.save(", "model.state_dict()", "\"pesos.pt\""],
-      "sampleSolution": "torch.save(model.state_dict(), \"pesos.pt\")",
-      "hint": "Use `torch.save` passando o `state_dict` de `model` como primeiro argumento e o nome do arquivo como segundo.",
-      "explanation": "Depois, basta instanciar a arquitetura e chamar `model.load_state_dict(torch.load(\"pesos.pt\", weights_only=True))`."
+      "prompt": "Salve apenas os pesos (`model.state_dict()`) do modelo PyTorch no arquivo `\"pesos.pt\"` usando `torch.save()`.",
+      "starterCode": "import torch\n\n# TODO: salve `model.state_dict()` no arquivo \"pesos.pt\"\n",
+      "requiredTokens": ["torch.save(", "model.state_dict()", "pesos.pt"],
+      "sampleSolution": "import torch\n\ntorch.save(model.state_dict(), \"pesos.pt\")",
+      "hint": "Passe `model.state_dict()` e `\"pesos.pt\"` para `torch.save(...)`.",
+      "expectedOutput": "Arquivo pesos.pt salvo com sucesso!",
+      "explanation": "Parabéns! Você concluiu a trilha do CineIA e já sabe construir, treinar, avaliar e salvar redes em PyTorch."
     }
   ]
 }

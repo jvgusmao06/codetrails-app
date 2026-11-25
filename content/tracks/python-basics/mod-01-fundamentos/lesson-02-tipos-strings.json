@@ -1,86 +1,73 @@
 {
   "id": "py-vars-02",
-  "title": "02. Tipos Primitivos e F-Strings",
-  "description": "Conheça int, float, str e bool, descubra tipos com type() e formate textos com f-strings.",
+  "title": "Tipos Primitivos e F-Strings",
+  "description": "Conheça int, float, str e bool, descubra qualquer tipo com type() e monte frases elegantes com f-strings.",
+  "mission": "Missão 2: Montar a ficha completa da Py com números, booleanos e f-strings.",
   "xp": 20,
   "steps": [
     {
       "type": "theory",
-      "title": "Tipos Primitivos, type() e F-Strings",
-      "content": "Todo valor em Python possui um tipo bem definido:\n\n1. **Tipos Primitivos**:\n   - `int`: números inteiros (ex: `10`, `-3`)\n   - `float`: números decimais com ponto (ex: `3.14`, `9.5`)\n   - `str`: textos entre aspas (ex: `\"Ada\"`)\n   - `bool`: valores lógicos `True` ou `False` (sempre com inicial maiúscula)\n2. **Inspecionando tipos com `type()`**: A função nativa `type(valor)` retorna a classe do dado (por exemplo, `type(3.14)` retorna `<class 'float'>` e `type(True)` retorna `<class 'bool'>`).\n3. **F-Strings (`f\"...\"`)**: Para misturar variáveis dentro de textos sem usar `+`, colocamos `f` antes das aspas e envolvemos a variável ou expressão em chaves `{}`: `f\"Nota: {nota}\"`.",
-      "codeExample": "nome = \"Lia\"\npontos = 120\nmedia = 8.75\nativo = True\n\nprint(type(media))  # <class 'float'>\nprint(f\"{nome} fez {pontos} pontos (média {media})\")",
+      "title": "Tipos básicos, type() e o poder das f-strings",
+      "content": "Em Python, os 4 tipos que você mais vai usar são `int` (inteiro), `float` (decimal com ponto), `str` (texto) e `bool` (`True` ou `False`, sempre com inicial maiúscula).\nPara checar o tipo de qualquer valor use `type(valor)`. E para misturar variáveis dentro de um texto sem dor de cabeça, coloque `f` antes das aspas e use `{variavel}`!",
+      "codeExample": "nome = \"Py\"\nenergia = 9.5\nativo = True\n\nprint(type(energia))\nprint(f\"{nome} está ativa: {ativo} ({energia} pts)\")",
+      "expectedOutput": "<class 'float'>\nPy está ativa: True (9.5 pts)",
       "keyTakeaways": [
-        "Os 4 tipos básicos são int (inteiro), float (decimal), str (texto) e bool (True/False).",
-        "type(valor) revela o tipo de qualquer variável ou literal.",
-        "Coloque o prefixo f antes das aspas para interpolar variáveis com {variavel}."
+        "Os 4 tipos básicos são `int`, `float`, `str` e `bool` (`True`/`False`).",
+        "Coloque `f` antes das aspas (`f\"Olá, {nome}\"`) para encaixar variáveis no texto."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é o resultado da expressão type(3.14) em Python?",
+      "kind": "predict_output",
+      "prompt": "O que será exibido no terminal ao executar este trecho?",
+      "codeSnippet": "xp = 250\nbonus = 1.5\nprint(type(bonus))\nprint(f\"XP atual: {xp}\")",
       "options": [
-        "<class 'int'>",
-        "<class 'float'>",
-        "<class 'str'>",
-        "<class 'double'>"
+        "<class 'float'> e depois XP atual: 250",
+        "<class 'int'> e depois XP atual: {xp}",
+        "<class 'double'> e depois XP atual: 250",
+        "Erro porque xp é número e não texto"
       ],
-      "correctIndex": 1,
-      "explanation": "Números com ponto decimal em Python são sempre do tipo float."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Como escrevemos corretamente um valor booleano verdadeiro em Python?",
-      "options": [
-        "true",
-        "TRUE",
-        "True",
-        "\"True\""
-      ],
-      "correctIndex": 2,
-      "explanation": "Em Python, os literais booleanos são True e False, sempre com apenas a primeira letra maiúscula e sem aspas."
+      "correctIndex": 0,
+      "hint": "Números com ponto decimal são `float`, e o prefixo `f` substitui `{xp}` pelo valor guardado.",
+      "expectedOutput": "<class 'float'>\nXP atual: 250",
+      "explanation": "`1.5` tem casa decimal (`float`) e a f-string converte e encaixa `250` automaticamente no lugar de `{xp}`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a f-string para exibir a variável 'xp' dentro da frase:",
-      "codeTemplate": "xp = 250\nprint({{blank}}\"Você ganhou {{{blank}}} pontos!\")",
-      "blanks": [
-        { "answer": "f", "placeholder": "prefixo" },
-        { "answer": "xp", "placeholder": "variável" }
-      ],
-      "options": ["f", "s", "xp", "pontos"],
-      "explanation": "O prefixo f antes da string ativa a interpolação, substituindo {xp} pelo valor 250."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "O código abaixo deveria imprimir o valor da variável 'preco', mas imprime '{preco}' literalmente. Qual linha tem o erro?",
-      "lines": [
-        "produto = \"Teclado\"",
-        "preco = 199.90",
-        "mensagem = \"O produto custa {preco}\"",
-        "print(mensagem)"
-      ],
-      "buggyLineIndex": 2,
-      "explanation": "Faltou o prefixo f antes das aspas na linha 3. Sem o f, as chaves são tratadas como texto comum."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Combine type() e f-string para exibir o tipo da variável 'ativo':",
-      "codeTemplate": "ativo = False\ntipo = {{blank}}(ativo)\nprint({{blank}}\"Tipo: {tipo}\")",
+      "prompt": "Complete o código para inspecionar o tipo de `ativo` e exibir a f-string corretamente:",
+      "codeTemplate": "ativo = True\ntipo = {{blank}}(ativo)\nprint({{blank}}\"Tipo de ativo: {tipo}\")",
       "blanks": [
         { "answer": "type", "placeholder": "função" },
         { "answer": "f", "placeholder": "prefixo" }
       ],
-      "options": ["type", "typeof", "f", "r"],
-      "explanation": "Usamos type(ativo) para obter <class 'bool'> e uma f-string para formatar a saída."
+      "options": ["type", "typeof", "f", "s"],
+      "hint": "Usamos `type()` para checar o tipo e o prefixo `f` antes das aspas para ativar `{tipo}`.",
+      "expectedOutput": "Tipo de ativo: <class 'bool'>",
+      "explanation": "`type(ativo)` devolve `<class 'bool'>` e a f-string `f\"...\"` encaixa esse resultado direto na frase."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "O placar da loja imprimiu `{preco}` literalmente em vez de `49.9`. Clique na linha que precisa do ajuste:",
+      "lines": [
+        "item = \"Poção Mágica\"",
+        "preco = 49.9",
+        "mensagem = \"A poção custa {preco} moedas\"",
+        "print(mensagem)"
+      ],
+      "buggyLineIndex": 2,
+      "hint": "Dê uma olhada logo antes das aspas na linha 3 — faltou uma letrinha mágica!",
+      "expectedOutput": "A poção custa 49.9 moedas",
+      "explanation": "Sem o `f` antes das aspas (`f\"A poção custa {preco} moedas\"`), o Python trata `{preco}` como texto comum."
     },
     {
       "type": "write_code",
-      "prompt": "Crie uma variável 'nome' (str), uma variável 'altura' (float) e uma variável 'estudante' (bool). Imprima o tipo de 'altura' usando type() e exiba uma frase com f-string contendo 'nome' e 'altura'.",
-      "starterCode": "",
-      "requiredTokens": ["type", "print", "{"],
-      "sampleSolution": "nome = \"Carlos\"\naltura = 1.78\nestudante = True\nprint(type(altura))\nprint(f\"{nome} tem {altura}m\")",
-      "hint": "Use f\"... {nome} ... {altura}\" no print() e passe altura para type().",
-      "explanation": "Combinamos criação de tipos primitivos (str, float, bool), inspeção com type() e formatação com f-string."
+      "prompt": "Complete a ficha da Py criando `altura = 1.65`, exibindo o tipo dela com `type()` e mostrando uma f-string com `nome` e `altura`.",
+      "starterCode": "nome = \"Py\"\n# TODO: crie altura (float) e ativo (bool)\n\n# TODO: imprima type(altura) e uma f-string com nome e altura\n",
+      "requiredTokens": ["altura", "type(", "f\"", "print("],
+      "sampleSolution": "nome = \"Py\"\naltura = 1.65\nativo = True\nprint(type(altura))\nprint(f\"{nome} mede {altura}m\")",
+      "hint": "Escreva `altura = 1.65`, `print(type(altura))` e `print(f\"{nome} mede {altura}m\")`.",
+      "expectedOutput": "<class 'float'>\nPy mede 1.65m",
+      "explanation": "Show! Agora você já sabe identificar tipos com `type()` e formatar mensagens limpas com f-strings."
     }
   ]
 }

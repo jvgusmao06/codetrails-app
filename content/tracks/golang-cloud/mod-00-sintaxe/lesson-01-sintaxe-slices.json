@@ -1,78 +1,74 @@
 {
   "id": "go-sintaxe-01",
-  "title": "Sintaxe Base: Slices, Maps, For e Defer",
-  "description": "Domine as estruturas essenciais do Go: o único loop for, slices dinâmicos, maps chave-valor e limpeza com defer.",
+  "title": "Lista de Entregas: Slices, Maps, For e Defer",
+  "description": "Organize os pedidos da central usando slices dinâmicos, maps chave-valor, o único loop for e limpeza automática com defer.",
+  "mission": "Missão 2: Montar a fila de rotas do Gopher e avisar automaticamente quando o turno acabar.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "O Minimalismo Sintático do Go",
-      "content": "Go foi projetado para ter apenas 25 palavras-chave. Não existe while nem do-while: tudo é feito com for. Para coleções dinâmicas usamos slices ([]T) criados ou expandidos com append(), e para tabelas hash usamos map[Chave]Valor. Já a instrução defer agenda uma chamada para rodar automaticamente no exato momento em que a função atual terminar.",
-      "codeExample": "package main\nimport \"fmt\"\n\nfunc processar() {\n    defer fmt.Println(\"3. Fim da função (defer)\")\n\n    // Slice dinâmico e Map chave-valor\n    nums := []int{10, 20}\n    nums = append(nums, 30)\n    idades := map[string]int{\"Ana\": 25}\n\n    // O único loop do Go (com range)\n    for idx, val := range nums {\n        fmt.Println(idx, val, idades[\"Ana\"])\n    }\n}",
+      "title": "Slices, Maps e o único loop for",
+      "content": "Go adora simplicidade: só existe `for` para loops, `[]string` para listas dinâmicas (**slices**) e `map[string]int` para pares chave-valor.\nPara adicionar itens num slice usamos `append`, e se quiser rodar algo no finalzinho da função (como fechar o turno), é só usar `defer`!",
+      "codeExample": "defer fmt.Println(\"Turno encerrado!\")\nrotas := []string{\"Centro\"}\nrotas = append(rotas, \"Sul\")\nfor _, bairro := range rotas {\n    fmt.Println(\"Entrega:\", bairro)\n}",
+      "expectedOutput": "Entrega: Centro\nEntrega: Sul\nTurno encerrado!",
       "keyTakeaways": [
-        "Go possui apenas a palavra-chave 'for' para todos os tipos de laços (clássico, estilo while e range).",
-        "Slices ([]int) são visões dinâmicas sobre arrays; use 'nums = append(nums, valor)' para adicionar itens.",
-        "Maps têm a sintaxe 'map[Chave]Valor' e permitem acesso rápido por chave.",
-        "'defer' empilha a execução de uma chamada para o exato momento antes de a função retornar."
+        "Sempre reatribua o retorno de `append`: `rotas = append(rotas, \"Sul\")`.",
+        "`defer` guarda a chamada para executar automaticamente assim que a função terminar."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Complete o código Go para criar um slice de strings, adicionar um item com append e iterar sobre ele usando range:",
-      "codeTemplate": "langs := {{blank}}{\"Go\", \"Rust\"}\nlangs = {{blank}}(langs, \"Python\")\nfor _, nome := {{blank}} langs {\n    fmt.Println(nome)\n}",
-      "blanks": [
-        { "answer": "[]string", "placeholder": "tipo slice" },
-        { "answer": "append", "placeholder": "função" },
-        { "answer": "range", "placeholder": "iterador" }
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "Em que ordem as mensagens aparecem no terminal?",
+      "codeSnippet": "defer fmt.Println(\"2. Fechou caixa\")\nfmt.Println(\"1. Entregou pacote\")",
+      "options": [
+        "1. Entregou pacote depois 2. Fechou caixa",
+        "2. Fechou caixa depois 1. Entregou pacote",
+        "Apenas 1. Entregou pacote",
+        "Erro porque defer só funciona no final da função"
       ],
-      "options": ["[]string", "append", "range", "push", "in", "string[]"],
-      "explanation": "Em Go o tipo de um slice precede o nome do elemento ([]string), append() retorna o slice atualizado e range itera retornando índice e valor."
+      "correctIndex": 0,
+      "hint": "Lembre-se: `defer` adia a linha para o último instante antes da função sair.",
+      "expectedOutput": "1. Entregou pacote\n2. Fechou caixa",
+      "explanation": "Mesmo escrito antes, o `defer` espera o resto da função acabar para rodar no final!"
     },
     {
-      "type": "multiple_choice",
-      "prompt": "Qual é a sintaxe correta em Go para declarar e inicializar um map com chaves string e valores int?",
-      "options": [
-        "portas := map<string, int>{\"http\": 80}",
-        "portas := map[string]int{\"http\": 80}",
-        "portas := dict[string:int]{\"http\": 80}",
-        "portas := [string]map[int]{\"http\": 80}"
+      "type": "fill_in_blank",
+      "prompt": "Adicione `\"Norte\"` no slice `rotas` e percorra os itens com `range`:",
+      "codeTemplate": "rotas := []string{\"Centro\"}\nrotas = {{blank}}(rotas, \"Norte\")\nfor _, r := {{blank}} rotas {\n    fmt.Println(r)\n}",
+      "blanks": [
+        { "answer": "append", "placeholder": "adicionar" },
+        { "answer": "range", "placeholder": "percorrer" }
       ],
-      "correctIndex": 1,
-      "explanation": "Em Go, o tipo de um map coloca a chave entre colchetes seguida pelo tipo do valor: map[Chave]Valor."
+      "options": ["append", "range", "push", "in"],
+      "hint": "Em Go adicionamos itens com `append` e percorremos listas com `for ... range`.",
+      "expectedOutput": "Centro\nNorte",
+      "explanation": "`append` devolve o slice com o novo item e `range` percorre índice e valor sem esforço."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O código abaixo tenta adicionar o número 30 ao slice 'nums', mas o novo elemento não aparece no slice. Clique na linha com o erro:",
+      "prompt": "O Gopher adicionou o pedido `30`, mas ele sumiu da lista! Qual linha precisa ser corrigida?",
       "lines": [
         "func main() {",
-        "    nums := []int{10, 20}",
-        "    append(nums, 30)",
-        "    fmt.Println(nums)",
+        "    pedidos := []int{10, 20}",
+        "    append(pedidos, 30)",
+        "    fmt.Println(pedidos)",
         "}"
       ],
       "buggyLineIndex": 2,
-      "explanation": "append() retorna um novo slice atualizado; em Go é obrigatório atribuir o retorno de volta à variável: 'nums = append(nums, 30)'."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene as linhas para agendar uma mensagem final com defer, criar um map e percorrê-lo com for range:",
-      "blocks": [
-        "for nome, nota := range notas {",
-        "defer fmt.Println(\"Fim\")",
-        "    fmt.Println(nome, nota)\n}",
-        "notas := map[string]int{\"Ana\": 9}"
-      ],
-      "correctOrder": [1, 3, 0, 2],
-      "explanation": "Agendamos a limpeza com 'defer', inicializamos o map 'notas' e iteramos sobre suas chaves e valores com 'for ... range'."
+      "hint": "`append` devolve um novo slice — será que salvamos o resultado dele?",
+      "expectedOutput": "[10 20 30]",
+      "explanation": "Faltou guardar o retorno! O certo é `pedidos = append(pedidos, 30)`."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Agende com 'defer' a impressão de \"Concluido\" via 'fmt.Println', crie um slice de inteiros chamado 'numeros' com os valores 1 e 2, adicione o valor 3 usando 'append' e percorra 'numeros' com 'for' e 'range' imprimindo cada elemento.",
-      "starterCode": "",
-      "requiredTokens": ["defer", "numeros", "[]int", "append", "for", "range", "fmt.Println"],
+      "prompt": "Agende `\"Concluido\"` com `defer`, adicione `3` ao slice `numeros` com `append` e percorra com `for _, n := range numeros`.",
+      "starterCode": "defer fmt.Println(\"Concluido\")\nnumeros := []int{1, 2}\n// TODO: adicione 3 ao slice `numeros` usando append\n\n// TODO: percorra `numeros` com for e range imprimindo cada `n`\n",
+      "requiredTokens": ["append", "for", "range", "fmt.Println"],
       "sampleSolution": "defer fmt.Println(\"Concluido\")\nnumeros := []int{1, 2}\nnumeros = append(numeros, 3)\nfor _, n := range numeros {\n    fmt.Println(n)\n}",
-      "hint": "Use 'defer fmt.Println(...)', inicialize 'numeros := []int{1, 2}', reatribua com 'append' e itere usando 'for _, n := range numeros'.",
-      "explanation": "Slices são expandidos reatribuindo o resultado de append(), 'for range' percorre todos os itens e 'defer' garante a execução ao fim da função."
+      "hint": "Faça `numeros = append(numeros, 3)` e depois `for _, n := range numeros { fmt.Println(n) }`.",
+      "expectedOutput": "1\n2\n3\nConcluido",
+      "explanation": "Perfeito! O loop imprime todos os pedidos e o `defer` fecha o turno automaticamente."
     }
   ]
 }

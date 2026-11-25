@@ -1,88 +1,73 @@
 {
   "id": "py-erros-with-03",
-  "title": "10. Erros (try/except) e with",
-  "description": "Trate exceções específicas com try/except/finally, dispare validações com raise e gerencie arquivos com segurança usando with.",
+  "title": "Blindando Erros (try/except) e with",
+  "description": "Capture falhas com try/except/finally, valide regras com raise e abra arquivos sem vazamento usando with.",
+  "mission": "Missão 10: Proteger o save da Py contra entradas inválidas e abrir arquivos com segurança.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Capturando Exceções e Gerenciando Recursos com 'with'",
-      "content": "Em Python, falhas em tempo de execução geram **exceções** (como `ValueError`, `ZeroDivisionError`, `FileNotFoundError`).\n\n1. **`try` / `except` / `finally`**: Colocamos o código arriscado em `try:`, capturamos o erro específico com `except TipoErro:` e usamos `finally:` para código que deve rodar **sempre** (com ou sem erro).\n2. **`raise`**: Usamos `raise ValueError(\"mensagem\")` para interromper a função imediatamente quando uma regra de negócio é violada.\n3. **Gerenciador de contexto (`with`)**: Para abrir arquivos ou conexões, usamos `with open(\"dados.txt\", \"r\") as f:`. Ao sair do bloco indentado, o Python fecha o arquivo automaticamente, mesmo se ocorrer uma exceção.",
-      "codeExample": "def sacar(valor: float) -> float:\n    if valor <= 0:\n        raise ValueError(\"Valor inválido\")\n    return valor\n\ntry:\n    numero = int(\"abc\")\nexcept ValueError:\n    print(\"Texto não é um número válido.\")\nfinally:\n    print(\"Tentativa finalizada.\")\n\nwith open(\"log.txt\", \"r\") as arquivo:\n    conteudo = arquivo.read()",
+      "title": "Tratando exceções e fechando arquivos com with",
+      "content": "Quando algo pode dar errado (como converter texto em número), envolvemos o código em `try:` e capturamos o erro específico em `except ValueError:`. O bloco `finally:` roda **sempre** no final.\nPara recusar valores inválidos usamos `raise ValueError(\"...\")`. E para ler arquivos, `with open(...) as f:` fecha o arquivo sozinho ao sair do bloco!",
+      "codeExample": "try:\n    nivel = int(\"abc\")\nexcept ValueError:\n    print(\"Ops! Digite um número.\")\nfinally:\n    print(\"Validação encerrada.\")",
+      "expectedOutput": "Ops! Digite um número.\nValidação encerrada.",
       "keyTakeaways": [
-        "Capture sempre exceções específicas (except ValueError:) em vez de except: genérico.",
-        "finally executa sempre; raise TipoErro('msg') dispara uma exceção manualmente.",
-        "with open(...) as f: garante o fechamento automático do arquivo ao final do bloco."
+        "Use `try` / `except ErroEspecifico` para lidar com falhas sem travar o programa, e `raise` para disparar erros.",
+        "`with open(\"save.txt\", \"r\") as f:` fecha o arquivo automaticamente ao final do bloco."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual palavra-chave garante que um bloco de limpeza seja executado SEMPRE após try/except, ocorrendo erro ou não?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal ao rodar este trecho?",
+      "codeSnippet": "try:\n    dano = 100 / 0\nexcept ZeroDivisionError:\n    print(\"Divisão por zero evitada!\")\nfinally:\n    print(\"Turno salvo.\")",
       "options": [
-        "always",
-        "finally",
-        "ensure",
-        "after"
+        "Apenas Divisão por zero evitada!",
+        "Divisão por zero evitada! e depois Turno salvo.",
+        "Apenas Turno salvo.",
+        "O programa trava com ZeroDivisionError"
       ],
       "correctIndex": 1,
-      "explanation": "O bloco finally é sempre executado ao término do try/except, independentemente de uma exceção ter sido lançada."
+      "hint": "O `except` captura o erro, e o `finally` executa sempre depois, com ou sem erro.",
+      "expectedOutput": "Divisão por zero evitada!\nTurno salvo.",
+      "explanation": "`except ZeroDivisionError` segura o erro com calma e `finally` roda logo em seguida garantindo a limpeza!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o bloco de tratamento de erro para tentar converter uma string e capturar ValueError:",
-      "codeTemplate": "{{blank}}:\n    idade = int(\"vinte\")\n{{blank}} ValueError:\n    print(\"Digite apenas números\")\n{{blank}}:\n    print(\"Fim da validação\")",
-      "blanks": [
-        { "answer": "try", "placeholder": "tentar" },
-        { "answer": "except", "placeholder": "capturar" },
-        { "answer": "finally", "placeholder": "sempre" }
-      ],
-      "options": ["try", "catch", "except", "finally"],
-      "explanation": "Em Python usamos try, except TipoErro e finally (não existe catch)."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete o código para abrir o arquivo 'notas.txt' em modo leitura garantindo o fechamento automático:",
-      "codeTemplate": "{{blank}} open(\"notas.txt\", \"r\") {{blank}} f:\n    texto = f.read()",
+      "prompt": "Complete a abertura do arquivo `save.txt` garantindo fechamento automático:",
+      "codeTemplate": "{{blank}} open(\"save.txt\", \"r\") {{blank}} f:\n    conteudo = f.read()",
       "blanks": [
         { "answer": "with", "placeholder": "contexto" },
         { "answer": "as", "placeholder": "apelido" }
       ],
       "options": ["with", "using", "as", "in"],
-      "explanation": "A instrução 'with open(...) as f:' cria um gerenciador de contexto que fecha o arquivo automaticamente."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "A função tenta lançar uma exceção quando o preço é negativo, mas usa uma palavra-chave inválida em Python. Qual linha tem o bug?",
-      "lines": [
-        "def definir_preco(valor: float):",
-        "    if valor < 0:",
-        "        throw ValueError(\"Preço negativo\")",
-        "    return valor"
-      ],
-      "buggyLineIndex": 2,
-      "explanation": "Em Python não existe 'throw'; para disparar uma exceção usamos 'raise ValueError(...)'."
+      "hint": "O gerenciador de contexto em Python usa a dupla `with ... as ...:`.",
+      "expectedOutput": "Save carregado!",
+      "explanation": "`with open(...) as f:` garante que o arquivo seja fechado automaticamente mesmo se acontecer algum erro dentro do bloco."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os blocos para tentar ler um arquivo com segurança e tratar o caso de arquivo inexistente:",
+      "prompt": "Ordene os blocos para tentar ler o arquivo de configuração e avisar caso ele não exista:",
       "blocks": [
-        "    print(\"Arquivo não encontrado.\")",
+        "    print(\"Save não encontrado!\")",
         "try:",
-        "    with open(\"config.json\", \"r\") as f:",
-        "except FileNotFoundError:",
-        "        dados = f.read()"
+        "    with open(\"save.txt\", \"r\") as f:\n        dados = f.read()",
+        "except FileNotFoundError:"
       ],
-      "correctOrder": [1, 2, 4, 3, 0],
-      "explanation": "O bloco 'with open(...)' fica dentro do 'try:', e o 'except FileNotFoundError:' captura a ausência do arquivo."
+      "correctOrder": [1, 2, 3, 0],
+      "hint": "Comece com `try:`, coloque a leitura com `with` dentro dele e finalize com `except FileNotFoundError:`.",
+      "expectedOutput": "Save não encontrado!",
+      "explanation": "O `with open(...)` fica protegido dentro do `try:`, e o `except FileNotFoundError:` trata a falta do arquivo com elegância."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma função 'validar_idade' que receba um número 'idade'. Se idade for menor que 0, dispare um ValueError usando raise; caso contrário, retorne a própria idade.",
-      "starterCode": "",
+      "prompt": "Complete `validar_idade`: se `idade < 0`, dispare `raise ValueError(\"Idade inválida\")`; senão retorne `idade`.",
+      "starterCode": "def validar_idade(idade: int) -> int:\n    # TODO: se idade < 0, lance ValueError com raise\n    \n    return idade\n\nprint(validar_idade(20))\n",
       "requiredTokens": ["def", "validar_idade", "if", "raise", "ValueError", "return"],
-      "sampleSolution": "def validar_idade(idade: int) -> int:\n    if idade < 0:\n        raise ValueError(\"Idade inválida\")\n    return idade",
-      "hint": "Dentro da função, teste se idade < 0 com if e use 'raise ValueError(...)' antes do return final.",
-      "explanation": "Usamos def, condicional if e raise ValueError(...) para validar a entrada antes de retorná-la."
+      "sampleSolution": "def validar_idade(idade: int) -> int:\n    if idade < 0:\n        raise ValueError(\"Idade inválida\")\n    return idade\n\nprint(validar_idade(20))",
+      "hint": "Use `if idade < 0:` e na linha indentada `raise ValueError(\"Idade inválida\")`.",
+      "expectedOutput": "20",
+      "explanation": "Código blindado! Em Python usamos `raise` (nunca `throw`) para sinalizar entradas inválidas."
     }
   ]
 }

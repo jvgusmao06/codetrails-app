@@ -1,78 +1,73 @@
 {
   "id": "algo-grafos-bfs-dijkstra-05",
-  "title": "Grafos: Lista de Adjacência, Menor Caminho (BFS) e Dijkstra",
-  "description": "Represente redes sociais, mapas e dependências usando Grafos e descubra o menor caminho com BFS e Dijkstra.",
+  "title": "Grafos: Lista de Adjacência, BFS e Dijkstra",
+  "description": "Represente mapas com Lista de Adjacência, evite ciclos com visitados e encontre rotas curtas com BFS e Dijkstra.",
+  "mission": "Missão 9: Traçar a rota mais curta entre as ilhas conectadas por pontes sem andar em círculos!",
   "xp": 45,
   "steps": [
     {
       "type": "theory",
-      "title": "Modelando Redes com Grafos e Encontrando Menores Caminhos",
-      "content": "Um **Grafo** conecta vértices (nós) por arestas (ligações) — perfeito para mapas de GPS, redes de amigos e pacotes npm. Na prática, representamos grafos com uma **Lista de Adjacência** (um dicionário onde cada nó aponta para a lista dos seus vizinhos). Para evitar loops infinitos em grafos com ciclos, sempre mantemos um **`set` de `visitados`**! Para achar o menor caminho em grafos **sem peso**, usamos **BFS**; em grafos **com pesos positivos** (como distância em km), usamos **Algoritmo de Dijkstra** (com Min-Heap / Fila de Prioridade `heapq`).",
-      "codeExample": "from collections import deque\n\ngrafo = {\"A\": [\"B\", \"C\"], \"B\": [\"D\"], \"C\": [], \"D\": []}\nfila = deque([\"A\"])\nvisitados = {\"A\"}\n\nwhile fila:\n    atual = fila.popleft()\n    for vizinho in grafo[atual]:\n        if vizinho not in visitados:\n            visitados.add(vizinho)\n            fila.append(vizinho)",
+      "title": "Navegando em mapas sem andar em círculos",
+      "content": "Um **Grafo** conecta pontos (ilhas) por arestas (pontes) usando um dicionário de vizinhos (**Lista de Adjacência**). Para não ficar preso em ciclos, sempre guardamos quem já vimos num `set` chamado `visitados`!\nUse **BFS** (com `deque`) para achar o caminho com menos saltos; se cada ponte tiver um peso/tempo diferente, use **Dijkstra** (com Min-Heap `heapq`).",
+      "codeExample": "from collections import deque\ngrafo = {'A': ['B', 'C'], 'B': ['D'], 'C': [], 'D': []}\nfila, visitados = deque(['A']), {'A'}\nwhile fila:\n    atual = fila.popleft()\n    for viz in grafo[atual]:\n        if viz not in visitados:\n            visitados.add(viz); fila.append(viz)",
+      "expectedOutput": "visitados = {'A', 'B', 'C', 'D'}",
       "keyTakeaways": [
-        "Sempre marque nós no `set` `visitados` ao colocá-los na fila/pilha para evitar ciclos infinitos!",
-        "BFS encontra o caminho mais curto (em número de saltos) em $O(V + E)$.",
-        "Algoritmo de Dijkstra usa uma Min-Heap (`heapq`) para achar o menor custo acumulado em $O((V + E) \\log V)$."
+        "Marque cada nó no `set` `visitados` ao colocá-lo na fila para evitar loops infinitos em ciclos.",
+        "BFS acha o menor caminho sem pesos (menos saltos); Dijkstra acha o menor custo com pesos positivos."
       ]
     },
     {
-      "type": "spot_the_bug",
-      "prompt": "Esta busca em grafo entra em loop infinito quando existem ciclos (ex: A ligado a B e B ligado a A). Clique na linha onde falta verificar/registrar o `set` `visitados` antes de enfileirar:",
-      "lines": [
-        "while fila:",
-        "    atual = fila.popleft()",
-        "    for vizinho in grafo[atual]:",
-        "        fila.append(vizinho)"
-      ],
-      "buggyLineIndex": 3,
-      "explanation": "Na linha 4, todos os vizinhos são adicionados à `fila` sem checar `if vizinho not in visitados:`, causando loop infinito em ciclos."
-    },
-    {
       "type": "multiple_choice",
-      "prompt": "Você precisa calcular a rota mais rápida em minutos entre cidades de um mapa onde cada estrada tem um tempo diferente. Qual algoritmo é o mais adequado?",
+      "kind": "predict_output",
+      "prompt": "No grafo `{'A': ['B'], 'B': ['A']}` (um ciclo entre A e B), o que acontece se rodarmos BFS **sem** o conjunto `visitados`?",
+      "codeSnippet": "grafo = {'A': ['B'], 'B': ['A']}\nfila = deque(['A'])\nwhile fila:\n    atual = fila.popleft()\n    for viz in grafo[atual]: fila.append(viz)",
       "options": [
-        "Busca Binária",
-        "Algoritmo de Dijkstra (usando Min-Heap / Fila de Prioridade)",
-        "Bubble Sort",
-        "Pilha LIFO simples"
+        "Loop infinito alternando A -> B -> A -> B para sempre",
+        "Imprime A e B e para sozinho",
+        "Retorna erro de sintaxe",
+        "Visita apenas A"
       ],
-      "correctIndex": 1,
-      "explanation": "Quando as arestas possuem pesos positivos (como tempo ou distância), o algoritmo de Dijkstra com Min-Heap encontra o menor custo acumulado."
+      "correctIndex": 0,
+      "hint": "Sem `visitados`, `A` sempre enfileira `B`, e `B` sempre enfileira `A` de volta!",
+      "expectedOutput": "Loop infinito (nunca termina!)",
+      "explanation": "Por isso o `set` `visitados` é indispensável em grafos: checando `if viz not in visitados:`, cada ilha é visitada só 1 vez."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código de travessia BFS em grafo usando `deque` e o conjunto `visitados`:",
-      "codeTemplate": "while fila:\n    atual = fila.{{blank}}()\n    for vizinho in grafo[atual]:\n        if vizinho not in visitados:\n            visitados.{{blank}}(vizinho)\n            fila.append(vizinho)",
+      "prompt": "Complete a BFS retirando da frente da fila e marcando o vizinho no `set` `visitados`:",
+      "codeTemplate": "while fila:\n    atual = fila.{{blank}}()\n    for viz in grafo[atual]:\n        if viz not in visitados:\n            visitados.{{blank}}(viz)\n            fila.append(viz)",
       "blanks": [
         { "answer": "popleft", "placeholder": "desenfileirar" },
-        { "answer": "add", "placeholder": "registrar no set" }
+        { "answer": "add", "placeholder": "marcar" }
       ],
-      "options": ["popleft", "add", "pop", "append", "push"],
-      "explanation": "`fila.popleft()` remove o próximo nó da fila FIFO, e `visitados.add(vizinho)` marca o nó no `set` em $O(1)$."
+      "options": ["popleft", "add", "pop", "append"],
+      "hint": "`deque` tira da frente com `popleft()`, e `set` adiciona elementos com `add()`.",
+      "expectedOutput": "visitados = {'A', 'B', 'C', 'D'}",
+      "explanation": "Perfeito! `popleft()` mantém a ordem de largura (BFS) e `visitados.add()` garante tempo O(1)."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os blocos para inicializar e executar uma busca BFS em um grafo representado por Lista de Adjacência a partir do nó `\"A\"`:",
+      "prompt": "Ordene os passos para preparar e executar a travessia BFS a partir da ilha `'A'`:",
       "blocks": [
-        "fila = deque([\"A\"])",
-        "visitados = {\"A\"}",
         "while fila:",
+        "visitados = {'A'}",
         "    atual = fila.popleft()",
-        "    for vizinho in grafo[atual]:",
-        "        if vizinho not in visitados:",
-        "            visitados.add(vizinho); fila.append(vizinho)"
+        "fila = deque(['A'])"
       ],
-      "correctOrder": [0, 1, 2, 3, 4, 5, 6],
-      "explanation": "Inicializamos a fila e o conjunto de visitados com o nó inicial, depois retiramos cada nó da fila e enfileiramos apenas os vizinhos ainda não visitados."
+      "correctOrder": [3, 1, 0, 2],
+      "hint": "Primeiro inicialize `fila` e `visitados`, depois abra o `while fila:` e desenfileire com `popleft()`.",
+      "expectedOutput": "atual = 'A'",
+      "explanation": "Com a fila e os visitados prontos antes do `while`, a BFS explora o mapa camada por camada!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Implemente uma função `explorar_bfs(grafo, inicio)` em Python que use `deque` e um `set` de visitados para percorrer todos os nós alcançáveis a partir de `inicio` e retornar o conjunto de nós visitados.",
-      "starterCode": "",
-      "requiredTokens": ["def", "explorar_bfs", "deque", "while", "popleft", "visitados", "return"],
-      "sampleSolution": "def explorar_bfs(grafo, inicio):\n    fila = deque([inicio])\n    visitados = {inicio}\n    while fila:\n        atual = fila.popleft()\n        for vizinho in grafo[atual]:\n            if vizinho not in visitados:\n                visitados.add(vizinho)\n                fila.append(vizinho)\n    return visitados",
-      "hint": "Inicialize a fila (`deque`) e o conjunto de visitados com o nó inicial; dentro do loop, retire da frente da fila e adicione os vizinhos não visitados tanto no conjunto quanto na fila.",
-      "explanation": "Registrar em `visitados` no exato momento do enfileiramento impede que o mesmo nó entre na fila várias vezes em grafos com ciclos."
+      "prompt": "Complete `explorar_bfs(grafo, inicio)` retirando `atual` com `popleft()` e enfileirando cada vizinho ainda não visitado.",
+      "starterCode": "def explorar_bfs(grafo, inicio):\n    fila = deque([inicio])\n    visitados = {inicio}\n    # TODO: enquanto houver fila, retire com popleft e visite vizinhos novos\n    \n    return visitados",
+      "requiredTokens": ["while", "popleft", "for", "visitados", "append"],
+      "sampleSolution": "def explorar_bfs(grafo, inicio):\n    fila = deque([inicio])\n    visitados = {inicio}\n    while fila:\n        atual = fila.popleft()\n        for viz in grafo[atual]:\n            if viz not in visitados:\n                visitados.add(viz)\n                fila.append(viz)\n    return visitados",
+      "hint": "Use `while fila:`, `atual = fila.popleft()`, e para cada `viz in grafo[atual]:` teste `if viz not in visitados:`.",
+      "expectedOutput": "explorar_bfs(grafo, 'A') -> {'A', 'B', 'C', 'D'}",
+      "explanation": "Rota mapeada sem andar em círculos! Essa mesma lógica alimenta GPS, redes sociais e jogos."
     }
   ]
 }

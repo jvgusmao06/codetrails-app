@@ -1,76 +1,73 @@
 {
   "id": "git-init-00",
-  "title": "Primeiros Passos: git init, clone, status e diff",
-  "description": "Entenda como o Git rastreia arquivos desde o zero: Working Directory, Staging Area, git status e git diff.",
+  "title": "Primeiros Passos: git init, status e diff",
+  "description": "Crie seu repositório, veja o que mudou com git status e git diff e faça seu primeiro commit.",
+  "mission": "Missão 1: Iniciar o repositório do Nave App e registrar o primeiro marco no histórico.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Os 3 Estados do Git e Seus Primeiros Comandos",
-      "content": "O Git gerencia seu código em 3 áreas locais: 1) **Working Directory** (arquivos que você está editando), 2) **Staging Area / Index** (arquivos preparados com `git add` para o próximo snapshot) e 3) **Repositório `.git`** (histórico de commits gravados). Usamos `git init` para criar um repositório novo, `git clone <url>` para baixar um existente, `git status` para ver o estado dos arquivos e `git diff` para inspecionar linha a linha as alterações ainda não adicionadas à Staging Area.",
-      "codeExample": "git init\ngit status\ngit diff                # Mostra alterações ainda não adicionadas\ngit add src/index.ts    # Move o arquivo para a Staging Area\ngit commit -m \"feat: inicializa projeto\"",
+      "title": "As 3 áreas do Git sem mistério",
+      "content": "No Git, você edita arquivos na pasta normal (**Working Directory**), escolhe o que vai entrar no próximo marco com `git add` (**Staging Area**) e grava o marco de vez com `git commit`.\nAntes de salvar, `git status` mostra quais arquivos mudaram e `git diff` revela linha por linha o que você alterou!",
+      "codeExample": "git init\ngit status\ngit diff\ngit add app.ts\ngit commit -m \"feat: inicia Nave App\"",
+      "expectedOutput": "[main (root-commit) a1b2c3d] feat: inicia Nave App\n 1 file changed, 12 insertions(+)",
       "keyTakeaways": [
-        "`git status` é o comando mais usado no dia a dia: mostra arquivos modificados, preparados (staged) e não rastreados (untracked).",
-        "`git diff` compara seu arquivo atual com a última versão salva antes de você dar `git add`.",
-        "`git init` inicia um repositório local do zero; `git clone <url>` copia um repositório remoto."
+        "`git status` lista arquivos alterados ou novos; `git diff` mostra exatamente as linhas editadas.",
+        "Sempre prepare com `git add` antes de gravar o marco com `git commit -m \"...\"`."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Complete os comandos Git para inicializar um repositório, verificar o estado atual e ver as linhas alteradas:",
-      "codeTemplate": "git {{blank}}\ngit {{blank}}\ngit {{blank}}",
-      "blanks": [
-        { "answer": "init", "placeholder": "iniciar" },
-        { "answer": "status", "placeholder": "estado" },
-        { "answer": "diff", "placeholder": "diferenças" }
-      ],
-      "options": ["init", "status", "diff", "start", "check", "changes"],
-      "explanation": "`git init` cria o repositório `.git`, `git status` resume o estado dos arquivos e `git diff` exibe as linhas adicionadas ou removidas."
-    },
-    {
       "type": "multiple_choice",
-      "prompt": "Qual é a diferença principal entre `git status` e `git diff` antes de executar `git add`?",
+      "kind": "predict_output",
+      "prompt": "Você editou `app.ts` e rodou `git commit` direto sem passar pelo `git add`. O que o Git responde?",
+      "codeSnippet": "git status\n# modified: app.ts (not staged)\ngit commit -m \"feat: ajusta tela\"",
       "options": [
-        "`git status` lista quais arquivos mudaram ou não são rastreados; `git diff` mostra exatamente quais linhas foram alteradas dentro deles",
-        "`git status` envia código para o GitHub; `git diff` apaga alterações locais",
-        "Ambos fazem exatamente a mesma coisa",
-        "`git diff` só funciona depois do `git commit`"
+        "Avisa que não há nada preparado na Staging Area e não cria o commit",
+        "Cria o commit normalmente com app.ts",
+        "Apaga as alterações de app.ts",
+        "Envia app.ts direto para o GitHub"
       ],
       "correctIndex": 0,
-      "explanation": "`git status` dá uma visão geral dos arquivos (modified, untracked, staged), enquanto `git diff` exibe o conteúdo linha a linha modificado no Working Directory."
+      "hint": "O `git commit` só grava o que já foi movido para a Staging Area com `git add`!",
+      "expectedOutput": "no changes added to commit (use \"git add\")",
+      "explanation": "Sem `git add`, o arquivo fica fora da Staging Area — por isso o Git avisa e não gera o commit."
     },
     {
-      "type": "spot_the_bug",
-      "prompt": "Um desenvolvedor editou `app.ts` e tentou salvar o histórico direto, mas o Git não incluiu o arquivo no commit! Clique na linha com a sequência problemática:",
-      "lines": [
-        "git init",
-        "git status",
-        "git commit -m \"inicial\"",
-        "git diff"
+      "type": "fill_in_blank",
+      "prompt": "Complete os comandos para iniciar o repositório e inspecionar quais arquivos mudaram:",
+      "codeTemplate": "git {{blank}}\ngit {{blank}}",
+      "blanks": [
+        { "answer": "init", "placeholder": "iniciar" },
+        { "answer": "status", "placeholder": "estado" }
       ],
-      "buggyLineIndex": 2,
-      "explanation": "Faltou preparar os arquivos na Staging Area com `git add <arquivo>` (ou `git add .`) antes de rodar `git commit -m`."
+      "options": ["init", "status", "start", "check"],
+      "hint": "Criamos o repositório com `init` e checamos o estado com `status`.",
+      "expectedOutput": "Initialized empty Git repository\nOn branch main",
+      "explanation": "Pronto! `git init` cria a pasta `.git` e `git status` é seu melhor amigo no dia a dia."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os comandos para criar um novo repositório local, inspecionar alterações, preparar os arquivos e gravar o primeiro commit:",
+      "prompt": "Ordene os comandos na sequência certa para iniciar o projeto, conferir o estado, preparar e commitar:",
       "blocks": [
-        "git init",
-        "git status",
         "git add .",
-        "git commit -m \"feat: projeto inicial\""
+        "git init",
+        "git commit -m \"feat: projeto inicial\"",
+        "git status"
       ],
-      "correctOrder": [0, 1, 2, 3],
-      "explanation": "Primeiro inicializamos com `git init`, conferimos com `git status`, movemos para a Staging Area com `git add .` e gravamos com `git commit -m`."
+      "correctOrder": [1, 3, 0, 2],
+      "hint": "Comece com `git init`, olhe o `status`, prepare com `add` e finalize com `commit`.",
+      "expectedOutput": "[main a1b2c3d] feat: projeto inicial",
+      "explanation": "Essa sequência vira memória muscular rapidinho: `init` -> `status` -> `add` -> `commit`."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva os comandos Git necessários para preparar todos os arquivos modificados do diretório atual na Staging Area e gravar um commit com uma mensagem descritiva.",
-      "starterCode": "",
+      "prompt": "Complete o fluxo preparando todos os arquivos do diretório (`git add .`) e gravando o commit com a mensagem `\"feat: inicia Nave App\"`.",
+      "starterCode": "git status\n# TODO: adicione tudo na Staging Area e faça o commit com -m\n",
       "requiredTokens": ["git add", "git commit", "-m"],
-      "sampleSolution": "git add .\ngit commit -m \"feat: inicial\"",
-      "hint": "Primeiro use o comando que move todas as alterações do diretório atual para a Staging Area e, na linha seguinte, grave o snapshot informando a flag de mensagem.",
-      "explanation": "Primeiro preparamos os arquivos na Staging Area com `git add` e depois gravamos o snapshot no repositório local com `git commit -m`."
+      "sampleSolution": "git status\ngit add .\ngit commit -m \"feat: inicia Nave App\"",
+      "hint": "Escreva `git add .` e na linha abaixo `git commit -m \"feat: inicia Nave App\"`.",
+      "expectedOutput": "[main a1b2c3d] feat: inicia Nave App",
+      "explanation": "Primeiro marco gravado! Agora seu histórico do Nave App está protegido pelo Git."
     }
   ]
 }

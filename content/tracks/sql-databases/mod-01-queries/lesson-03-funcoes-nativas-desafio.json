@@ -1,86 +1,73 @@
 {
   "id": "sql-nativas-03",
-  "title": "03. Funções Nativas SQL (COUNT, SUM, COALESCE, CASE WHEN)",
-  "description": "Agregue dados com COUNT, SUM e AVG, trate nulos com COALESCE e crie colunas condicionais com CASE WHEN ... END.",
+  "title": "03. Funções Nativas: COUNT, SUM, COALESCE e CASE",
+  "description": "Calcule totais com COUNT e SUM, proteja nulos com COALESCE e crie etiquetas dinâmicas com CASE WHEN.",
+  "mission": "Missão 4: Montar o resumo financeiro da loja sem deixar valores NULL quebrarem a conta.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Funções de Agregação, COALESCE e CASE WHEN",
-      "content": "O SQL traz funções nativas poderosas para resumir e transformar dados diretamente no banco:\n\n1. **Agregação (`COUNT`, `SUM`, `AVG`)**: `COUNT(*)` conta todas as linhas (enquanto `COUNT(coluna)` ignora `NULL`); `SUM(col)` soma valores numéricos e `AVG(col)` calcula a média.\n2. **`COALESCE(valor, padrao)`**: Retorna o primeiro argumento que não seja `NULL`. É o padrão ideal para substituir nulos por `0` ou por um texto padrão.\n3. **`CASE WHEN ... THEN ... ELSE ... END`**: Cria lógica condicional (como um `if/else`) dentro do `SELECT`, e **sempre** deve terminar com `END`.",
-      "codeExample": "SELECT\n    COUNT(*) AS total_itens,\n    SUM(COALESCE(desconto, 0)) AS soma_descontos,\n    AVG(preco) AS media_preco\nFROM produtos;\n\nSELECT nome,\n    CASE WHEN estoque > 0 THEN 'Disponível' ELSE 'Esgotado' END AS status\nFROM produtos;",
+      "title": "Resumindo e classificando direto no banco",
+      "content": "Com `COUNT(*)`, `SUM()` e `AVG()` você resume milhares de vendas em uma linha só.\nSe alguma coluna vier vazia, `COALESCE(desconto, 0)` troca `NULL` por `0` automaticamente, e `CASE WHEN ... THEN ... ELSE ... END` funciona como um `if/else` dentro do `SELECT`.",
+      "codeExample": "SELECT titulo,\n  COALESCE(desconto, 0) AS desc_real,\n  CASE WHEN estoque > 0 THEN 'Disponível' ELSE 'Esgotado' END AS status\nFROM jogos;",
+      "expectedOutput": "titulo       | desc_real | status\nPixel Quest  | 10        | Disponível\nRetro Kart   | 0         | Esgotado",
       "keyTakeaways": [
-        "COUNT(*) conta todas as linhas; SUM() e AVG() calculam soma e média.",
-        "COALESCE(col, padrao) substitui NULL por um valor seguro.",
-        "CASE WHEN condicao THEN valor ELSE outro END sempre fecha com END."
+        "`COALESCE(valor, padrao)` substitui `NULL` por um valor seguro.",
+        "Todo `CASE WHEN ... THEN ... ELSE ...` precisa terminar com `END`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é a diferença entre COUNT(*) e COUNT(telefone) em uma tabela de clientes?",
+      "kind": "predict_output",
+      "prompt": "A tabela tem 3 jogos: Quest (desconto 10), Kart (desconto NULL) e Blade (desconto 20). O que `COUNT(*)` e `COUNT(desconto)` retornam?",
+      "codeSnippet": "SELECT COUNT(*) AS todos, COUNT(desconto) AS com_desc\nFROM jogos;",
       "options": [
-        "COUNT(*) conta apenas linhas sem NULL em nenhuma coluna",
-        "COUNT(*) conta todas as linhas; COUNT(telefone) ignora linhas onde telefone é NULL",
-        "COUNT(telefone) soma os números de telefone",
-        "Não existe diferença"
+        "todos: 3 | com_desc: 2",
+        "todos: 3 | com_desc: 3",
+        "todos: 2 | com_desc: 2",
+        "Erro por causa do NULL"
       ],
-      "correctIndex": 1,
-      "explanation": "COUNT(*) conta todos os registros da tabela, enquanto COUNT(coluna) conta apenas os registros em que aquela coluna não é NULL."
+      "correctIndex": 0,
+      "hint": "`COUNT(*)` conta todas as linhas, enquanto `COUNT(coluna)` pula quem está `NULL`.",
+      "expectedOutput": "todos | com_desc\n3     | 2",
+      "explanation": "Exato! `COUNT(*)` conta os 3 jogos e `COUNT(desconto)` ignora o jogo com desconto `NULL`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a consulta usando COALESCE para trocar nulos por 0 e CASE WHEN para classificar o estoque:",
-      "codeTemplate": "SELECT nome,\n  {{blank}}(desconto, 0) AS desconto_real,\n  CASE WHEN estoque > 0 THEN 'Ok' ELSE 'Zero' {{blank}} AS situacao\nFROM produtos;",
+      "prompt": "Troque descontos nulos por `0` e feche a etiqueta `CASE WHEN` corretamente:",
+      "codeTemplate": "SELECT titulo,\n  {{blank}}(desconto, 0) AS desc_real,\n  CASE WHEN preco >= 100 THEN 'VIP' ELSE 'Indie' {{blank}} AS selo\nFROM jogos;",
       "blanks": [
         { "answer": "COALESCE", "placeholder": "tratar nulo" },
-        { "answer": "END", "placeholder": "fechamento" }
+        { "answer": "END", "placeholder": "fechar CASE" }
       ],
-      "options": ["COALESCE", "IFNULL", "END", "ENDIF"],
-      "explanation": "COALESCE(desconto, 0) substitui NULL por 0, e toda expressão CASE WHEN precisa ser encerrada com END."
+      "options": ["COALESCE", "END", "IFNULL", "ENDIF"],
+      "hint": "Em PostgreSQL, trocamos nulo com `COALESCE` e encerramos `CASE` com `END`.",
+      "expectedOutput": "titulo       | desc_real | selo\nPixel Quest  | 0         | Indie",
+      "explanation": "`COALESCE(desconto, 0)` garante sempre um número válido, e `END` fecha o bloco `CASE`."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "A query abaixo tenta classificar pedidos por valor usando CASE WHEN, mas gera um erro de sintaxe. Qual linha tem o bug?",
+      "prompt": "A classificação de pedidos deu erro de sintaxe porque faltou fechar o `CASE`. Qual linha tem o bug?",
       "lines": [
         "SELECT id,",
-        "  CASE WHEN total >= 500 THEN 'Alto'",
-        "       ELSE 'Normal' AS porte",
+        "  CASE WHEN total >= 200 THEN 'Combo'",
+        "       ELSE 'Normal' AS tipo",
         "FROM pedidos;"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Na linha 3 faltou fechar a expressão condicional com a palavra-chave END antes de 'AS porte'."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete a query para calcular o total arrecadado (tratando frete nulo como 0) e a média dos pedidos:",
-      "codeTemplate": "SELECT\n  {{blank}}(total + {{blank}}(frete, 0)) AS faturamento,\n  {{blank}}(total) AS ticket_medio\nFROM pedidos\nWHERE status = 'pago';",
-      "blanks": [
-        { "answer": "SUM", "placeholder": "soma" },
-        { "answer": "COALESCE", "placeholder": "nulo->0" },
-        { "answer": "AVG", "placeholder": "média" }
-      ],
-      "options": ["SUM", "COUNT", "COALESCE", "AVG"],
-      "explanation": "SUM() soma o total mais o frete tratado com COALESCE(frete, 0), e AVG() calcula o ticket médio."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para contar quantos pedidos pagos existem e calcular a soma total:",
-      "blocks": [
-        "WHERE pago_em IS NOT NULL;",
-        "SELECT COUNT(*) AS qtd, SUM(valor) AS total",
-        "FROM faturas"
-      ],
-      "correctOrder": [1, 2, 0],
-      "explanation": "Combinamos SELECT com COUNT/SUM, FROM e WHERE ... IS NOT NULL."
+      "hint": "O que está faltando antes de `AS tipo` na linha 3?",
+      "expectedOutput": "id | tipo\n10 | Normal",
+      "explanation": "Faltou o `END`: o correto é `ELSE 'Normal' END AS tipo`."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma query SQL na tabela 'produtos' que selecione a coluna 'nome', o 'preco' substituindo possíveis valores nulos por 0 usando COALESCE, e uma coluna condicional com CASE WHEN que retorne 'Caro' se preco >= 100 ou 'Acessível' caso contrário.",
-      "starterCode": "",
-      "requiredTokens": ["SELECT", "COALESCE", "CASE", "WHEN", "THEN", "ELSE", "END", "FROM", "produtos"],
-      "sampleSolution": "SELECT nome,\n  COALESCE(preco, 0) AS preco_final,\n  CASE WHEN preco >= 100 THEN 'Caro' ELSE 'Acessível' END AS faixa\nFROM produtos;",
-      "hint": "Use COALESCE(preco, 0) e CASE WHEN preco >= 100 THEN '...' ELSE '...' END dentro do SELECT.",
-      "explanation": "A consulta combina COALESCE para segurança contra nulos e CASE WHEN ... END para categorização inline."
+      "prompt": "Complete o `SELECT` usando `COALESCE` para trocar `preco` nulo por `0` e `CASE WHEN` para marcar `'Caro'` se `preco >= 100` ou `'Indie'` caso contrário.",
+      "starterCode": "SELECT titulo,\n  -- TODO: adicione COALESCE(preco, 0) e CASE WHEN ... END\nFROM jogos;",
+      "requiredTokens": ["COALESCE", "CASE", "WHEN", "THEN", "ELSE", "END"],
+      "sampleSolution": "SELECT titulo,\n  COALESCE(preco, 0) AS preco_final,\n  CASE WHEN preco >= 100 THEN 'Caro' ELSE 'Indie' END AS faixa\nFROM jogos;",
+      "hint": "Escreva `COALESCE(preco, 0) AS preco_final,` e na linha seguinte `CASE WHEN preco >= 100 THEN 'Caro' ELSE 'Indie' END AS faixa`.",
+      "expectedOutput": "titulo        | preco_final | faixa\nChrono Blade  | 119.90      | Caro\nPixel Quest   | 49.90       | Indie",
+      "explanation": "Excelente! Seus relatórios agora são à prova de `NULL` e já saem categorizados."
     }
   ]
 }

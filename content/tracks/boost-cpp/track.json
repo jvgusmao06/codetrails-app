@@ -1,7 +1,7 @@
 {
   "id": "boost-cpp",
   "title": "Boost C++ Libraries",
-  "description": "Explore a coleção de bibliotecas mais influente do C++, berço de std::filesystem, smart pointers, Boost.Regex e utilitários de alta performance.",
+  "description": "Use o Boost para limpar e decodificar mensagens do rádio espacial em C++: utilitários de string header-only sem complicação.",
   "category": "library",
   "languageId": "c-cpp-systems",
   "prerequisites": ["c-cpp-systems"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: Boost Utilities, Strings e Containers",
-      "description": "Use utilitários do Boost que inspiram a biblioteca padrão do C++ moderno.",
+      "title": "Módulo 1: Decodificador de Strings com Boost",
+      "description": "Limpe espaços, padronize letras e divida pacotes de texto com boost::algorithm.",
       "lessons": ["lesson-01-boost-overview"]
     }
   ]

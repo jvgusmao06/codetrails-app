@@ -1,7 +1,7 @@
 {
   "id": "sqlx-rust",
   "title": "SQLx (SQL Type-Safe Rust)",
-  "description": "Escreva SQL puro assíncrono em PostgreSQL/SQLite com suas queries validadas contra o banco em tempo de compilação via query_as!.",
+  "description": "Guarde heróis e itens do Servidor RPG do Ferris no PostgreSQL com SQL validado em tempo de compilação pelo SQLx.",
   "category": "library",
   "languageId": "rust-systems",
   "prerequisites": ["rust-systems", "sql-databases"],
@@ -12,7 +12,7 @@
     {
       "id": "mod-01-fundamentos",
       "title": "Módulo 1: PgPool, query_as! e Bind Seguro",
-      "description": "Proteja suas APIs Rust contra SQL Injection e erros de schema ainda na compilação.",
+      "description": "Evite SQL Injection e erros de coluna já na compilação usando sqlx::query_as!.",
       "lessons": ["lesson-01-query-as-pool"]
     }
   ]

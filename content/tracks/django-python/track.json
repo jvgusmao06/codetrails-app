@@ -1,7 +1,7 @@
 {
   "id": "django-python",
   "title": "Django & DRF",
-  "description": "Construa aplicações web completas em Python com Django ORM, Models, Views, Migrations e Django REST Framework.",
+  "description": "Construa o catálogo web CodePage em Python passo a passo: Models, URLs, painel Admin, APIs com DRF e queries sem N+1 em lições curtas e guiadas.",
   "category": "framework",
   "languageId": "python-basics",
   "prerequisites": ["python-basics"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: Models, ORM e Django REST Framework",
-      "description": "Defina modelos de banco em Python, faça queries com objects.filter e crie APIs com DRF.",
+      "title": "Módulo 1: Construindo a Livraria CodePage",
+      "description": "Modele tabelas com Django ORM, ligue rotas e views, ative o Django Admin, crie APIs com DRF e elimine queries N+1.",
       "lessons": [
         "lesson-01-models-orm-views",
         "lesson-02-urls-views-templates",

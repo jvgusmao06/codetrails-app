@@ -1,73 +1,73 @@
 {
   "id": "cpp-vector-map-auto-05",
-  "title": "STL Moderna: std::vector, std::unordered_map, auto e Range-For",
-  "description": "Use os containers dinâmicos mais importantes do C++ moderno com inferência auto e loops range-based for.",
+  "title": "STL Moderna: vector, unordered_map e Range-For",
+  "description": "Guarde listas dinâmicas em std::vector, tabelas chave-valor em std::unordered_map e percorra com const auto&.",
+  "mission": "Missão 11: Catalogar as frequências do radar e os códigos de status da nave.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Containers Dinâmicos da STL: vector e unordered_map",
-      "content": "Na Standard Template Library (STL) de C++, raramente usamos arrays fixos brutos. Para listas dinâmicas contíguas na memória, incluímos `<vector>` e usamos `std::vector<T>`, adicionando itens ao final com `.push_back(valor)` e consultando o tamanho com `.size()`. Para dicionários chave-valor com busca média $O(1)$ via tabela hash, incluímos `<unordered_map>` e usamos `std::unordered_map<Chave, Valor>`, acessando ou inserindo com `mapa[chave] = valor` e verificando existência com `.contains(chave)` (C++20) ou `.find(chave) != mapa.end()`. Combinamos ambos com `auto` e `for (const auto& ... : ...)` para percorrer sem cópias.",
-      "codeExample": "#include <iostream>\n#include <unordered_map>\n#include <vector>\n\nint main() {\n    std::vector<int> ids = {1, 2};\n    ids.push_back(3);\n    for (const auto& id : ids) {\n        std::cout << id << \"\\n\";\n    }\n\n    std::unordered_map<std::string, int> portas;\n    portas[\"http\"] = 80;\n    if (portas.find(\"http\") != portas.end()) {\n        std::cout << portas[\"http\"] << \"\\n\";\n    }\n    return 0;\n}",
+      "title": "Listas dinâmicas e mapas super rápidos",
+      "content": "Na STL do C++, `std::vector<T>` é sua lista dinâmica favorita: ela cresce sozinha com `.push_back()`.\nPara guardar pares chave-valor com busca instantânea, use `std::unordered_map<K, V>`, e percorra coleções sem cópias com `for (const auto& item : colecao)`!",
+      "codeExample": "std::vector<int> ids = {1, 2};\nids.push_back(3);\n\nstd::unordered_map<std::string, int> portas;\nportas[\"radar\"] = 8080;\nstd::cout << ids.size() << \" / \" << portas[\"radar\"] << \"\\n\";",
+      "expectedOutput": "3 / 8080",
       "keyTakeaways": [
-        "`std::vector<T>` é um array dinâmico seguro que cresce sob demanda com `.push_back()`.",
-        "`std::unordered_map<K, V>` oferece inserção e busca por chave em tempo médio $O(1)$.",
-        "Use `for (const auto& item : container)` ou `for (const auto& [k, v] : mapa)` para iterar sem cópias."
+        "`std::vector<T>` cresce dinamicamente com `.push_back()` e informa o tamanho em `.size()`.",
+        "`std::unordered_map<K, V>` busca por chave em tempo médio O(1); percorra com `const auto&`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual container da STL armazena pares chave-valor com busca média em tempo constante $O(1)$?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no painel ao rodar este trecho com `vector` e `unordered_map`?",
+      "codeSnippet": "std::vector<int> v = {10, 20};\nv.push_back(30);\nstd::unordered_map<std::string, int> m;\nm[\"ok\"] = 200;\nstd::cout << v[2] << \" \" << m[\"ok\"] << \"\\n\";",
       "options": [
-        "std::vector<K>",
-        "std::unordered_map<K, V>",
-        "std::string",
-        "std::unique_ptr<K>"
+        "30 200",
+        "20 200",
+        "3 200",
+        "Erro porque `push_back` não muda o tamanho do vetor"
       ],
-      "correctIndex": 1,
-      "explanation": "`std::unordered_map<K, V>` é implementado como tabela hash, oferecendo acesso e inserção em $O(1)$ no caso médio."
+      "correctIndex": 0,
+      "hint": "Após `push_back(30)`, o elemento no índice `2` passa a ser `30`.",
+      "expectedOutput": "30 200",
+      "explanation": "`v[2]` vale `30` e `m[\"ok\"]` devolve `200`, exibindo `30 200`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código C++ para adicionar um item ao `std::vector` e percorrê-lo sem cópia usando `const auto&`:",
-      "codeTemplate": "std::vector<int> nums = {10, 20};\nnums.{{blank}}(30);\nfor (const {{blank}}& n : nums) {\n    std::cout << n << \"\\n\";\n}",
+      "prompt": "Adicione `30` ao vetor e percorra cada número sem cópia:",
+      "codeTemplate": "std::vector<int> nums = {10, 20};\nnums.{{blank}}(30);\nfor (const {{blank}}& n : nums) {\n    std::cout << n << \" \";\n}",
       "blanks": [
-        { "answer": "push_back", "placeholder": "método" },
-        { "answer": "auto", "placeholder": "inferência" }
+        { "answer": "push_back", "placeholder": "inserir" },
+        { "answer": "auto", "placeholder": "tipo" }
       ],
-      "options": ["push_back", "append", "add", "auto", "var"],
-      "explanation": "`.push_back()` adiciona ao final do `std::vector` e `const auto&` evita copiar cada elemento no loop."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete o código para inserir a chave `\"ssh\"` com valor `22` no `std::unordered_map` e verificar se ela existe:",
-      "codeTemplate": "std::unordered_map<std::string, int> portas;\nportas[\"ssh\"] = 22;\nif (portas.{{blank}}(\"ssh\") != portas.end()) {\n    std::cout << portas[\"ssh\"];\n}",
-      "blanks": [
-        { "answer": "find", "placeholder": "busca" }
-      ],
-      "options": ["find", "search", "get", "has"],
-      "explanation": "`.find(chave)` retorna um iterador para o elemento ou `.end()` caso a chave não exista no mapa."
+      "options": ["push_back", "auto", "append", "var"],
+      "hint": "Em C++, adicionamos ao fim do `vector` com `push_back` e deduzimos o tipo com `auto`.",
+      "expectedOutput": "10 20 30 ",
+      "explanation": "`.push_back(30)` coloca o item no final e `const auto&` lê cada item sem copiar."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O código abaixo tenta adicionar um elemento a um `std::vector`, mas usa um método inexistente em C++. Clique na linha com bug:",
+      "prompt": "O radar tentou adicionar um item ao `std::vector`, mas usou um método de Python! Clique na linha com o bug:",
       "lines": [
         "#include <vector>",
-        "std::vector<int> v = {1, 2};",
-        "v.append(3);",
-        "std::cout << v.size() << \"\\n\";"
+        "std::vector<int> canais = {1, 2};",
+        "canais.append(3);",
+        "std::cout << canais.size() << \"\\n\";"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Em C++, `std::vector` usa `.push_back(3)` (e não `.append()`, que é de Python)."
+      "hint": "Qual é o nome certo do método de `std::vector` para adicionar no final em C++?",
+      "expectedOutput": "3",
+      "explanation": "Em C++, `std::vector` usa `.push_back(3)` — `.append()` não existe em `std::vector`."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva um programa em C++ (com `<iostream>`, `<vector>`, `<unordered_map>` e `<string>`) que crie um `std::vector<int>` chamado `codigos` com `{10, 20}`, adicione `30` ao final, crie um `std::unordered_map<std::string, int>` chamado `status` associando `\"ok\"` a `200`, e percorra `codigos` com range-based `for` e `const auto&` imprimindo cada código.",
-      "starterCode": "",
-      "requiredTokens": ["#include", "<vector>", "<unordered_map>", "std::vector<int>", ".push_back", "std::unordered_map", "const auto&", "std::cout"],
-      "sampleSolution": "#include <iostream>\n#include <string>\n#include <unordered_map>\n#include <vector>\n\nint main() {\n    std::vector<int> codigos = {10, 20};\n    codigos.push_back(30);\n\n    std::unordered_map<std::string, int> status;\n    status[\"ok\"] = 200;\n\n    for (const auto& c : codigos) {\n        std::cout << c << \"\\n\";\n    }\n    return 0;\n}",
-      "hint": "Use `.push_back(30)` no vector, `status[\"ok\"] = 200;` no mapa e `for (const auto& c : codigos)`.",
-      "explanation": "Combinar `std::vector`, `std::unordered_map` e `const auto&` forma a base do C++ moderno produtivo e seguro."
+      "prompt": "Adicione `30` em `codigos`, salve `status[\"ok\"] = 200;` e imprima cada item de `codigos` com `for (const auto& c : codigos)`.",
+      "starterCode": "#include <iostream>\n#include <string>\n#include <unordered_map>\n#include <vector>\n\nint main() {\n    std::vector<int> codigos = {10, 20};\n    std::unordered_map<std::string, int> status;\n    // TODO: adicione 30 em codigos, defina status[\"ok\"] = 200 e percorra codigos com const auto&\n    \n    return 0;\n}",
+      "requiredTokens": [".push_back", "status[\"ok\"]", "const auto&", "std::cout"],
+      "sampleSolution": "#include <iostream>\n#include <string>\n#include <unordered_map>\n#include <vector>\n\nint main() {\n    std::vector<int> codigos = {10, 20};\n    std::unordered_map<std::string, int> status;\n    codigos.push_back(30);\n    status[\"ok\"] = 200;\n    for (const auto& c : codigos) {\n        std::cout << c << \"\\n\";\n    }\n    return 0;\n}",
+      "hint": "Use `codigos.push_back(30);`, `status[\"ok\"] = 200;` e `for (const auto& c : codigos) { std::cout << c << \"\\n\"; }`.",
+      "expectedOutput": "10\n20\n30",
+      "explanation": "Radar catalogado! `std::vector`, `std::unordered_map` e `const auto&` são o trio de ouro do C++ moderno."
     }
   ]
 }

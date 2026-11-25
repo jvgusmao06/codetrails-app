@@ -1,7 +1,7 @@
 {
   "id": "pydantic-python",
   "title": "Pydantic v2 (Validação & Schemas)",
-  "description": "Valide dados em velocidade Rust com Pydantic v2: BaseModel, Field, @field_validator, model_validate e model_dump.",
+  "description": "Construa o porteiro digital de pedidos do DeliveryExpress com Pydantic v2: BaseModel, Field, @field_validator, model_validate e model_dump.",
   "category": "library",
   "languageId": "python-basics",
   "prerequisites": ["python-basics"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: BaseModel, @field_validator e model_dump",
-      "description": "Garanta contratos de dados seguros em APIs, configs e agentes de IA.",
+      "title": "Módulo 1: Porteiro de Pedidos do DeliveryExpress",
+      "description": "Valide, limpe e serialize dados JSON em velocidade Rust com schemas limpos em Pydantic v2.",
       "lessons": ["lesson-01-basemodel-validators"]
     }
   ]

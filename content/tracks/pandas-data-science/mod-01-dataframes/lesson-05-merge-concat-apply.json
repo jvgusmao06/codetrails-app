@@ -1,74 +1,73 @@
 {
   "id": "pandas-merge-sort-05",
-  "title": "Cruzando Tabelas (pd.merge), Concatenação (pd.concat) e Ordenação",
-  "description": "Faça JOINs entre DataFrames com pd.merge(), empilhe tabelas com pd.concat() e ordene rankings com sort_values().",
+  "title": "Cruzando Tabelas (merge), Concat e Ranking",
+  "description": "Faça JOINs entre tabelas com pd.merge(), empilhe meses com pd.concat() e monte rankings com sort_values().",
+  "mission": "Missão 5: Cruzar pedidos com o cardápio e montar o ranking dos campeões de venda.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "SQL JOINs e Ordenação dentro do Pandas",
-      "content": "Precisa cruzar a tabela `pedidos` com a tabela `clientes`? Use **`pd.merge(pedidos, clientes, on=\"cliente_id\", how=\"left\")`** — funciona exatamente como `INNER`, `LEFT`, `RIGHT` ou `OUTER JOIN` do SQL! Para empilhar dois DataFrames com as mesmas colunas (ex: vendas de Jan + Fev), use **`pd.concat([df_jan, df_fev], ignore_index=True)`**. E para ordenar resultados, use **`df.sort_values(\"total\", ascending=False)`**.",
-      "codeExample": "resumo = pd.merge(\n    pedidos,\n    clientes,\n    left_on=\"cliente_id\",\n    right_on=\"id\",\n    how=\"left\"\n).sort_values(\"valor\", ascending=False)",
+      "title": "Unindo tabelas e montando rankings",
+      "content": "Para cruzar `pedidos` com `cardapio` usando uma coluna em comum, use **`pd.merge(pedidos, cardapio, on=\"item_id\", how=\"left\")`** — igualzinho a um JOIN no SQL!\nSe precisar empilhar duas tabelas com as mesmas colunas (como vendas de janeiro e fevereiro), use **`pd.concat([jan, fev], ignore_index=True)`** e ordene o ranking com **`sort_values(..., ascending=False)`**.",
+      "codeExample": "import pandas as pd\n\nresumo = pd.merge(pedidos, cardapio, on=\"item_id\", how=\"left\")\nranking = resumo.sort_values(\"valor\", ascending=False)\nprint(ranking.head(2)[[\"bebida\", \"valor\"]])",
+      "expectedOutput": "  bebida  valor\n1  Mocha     24\n0  Latte     18",
       "keyTakeaways": [
-        "`pd.merge(a, b, on='chave', how='inner'|'left')` une colunas por chave; `pd.concat([a, b])` empilha linhas.",
-        "`ignore_index=True` no `pd.concat` evita índices duplicados (`0, 1, 0, 1`).",
+        "`pd.merge(a, b, on='chave', how='left')` cruza tabelas por chave; `pd.concat([a, b], ignore_index=True)` empilha linhas.",
         "`sort_values(\"col\", ascending=False)` ordena do maior para o menor."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual parâmetro de `pd.merge(pedidos, clientes, on=\"cliente_id\", how=...)` garante que **todos** os pedidos apareçam no resultado mesmo que algum cliente não seja encontrado?",
+      "kind": "predict_output",
+      "prompt": "Qual bebida aparece no topo do ranking ao rodar este código?",
+      "codeSnippet": "import pandas as pd\ndf = pd.DataFrame({\"bebida\": [\"Chá\", \"Mocha\", \"Latte\"], \"vendas\": [12, 45, 30]})\ntop = df.sort_values(\"vendas\", ascending=False)\nprint(top.iloc[0][\"bebida\"])",
       "options": [
-        "how=\"inner\"",
-        "how=\"left\"",
-        "how=\"right\"",
-        "how=\"cross\""
+        "Mocha",
+        "Chá",
+        "Latte",
+        "45"
       ],
-      "correctIndex": 1,
-      "explanation": "Assim como no `LEFT JOIN` do SQL, `how=\"left\"` preserva todas as linhas do DataFrame da esquerda (`pedidos`)."
+      "correctIndex": 0,
+      "hint": "`ascending=False` coloca o maior número de vendas primeiro na linha `0`.",
+      "expectedOutput": "Mocha",
+      "explanation": "Com `ascending=False`, `Mocha` (45 vendas) sobe para o primeiro lugar (`iloc[0]`)!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para empilhar as vendas de janeiro e fevereiro reiniciando o índice e ordenar pelo maior valor:",
-      "codeTemplate": "ano = pd.{{blank}}([df_jan, df_fev], {{blank}}=True)\nranking = ano.{{blank}}(\"total\", ascending=False)",
+      "prompt": "Complete o código para empilhar as vendas de janeiro e fevereiro e ordenar pelo maior valor:",
+      "codeTemplate": "ano = pd.{{blank}}([df_jan, df_fev], ignore_index=True)\nranking = ano.{{blank}}(\"valor\", ascending=False)",
       "blanks": [
         { "answer": "concat", "placeholder": "empilhar" },
-        { "answer": "ignore_index", "placeholder": "indice" },
         { "answer": "sort_values", "placeholder": "ordenar" }
       ],
-      "options": ["concat", "ignore_index", "sort_values", "merge", "reset_index", "order_by"],
-      "explanation": "`pd.concat` empilha linhas, `ignore_index=True` gera um índice contínuo e `sort_values(..., ascending=False)` ordena do maior para o menor."
+      "options": ["concat", "sort_values", "merge", "order_by", "groupby"],
+      "hint": "Empilhamos tabelas com `pd.concat` e ordenamos uma coluna com `.sort_values()`.",
+      "expectedOutput": "  bebida  valor\n2  Mocha     24\n0  Latte     18",
+      "explanation": "`pd.concat` empilha os dois meses com índice limpo e `.sort_values(..., ascending=False)` monta o ranking!"
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Identifique a linha com erro ao tentar cruzar `pedidos` e `clientes` pela coluna em comum `cliente_id`:",
+      "prompt": "O código tentou cruzar `pedidos` e `cardapio` pela coluna `item_id`, mas chamou a função errada. Qual linha tem o bug?",
       "lines": [
         "vendas = pd.concat([df_jan, df_fev], ignore_index=True)",
-        "completo = pd.concat(vendas, clientes, on=\"cliente_id\", how=\"left\")",
-        "top = completo.sort_values(\"valor\", ascending=False)"
+        "completo = pd.concat(vendas, cardapio, on=\"item_id\", how=\"left\")",
+        "ranking = completo.sort_values(\"valor\", ascending=False)",
+        "print(ranking.head())"
       ],
       "buggyLineIndex": 1,
-      "explanation": "`pd.concat` apenas empilha tabelas; para fazer JOIN por coluna chave (`on=...`, `how=...`), deve-se usar `pd.merge`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para empilhar dois meses de pedidos, cruzar com clientes e ordenar por valor decrescente:",
-      "blocks": [
-        "ranking = cruzado.sort_values(\"valor\", ascending=False)",
-        "todos = pd.concat([ped_jan, ped_fev], ignore_index=True)",
-        "cruzado = pd.merge(todos, clientes, on=\"cliente_id\", how=\"left\")"
-      ],
-      "correctOrder": [1, 2, 0],
-      "explanation": "Primeiro empilhamos os pedidos com `pd.concat`, depois cruzamos com `clientes` via `pd.merge` e por fim ordenamos com `sort_values`."
+      "hint": "`pd.concat` só empilha tabelas — qual função faz JOIN usando `on=` e `how=`?",
+      "expectedOutput": "  item_id  bebida  valor\n0       2   Mocha     24",
+      "explanation": "Na linha 2, cruzar tabelas por chave exige `pd.merge(vendas, cardapio, on=\"item_id\", how=\"left\")`."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Faça um `INNER JOIN` no Pandas entre os DataFrames `vendas` e `produtos` usando a coluna chave `\"produto_id\"` e ordene o resultado em ordem decrescente pela coluna `\"valor\"`, salvando em `resultado`.",
-      "starterCode": "",
-      "requiredTokens": ["pd.merge(", "on=\"produto_id\"", "how=\"inner\"", ".sort_values(\"valor\"", "ascending=False"],
-      "sampleSolution": "resultado = pd.merge(vendas, produtos, on=\"produto_id\", how=\"inner\").sort_values(\"valor\", ascending=False)",
-      "hint": "Use `pd.merge(vendas, produtos, on=\"produto_id\", how=\"inner\")` e encadeie `.sort_values(\"valor\", ascending=False)`.",
-      "explanation": "Encadear operações (method chaining) torna pipelines de análise no Pandas limpos e expressivos."
+      "prompt": "Faça um `INNER JOIN` entre `vendas` e `cardapio` usando `\"item_id\"` e ordene `resultado` pela coluna `\"valor\"` em ordem decrescente.",
+      "starterCode": "import pandas as pd\n\n# `vendas` e `cardapio` já existem e compartilham a coluna \"item_id\"\n# TODO: cruze com pd.merge(..., how=\"inner\") e ordene por \"valor\" decrescente\nresultado = \nprint(resultado.head())",
+      "requiredTokens": ["pd.merge(", "item_id", "inner", "sort_values(", "ascending=False"],
+      "sampleSolution": "import pandas as pd\n\nresultado = pd.merge(vendas, cardapio, on=\"item_id\", how=\"inner\").sort_values(\"valor\", ascending=False)\nprint(resultado.head())",
+      "hint": "Use `pd.merge(vendas, cardapio, on=\"item_id\", how=\"inner\")` e encadeie `.sort_values(\"valor\", ascending=False)`.",
+      "expectedOutput": "  item_id  bebida  valor\n1       2   Mocha     24\n0       1   Latte     18",
+      "explanation": "Parabéns! Você concluiu a trilha da cafeteria Café & Dados dominando o núcleo do Pandas."
     }
   ]
 }

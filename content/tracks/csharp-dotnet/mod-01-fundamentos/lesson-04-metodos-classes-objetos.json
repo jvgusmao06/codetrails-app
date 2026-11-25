@@ -1,92 +1,74 @@
 {
   "id": "csharp-classes-props-04",
-  "title": "Classes, Construtores, Properties ({ get; set; init; }) e Modificadores",
-  "description": "Encapsule dados de forma elegante em C# com Auto-Properties, init-only, private set, required, readonly e static.",
+  "title": "Modelando Jogos: Classes e Properties (init / private set)",
+  "description": "Proteja os dados dos produtos usando Properties elegantes com required, init e private set.",
+  "mission": "Missão 4: Criar a classe Jogo da PixelShop garantindo que o preço só mude com desconto controlado.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Properties, Imutabilidade (init / readonly) e Membros static",
-      "content": "Em C#, substituímos `getNome()`/`setNome()` manuais por **Properties** nativas: **`{ get; set; }`** (leitura e escrita), **`{ get; init; }`** (só pode ser definida na criação do objeto) e **`{ get; private set; }`** (leitura pública, escrita apenas dentro da classe). O modificador **`required`** obriga preencher a propriedade no `new`. Para campos internos que só recebem valor na declaração ou no construtor, usamos **`readonly`** (`private readonly`). Já **`static`** define métodos ou campos que pertencem à **classe** em si, sem precisar instanciar um objeto!",
-      "codeExample": "public class Produto {\n    private readonly string _moeda = \"BRL\";\n    public static int TotalCriados { get; private set; }\n\n    public required string Nome { get; init; }\n    public decimal Preco { get; private set; }\n    public int Estoque { get; set; }\n\n    public Produto() => TotalCriados++;\n\n    public void AplicarDesconto(decimal valor) {\n        if (valor > 0) Preco -= valor;\n    }\n\n    public static string FormatarMoeda() => \"BRL\";\n}\n\nvar p = new Produto { Nome = \"Monitor\", Estoque = 5 };",
+      "title": "Properties modernas: required, init e private set",
+      "content": "Em C#, você não precisa escrever getters e setters gigantes: **Properties** resolvem isso em uma linha! Use `required` com `{ get; init; }` para dados obrigatórios que não mudam depois do `new`.\nJá `{ get; private set; }` deixa qualquer pessoa ler o valor, mas só a própria classe pode alterá-lo (perfeito para preços e saldos!).",
+      "codeExample": "public class Jogo {\n    public required string Nome { get; init; }\n    public decimal Preco { get; private set; } = 50m;\n    public void DarDesconto(decimal v) => Preco -= v;\n}\nvar j = new Jogo { Nome = \"StarRunner\" };\nj.DarDesconto(10m);\nConsole.WriteLine($\"{j.Nome}: R$ {j.Preco}\");",
+      "expectedOutput": "StarRunner: R$ 40",
       "keyTakeaways": [
-        "`{ get; init; }` permite inicializar na criação `new Foo { Id = 1 }` e impede alterações depois.",
-        "`{ get; private set; }` permite ler de fora, mas só a própria classe pode alterar o valor.",
-        "`required` obriga o chamador a preencher a propriedade ao instanciar com `new`.",
-        "`readonly` protege campos internos contra reatribuição após a construção; `static` pertence à classe, não à instância."
+        "`required` + `{ get; init; }` exige o dado na criação e trava alterações futuras.",
+        "`{ get; private set; }` protege o campo: leitura livre, alteração só pelos métodos da classe."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual combinação de acessores em uma Property C# permite definir o valor **apenas** ao construir o objeto (`new Usuario { Email = \"...\" }`), tornando-o imutável depois?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal ao rodar este código?",
+      "codeSnippet": "public class Carteira {\n    public decimal Saldo { get; private set; } = 100m;\n    public void Gastar(decimal v) => Saldo -= v;\n}\nvar c = new Carteira();\nc.Gastar(35m);\nConsole.WriteLine($\"Saldo: R$ {c.Saldo}\");",
       "options": [
-        "{ get; set; }",
-        "{ get; init; }",
-        "{ set; }",
-        "{ var; const; }"
+        "Saldo: R$ 65",
+        "Saldo: R$ 100",
+        "Erro porque Saldo tem private set",
+        "Saldo: R$ 35"
       ],
-      "correctIndex": 1,
-      "explanation": "Introduzido no C# 9, `init` permite atribuir durante a inicialização do objeto e bloqueia modificações posteriores."
+      "correctIndex": 0,
+      "hint": "`Gastar` está dentro da própria classe `Carteira`, então ele pode alterar `Saldo` normalmente!",
+      "expectedOutput": "Saldo: R$ 65",
+      "explanation": "Dentro da classe `Carteira`, `private set` permite atualizar `Saldo` (`100 - 35 = 65`), e fora dela a leitura de `c.Saldo` funciona perfeitamente."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a classe `Pedido` usando um campo `readonly`, uma property obrigatória (`required`) com `init` e uma property com escrita restrita à própria classe:",
-      "codeTemplate": "public class Pedido {\n    private {{blank}} string _origem = \"WEB\";\n    public {{blank}} string Codigo { get; init; }\n    public decimal Total { get; {{blank}} set; }\n}",
+      "prompt": "Complete a classe `Pedido` com `required` no código imutável e `private` no `set` do total:",
+      "codeTemplate": "public class Pedido {\n    public {{blank}} string Codigo { get; init; }\n    public decimal Total { get; {{blank}} set; }\n}",
       "blanks": [
-        { "answer": "readonly", "placeholder": "campo imutável" },
-        { "answer": "required", "placeholder": "obrigatório no new" },
+        { "answer": "required", "placeholder": "obrigatório" },
         { "answer": "private", "placeholder": "escrita restrita" }
       ],
-      "options": ["readonly", "required", "private", "static", "const", "init"],
-      "explanation": "`private readonly` impede reatribuição do campo após construção, `required` exige o preenchimento no `new` e `private set` restringe alterações à classe."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Como acessamos um método marcado com `static`, como `public static string ObterMoeda()` na classe `Produto`?",
-      "options": [
-        "var p = new Produto(); p.ObterMoeda();",
-        "Produto.ObterMoeda();",
-        "static.Produto.ObterMoeda();",
-        "this.ObterMoeda();"
-      ],
-      "correctIndex": 1,
-      "explanation": "Membros `static` pertencem ao tipo/classe (`Produto.ObterMoeda()`), e não a instâncias individuais."
+      "options": ["required", "private", "static", "const"],
+      "hint": "`required` obriga informar `Codigo` no `new`, e `private set` impede mexer em `Total` por fora.",
+      "expectedOutput": "Pedido #PX-01 criado com segurança",
+      "explanation": "Acertou! Agora ninguém cria um `Pedido` sem código nem altera o `Total` por acidente."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este código não compila porque viola o encapsulamento de uma property `private set`. Clique na linha inválida:",
+      "prompt": "Ops! Alguém tentou hackear o saldo da carteira por fora da classe. Clique na linha que não compila:",
       "lines": [
-        "public class Conta {",
-        "    public decimal Saldo { get; private set; } = 100m;",
+        "public class Carteira {",
+        "    public decimal Saldo { get; private set; } = 50m;",
         "}",
-        "var c = new Conta();",
+        "var c = new Carteira();",
         "c.Saldo = 9999m;"
       ],
       "buggyLineIndex": 4,
-      "explanation": "Na linha 5, `c.Saldo = 9999m;` tenta alterar `Saldo` de fora da classe `Conta`, mas `private set` só permite escrita dentro da própria classe."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para definir uma classe com campo `readonly`, property `required` + `init`, método `static` e instanciá-la corretamente:",
-      "blocks": [
-        "public class Config {",
-        "    private readonly int _versao = 1;",
-        "    public required string Ambiente { get; init; }",
-        "    public static string Padrao() => \"PROD\";",
-        "}",
-        "var cfg = new Config { Ambiente = Config.Padrao() };"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4, 5],
-      "explanation": "Definimos o campo `readonly`, a property `required` com `init`, o método `static` e depois instanciamos `Config` preenchendo `Ambiente` com `Config.Padrao()`."
+      "hint": "Qual linha tenta alterar uma propriedade protegida por `private set` fora da classe?",
+      "expectedOutput": "Saldo protegido em R$ 50",
+      "explanation": "Na linha 5, `c.Saldo = 9999m;` viola o `private set`. Alterações só podem acontecer dentro de métodos da própria `Carteira`!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie uma classe pública `ContaBancaria` contendo um campo privado `readonly` chamado `_banco` iniciado com `\"CodeBank\"`, uma propriedade obrigatória (`required`) `Titular` somente de inicialização (`init`), uma propriedade `Saldo` do tipo `decimal` com leitura pública e escrita privada, e um método estático público `ObterBancoPadrao()` que retorne `\"CodeBank\"`.",
-      "starterCode": "",
-      "requiredTokens": ["public class ContaBancaria", "readonly", "required", "Titular", "init;", "decimal Saldo", "private set;", "static"],
-      "sampleSolution": "public class ContaBancaria {\n    private readonly string _banco = \"CodeBank\";\n    public required string Titular { get; init; }\n    public decimal Saldo { get; private set; }\n\n    public static string ObterBancoPadrao() => \"CodeBank\";\n}",
-      "hint": "Combine `private readonly string _banco`, `public required string Titular { get; init; }`, `public decimal Saldo { get; private set; }` e `public static string ObterBancoPadrao()`.",
-      "explanation": "Encapsular estado com `readonly`, `required`, `init` e `private set` garante invariantes fortes desde a criação do objeto."
+      "prompt": "Complete a classe `Produto` adicionando a property obrigatória `Nome` (`required` + `init`) e `Preco` (`decimal` com `private set`).",
+      "starterCode": "public class Produto {\n    // TODO: declare `Nome` (required string com get; init;)\n    // TODO: declare `Preco` (decimal com get; private set; = 20m)\n}\nvar p = new Produto { Nome = \"PixelQuest\" };\nConsole.WriteLine($\"{p.Nome}: R$ {p.Preco}\");",
+      "requiredTokens": ["required", "Nome", "init;", "decimal Preco", "private set;"],
+      "sampleSolution": "public class Produto {\n    public required string Nome { get; init; }\n    public decimal Preco { get; private set; } = 20m;\n}\nvar p = new Produto { Nome = \"PixelQuest\" };\nConsole.WriteLine($\"{p.Nome}: R$ {p.Preco}\");",
+      "hint": "Use `public required string Nome { get; init; }` e `public decimal Preco { get; private set; } = 20m;`.",
+      "expectedOutput": "PixelQuest: R$ 20",
+      "explanation": "Classe blindada e super limpa! `required`, `init` e `private set` são marca registrada do C# moderno."
     }
   ]
 }

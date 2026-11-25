@@ -1,7 +1,7 @@
 {
   "id": "xunit-csharp",
   "title": "xUnit.net",
-  "description": "Escreva testes unitários modernos em .NET com [Fact], [Theory], [InlineData] e asserções limpas.",
+  "description": "Proteja as regras da PixelShop com testes automáticos leves: [Fact] para casos únicos, [Theory] + [InlineData] para vários cenários e Assert.Equal.",
   "category": "library",
   "languageId": "csharp-dotnet",
   "prerequisites": [
@@ -13,8 +13,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Testes Unitários com xUnit",
-      "description": "Domine [Fact], [Theory] com [InlineData] e as principais asserções de xUnit.",
+      "title": "Módulo 1: Guardião de Qualidade da PixelShop (xUnit)",
+      "description": "Escreva testes rápidos e claros com [Fact], [Theory], [InlineData] e Assert.",
       "lessons": [
         "lesson-01-fact-theory-assert"
       ]

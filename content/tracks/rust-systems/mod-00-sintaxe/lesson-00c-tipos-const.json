@@ -1,0 +1,74 @@
+{
+  "id": "rust-tipos-00c",
+  "title": "Tipos (i32, bool) e Regras Fixas (const)",
+  "description": "Aprenda a anotar tipos com dois-pontos (:) e criar regras fixas do jogo com const.",
+  "mission": "Missão 3: Definir o limite máximo de vida e o estado do escudo do herói.",
+  "xp": 20,
+  "steps": [
+    {
+      "type": "theory",
+      "title": "Anotando tipos com `:` e usando `const`",
+      "content": "O Rust quase sempre adivinha o tipo sozinho, mas você pode escrevê-lo após `:` quando quiser deixar explícito: `i32` (inteiro), `f64` (decimal) e `bool` (`true`/`false`).\nJá para valores fixos do jogo que nunca mudam, usamos `const` em MAIÚSCULAS — e nele o tipo com `:` é sempre obrigatório.",
+      "codeExample": "const MAX_HP: i32 = 100;\n\nfn main() {\n    let escudo_ativo: bool = true;\n    println!(\"Max HP: {} | Escudo: {}\", MAX_HP, escudo_ativo);\n}",
+      "expectedOutput": "Max HP: 100 | Escudo: true",
+      "keyTakeaways": [
+        "Tipo explícito vem após dois-pontos: `let ativo: bool = true;`.",
+        "`const` sempre exige tipo explícito: `const MAX_HP: i32 = 100;`."
+      ]
+    },
+    {
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "Qual será a saída deste painel de status?",
+      "codeSnippet": "const BONUS: i32 = 5;\nlet dano: i32 = 12;\nlet critico: bool = true;\nprintln!(\"Dano: {} (Crítico: {})\", dano + BONUS, critico);",
+      "options": [
+        "Dano: 17 (Crítico: true)",
+        "Dano: 12 (Crítico: true)",
+        "Dano: 17 (Crítico: false)",
+        "Erro porque const não pode ser somado com let"
+      ],
+      "correctIndex": 0,
+      "hint": "Some `dano` (12) com `BONUS` (5) e observe o valor de `critico`.",
+      "expectedOutput": "Dano: 17 (Crítico: true)",
+      "explanation": "`12 + 5` dá `17`, e `critico` imprime `true`."
+    },
+    {
+      "type": "spot_the_bug",
+      "prompt": "Esta constante não compila porque faltou uma regra obrigatória do `const` em Rust. Clique na linha com o bug:",
+      "lines": [
+        "fn main() {",
+        "    const MAX_VIDAS = 3;",
+        "    let vivo: bool = true;",
+        "    println!(\"{} {}\", MAX_VIDAS, vivo);",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "hint": "Toda `const` precisa declarar o tipo depois de `:` (por exemplo `: i32`).",
+      "expectedOutput": "3 true",
+      "explanation": "O correto é `const MAX_VIDAS: i32 = 3;` — em constantes, o Rust nunca adivinha o tipo."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a constante `MAX_OURO` e a variável booleana `tem_chave`:",
+      "codeTemplate": "{{blank}} MAX_OURO: i32 = 999;\nlet tem_chave: {{blank}} = true;",
+      "blanks": [
+        { "answer": "const", "placeholder": "constante" },
+        { "answer": "bool", "placeholder": "tipo lógico" }
+      ],
+      "options": ["const", "bool", "let", "i32"],
+      "hint": "Constantes usam `const`, e `true`/`false` têm tipo `bool`.",
+      "expectedOutput": "MAX_OURO = 999 | tem_chave = true",
+      "explanation": "`const` define valores fixos e `bool` representa verdadeiro ou falso."
+    },
+    {
+      "type": "write_code",
+      "prompt": "Crie a constante `LIMITE_NIVEL` do tipo `i32` valendo `50` para completar a configuração da arena.",
+      "starterCode": "fn main() {\n    // TODO: declare `const LIMITE_NIVEL` do tipo `i32` igual a 50\n    \n    println!(\"Nível máximo: {}\", LIMITE_NIVEL);\n}",
+      "requiredTokens": ["const", "LIMITE_NIVEL", ": i32", "50"],
+      "sampleSolution": "fn main() {\n    const LIMITE_NIVEL: i32 = 50;\n    println!(\"Nível máximo: {}\", LIMITE_NIVEL);\n}",
+      "hint": "Escreva `const LIMITE_NIVEL: i32 = 50;`.",
+      "expectedOutput": "Nível máximo: 50",
+      "explanation": "Show! Constantes com tipo explícito deixam as regras do jogo claras e seguras."
+    }
+  ]
+}

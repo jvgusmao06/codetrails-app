@@ -1,7 +1,7 @@
 {
   "id": "eigen-linalg-cpp",
   "title": "Eigen (Álgebra Linear C++)",
-  "description": "Faça cálculos matriciais, decomposições e robótica/3D em C++ com velocidade SIMD usando Eigen::MatrixXd e Vector3d.",
+  "description": "Programe o piloto automático 3D da nave Nova-9 em C++ com Eigen: Vector3d, matrizes e velocidade SIMD sem complicação.",
   "category": "library",
   "languageId": "c-cpp-systems",
   "prerequisites": ["c-cpp-systems"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: MatrixXd, Vector3d e Operações SIMD",
-      "description": "Multiplique matrizes e resolva sistemas lineares em tempo real no C++.",
+      "title": "Módulo 1: Piloto Automático 3D (Vector3d e MatrixXd)",
+      "description": "Calcule produto escalar, produto vetorial e multiplicação matricial em tempo real com Eigen.",
       "lessons": ["lesson-01-matrix-vector-simd"]
     }
   ]

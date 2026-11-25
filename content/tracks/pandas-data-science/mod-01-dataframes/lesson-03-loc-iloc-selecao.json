@@ -1,73 +1,73 @@
 {
   "id": "pandas-loc-iloc-03",
-  "title": "Seleção Precisa: .loc[] (Rótulos) vs .iloc[] (Posições) e Colunas Vetorizadas",
-  "description": "Selecione linhas e colunas sem ambiguidade usando .loc e .iloc e crie novas colunas em velocidade C.",
+  "title": "Seleção Precisa: .loc[] vs .iloc[]",
+  "description": "Recorte linhas e colunas por nome com .loc[], por posição numérica com .iloc[] e crie novas colunas calculadas.",
+  "mission": "Missão 3: Calcular o total de cada comanda e recortar os itens mais vendidos com .loc e .iloc.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Dominando .loc[] e .iloc[] no Pandas",
-      "content": "No Pandas, existem dois indexadores explícitos que evitam avisos de cópia (`SettingWithCopyWarning`):\n- **`.loc[linhas, colunas]`**: seleciona pelo **nome/rótulo** do índice ou condição booleana (`df.loc[df[\"preco\"] > 50, [\"nome\", \"preco\"]]`).\n- **`.iloc[i, j]`**: seleciona pela **posição numérica** (0, 1, 2...), igual a um array Python (`df.iloc[0:5, 0:2]`).\nE para criar uma coluna calculada, nunca use `for`: faça operação vetorizada direto (`df[\"total\"] = df[\"qtd\"] * df[\"preco\"]`)!",
-      "codeExample": "# Seleção por condição e nomes de colunas (.loc)\ncaros = df.loc[df[\"preco\"] > 100, [\"produto\", \"preco\"]]\n\n# Seleção por índice numérico: 3 primeiras linhas, 2 primeiras colunas (.iloc)\namostra = df.iloc[:3, :2]\n\n# Nova coluna vetorizada (sem loop for!)\ndf[\"total\"] = df[\"qtd\"] * df[\"preco\"]",
+      "title": "Rótulos (.loc) ou Posições (.iloc)?",
+      "content": "No Pandas, você escolhe exatamente o que quer recortar usando dois indexadores:\n• **`.loc[linhas, colunas]`** usa **nomes/condições** (ex: `df.loc[df[\"preco\"] > 10, \"item\"]`).\n• **`.iloc[i, j]`** usa **posições numéricas** (pense em **i** de *integer*). E para criar colunas calculadas, basta multiplicar colunas diretamente!",
+      "codeExample": "import pandas as pd\n\ndf = pd.DataFrame({\"item\": [\"Café\", \"Bolo\"], \"qtd\": [2, 3], \"preco\": [8, 12]})\ndf[\"total\"] = df[\"qtd\"] * df[\"preco\"]\nprint(df.loc[df[\"total\"] > 20, \"item\"].tolist())\nprint(df.iloc[0, 0])",
+      "expectedOutput": "['Bolo']\nCafé",
       "keyTakeaways": [
-        "`.loc` usa rótulos/condições; `.iloc` usa índices inteiros (pense em **i** de integer).",
-        "No `.loc[\"a\":\"c\"]`, o final `'c'` é inclusivo; no `.iloc[0:3]`, o final `3` é exclusivo (padrão Python).",
-        "Operações vetorizadas (`df[\"a\"] + df[\"b\"]`) são 100x mais rápidas que iterar linha por linha."
+        "`.loc` seleciona por rótulo/condição booleana; `.iloc` seleciona apenas por índice inteiro.",
+        "Operações entre colunas (`df[\"qtd\"] * df[\"preco\"]`) calculam todas as linhas de uma vez."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual indexador do Pandas seleciona exclusivamente por **posições inteiras** (ex: primeiras 10 linhas e primeiras 3 colunas)?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal ao usar `.iloc[1, 0]` neste cardápio?",
+      "codeSnippet": "import pandas as pd\ndf = pd.DataFrame({\"item\": [\"Café\", \"Bolo\", \"Chá\"], \"preco\": [8, 15, 10]})\nprint(df.iloc[1, 0])",
       "options": [
-        "df.loc[:10, :3]",
-        "df.iloc[:10, :3]",
-        "df.pos[:10, :3]",
-        "df.select(10, 3)"
+        "Bolo",
+        "Café",
+        "15",
+        "Chá"
       ],
-      "correctIndex": 1,
-      "explanation": "`.iloc` (integer location) sempre indexa por posição numérica 0-based."
+      "correctIndex": 0,
+      "hint": "Os índices começam em `0`: linha `1` é a segunda linha, coluna `0` é a primeira coluna (`item`).",
+      "expectedOutput": "Bolo",
+      "explanation": "Linha 1 (`Bolo`, 15) e coluna 0 (`item`) apontam exatamente para `Bolo`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para criar uma coluna vetorizada `total` e filtrar linhas caras exibindo apenas a coluna `produto`:",
-      "codeTemplate": "df[\"total\"] = df[\"qtd\"] {{blank}} df[\"preco\"]\ncaros = df.{{blank}}[df[\"total\"] > 100, \"produto\"]",
+      "prompt": "Complete o cálculo da coluna `total` e recorte apenas o nome dos itens cujo total passa de 20:",
+      "codeTemplate": "df[\"total\"] = df[\"qtd\"] {{blank}} df[\"preco\"]\nmaiores = df.{{blank}}[df[\"total\"] > 20, \"item\"]",
       "blanks": [
-        { "answer": "*", "placeholder": "multiplicar" },
+        { "answer": "*", "placeholder": "operador" },
         { "answer": "loc", "placeholder": "indexador" }
       ],
-      "options": ["*", "loc", "iloc", "+", "at"],
-      "explanation": "Multiplicar colunas diretamente é vetorizado, e `.loc` permite combinar máscara booleana nas linhas com nome de coluna."
+      "options": ["*", "loc", "iloc", "+", "select"],
+      "hint": "Multiplique `qtd` por `preco` com `*` e use o indexador de rótulos/condições (`.loc`).",
+      "expectedOutput": "1    Bolo\nName: item, dtype: object",
+      "explanation": "Multiplicar colunas é vetorizado, e `.loc[condicao, \"item\"]` filtra linhas e escolhe a coluna numa tacada só."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Identifique a linha com erro de indexação ao tentar selecionar colunas pelo nome:",
+      "prompt": "Ops! O código deu `IndexError`/`TypeError` ao tentar selecionar colunas pelo nome. Qual linha tem o bug?",
       "lines": [
-        "amostra = df.iloc[:5, [\"produto\", \"preco\"]]",
+        "import pandas as pd",
+        "amostra = df.iloc[:3, [\"item\", \"preco\"]]",
         "df[\"total\"] = df[\"qtd\"] * df[\"preco\"]",
-        "print(amostra.head())"
+        "print(amostra)"
       ],
-      "buggyLineIndex": 0,
-      "explanation": "`.iloc` aceita apenas posições inteiras, nunca nomes de colunas em string. Para selecionar colunas pelo nome, use `.loc`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para calcular a coluna `total`, filtrar pedidos acima de 500 com `.loc` e pegar as 3 primeiras linhas com `.iloc`:",
-      "blocks": [
-        "top3 = grandes.iloc[:3]",
-        "df[\"total\"] = df[\"qtd\"] * df[\"preco\"]",
-        "grandes = df.loc[df[\"total\"] > 500, [\"produto\", \"total\"]]"
-      ],
-      "correctOrder": [1, 2, 0],
-      "explanation": "Calculamos `total` de forma vetorizada, filtramos e projetamos colunas com `.loc`, e pegamos as 3 primeiras linhas com `.iloc[:3]`."
+      "buggyLineIndex": 1,
+      "hint": "`.iloc` só entende números inteiros — nunca nomes de colunas entre aspas!",
+      "expectedOutput": "   item  preco\n0  Café      8\n1  Bolo     15",
+      "explanation": "Na linha 2, usar nomes como `[\"item\", \"preco\"]` exige `.loc` (ou trocar por posições como `df.iloc[:3, :2]`)."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Usando indexação por rótulos no DataFrame `df`, selecione apenas a coluna `\"nome\"` das linhas em que `idade` é maior ou igual a `18` e armazene o resultado em `adultos`.",
-      "starterCode": "",
-      "requiredTokens": ["adultos", "df.loc[", "df[\"idade\"] >= 18", "\"nome\""],
-      "sampleSolution": "adultos = df.loc[df[\"idade\"] >= 18, \"nome\"]",
-      "hint": "Passe a condição `df[\"idade\"] >= 18` como primeiro argumento de `df.loc[...]` e `\"nome\"` como segundo.",
-      "explanation": "Passar filtro e coluna juntos no `.loc` é a forma mais segura e idiomática no Pandas."
+      "prompt": "Use `.loc` no DataFrame `df` para guardar em `caros` apenas a coluna `\"item\"` das linhas onde `preco >= 12`.",
+      "starterCode": "import pandas as pd\n\n# df já possui as colunas \"item\" e \"preco\"\n# TODO: selecione com df.loc[...] a coluna \"item\" onde preco >= 12\ncaros = \nprint(caros)",
+      "requiredTokens": ["caros", "df.loc[", "12", "item"],
+      "sampleSolution": "import pandas as pd\n\ncaros = df.loc[df[\"preco\"] >= 12, \"item\"]\nprint(caros)",
+      "hint": "Escreva `df.loc[df[\"preco\"] >= 12, \"item\"]`.",
+      "expectedOutput": "1    Bolo\nName: item, dtype: object",
+      "explanation": "Excelente! Passar filtro e nome da coluna juntos no `.loc` deixa o código limpo e sem avisos de cópia."
     }
   ]
 }

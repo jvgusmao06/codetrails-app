@@ -1,91 +1,73 @@
 {
   "id": "rust-structs-metodos-03",
-  "title": "Structs e Métodos (impl e &self)",
-  "description": "Agrupe dados com struct e adicione comportamentos com blocos impl e &self.",
+  "title": "Ficha do Herói (struct e impl)",
+  "description": "Agrupe os dados do personagem em um struct e dê ações a ele usando um bloco impl com &self.",
+  "mission": "Missão 7: Criar a ficha do herói e um método para checar se ele ainda está vivo.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Modelando Dados com struct e impl",
-      "content": "Rust não tem `class`. Para agrupar campos relacionados, definimos um `struct` com o nome e o tipo de cada campo (por exemplo `String` para texto dinâmico, `u32` para inteiros ou `bool` para booleanos). Já os métodos que pertencem a esse struct ficam separados dentro de um bloco `impl NomeStruct { ... }`, recebendo `&self` como primeiro parâmetro para ler os campos da instância.",
-      "codeExample": "struct Retangulo {\n    largura: u32,\n    altura: u32,\n}\n\nimpl Retangulo {\n    fn area(&self) -> u32 {\n        self.largura * self.altura\n    }\n}\n\nfn main() {\n    let r = Retangulo { largura: 10, altura: 5 };\n    println!(\"Área = {}\", r.area());\n}",
+      "title": "Dados em struct, ações em impl",
+      "content": "Rust não usa `class` — ele separa tudo de forma bem organizada:\n• `struct` guarda os **dados** (ex.: `hp`, `nivel`).\n• `impl` guarda as **ações** (métodos), recebendo `&self` para ler os campos do próprio herói.",
+      "codeExample": "struct Heroi {\n    hp: i32,\n}\n\nimpl Heroi {\n    fn esta_vivo(&self) -> bool {\n        self.hp > 0\n    }\n}\n\nfn main() {\n    let h = Heroi { hp: 80 };\n    println!(\"Vivo? {}\", h.esta_vivo());\n}",
+      "expectedOutput": "Vivo? true",
       "keyTakeaways": [
-        "`struct Nome { campo: Tipo }` define a estrutura de dados.",
-        "`impl Nome { fn metodo(&self) -> Tipo { ... } }` define métodos associados.",
-        "Instanciamos um struct com `Nome { campo: valor }` e chamamos métodos com `instancia.metodo()`."
+        "`struct Nome { campo: Tipo }` define os dados.",
+        "`impl Nome { fn metodo(&self) { ... } }` adiciona métodos àquele struct."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Para que serve o primeiro parâmetro `&self` em um método dentro de `impl Retangulo`?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal ao chamar `espada.poder()`?",
+      "codeSnippet": "struct Arma { dano: i32, bonus: i32 }\n\nimpl Arma {\n    fn poder(&self) -> i32 { self.dano + self.bonus }\n}\n\nlet espada = Arma { dano: 12, bonus: 3 };\nprintln!(\"Poder: {}\", espada.poder());",
       "options": [
-        "Para permitir acesso de leitura aos campos da própria instância sem precisar de `class`",
-        "Para tornar o struct global em todo o programa",
-        "Para apagar a instância após a chamada do método",
-        "Para converter o struct em uma constante"
+        "Poder: 15",
+        "Poder: 12",
+        "Poder: 3",
+        "Erro porque falta class"
       ],
       "correctIndex": 0,
-      "explanation": "`&self` referencia a instância atual sobre a qual o método foi chamado, permitindo ler `self.campo`."
+      "hint": "`self.dano` vale 12 e `self.bonus` vale 3.",
+      "expectedOutput": "Poder: 15",
+      "explanation": "`espada.poder()` soma `self.dano + self.bonus` (12 + 3) e imprime `Poder: 15`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para implementar o método `nivel` no struct `Player` e imprimir o resultado:",
-      "codeTemplate": "{{blank}} Player {\n    {{blank}} nivel(&self) -> u8 {\n        10\n    }\n}\n{{blank}}(\"Nível: {}\", p.nivel());",
+      "prompt": "Complete o bloco de métodos do struct `Player`:",
+      "codeTemplate": "{{blank}} Player {\n    fn nivel({{blank}}) -> u8 {\n        self.xp / 10\n    }\n}",
       "blanks": [
         { "answer": "impl", "placeholder": "bloco" },
-        { "answer": "fn", "placeholder": "função" },
-        { "answer": "println!", "placeholder": "macro" }
+        { "answer": "&self", "placeholder": "instância" }
       ],
-      "options": ["impl", "fn", "println!", "class", "def", "println"],
-      "explanation": "Métodos ficam dentro de `impl NomeStruct`, são declarados com `fn` e exibidos com a macro `println!`."
+      "options": ["impl", "&self", "class", "this"],
+      "hint": "Métodos ficam dentro de `impl Player` e recebem `&self` para ler os campos.",
+      "expectedOutput": "player.nivel() => 3",
+      "explanation": "`impl` agrupa os métodos e `&self` dá acesso de leitura a `self.xp`."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este código tenta definir um método diretamente dentro do `struct`, o que não é válido em Rust. Clique na linha com o erro:",
+      "prompt": "Em Rust, métodos nunca ficam dentro do `struct`. Clique na linha que está no lugar errado:",
       "lines": [
-        "struct Ponto {",
-        "    x: i32,",
-        "    y: i32,",
-        "    fn soma(&self) -> i32 { self.x + self.y }",
+        "struct Escudo {",
+        "    defesa: i32,",
+        "    fn bloquear(&self) -> i32 { self.defesa }",
         "}"
       ],
-      "buggyLineIndex": 3,
-      "explanation": "Na linha 4, métodos não podem ficar dentro de `struct`. Em Rust, dados ficam em `struct Ponto` e métodos ficam separados em `impl Ponto { ... }`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para definir o struct `Conta`, implementar `saldo(&self)` e imprimir o valor em `main`:",
-      "blocks": [
-        "impl Conta { fn saldo(&self) -> i32 { self.valor } }",
-        "fn main() {",
-        "    let c = Conta { valor: 100 };",
-        "struct Conta { valor: i32 }",
-        "    println!(\"{}\", c.saldo());",
-        "}"
-      ],
-      "correctOrder": [3, 0, 1, 2, 4, 5],
-      "explanation": "Definimos `struct Conta`, depois `impl Conta`, e dentro de `fn main()` instanciamos `c` e chamamos `c.saldo()`."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete a criação da instância `r` do `struct Retangulo` e a verificação condicional usando o método `area()`:",
-      "codeTemplate": "let r = {{blank}} { largura: 4, altura: 5 };\n{{blank}} r.{{blank}}() > 10 {\n    println!(\"Grande\");\n}",
-      "blanks": [
-        { "answer": "Retangulo", "placeholder": "struct" },
-        { "answer": "if", "placeholder": "condição" },
-        { "answer": "area", "placeholder": "método" }
-      ],
-      "options": ["Retangulo", "if", "area", "new", "when", "impl"],
-      "explanation": "Instanciamos com `Retangulo { ... }`, testamos com `if` e chamamos o método `r.area()`."
+      "buggyLineIndex": 2,
+      "hint": "Onde a função `fn bloquear` foi escrita?",
+      "expectedOutput": "Defesa: 10",
+      "explanation": "A linha 3 (`fn bloquear`) deve ficar separada dentro de `impl Escudo { ... }`."
     },
     {
       "type": "write_code",
-      "prompt": "Defina um tipo composto chamado `Usuario` com os campos `nome` (texto `String`) e `ativo` (booleano `bool`).",
-      "starterCode": "",
-      "requiredTokens": ["struct", "Usuario", "nome", "String", "ativo", "bool"],
-      "sampleSolution": "struct Usuario {\n    nome: String,\n    ativo: bool,\n}",
-      "hint": "Use `struct Usuario { nome: String, ativo: bool }`.",
-      "explanation": "Em structs do Rust, cada campo segue o formato `nome_campo: Tipo`, separado por vírgula."
+      "prompt": "Complete o `struct Heroi` adicionando o campo `hp: i32` e `vivo: bool`.",
+      "starterCode": "struct Heroi {\n    // TODO: adicione os campos `hp: i32,` e `vivo: bool,`\n    \n}\n\nfn main() {\n    let h = Heroi { hp: 100, vivo: true };\n    println!(\"HP: {} | Vivo: {}\", h.hp, h.vivo);\n}",
+      "requiredTokens": ["struct", "Heroi", "hp: i32", "vivo: bool"],
+      "sampleSolution": "struct Heroi {\n    hp: i32,\n    vivo: bool,\n}\n\nfn main() {\n    let h = Heroi { hp: 100, vivo: true };\n    println!(\"HP: {} | Vivo: {}\", h.hp, h.vivo);\n}",
+      "hint": "Dentro de `struct Heroi`, escreva `hp: i32,` e `vivo: bool,`.",
+      "expectedOutput": "HP: 100 | Vivo: true",
+      "explanation": "Módulo 1 concluído! Você já sabe criar variáveis, decisões, loops, funções e structs em Rust."
     }
   ]
 }

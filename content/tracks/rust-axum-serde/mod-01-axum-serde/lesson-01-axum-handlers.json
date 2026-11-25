@@ -1,89 +1,74 @@
 {
   "id": "axum-01",
-  "title": "Serialização com Serde e Rotas Assíncronas no Axum",
-  "description": "Use #[derive(Serialize, Deserialize)] do Serde e extratores tipados Json<T> em handlers assíncronos do Axum.",
+  "title": "API da Guilda: Axum, Serde e Json<T>",
+  "description": "Use #[derive(Serialize, Deserialize)] com o extrator Json<T> para criar endpoints assíncronos super seguros no Axum.",
+  "mission": "Missão 1: Abrir o endpoint de cadastro de heróis do Servidor RPG do Ferris com Axum.",
   "xp": 50,
   "steps": [
     {
       "type": "theory",
-      "title": "O Trio Web do Rust: Tokio + Serde + Axum",
-      "content": "No ecossistema Rust, **Tokio** fornece o runtime assíncrono (`#[tokio::main]`), **Serde** converte structs de/para JSON em tempo de compilação com `#[derive(Serialize, Deserialize)]`, e **Axum** cria rotas HTTP usando `Router::new().route(\"/caminho\", post(handler))`.\n\nNos handlers `async fn`, o Axum usa **Extractors** diretamente nos parâmetros: declarar `Json(payload): Json<MeuStruct>` valida e desserializa automaticamente o JSON da requisição (retornando HTTP 400/422 se inválido), e retornar `Json(resposta)` serializa o struct de volta em JSON.",
-      "codeExample": "use axum::{routing::post, Json, Router};\nuse serde::{Deserialize, Serialize};\n\n#[derive(Serialize, Deserialize)]\nstruct NovoUsuario {\n    nome: String,\n}\n\nasync fn criar_usuario(Json(payload): Json<NovoUsuario>) -> Json<NovoUsuario> {\n    Json(payload)\n}\n\n#[tokio::main]\nasync fn main() {\n    let app: Router = Router::new().route(\"/users\", post(criar_usuario));\n}",
+      "title": "O trio web do Rust: Tokio + Serde + Axum",
+      "content": "Para montar uma API em Rust, o trio favorito é **Tokio** (`#[tokio::main]`), **Serde** (`#[derive(Serialize, Deserialize)]`) e **Axum** (`Router::new().route(...)`).\nNo handler `async fn`, o parâmetro `Json(heroi): Json<Heroi>` já lê e valida o JSON da requisição sozinho — se vier errado, o Axum rejeita com HTTP 400/422 antes mesmo de entrar na sua função!",
+      "codeExample": "#[derive(Serialize, Deserialize)]\nstruct Heroi { nome: String }\n\nasync fn cadastrar(Json(h): Json<Heroi>) -> Json<Heroi> {\n    Json(h)\n}\nlet app = Router::new().route(\"/herois\", post(cadastrar));",
+      "expectedOutput": "HTTP 200 {\"nome\":\"Ferris\"}",
       "keyTakeaways": [
-        "`#[derive(Serialize, Deserialize)]` gera o código de conversão JSON em tempo de compilação.",
-        "No Axum, `Json(dados): Json<MeuStruct>` extrai e valida o corpo JSON automaticamente antes de rodar o handler.",
-        "`Router::new().route(\"/caminho\", post(handler))` registra a rota, e `#[tokio::main]` inicia o runtime assíncrono."
+        "`#[derive(Serialize, Deserialize)]` ensina o struct a entrar e sair como JSON sem código manual.",
+        "`Json(dados): Json<T>` valida o payload automaticamente antes de executar seu handler `async fn`."
       ]
     },
     {
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "Se um cliente enviar `{\"nome\": 123}` (número em vez de texto) para o handler abaixo, o que o Axum responde?",
+      "codeSnippet": "#[derive(Serialize, Deserialize)]\nstruct Heroi { nome: String }\n\nasync fn cadastrar(Json(h): Json<Heroi>) -> Json<Heroi> {\n    Json(h)\n}",
+      "options": [
+        "HTTP 422 rejeitando o JSON inválido automaticamente",
+        "HTTP 200 {\"nome\":\"123\"}",
+        "Panic travando o servidor inteiro",
+        "HTTP 200 {\"nome\":\"\"}"
+      ],
+      "correctIndex": 0,
+      "hint": "O extrator `Json<Heroi>` checa os tipos do Serde antes de chamar a função!",
+      "expectedOutput": "HTTP 422 Unprocessable Entity",
+      "explanation": "O Axum barra o JSON inválido automaticamente com 422 — seu handler só roda quando os dados são 100% válidos!"
+    },
+    {
       "type": "fill_in_blank",
-      "prompt": "Complete o struct Rust com a macro derive do Serde e o handler assíncrono do Axum:",
-      "codeTemplate": "#[{{blank}}(Serialize, {{blank}})]\nstruct Item { nome: String }\n\n{{blank}} fn salvar(Json(item): Json<Item>) -> Json<Item> {\n    Json(item)\n}",
+      "prompt": "Complete o derive do Serde e a palavra-chave do handler assíncrono do Axum:",
+      "codeTemplate": "#[derive(Serialize, {{blank}})]\nstruct Item { nome: String }\n{{blank}} fn salvar(Json(item): Json<Item>) -> Json<Item> {\n    Json(item)\n}",
       "blanks": [
-        { "answer": "derive", "placeholder": "atributo" },
-        { "answer": "Deserialize", "placeholder": "trait leitura" },
+        { "answer": "Deserialize", "placeholder": "ler JSON" },
         { "answer": "async", "placeholder": "assíncrono" }
       ],
-      "options": ["derive", "Deserialize", "async", "serde", "Parse", "tokio"],
-      "explanation": "`#[derive(Serialize, Deserialize)]` implementa os traits do Serde no struct e handlers do Axum são funções `async fn`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "O que acontece automaticamente quando uma requisição POST envia um JSON inválido para um handler Axum que recebe `Json(payload): Json<NovoUsuario>`?",
-      "options": [
-        "O servidor inteiro sofre crash com panic!",
-        "O extrator Json<T> rejeita a requisição antes mesmo de entrar na função e responde com HTTP 400/422",
-        "O campo nome recebe o valor null",
-        "O Axum ignora o tipo e passa uma string vazia"
-      ],
-      "correctIndex": 1,
-      "explanation": "Os extratores do Axum validam o payload contra o struct Serde antes de invocar o handler, retornando 400/422 automaticamente se o formato ou tipo estiver incorreto."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual atributo é usado sobre `async fn main()` para inicializar o runtime assíncrono que executa o servidor Axum?",
-      "options": [
-        "#[axum::server]",
-        "#[serde::async]",
-        "#[tokio::main]",
-        "#[derive(Async)]"
-      ],
-      "correctIndex": 2,
-      "explanation": "O Axum roda sobre o runtime Tokio, que utiliza a macro `#[tokio::main]` para transformar a função `main` assíncrona no ponto de entrada."
+      "options": ["Deserialize", "async", "Parse", "tokio"],
+      "hint": "Para receber `Json<Item>` precisamos derivar `Deserialize`, e todo handler Axum é `async fn`.",
+      "expectedOutput": "HTTP 200 {\"nome\":\"Espada\"}",
+      "explanation": "`Deserialize` permite ler o JSON da entrada e `async fn` integra o handler ao runtime Tokio."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este handler Axum com Serde não compila porque o struct não pode ser desserializado a partir da requisição. Clique na linha com o bug:",
+      "prompt": "Ops! Este handler Axum não compila porque `Pedido` só sabe sair em JSON, mas não sabe entrar! Qual linha tem o bug?",
       "lines": [
         "#[derive(Serialize)]",
-        "struct Pedido { produto: String }",
-        "async fn criar_pedido(Json(p): Json<Pedido>) -> Json<Pedido> {",
+        "struct Pedido { item: String }",
+        "async fn criar(Json(p): Json<Pedido>) -> Json<Pedido> {",
         "    Json(p)",
         "}"
       ],
       "buggyLineIndex": 0,
-      "explanation": "Na linha 1, falta `Deserialize` no `#[derive(...)]`. Para receber `Json<Pedido>` como extrator de entrada, o struct precisa implementar `Deserialize`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para definir um struct serializável, seu handler Axum e o registro da rota POST:",
-      "blocks": [
-        "#[derive(Serialize, Deserialize)]",
-        "struct Tarefa { titulo: String }",
-        "async fn criar_tarefa(Json(t): Json<Tarefa>) -> Json<Tarefa> { Json(t) }",
-        "let app = Router::new().route(\"/tarefas\", post(criar_tarefa));"
-      ],
-      "correctOrder": [0, 1, 2, 3],
-      "explanation": "Primeiro anotamos o struct com `#[derive(Serialize, Deserialize)]`, definimos o struct, criamos o handler `async fn` com `Json<T>` e registramos no `Router`."
+      "hint": "Olhe o `#[derive(...)]` na linha 1: falta o trait que lê JSON da requisição!",
+      "expectedOutput": "HTTP 200 {\"item\":\"Poção\"}",
+      "explanation": "Na linha 1, adicione `Deserialize` (`#[derive(Serialize, Deserialize)]`) para o extrator `Json<Pedido>` funcionar."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva em Rust um struct `Mensagem` com um campo `texto: String` preparado para serialização e desserialização com Serde, e um handler assíncrono do Axum chamado `eco` que receba esse struct via extrator `Json` e o retorne embrulhado em `Json`.",
-      "starterCode": "",
-      "requiredTokens": ["#[derive(", "Serialize", "Deserialize", "struct Mensagem", "async fn eco", "Json<Mensagem>"],
-      "sampleSolution": "#[derive(Serialize, Deserialize)]\nstruct Mensagem {\n    texto: String,\n}\n\nasync fn eco(Json(msg): Json<Mensagem>) -> Json<Mensagem> {\n    Json(msg)\n}",
-      "hint": "Use `#[derive(Serialize, Deserialize)]` no `struct Mensagem` e receba `Json(msg): Json<Mensagem>` retornando `Json<Mensagem>`.",
-      "explanation": "Esse exercício combina derivação de traits Serde (`Serialize, Deserialize`) com o extrator e resposta tipada `Json<T>` em um handler `async fn` do Axum."
+      "prompt": "Complete o `#[derive(...)]` de `Mensagem` e escreva o handler `async fn eco` recebendo e retornando `Json<Mensagem>`.",
+      "starterCode": "// TODO: adicione #[derive(Serialize, Deserialize)]\nstruct Mensagem {\n    texto: String,\n}\n// TODO: crie async fn eco(Json(msg): Json<Mensagem>) -> Json<Mensagem>\n",
+      "requiredTokens": ["#[derive(", "Serialize", "Deserialize", "async fn eco", "Json<Mensagem>", "Json(msg)"],
+      "sampleSolution": "#[derive(Serialize, Deserialize)]\nstruct Mensagem {\n    texto: String,\n}\nasync fn eco(Json(msg): Json<Mensagem>) -> Json<Mensagem> {\n    Json(msg)\n}",
+      "hint": "Coloque `#[derive(Serialize, Deserialize)]` acima de `struct Mensagem` e escreva `async fn eco(Json(msg): Json<Mensagem>) -> Json<Mensagem> { Json(msg) }`.",
+      "expectedOutput": "HTTP 200 {\"texto\":\"Olá, Ferris!\"}",
+      "explanation": "Mandou bem! Sua primeira rota assíncrona Axum + Serde já está no ar."
     }
   ]
 }

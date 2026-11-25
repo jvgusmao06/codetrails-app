@@ -1,81 +1,75 @@
 {
   "id": "algo-sliding-window-03",
-  "title": "Janela Deslizante (Sliding Window) para Subarrays em O(n)",
-  "description": "Transforme algoritmos lentos O(n*k) de subarrays e substrings em soluções elegantes de tempo linear O(n).",
+  "title": "Janela Deslizante (Sliding Window) em O(n)",
+  "description": "Calcule a melhor sequência contínua de tamanho k sem refazer somas, deslizando a janela em O(n).",
+  "mission": "Missão 7: Encontrar o trecho de 3 ilhas seguidas com mais moedas de ouro em uma só passada!",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Otimizando Subarrays com Sliding Window",
-      "content": "Imagine calcular a maior soma de 3 dias seguidos em um array de 1 milhão de vendas. Recalcular a soma de cada trio do zero custaria $O(n \\cdot k)$. Com o padrão **Janela Deslizante (Sliding Window)**, calculamos a soma inicial dos primeiros `k` elementos (`sum(nums[:k])`) e, ao avançar a janela uma posição para a direita (`i` de `k` até `len(nums) - 1`), **somamos apenas o novo elemento que entrou** (`nums[i]`) e **subtraímos o elemento que saiu** pela esquerda (`nums[i - k]`) — resolvendo tudo em uma única passada **$O(n)$**!",
-      "codeExample": "def maior_soma_k(nums, k):\n    soma_janela = sum(nums[:k])\n    melhor = soma_janela\n    for i in range(k, len(nums)):\n        soma_janela += nums[i] - nums[i - k]  # Entra i, sai i-k!\n        melhor = max(melhor, soma_janela)\n    return melhor",
+      "title": "Deslize a janela: soma quem entra, tira quem sai",
+      "content": "Quer achar a maior soma de `k` elementos seguidos sem recalcular tudo do zero? Com **Sliding Window**, você soma os primeiros `k` itens uma vez só.\nAo avançar para o índice `i`, basta **somar quem entrou** (`nums[i]`) e **subtrair quem saiu** pela esquerda (`nums[i - k]`) — tudo em tempo linear **O(n)**!",
+      "codeExample": "def maior_soma_k(nums, k):\n    janela = sum(nums[:k])\n    melhor = janela\n    for i in range(k, len(nums)):\n        janela += nums[i] - nums[i - k]\n        melhor = max(melhor, janela)\n    return melhor",
+      "expectedOutput": "maior_soma_k([2, 1, 5, 1, 3], 3) -> 9",
       "keyTakeaways": [
-        "Sliding Window brilha em problemas pedindo \"maior/menor subarray contínuo\" ou \"substring sem caracteres repetidos\".",
-        "Em vez de recomeçar a contagem a cada posição, atualize incrementalmente as bordas esquerda e direita da janela.",
-        "Reduz complexidade quadrática $O(n^2)$ ou $O(n \\cdot k)$ para linear $O(n)$."
+        "Na janela de tamanho `k`, quando `nums[i]` entra, `nums[i - k]` sai pela esquerda.",
+        "Sliding Window transforma buscas lentas O(n * k) em uma única passada O(n)."
       ]
     },
     {
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "O robô Bit passou pelas ilhas `[2, 5, 1, 8, 2]` com janela `k = 2`. Qual é a maior soma de 2 ilhas seguidas?",
+      "codeSnippet": "nums = [2, 5, 1, 8, 2]\nprint(maior_soma_k(nums, 2))",
+      "options": [
+        "10 (ilhas 8 e 2)",
+        "9 (ilhas 1 e 8)",
+        "7 (ilhas 2 e 5)",
+        "18 (soma de todas as ilhas)"
+      ],
+      "correctIndex": 0,
+      "hint": "As janelas de tamanho 2 são `[2,5]=7`, `[5,1]=6`, `[1,8]=9` e `[8,2]=10`!",
+      "expectedOutput": "10",
+      "explanation": "A janela `[8, 2]` soma `10`, batendo todas as anteriores em apenas uma passada pelo array!"
+    },
+    {
       "type": "fill_in_blank",
-      "prompt": "Complete a atualização da Janela Deslizante de tamanho `k` ao avançar para o índice `i`:",
-      "codeTemplate": "for i in range(k, len(nums)):\n    soma_janela += nums[i] - nums[{{blank}}]\n    melhor = {{blank}}(melhor, soma_janela)",
+      "prompt": "Complete a fórmula de deslize da janela para remover quem saiu pela esquerda e guardar o maior valor:",
+      "codeTemplate": "for i in range(k, len(nums)):\n    janela += nums[i] - nums[{{blank}}]\n    melhor = {{blank}}(melhor, janela)",
       "blanks": [
         { "answer": "i - k", "placeholder": "saindo" },
         { "answer": "max", "placeholder": "maior" }
       ],
-      "options": ["i - k", "max", "i + k", "min", "0"],
-      "explanation": "Quando `nums[i]` entra na janela de tamanho `k`, o elemento que sai pela esquerda é exatamente `nums[i - k]`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Ao usar Sliding Window para encontrar a maior soma de `k` elementos consecutivos em um array de tamanho `n`, qual é o ganho de complexidade em relação à força bruta?",
-      "options": [
-        "De O(n · k) para O(n)",
-        "De O(n) para O(1)",
-        "De O(log n) para O(n²)",
-        "Não há ganho, ambos são O(n²)"
-      ],
-      "correctIndex": 0,
-      "explanation": "A força bruta recalcula `k` somas para cada uma das `n` posições ($O(n \\cdot k)$), enquanto a janela deslizante faz apenas 1 adição e 1 subtração por passo ($O(n)$)."
+      "options": ["i - k", "max", "i + k", "min"],
+      "hint": "Quem sai pela esquerda está `k` posições atrás (`i - k`), e queremos o maior valor (`max`).",
+      "expectedOutput": "maior_soma_k([2, 5, 1, 8, 2], 2) -> 10",
+      "explanation": "Uma soma e uma subtração por passo — rápido, limpo e sem trabalho repetido!"
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Esta função de Sliding Window acumula todos os elementos do array em vez de manter apenas uma janela de tamanho `k`! Clique na linha com o bug:",
+      "prompt": "A janela abaixo nunca encolhe e acaba somando a ilha inteira! Clique na linha com bug:",
       "lines": [
         "def maior_soma_k(nums, k):",
-        "    soma_janela = sum(nums[:k])",
-        "    melhor = soma_janela",
+        "    janela = sum(nums[:k])",
+        "    melhor = janela",
         "    for i in range(k, len(nums)):",
-        "        soma_janela += nums[i]",
-        "        melhor = max(melhor, soma_janela)",
-        "    return melhor"
+        "        janela += nums[i]",
+        "        melhor = max(melhor, janela)"
       ],
       "buggyLineIndex": 4,
-      "explanation": "Na linha 5, faltou subtrair o elemento que saiu pela esquerda (`- nums[i - k]`). Sem essa subtração, a janela só cresce!"
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para construir uma função `maior_soma_k(nums, k)` completa usando Sliding Window:",
-      "blocks": [
-        "def maior_soma_k(nums, k):",
-        "    soma_janela = sum(nums[:k])",
-        "    melhor = soma_janela",
-        "    for i in range(k, len(nums)):",
-        "        soma_janela += nums[i] - nums[i - k]",
-        "        melhor = max(melhor, soma_janela)",
-        "    return melhor"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4, 5, 6],
-      "explanation": "Calculamos a primeira janela de tamanho `k`, inicializamos `melhor`, deslizamos de `k` até o fim atualizando `soma_janela` e `melhor`, e retornamos o resultado."
+      "hint": "Na linha 5, adicionamos `nums[i]`, mas esquecemos de subtrair quem saiu!",
+      "expectedOutput": "maior_soma_k([2, 5, 1, 8, 2], 2) -> 10",
+      "explanation": "Faltou `- nums[i - k]` na linha 5: `janela += nums[i] - nums[i - k]`."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Implemente a função `maior_soma_k(nums, k)` em Python usando Janela Deslizante para retornar a maior soma possível de `k` elementos contíguos em tempo $O(n)$.",
-      "starterCode": "",
-      "requiredTokens": ["def", "maior_soma_k", "for", "range", "max", "return"],
-      "sampleSolution": "def maior_soma_k(nums, k):\n    soma_janela = sum(nums[:k])\n    melhor = soma_janela\n    for i in range(k, len(nums)):\n        soma_janela += nums[i] - nums[i - k]\n        melhor = max(melhor, soma_janela)\n    return melhor",
-      "hint": "Calcule a soma inicial dos primeiros `k` itens, depois percorra a partir do índice `k` somando o elemento atual e subtraindo o elemento de `k` posições atrás.",
-      "explanation": "A atualização incremental da janela garante uma única passagem sobre o array, mantendo complexidade $O(n)$."
+      "prompt": "Complete `maior_soma_k(nums, k)` deslizando a janela de `k` até `len(nums)` e atualizando `melhor` com `max`.",
+      "starterCode": "def maior_soma_k(nums, k):\n    janela = sum(nums[:k])\n    melhor = janela\n    # TODO: percorra range(k, len(nums)) atualizando janela e melhor\n    \n    return melhor",
+      "requiredTokens": ["for", "range", "i - k", "max"],
+      "sampleSolution": "def maior_soma_k(nums, k):\n    janela = sum(nums[:k])\n    melhor = janela\n    for i in range(k, len(nums)):\n        janela += nums[i] - nums[i - k]\n        melhor = max(melhor, janela)\n    return melhor",
+      "hint": "Use `for i in range(k, len(nums)):`, faça `janela += nums[i] - nums[i - k]` e `melhor = max(melhor, janela)`.",
+      "expectedOutput": "maior_soma_k([2, 1, 5, 1, 3], 3) -> 9",
+      "explanation": "Trecho mais rico encontrado em O(n)! Sliding Window é um truque que vale ouro."
     }
   ]
 }

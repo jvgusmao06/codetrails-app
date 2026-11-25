@@ -1,7 +1,7 @@
 {
   "id": "go-web-gin",
   "title": "Go Web APIs (net/http & Gin)",
-  "description": "Construa microsserviços e APIs REST de altíssima performance em Go usando roteamento Gin, struct tags JSON e middlewares.",
+  "description": "Coloque a API da Central do Gopher no ar com Gin: rotas rápidas, JSON com struct tags e validação sem complicação.",
   "category": "framework",
   "languageId": "golang-cloud",
   "prerequisites": ["golang-cloud"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-gin-handlers",
-      "title": "Módulo 1: Rotas Gin, Struct Tags JSON e Binding",
-      "description": "Crie endpoints REST rápidos com serialização JSON nativa em Go.",
+      "title": "Módulo 1: Rotas Gin, JSON e Validação",
+      "description": "Receba pedidos em JSON, valide campos obrigatórios e responda clientes com c.JSON.",
       "lessons": ["lesson-01-gin-rest-json"]
     }
   ]

@@ -1,7 +1,7 @@
 {
   "id": "testify-go",
   "title": "Testify (Testing & Mocks)",
-  "description": "Escreva testes legíveis e expressivos em Go com assert, require (falha imediata) e mocks.",
+  "description": "Teste cada entrega da Central do Gopher com clareza usando Testify: require para travar erros cedo e assert para comparar valores.",
   "category": "library",
   "languageId": "golang-cloud",
   "prerequisites": [
@@ -14,7 +14,7 @@
     {
       "id": "mod-01-fundamentos",
       "title": "Módulo 1: assert vs require no Testify",
-      "description": "Compare valores com assert.Equal, valide erros com require.NoError e entenda quando parar o teste imediatamente.",
+      "description": "Compare valores com assert.Equal e aborte o teste na hora com require.NoError.",
       "lessons": [
         "lesson-01-assert-vs-require"
       ]

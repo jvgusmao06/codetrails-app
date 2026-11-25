@@ -1,89 +1,74 @@
 {
   "id": "java-condicionais-strings-04",
-  "title": "Condicionais, Switch Expressions, Scanner e .equals",
-  "description": "Leia entradas com Scanner, evite o erro de usar == em Strings com .equals(), domine if/else e o switch moderno com seta (->).",
+  "title": "Switch Moderno, Scanner e .equals()",
+  "description": "Leia comandos com Scanner, compare textos sem cair na armadilha do == e simplifique decisões com switch ->.",
+  "mission": "Missão 4: Ler o cupom do cliente com Scanner, validar com .equals() e definir o preço no switch.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Scanner, Comparação de Strings (.equals) e Switch Expressions",
-      "content": "Para ler texto digitado no terminal em Java, criamos `Scanner scanner = new Scanner(System.in);` e chamamos `scanner.nextLine()`. Ao comparar `String`, nunca use `==`: ele compara **endereços de memória** (só funciona para tipos primitivos como `int`, `double` e `boolean`). Use sempre **`.equals()`** — de preferência com o literal primeiro (`\"admin\".equals(entrada)`) para evitar `NullPointerException`. Além disso, desde o Java 14+, temos o **Switch Expression** com seta `->`, que não precisa de `break` e retorna um valor diretamente.",
-      "codeExample": "import java.util.Scanner;\n\nScanner scanner = new Scanner(System.in);\nString entrada = scanner.nextLine();\n\nif (\"admin\".equals(entrada)) {\n    System.out.println(\"Acesso liberado\");\n} else {\n    System.out.println(\"Acesso padrão\");\n}\n\nint codigo = 200;\nString msg = switch (codigo) {\n    case 200 -> \"OK\";\n    case 404 -> \"Não encontrado\";\n    default -> \"Outro\";\n};",
+      "title": "Comparando Strings com .equals() e escolhendo com switch ->",
+      "content": "Para ler texto digitado no terminal, usamos `new Scanner(System.in).nextLine()`.\nNa hora de comparar `String`, troque `==` por `.equals()` — e comece pelo texto fixo (`\"VIP\".equals(cupom)`) para nunca levar um `NullPointerException`!\nE com o `switch` moderno usando seta `->`, você retorna valores direto sem precisar escrever `break`.",
+      "codeExample": "String cupom = \"VIP\";\nif (\"VIP\".equals(cupom)) {\n  System.out.println(\"Desconto liberado!\");\n}\nint preco = switch (cupom) {\n  case \"VIP\" -> 8;\n  default -> 12;\n};",
+      "expectedOutput": "Desconto liberado!",
       "keyTakeaways": [
-        "Use `\"texto\".equals(var)` para comparar conteúdo de `String` com segurança contra `null`.",
-        "Switch Expressions (`case 1 -> ...;`) dispensam `break` e podem ser atribuídos a uma variável.",
-        "`Scanner` (`java.util.Scanner`) lê entradas do console com `.nextLine()`."
+        "Compare textos sempre com `\"FIXO\".equals(var)` (nunca `==`), evitando erro com `null`.",
+        "Switch Expressions (`case \"G\" -> 14;`) dispensam `break` e já devolvem o resultado."
       ]
     },
     {
-      "type": "spot_the_bug",
-      "prompt": "Este código Java falha ao comparar a String recebida do usuário com \"SIM\". Clique na linha com o bug:",
-      "lines": [
-        "String resposta = scanner.nextLine();",
-        "if (resposta == \"SIM\") {",
-        "    System.out.println(\"Confirmado!\");",
-        "}"
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "Qual valor será impresso pelo `switch` moderno abaixo?",
+      "codeSnippet": "String tamanho = \"P\";\nString rotulo = switch (tamanho) {\n  case \"P\" -> \"Pequeno - R$ 8\";\n  case \"G\" -> \"Grande - R$ 14\";\n  default -> \"Médio - R$ 10\";\n};\nSystem.out.println(rotulo);",
+      "options": [
+        "Pequeno - R$ 8",
+        "Grande - R$ 14",
+        "Médio - R$ 10",
+        "Erro porque faltou break nos cases"
       ],
-      "buggyLineIndex": 1,
-      "explanation": "Na linha 2, `resposta == \"SIM\"` compara referências de memória, não o texto! O correto é `\"SIM\".equals(resposta)`."
+      "correctIndex": 0,
+      "hint": "Com a seta `->`, o `switch` devolve apenas o caso que combinou, sem precisar de `break`.",
+      "expectedOutput": "Pequeno - R$ 8",
+      "explanation": "Como `tamanho` é `\"P\"`, o `switch` moderno devolve direto `\"Pequeno - R$ 8\"` e para ali mesmo!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a Switch Expression moderna em Java que retorna uma mensagem para cada código HTTP:",
-      "codeTemplate": "String status = {{blank}} (codigo) {\n    case 200 {{blank}} \"Sucesso\";\n    case 404 -> \"Não encontrado\";\n    {{blank}} -> \"Desconhecido\";\n};",
+      "prompt": "Complete o `switch` moderno para escolher o brinde conforme o código do combo:",
+      "codeTemplate": "String brinde = {{blank}} (combo) {\n  case 1 {{blank}} \"Biscoito\";\n  default -> \"Água com gás\";\n};",
       "blanks": [
         { "answer": "switch", "placeholder": "estrutura" },
-        { "answer": "->", "placeholder": "seta" },
-        { "answer": "default", "placeholder": "padrão" }
+        { "answer": "->", "placeholder": "seta" }
       ],
-      "options": ["switch", "->", "default", "else", "=>", "match"],
-      "explanation": "Switch Expressions em Java usam `switch (...)`, a seta `->` para mapear cada `case` e `default` para o caso padrão, sem precisar de `break`."
+      "options": ["switch", "->", "=>", "match"],
+      "hint": "No Java moderno, o `switch` usa seta simples `->` para devolver o resultado de cada caso.",
+      "expectedOutput": "Biscoito",
+      "explanation": "`switch (combo)` com `->` deixa o código limpo, sem `break` esquecido!"
     },
     {
-      "type": "multiple_choice",
-      "prompt": "Qual trecho cria corretamente um leitor de entrada padrão e lê uma linha inteira digitada pelo usuário em Java?",
-      "options": [
-        "Scanner sc = new Scanner(System.in); String linha = sc.nextLine();",
-        "Scanner sc = Scanner.open(); String linha = sc.read();",
-        "Input sc = new Input(System.in); String linha = sc.line();",
-        "System.in.readLine();"
-      ],
-      "correctIndex": 0,
-      "explanation": "Instanciamos `new Scanner(System.in)` e utilizamos `.nextLine()` para ler a linha completa como `String`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para ler um comando via `Scanner` e verificar com `if` e `.equals()` se é igual a `\"SAIR\"`:",
-      "blocks": [
+      "type": "spot_the_bug",
+      "prompt": "O cupom digitado pelo cliente nunca funciona porque a comparação usou `==` em vez de `.equals()`! Clique na linha com o bug:",
+      "lines": [
         "Scanner sc = new Scanner(System.in);",
-        "String cmd = sc.nextLine();",
-        "if (\"SAIR\".equals(cmd)) {",
-        "    System.out.println(\"Encerrando...\");",
+        "String cupom = sc.nextLine();",
+        "if (cupom == \"DUKE10\") {",
+        "  System.out.println(\"10% OFF!\");",
         "}"
       ],
-      "correctOrder": [0, 1, 2, 3, 4],
-      "explanation": "Primeiro criamos o `Scanner`, lemos a entrada com `nextLine()` e comparamos com `\"SAIR\".equals(cmd)`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Por que escrever `\"ADMIN\".equals(role)` é preferível a `role.equals(\"ADMIN\")`?",
-      "options": [
-        "Porque é mais rápido na JVM",
-        "Porque evita `NullPointerException` caso `role` seja `null`",
-        "Porque `.equals()` só funciona em literais",
-        "Porque `role.equals(...)` compara referências de memória"
-      ],
-      "correctIndex": 1,
-      "explanation": "Um literal como `\"ADMIN\"` nunca é `null`, então `\"ADMIN\".equals(null)` retorna `false` com segurança em vez de lançar `NullPointerException`."
+      "buggyLineIndex": 2,
+      "hint": "Em Java, `==` em `String` compara endereços de memória, não o conteúdo do texto.",
+      "expectedOutput": "10% OFF!",
+      "explanation": "Na linha 3, trocar `cupom == \"DUKE10\"` por `\"DUKE10\".equals(cupom)` compara o texto de verdade e ainda protege contra `null`!"
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma estrutura condicional `if` que verifique de forma segura contra `null` se a variável `role` tem o conteúdo `\"ADMIN\"` e imprima `\"OK\"` no console.",
-      "starterCode": "",
+      "prompt": "Complete o `if` para verificar de forma segura se `role` tem o texto `\"ADMIN\"` e imprimir `\"OK\"`.",
+      "starterCode": "String role = \"ADMIN\";\n// TODO: use `if (\"ADMIN\".equals(role))` e imprima \"OK\"\nif (/* verifique aqui */) {\n  System.out.println(\"OK\");\n}",
       "requiredTokens": ["if", ".equals(", "\"ADMIN\"", "System.out.println"],
-      "sampleSolution": "if (\"ADMIN\".equals(role)) {\n    System.out.println(\"OK\");\n}",
-      "hint": "Chame `.equals(role)` a partir da String literal `\"ADMIN\"` dentro da condição do `if`.",
-      "explanation": "Colocar `\"ADMIN\".equals(role)` garante comparação por conteúdo e proteção contra `NullPointerException`."
+      "sampleSolution": "String role = \"ADMIN\";\nif (\"ADMIN\".equals(role)) {\n  System.out.println(\"OK\");\n}",
+      "hint": "Substitua o comentário dentro do `if` por `\"ADMIN\".equals(role)`.",
+      "expectedOutput": "OK",
+      "explanation": "Excelente! Começar pelo literal `\"ADMIN\".equals(role)` garante comparação segura até se `role` vier `null`."
     }
   ]
 }

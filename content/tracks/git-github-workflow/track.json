@@ -1,7 +1,7 @@
 {
   "id": "git-github-workflow",
   "title": "Git & Controle de Versão",
-  "description": "Domine o fluxo de trabalho essencial de todo dev desde o zero: git init, status, diff, staging, commits, branches, merges, stash e revert.",
+  "description": "Aprenda Git salvando o Projeto Nave App em equipe: lições leves com saída visual, branches sem drama, stash, revert e resgate com reflog.",
   "category": "concept",
   "color": "#F43F5E",
   "icon": "🔀",
@@ -9,8 +9,8 @@
   "modules": [
     {
       "id": "mod-01-commits-branches",
-      "title": "Módulo 1: Primeiros Passos, Ciclo de Commit e Branches",
-      "description": "Inicialize repositórios, inspecione diffs, faça commits atômicos e trabalhe com branches isoladas.",
+      "title": "Módulo 1: Primeiros Passos, Commits e Branches",
+      "description": "Crie seu primeiro repositório, acompanhe mudanças com status/diff, trabalhe em branches e escreva commits claros.",
       "lessons": [
         "lesson-00-init-status-diff",
         "lesson-01-fluxo-git",
@@ -20,8 +20,8 @@
     },
     {
       "id": "mod-02-remoto-avancado",
-      "title": "Módulo 2: GitHub Remoto, Stash e Desfazendo Erros",
-      "description": "Sincronize com repositórios remotos (pull/push), guarde rascunhos com stash e reverta commits com segurança.",
+      "title": "Módulo 2: Trabalho em Equipe, Resgate e Open Source",
+      "description": "Sincronize com o GitHub, guarde rascunhos com stash, desfaça erros com revert/reflog e abra seu primeiro Pull Request.",
       "lessons": [
         "lesson-01-pull-push-stash",
         "lesson-02-reset-revert-log",

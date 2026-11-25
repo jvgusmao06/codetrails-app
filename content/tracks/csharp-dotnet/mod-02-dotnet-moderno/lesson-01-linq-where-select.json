@@ -1,89 +1,73 @@
 {
   "id": "csharp-linq-01",
-  "title": "LINQ: Consultando Coleções com Where, Select, OrderBy e FirstOrDefault",
-  "description": "Transforme listas e consultas de banco (Entity Framework) usando os métodos nativos do LINQ com lambdas (=>).",
+  "title": "LINQ: Filtrando a Vitrine com Where e Select",
+  "description": "Filtre, transforme e busque itens em listas com a sintaxe mais querida do C#: LINQ.",
+  "mission": "Missão 6: Filtrar os jogos em promoção da PixelShop e pegar seus nomes com LINQ.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "O Superpoder do C#: LINQ (Language Integrated Query)",
-      "content": "Um dos recursos mais amados do C# é o **LINQ** (`using System.Linq;` — já incluído globalmente no .NET moderno). Ele permite filtrar, transformar, ordenar e agregar qualquer coleção (ou banco SQL no EF Core!) usando a mesma sintaxe:\n- **`.Where(x => ...)`**: filtra elementos (como `filter`).\n- **`.Select(x => ...)`**: projeta/transforma elementos (como `map`).\n- **`.OrderBy(x => ...)`** / **`.OrderByDescending(x => ...)`**: ordena.\n- **`.FirstOrDefault(x => ...)`**: pega o primeiro que combina (ou `null`/padrão se não achar).\n- **`.Any()` / `.Sum()`**: verificações e agregações instantâneas!",
-      "codeExample": "var nomesAtivos = usuarios\n    .Where(u => u.Ativo && u.Idade >= 18)\n    .OrderBy(u => u.Nome)\n    .Select(u => u.Nome.ToUpper())\n    .ToList();\n\nbool temAdmin = usuarios.Any(u => u.Role == \"ADMIN\");\nvar primeiro = usuarios.FirstOrDefault(u => u.Id == 10);",
+      "title": "Consultando listas sem loops gigantes com LINQ",
+      "content": "O **LINQ** deixa você filtrar e transformar qualquer lista em poucas linhas legíveis: `.Where(...)` escolhe quem passa no filtro, `.Select(...)` transforma cada item e `.ToList()` executa e entrega o resultado.\nPara checar se existe pelo menos um item, `.Any(...)` para no primeiro que achar — super rápido!",
+      "codeExample": "List<int> precos = [15, 40, 25];\nvar ofertas = precos\n    .Where(p => p <= 30)\n    .Select(p => $\"R$ {p}\")\n    .ToList();\nConsole.WriteLine(string.Join(\", \", ofertas));",
+      "expectedOutput": "R$ 15, R$ 25",
       "keyTakeaways": [
-        "LINQ usa **execução preguiçosa (Deferred Execution)**: a query só roda quando você itera ou chama `.ToList()`, `.Count()` ou `.FirstOrDefault()`.",
-        "Prefira `.Any(cond)` em vez de `.Where(cond).Count() > 0` — `.Any()` para no primeiro item encontrado!",
-        "Use `.FirstOrDefault()` em vez de `.First()` quando o item pode não existir, evitando `InvalidOperationException`."
+        "`.Where` filtra, `.Select` transforma e `.ToList()` materializa a nova lista.",
+        "Use `.Any(cond)` para checar existência e `.FirstOrDefault()` para evitar erro quando não achar o item."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual método LINQ é mais eficiente para apenas verificar se existe pelo menos um pedido pago em uma lista ou consulta ao banco?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal ao rodar esta consulta LINQ?",
+      "codeSnippet": "List<int> notas = [6, 9, 10];\nvar top = notas.Where(n => n >= 9).Count();\nbool temNota10 = notas.Any(n => n == 10);\nConsole.WriteLine($\"{top} top, tem 10? {temNota10}\");",
       "options": [
-        "pedidos.Where(p => p.Pago).ToList().Count > 0",
-        "pedidos.Any(p => p.Pago)",
-        "pedidos.Select(p => p.Pago).OrderBy(x => x)",
-        "pedidos.Last(p => p.Pago)"
+        "2 top, tem 10? True",
+        "3 top, tem 10? True",
+        "1 top, tem 10? False",
+        "2 top, tem 10? False"
       ],
-      "correctIndex": 1,
-      "explanation": "`.Any(...)` interrompe a execução assim que encontra o primeiro elemento verdadeiro (equivalente a `EXISTS` no SQL)."
+      "correctIndex": 0,
+      "hint": "Entre `[6, 9, 10]`, apenas `9` e `10` são `>= 9` — e `10` está na lista!",
+      "expectedOutput": "2 top, tem 10? True",
+      "explanation": "`.Where(n => n >= 9)` seleciona `9` e `10` (`Count()` = 2), e `.Any(n => n == 10)` encontra o `10` e devolve `True`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a pipeline LINQ para filtrar usuários ativos, ordenar pelo nome decrescente e projetar apenas o e-mail:",
-      "codeTemplate": "var emails = usuarios\n    .{{blank}}(u => u.Ativo)\n    .{{blank}}(u => u.Nome)\n    .{{blank}}(u => u.Email)\n    .ToList();",
+      "prompt": "Complete a pipeline LINQ para filtrar jogos ativos e pegar só os nomes:",
+      "codeTemplate": "var nomes = jogos\n    .{{blank}}(j => j.Ativo)\n    .{{blank}}(j => j.Nome)\n    .ToList();",
       "blanks": [
         { "answer": "Where", "placeholder": "filtrar" },
-        { "answer": "OrderByDescending", "placeholder": "ordenar decrescente" },
         { "answer": "Select", "placeholder": "projetar" }
       ],
-      "options": ["Where", "OrderByDescending", "Select", "Filter", "Map", "Sort"],
-      "explanation": "`.Where` filtra, `.OrderByDescending` ordena do maior para o menor e `.Select` projeta o campo desejado."
+      "options": ["Where", "Select", "Filter", "Map"],
+      "hint": "Em C# LINQ, filtrar é `.Where` e transformar/projetar é `.Select`.",
+      "expectedOutput": "[\"StarRunner\", \"NeonDrift\"]",
+      "explanation": "Exato! `.Where` deixa passar só os ativos e `.Select` extrai apenas o `Nome` de cada jogo."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este código lança `InvalidOperationException` se não houver nenhum usuário com `Id == 99`. Clique na linha arriscada:",
+      "prompt": "Ops! Se não existir jogo com `Id == 99`, esse código estoura `InvalidOperationException`. Clique na linha arriscada:",
       "lines": [
-        "var busca = usuarios",
-        "    .Where(u => u.Ativo)",
-        "    .First(u => u.Id == 99);",
-        "Console.WriteLine(busca?.Nome ?? \"Não encontrado\");"
+        "var busca = jogos",
+        "    .Where(j => j.Ativo)",
+        "    .First(j => j.Id == 99);",
+        "Console.WriteLine(busca?.Nome ?? \"Não achou\");"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Na linha 3, `.First(...)` lança exceção se nenhum elemento corresponder. O seguro aqui é usar `.FirstOrDefault(u => u.Id == 99)`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para montar uma consulta LINQ completa que filtra produtos disponíveis, ordena por preço, projeta o nome e materializa a lista:",
-      "blocks": [
-        "var catalogo = produtos",
-        "    .Where(p => p.EmEstoque)",
-        "    .OrderBy(p => p.Preco)",
-        "    .Select(p => p.Nome)",
-        "    .ToList();"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4],
-      "explanation": "Filtramos antes com `.Where`, ordenamos com `.OrderBy`, projetamos com `.Select` e materializamos com `.ToList()`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "O que acontece se você declarar `var query = lista.Where(x => x > 10);`, depois chamar `lista.Add(20);`, e só então rodar `var resultado = query.ToList();`?",
-      "options": [
-        "`resultado` não inclui `20`, pois `Where` executou imediatamente na declaração",
-        "`resultado` inclui `20`, por causa da execução preguiçosa (Deferred Execution) do LINQ",
-        "Lança exceção de coleção modificada na linha do `Where`",
-        "`query` retorna `null`"
-      ],
-      "correctIndex": 1,
-      "explanation": "Devido à Deferred Execution, `Where` só é avaliado quando `.ToList()` é chamado, enxergando o `20` adicionado antes da materialização."
+      "hint": "Qual método explode se nenhum item bater, em vez de devolver `null`?",
+      "expectedOutput": "Não achou",
+      "explanation": "Na linha 3, `.First(...)` lança exceção se não achar nada. Trocar por `.FirstOrDefault(j => j.Id == 99)` devolve `null` com calma!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Dada uma lista `produtos`, use LINQ para filtrar apenas os itens com `Preco` maior que `50`, ordenar pelo `Nome`, projetar apenas o `Nome` e materializar em uma lista (`ToList`), além de verificar em uma variável `bool` se existe algum produto com `Preco > 200` usando `.Any(...)`.",
-      "starterCode": "",
-      "requiredTokens": [".Where(", ".OrderBy(", ".Select(", ".ToList()", ".Any("],
-      "sampleSolution": "var caros = produtos\n    .Where(p => p.Preco > 50)\n    .OrderBy(p => p.Nome)\n    .Select(p => p.Nome)\n    .ToList();\n\nbool temLuxo = produtos.Any(p => p.Preco > 200);",
-      "hint": "Encadeie `.Where(...)`, `.OrderBy(...)`, `.Select(...)` e `.ToList()`, e use `produtos.Any(...)` para a verificação booleana.",
-      "explanation": "Encadear `.Where`, `.OrderBy`, `.Select` e `.ToList()` junto com `.Any()` cobre os padrões mais comuns de consultas LINQ no .NET."
+      "prompt": "Use LINQ na lista `precos` para filtrar valores maiores que `20` com `.Where(...)`, transformar em texto com `.Select(...)` e finalizar com `.ToList()`.",
+      "starterCode": "List<int> precos = [10, 30, 50];\n// TODO: filtre > 20 com .Where, formate com .Select e chame .ToList()\nvar caros = precos\n    ;\nConsole.WriteLine(string.Join(\", \", caros));",
+      "requiredTokens": [".Where(", ".Select(", ".ToList()"],
+      "sampleSolution": "List<int> precos = [10, 30, 50];\nvar caros = precos\n    .Where(p => p > 20)\n    .Select(p => $\"R$ {p}\")\n    .ToList();\nConsole.WriteLine(string.Join(\", \", caros));",
+      "hint": "Encadeie `.Where(p => p > 20).Select(p => $\"R$ {p}\").ToList()` em `precos`.",
+      "expectedOutput": "R$ 30, R$ 50",
+      "explanation": "Você desbloqueou o superpoder do C#! Essa mesma sintaxe LINQ também funciona direto em bancos de dados no EF Core."
     }
   ]
 }

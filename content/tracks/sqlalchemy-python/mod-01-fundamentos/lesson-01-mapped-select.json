@@ -1,89 +1,73 @@
 {
   "id": "sqlalchemy-2-01",
-  "title": "SQLAlchemy 2.0: DeclarativeBase, Mapped e session.scalars(select(...))",
-  "description": "Defina modelos ORM com autocomplete total de tipos e consulte bancos relacionais com segurança.",
+  "title": "DeclarativeBase, Mapped e select() 2.0",
+  "description": "Modele tabelas SQL com type hints usando Mapped/mapped_column e busque objetos com session.scalars(select(...)).",
+  "mission": "Missão 1: Modelar o catálogo da livraria ByteBook com Mapped e consultar títulos com select().",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "SQLAlchemy 2.0 Moderno com Type Hints",
-      "content": "O **SQLAlchemy 2.0** é o ORM padrão de projetos Python + FastAPI. No estilo moderno, usamos **`Mapped[tipo]`** e **`mapped_column(...)`** dentro de uma classe herdando de **`DeclarativeBase`**, dando autocomplete completo no editor! Para consultar, não usamos mais o antigo `session.query(User)` — usamos **`select(User).where(User.ativo == True)`** com **`session.scalars(stmt).all()`**.",
-      "codeExample": "from sqlalchemy import select, String\nfrom sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column\n\nclass Base(DeclarativeBase): pass\n\nclass Usuario(Base):\n    __tablename__ = \"usuarios\"\n    id: Mapped[int] = mapped_column(primary_key=True)\n    nome: Mapped[str] = mapped_column(String(100))\n\nstmt = select(Usuario).where(Usuario.nome == \"Ana\")\nusuarios = session.scalars(stmt).all()",
+      "title": "ORM moderno e tipado no SQLAlchemy 2.0",
+      "content": "No **SQLAlchemy 2.0**, suas tabelas viram classes Python com autocomplete completo usando **`DeclarativeBase`**, **`Mapped[tipo]`** e **`mapped_column()`**.\nE esqueça o antigo `session.query(...)`: agora você monta consultas com **`select(Livro).where(...)`** e busca os objetos direto com **`session.scalars(stmt).all()`**!",
+      "codeExample": "from sqlalchemy import select, String\nfrom sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column\n\nclass Base(DeclarativeBase): pass\nclass Livro(Base):\n    __tablename__ = \"livros\"\n    id: Mapped[int] = mapped_column(primary_key=True)\n    titulo: Mapped[str] = mapped_column(String(120))",
+      "expectedOutput": "Tabela 'livros' mapeada com colunas tipadas (id: int, titulo: str)!",
       "keyTakeaways": [
-        "`Mapped[Optional[str]]` gera automaticamente uma coluna SQL que aceita `NULL`!",
-        "`select(Modelo).where(...)` unifica a sintaxe entre consultas síncronas e assíncronas (`AsyncSession`).",
-        "Use `session.commit()` para persistir alterações e `with Session(engine) as session:` para fechar a sessão."
+        "`Mapped[T] = mapped_column(...)` dá tipagem forte ao editor; `Mapped[Optional[str]]` aceita `NULL` no SQL.",
+        "Use `session.scalars(select(Modelo).where(...)).all()` para receber direto a lista de objetos."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "No SQLAlchemy 2.0, de qual classe base os modelos ORM modernos devem herdar?",
+      "kind": "predict_output",
+      "prompt": "Qual SQL o SQLAlchemy 2.0 gera ao imprimir este `select(Livro.titulo)`?",
+      "codeSnippet": "from sqlalchemy import select\n# Livro tem __tablename__ = \"livros\" e coluna titulo\nstmt = select(Livro.titulo)\nprint(stmt)",
       "options": [
-        "BaseModel",
-        "DeclarativeBase",
-        "SQLModelBase",
-        "SessionBase"
+        "SELECT livros.titulo \nFROM livros",
+        "FIND titulo IN livros",
+        "GET livros.titulo",
+        "Erro porque faltou chamar session.query()"
       ],
-      "correctIndex": 1,
-      "explanation": "A classe `DeclarativeBase` (de `sqlalchemy.orm`) é a base padrão para definir modelos declarativos no SQLAlchemy 2.0."
+      "correctIndex": 0,
+      "hint": "`select(Livro.titulo)` constrói uma consulta SQL `SELECT ... FROM ...` usando `__tablename__`!",
+      "expectedOutput": "SELECT livros.titulo \nFROM livros",
+      "explanation": "`select()` traduz seu código Python tipado diretamente em SQL padrão antes mesmo de falar com o banco."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o modelo e a consulta no padrão SQLAlchemy 2.0:",
-      "codeTemplate": "class Produto(Base):\n    __tablename__ = \"produtos\"\n    id: {{blank}}[int] = {{blank}}(primary_key=True)\n\nstmt = {{blank}}(Produto).where(Produto.id == 1)",
+      "prompt": "Complete o mapeamento da coluna `id` do catálogo da ByteBook no padrão SQLAlchemy 2.0:",
+      "codeTemplate": "class Livro(Base):\n    __tablename__ = \"livros\"\n    id: {{blank}}[int] = {{blank}}(primary_key=True)",
       "blanks": [
         { "answer": "Mapped", "placeholder": "tipo" },
-        { "answer": "mapped_column", "placeholder": "coluna" },
-        { "answer": "select", "placeholder": "consulta" }
+        { "answer": "mapped_column", "placeholder": "coluna" }
       ],
-      "options": ["Mapped", "mapped_column", "select", "Column", "query"],
-      "explanation": "`Mapped[T]` + `mapped_column()` definem colunas tipadas, e `select()` constrói consultas no SQLAlchemy 2.0."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual método da `Session` executa um `select(Modelo)` e devolve diretamente os objetos do modelo (sem precisar desempacotar tuplas)?",
-      "options": [
-        "session.query(stmt).list()",
-        "session.scalars(stmt).all()",
-        "session.fetch(stmt)",
-        "session.rows(stmt)"
-      ],
-      "correctIndex": 1,
-      "explanation": "`session.scalars(stmt).all()` extrai diretamente as instâncias do modelo ORM em uma lista."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para definir um modelo `Item` herdando de `Base` e consultar todos os registros:",
-      "blocks": [
-        "    id: Mapped[int] = mapped_column(primary_key=True)",
-        "class Item(Base):",
-        "itens = session.scalars(stmt).all()",
-        "    __tablename__ = \"itens\"",
-        "stmt = select(Item)"
-      ],
-      "correctOrder": [1, 3, 0, 4, 2],
-      "explanation": "Definimos a classe `Item(Base)` com `__tablename__` e colunas `Mapped`, construímos `select(Item)` e executamos com `session.scalars(stmt).all()`."
+      "options": ["Mapped", "mapped_column", "Column", "Field", "select"],
+      "hint": "A anotação de tipo é `Mapped[int]` e a função da coluna é `mapped_column(...)`.",
+      "expectedOutput": "Coluna primária 'id' configurada em Livro!",
+      "explanation": "`Mapped[int]` avisa o Python/editor sobre o tipo, e `mapped_column(primary_key=True)` configura a coluna no SQL."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Encontre a linha que usa a API legada removida/desencorajada em vez do padrão SQLAlchemy 2.0 com `select()` e `scalars()`:",
+      "prompt": "Este código da livraria ainda usa a API legada `session.query()` em vez do padrão 2.0 (`select()` + `scalars()`). Qual linha precisa ser atualizada?",
       "lines": [
-        "class Pedido(Base):",
-        "    __tablename__ = \"pedidos\"",
+        "class Livro(Base):",
+        "    __tablename__ = \"livros\"",
         "    id: Mapped[int] = mapped_column(primary_key=True)",
-        "pedidos = session.query(Pedido).all()"
+        "livros = session.query(Livro).all()"
       ],
       "buggyLineIndex": 3,
-      "explanation": "No SQLAlchemy 2.0, `session.query(Pedido)` é o estilo legado; o padrão moderno é `session.scalars(select(Pedido)).all()`."
+      "hint": "Qual linha está usando `.query(...)` em vez de `session.scalars(select(...)).all()`?",
+      "expectedOutput": "[<Livro id=1>, <Livro id=2>]",
+      "explanation": "Na linha 4, trocamos o legado `session.query(Livro).all()` por `session.scalars(select(Livro)).all()`!"
     },
     {
       "type": "write_code",
-      "prompt": "Construa uma consulta filtrando apenas os registros de `Cliente` cujo campo `ativo` seja verdadeiro e execute-a na `session` para obter diretamente a lista de objetos `Cliente`.",
-      "starterCode": "",
-      "requiredTokens": ["select(Cliente)", ".where(", "Cliente.ativo == True", "session.scalars(", ".all()"],
-      "sampleSolution": "from sqlalchemy import select\n\nstmt = select(Cliente).where(Cliente.ativo == True)\nclientes = session.scalars(stmt).all()",
-      "hint": "Monte a consulta com `select(Cliente).where(Cliente.ativo == True)` e execute usando `session.scalars(stmt).all()`.",
-      "explanation": "`session.scalars(stmt).all()` extrai diretamente os objetos `Cliente` filtrados sem precisar desempacotar tuplas."
+      "prompt": "Monte `stmt` filtrando os registros de `Livro` com `Livro.ativo == True` e busque a lista de objetos em `livros` usando `session.scalars(stmt).all()`.",
+      "starterCode": "from sqlalchemy import select\n\n# TODO: crie `stmt` com select(Livro).where(...) e execute com session.scalars(stmt).all()\nstmt = \nlivros = \nprint(livros)",
+      "requiredTokens": ["select(Livro)", ".where(", "Livro.ativo == True", "session.scalars(", ".all()"],
+      "sampleSolution": "from sqlalchemy import select\n\nstmt = select(Livro).where(Livro.ativo == True)\nlivros = session.scalars(stmt).all()\nprint(livros)",
+      "hint": "Escreva `stmt = select(Livro).where(Livro.ativo == True)` e `livros = session.scalars(stmt).all()`.",
+      "expectedOutput": "[<Livro id=1 titulo='Python Fluente'>]",
+      "explanation": "Catálogo no ar! Você dominou a sintaxe moderna e tipada do SQLAlchemy 2.0."
     }
   ]
 }

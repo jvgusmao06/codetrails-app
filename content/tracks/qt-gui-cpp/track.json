@@ -1,7 +1,7 @@
 {
   "id": "qt-gui-cpp",
   "title": "Qt 6 (Interfaces Desktop C++)",
-  "description": "Desenvolva aplicações desktop nativas multiplataforma em C++ usando QApplication, QWidget, Signals & Slots e QML.",
+  "description": "Crie o painel desktop nativo da nave Nova-9 em C++ com Qt 6: QApplication, botões e Signals & Slots passo a passo.",
   "category": "framework",
   "languageId": "c-cpp-systems",
   "prerequisites": ["c-cpp-systems"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: Signals & Slots e Widgets Qt 6",
-      "description": "Conecte cliques e eventos da UI a funções C++ com connect() type-safe.",
+      "title": "Módulo 1: Painel Desktop e Signals & Slots",
+      "description": "Conecte cliques de botões a funções C++ com QObject::connect e inicie o loop gráfico.",
       "lessons": ["lesson-01-signals-slots-widgets"]
     }
   ]

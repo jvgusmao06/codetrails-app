@@ -1,78 +1,74 @@
 {
   "id": "go-core-01",
-  "title": "Goroutines e Channels: Concorrência em Go",
-  "description": "Execute tarefas concorrentes leves com a palavra-chave go e comunique-se com segurança usando channels.",
+  "title": "Goroutines e Channels: Entregas em Paralelo",
+  "description": "Execute tarefas ao mesmo tempo com a palavra-chave go e troque mensagens com segurança usando channels.",
+  "mission": "Missão 5: Despachar um entregador em segundo plano e receber o aviso de entrega por um canal.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Goroutines e Channels em Go",
-      "content": "Go foi projetada para concorrência simples e escalável. Para rodar qualquer função em segundo plano como uma **Goroutine** leve gerenciada pelo runtime, basta colocar a palavra-chave **`go`** antes da chamada. Para que goroutines troquem dados sem compartilhar memória diretamente, usamos **Channels** criados com `make(chan Tipo)`. O operador seta **`<-`** envia um valor para o channel (`ch <- valor`) ou lê um valor dele (`v := <-ch`), sincronizando automaticamente quem envia e quem recebe!",
-      "codeExample": "package main\nimport \"fmt\"\n\nfunc main() {\n    ch := make(chan string)\n\n    go func() {\n        ch <- \"Tarefa concluída\"\n    }()\n\n    mensagem := <-ch\n    fmt.Println(mensagem)\n}",
+      "title": "Concorrência leve com go e chan",
+      "content": "Quer rodar uma tarefa em segundo plano sem travar o programa? Basta colocar `go` na frente da chamada para criar uma **Goroutine** superleve!\nPara conversar com ela com segurança, criamos um **Channel** (`make(chan string)`): a seta `<-` envia (`ch <- msg`) ou recebe (`msg := <-ch`).",
+      "codeExample": "ch := make(chan string)\n\ngo func() {\n    ch <- \"Pacote entregue!\"\n}()\n\naviso := <-ch\nfmt.Println(aviso)",
+      "expectedOutput": "Pacote entregue!",
       "keyTakeaways": [
-        "A palavra-chave `go` inicia uma Goroutine leve (custa poucos kilobytes) sem bloquear a função atual.",
-        "Channels (`make(chan T)`) conectam goroutines com segurança: `ch <- v` envia e `v := <-ch` recebe.",
-        "Em channels sem buffer, quem envia bloqueia até outra goroutine receber (e vice-versa)."
+        "`go funcao()` inicia uma goroutine leve em paralelo sem bloquear o fluxo principal.",
+        "Channels (`make(chan T)`) sincronizam goroutines: `ch <- valor` envia e `<-ch` recebe."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "O que acontece quando você precede uma chamada de função com a palavra-chave `go` (ex: `go enviarEmail()`)?",
+      "kind": "predict_output",
+      "prompt": "O que será impresso ao rodar este código?",
+      "codeSnippet": "ch := make(chan int)\ngo func() { ch <- 42 }()\nfmt.Println(\"Pedido:\", <-ch)",
       "options": [
-        "A função é compilada apenas no modo produção",
-        "A função passa a rodar de forma concorrente em uma nova Goroutine leve",
-        "A função bloqueia o programa até terminar completamente",
-        "A função é executada dentro de uma nova variável global"
+        "Pedido: 42",
+        "Pedido: 0",
+        "Erro porque `<-ch` não pode ir dentro de fmt.Println",
+        "Deadlock imediato"
       ],
-      "correctIndex": 1,
-      "explanation": "`go` agenda a execução da função em uma goroutine separada gerenciada pelo scheduler do runtime do Go."
+      "correctIndex": 0,
+      "hint": "A goroutine envia `42` no canal e `<-ch` espera até esse valor chegar.",
+      "expectedOutput": "Pedido: 42",
+      "explanation": "`<-ch` aguarda a goroutine enviar `42` e passa o valor direto para `fmt.Println`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para criar um channel de `string`, enviar uma mensagem dentro da goroutine e lê-la na função principal:",
-      "codeTemplate": "ch := {{blank}}(chan string)\ngo func() {\n    ch {{blank}} \"ok\"\n}()\nmsg := {{blank}}ch",
+      "prompt": "Crie o canal de `string` com `make` e envie `\"ok\"` usando a seta `<-`:",
+      "codeTemplate": "ch := {{blank}}(chan string)\ngo func() {\n    ch {{blank}} \"ok\"\n}()\nfmt.Println(<-ch)",
       "blanks": [
-        { "answer": "make", "placeholder": "criar" },
-        { "answer": "<-", "placeholder": "enviar" },
-        { "answer": "<-", "placeholder": "receber" }
+        { "answer": "make", "placeholder": "criar canal" },
+        { "answer": "<-", "placeholder": "enviar" }
       ],
-      "options": ["make", "<-", "->", "new", "chan", ":="],
-      "explanation": "Channels são criados com `make(chan T)` e usam sempre o operador `<-`: `ch <- valor` para enviar e `<-ch` para receber."
+      "options": ["make", "<-", "->", "new"],
+      "hint": "Channels nascem com `make(chan ...)` e recebem valores com `ch <- valor`.",
+      "expectedOutput": "ok",
+      "explanation": "Em Go, a seta aponta sempre para a esquerda (`<-`): entrando no canal (`ch <-`) ou saindo dele (`<-ch`)."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este programa trava com deadlock fatal em tempo de execução porque tenta enviar e receber no mesmo fluxo sem goroutine. Clique na linha onde o envio bloqueia para sempre:",
+      "prompt": "Ops! Este código trava (deadlock) porque tenta enviar e ler no mesmo fluxo sem goroutine. Qual linha trava esperando alguém ler?",
       "lines": [
         "func main() {",
         "    ch := make(chan int)",
         "    ch <- 10",
-        "    valor := <-ch",
-        "    fmt.Println(valor)",
+        "    fmt.Println(<-ch)",
         "}"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Um channel sem buffer bloqueia em `ch <- 10` até que outra goroutine leia `<-ch`. Como tudo está na mesma goroutine `main`, ocorre deadlock; o envio deve estar em uma goroutine (`go func() { ch <- 10 }()`)."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para criar um channel, enviar um dado em uma goroutine e imprimir o valor recebido:",
-      "blocks": [
-        "res := <-ch",
-        "go func() { ch <- \"pronto\" }()",
-        "fmt.Println(res)",
-        "ch := make(chan string)"
-      ],
-      "correctOrder": [3, 1, 0, 2],
-      "explanation": "Primeiro criamos o channel com `make(chan string)`, depois iniciamos a goroutine que envia o valor, lemos com `<-ch` e imprimimos `res`."
+      "hint": "Um canal sem buffer trava na hora de enviar se nenhuma outra goroutine estiver pronta para ler.",
+      "expectedOutput": "10",
+      "explanation": "`ch <- 10` bloqueia a própria `main()` para sempre! Colocando o envio em `go func() { ch <- 10 }()`, tudo flui."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie um channel de `int` chamado `ch` usando `make`, inicie uma goroutine com `go` que envie o valor `42` para `ch`, e na função principal leia o valor recebido em uma variável `resultado` e imprima-o com `fmt.Println`.",
-      "starterCode": "",
-      "requiredTokens": ["ch", "make", "chan int", "go", "<-", "fmt.Println"],
+      "prompt": "Inicie uma goroutine com `go` para enviar `42` para o canal `ch`, depois leia o valor recebido e imprima com `fmt.Println`.",
+      "starterCode": "ch := make(chan int)\n// TODO: lance uma goroutine enviando 42 para ch\n\n// TODO: leia o valor de ch e imprima com fmt.Println\n",
+      "requiredTokens": ["go", "ch <- 42", "<-ch", "fmt.Println"],
       "sampleSolution": "ch := make(chan int)\ngo func() {\n    ch <- 42\n}()\nresultado := <-ch\nfmt.Println(resultado)",
-      "hint": "Inicialize `ch := make(chan int)`, lance uma função anônima com `go func() { ... }()` enviando `42` com `<-`, e depois leia `<-ch`.",
-      "explanation": "Goroutines combinadas com channels permitem executar tarefas em segundo plano e sincronizar o resultado com segurança."
+      "hint": "Escreva `go func() { ch <- 42 }()` e em seguida `resultado := <-ch` e `fmt.Println(resultado)`.",
+      "expectedOutput": "42",
+      "explanation": "Mandou bem! Agora você já sabe despachar goroutines e sincronizar resultados por channels."
     }
   ]
 }

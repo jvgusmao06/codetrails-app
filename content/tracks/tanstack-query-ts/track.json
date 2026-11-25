@@ -1,7 +1,7 @@
 {
   "id": "tanstack-query-ts",
   "title": "TanStack Query (React Query)",
-  "description": "Gerencie estado assíncrono de servidor em TypeScript com useQuery, useMutation, cache automático e invalidação via queryKey.",
+  "description": "Dê superpoderes ao SyncBoard (painel ao vivo de tarefas): useQuery para cache automático e useMutation para atualizar a tela sem useEffect.",
   "category": "library",
   "languageId": "typescript-javascript",
   "prerequisites": [
@@ -14,8 +14,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: useQuery, useMutation e Invalidação",
-      "description": "Substitua useEffect + fetch manual por cache declarativo, estados de loading/error e mutações otimizadas.",
+      "title": "Módulo 1: Cache e Mutações no SyncBoard",
+      "description": "Busque listas da API com useQuery, crie itens com useMutation e invalide o cache automaticamente.",
       "lessons": [
         "lesson-01-usequery-usemutation"
       ]

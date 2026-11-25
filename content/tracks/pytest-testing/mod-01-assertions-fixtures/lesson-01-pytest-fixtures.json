@@ -1,47 +1,53 @@
 {
   "id": "pytest-01",
-  "title": "Testes com assert, @pytest.fixture e pytest.raises",
-  "description": "Descubra como o Pytest usa o comando assert padrão do Python, injeta dependências com fixtures e valida exceções.",
+  "title": "Testes com assert, @pytest.fixture e raises",
+  "description": "Teste funções Python sem burocracia usando assert nativo, injeção de @pytest.fixture e pytest.raises.",
+  "mission": "Missão 1: Blindar o carrinho da loja BugZero com assert, @pytest.fixture e pytest.raises.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Simplicidade do Pytest: assert, Fixtures e raises",
-      "content": "Diferente de frameworks antigos que exigem classes e `self.assertEqual()`, no **Pytest** basta criar uma função começando com **`test_`** e usar a palavra-chave nativa **`assert`**. Para preparar dados ou conexões compartilhadas entre testes, usamos o decorator **`@pytest.fixture`**, que o Pytest injeta automaticamente pelo nome do parâmetro! E para garantir que um erro esperado foi lançado, usamos `with pytest.raises(TipoErro):`.",
-      "codeExample": "import pytest\n\n@pytest.fixture\ndef carrinho_vazio():\n    return []\n\ndef test_adicionar_produto(carrinho_vazio):\n    carrinho_vazio.append(\"Livro\")\n    assert len(carrinho_vazio) == 1\n\ndef test_erro_divisao_zero():\n    with pytest.raises(ZeroDivisionError):\n        _ = 10 / 0",
+      "title": "Testes sem burocracia com Pytest",
+      "content": "No **Pytest**, você não precisa de classes enormes: basta criar uma função começando com **`test_`** e conferir o resultado com o **`assert`** normal do Python!\nPara preparar dados limpos antes de cada teste, crie uma **`@pytest.fixture`** e receba o nome dela como parâmetro; e para conferir se um erro esperado acontece, use **`with pytest.raises(TipoErro):`**.",
+      "codeExample": "import pytest\n@pytest.fixture\ndef carrinho():\n    return []\ndef test_adicionar_livro(carrinho):\n    carrinho.append(\"Livro\")\n    assert len(carrinho) == 1",
+      "expectedOutput": "1 passed in 0.02s",
       "keyTakeaways": [
-        "Funções de teste devem começar com o prefixo `test_` para serem descobertas automaticamente.",
-        "`@pytest.fixture` cria um estado limpo e isolado para cada função de teste que pedir seu nome como argumento.",
-        "Use `with pytest.raises(TipoErro):` para testar se uma função lança a exceção esperada."
+        "Toda função de teste precisa começar com `test_` para o Pytest encontrá-la automaticamente.",
+        "`@pytest.fixture` injeta um estado novo em cada teste pelo nome do parâmetro, e `pytest.raises(Erro)` valida exceções."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Complete o teste Pytest definindo uma fixture e verificando o resultado com `assert`:",
-      "codeTemplate": "@pytest.{{blank}}\ndef usuario_padrao():\n    return {\"nome\": \"Ada\", \"ativo\": True}\n\ndef {{blank}}usuario_ativo(usuario_padrao):\n    {{blank}} usuario_padrao[\"ativo\"] is True",
-      "blanks": [
-        { "answer": "fixture", "placeholder": "decorator" },
-        { "answer": "test_", "placeholder": "prefixo" },
-        { "answer": "assert", "placeholder": "verificação" }
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "O que o Pytest mostra ao executar este teste da loja BugZero?",
+      "codeSnippet": "import pytest\n@pytest.fixture\ndef carrinho():\n    return [\"Café\"]\ndef test_adicionar(carrinho):\n    carrinho.append(\"Livro\")\n    assert len(carrinho) == 2",
+      "options": [
+        "1 passed",
+        "1 failed (AssertionError: assert 1 == 2)",
+        "0 tests collected",
+        "TypeError: missing 1 required argument"
       ],
-      "options": ["fixture", "test_", "assert", "mock", "check_", "expect"],
-      "explanation": "`@pytest.fixture` registra a fábrica de dados, `test_` identifica o teste e `assert` valida a condição."
+      "correctIndex": 0,
+      "hint": "A fixture `carrinho` já nasce com 1 item (`\"Café\"`) e o teste adiciona mais 1 (`\"Livro\"`).",
+      "expectedOutput": "1 passed",
+      "explanation": "O Pytest injeta `[\"Café\"]` automaticamente, `append(\"Livro\")` deixa o tamanho igual a `2` e o `assert` passa!"
     },
     {
-      "type": "multiple_choice",
-      "prompt": "Como verificamos no Pytest que chamar `sacar(-50)` lança uma exceção do tipo `ValueError`?",
-      "options": [
-        "assert sacar(-50) == ValueError",
-        "with pytest.raises(ValueError):\n    sacar(-50)",
-        "@pytest.expect_error(ValueError)",
-        "try: sacar(-50) except: pass"
+      "type": "fill_in_blank",
+      "prompt": "Complete o teste definindo a fixture `usuario` e validando o campo `ativo` com `assert`:",
+      "codeTemplate": "@pytest.{{blank}}\ndef usuario():\n    return {\"nome\": \"Ada\", \"ativo\": True}\n\ndef test_usuario_ativo(usuario):\n    {{blank}} usuario[\"ativo\"] is True",
+      "blanks": [
+        { "answer": "fixture", "placeholder": "decorador" },
+        { "answer": "assert", "placeholder": "verificar" }
       ],
-      "correctIndex": 1,
-      "explanation": "O gerenciador de contexto `with pytest.raises(ValueError):` passa no teste se o bloco interno lançar `ValueError` e falha caso nenhuma exceção seja lançada."
+      "options": ["fixture", "assert", "mock", "expect", "raises"],
+      "hint": "Fábricas de dados usam `@pytest.fixture` e validações usam a palavra-chave nativa `assert`.",
+      "expectedOutput": "1 passed in 0.01s",
+      "explanation": "Simples assim: `@pytest.fixture` cria o usuário limpo e `assert` confirma que ele está ativo."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Ao rodar `pytest`, este arquivo passa com `0 tests collected` e o teste nunca é executado! Clique na linha com o erro:",
+      "prompt": "Ao rodar `pytest`, aparece `0 tests collected` e o teste do desconto nunca executa! Qual linha tem o bug?",
       "lines": [
         "import pytest",
         "def verificar_desconto():",
@@ -49,29 +55,19 @@
         "    assert total == 90"
       ],
       "buggyLineIndex": 1,
-      "explanation": "O Pytest só descobre e executa funções cujo nome começa com `test_` (ex: `def test_verificar_desconto():`)."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para criar uma fixture de lista e injetá-la em um teste Pytest:",
-      "blocks": [
-        "@pytest.fixture",
-        "def itens():",
-        "    return [10, 20]",
-        "def test_soma_itens(itens):",
-        "    assert sum(itens) == 30"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4],
-      "explanation": "Primeiro decoramos a função fábrica com `@pytest.fixture` e depois declaramos o teste `test_...` recebendo `itens` como parâmetro."
+      "hint": "Olhe bem o nome da função na linha 2 — qual prefixo obrigatório o Pytest procura?",
+      "expectedOutput": "1 passed in 0.01s",
+      "explanation": "Na linha 2, o nome precisa começar com `test_` (como `def test_verificar_desconto():`) para o Pytest coletar o teste!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva em Python com Pytest uma fixture chamada `carrinho_vazio` que retorne uma lista vazia e uma função de teste `test_adicionar_item(carrinho_vazio)` que adicione `\"Livro\"` à lista e valide com `assert` que o tamanho passou a ser `1`.",
-      "starterCode": "",
+      "prompt": "Complete a fixture `carrinho_vazio` retornando `[]` e o teste `test_adicionar_item(carrinho_vazio)` que adiciona `\"Livro\"` e valida com `assert` que o tamanho é `1`.",
+      "starterCode": "import pytest\n\n# TODO: decore `carrinho_vazio` com @pytest.fixture retornando []\n\n# TODO: crie `test_adicionar_item(carrinho_vazio)` adicionando \"Livro\" e validando com assert\n",
       "requiredTokens": ["@pytest.fixture", "def carrinho_vazio", "def test_adicionar_item", "carrinho_vazio", "assert"],
-      "sampleSolution": "@pytest.fixture\ndef carrinho_vazio():\n    return []\n\ndef test_adicionar_item(carrinho_vazio):\n    carrinho_vazio.append(\"Livro\")\n    assert len(carrinho_vazio) == 1",
-      "hint": "Use o decorator de fixture acima da função que retorna `[]`, e receba o mesmo nome de função como parâmetro no seu `test_`.",
-      "explanation": "A injeção de fixtures pelo nome do parâmetro torna os testes Pytest limpos, legíveis e independentes."
+      "sampleSolution": "import pytest\n\n@pytest.fixture\ndef carrinho_vazio():\n    return []\n\ndef test_adicionar_item(carrinho_vazio):\n    carrinho_vazio.append(\"Livro\")\n    assert len(carrinho_vazio) == 1",
+      "hint": "Use `@pytest.fixture` acima de `def carrinho_vazio(): return []` e faça `assert len(carrinho_vazio) == 1` no teste.",
+      "expectedOutput": "1 passed in 0.01s",
+      "explanation": "Escudo ativado! Com fixtures e `assert` nativo, testar código Python fica rápido e prazeroso."
     }
   ]
 }

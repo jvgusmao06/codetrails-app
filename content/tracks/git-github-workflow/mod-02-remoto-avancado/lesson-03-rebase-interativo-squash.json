@@ -1,74 +1,72 @@
 {
   "id": "git-rebase-squash-03",
-  "title": "git rebase, Rebase Interativo (-i) e Squash de Commits",
-  "description": "Mantenha um histórico linear e limpo combinando vários commits de rascunho (WIP) em um único commit com git rebase -i.",
+  "title": "git rebase, Rebase Interativo (-i) e Squash",
+  "description": "Mantenha o histórico linear com git rebase e junte vários commits de rascunho em um só com rebase -i.",
+  "mission": "Missão 7: Unir 3 commits de rascunho em um único commit caprichado na branch do Nave App.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Merge vs Rebase e a Regra de Ouro",
-      "content": "Enquanto `git merge` cria um novo \"commit de junção\" preservando os dois caminhos, **`git rebase main`** pega os commits da sua branch e os **reaplica no topo** da `main` atualizada, deixando o histórico 100% linear! Além disso, **`git rebase -i HEAD~3`** (modo interativo) permite usar `squash` (ou `s`) para juntar 3 commits de rascunho (`wip`, `ajustando`, `agora vai`) em um único commit limpo antes do Pull Request. **Regra de Ouro:** nunca faça `rebase` em commits que já estão em uma branch pública compartilhada!",
-      "codeExample": "# Atualizar sua feature branch colocando seus commits no topo da main\ngit switch feat/busca\ngit rebase main\n\n# Juntar (squash) os últimos 3 commits locais em 1 commit limpo\ngit rebase -i HEAD~3",
+      "title": "Histórico linear e commits limpos com rebase",
+      "content": "`git rebase main` pega os commits da sua branch pessoal e os reaplica no topo da `main`, deixando a linha do tempo reta e super fácil de ler.\nCom `git rebase -i HEAD~3`, você pode juntar (`squash`) vários commits bagunçados (`wip`, `teste`) em um só antes do Pull Request — só lembre de nunca fazer rebase em branches compartilhadas!",
+      "codeExample": "git switch feat/busca\ngit rebase main\n\n# Juntar os últimos 3 commits locais em 1\ngit rebase -i HEAD~3",
+      "expectedOutput": "Successfully rebased and updated refs/heads/feat/busca.",
       "keyTakeaways": [
-        "`git rebase` reescreve os hashes dos commits da sua branch — ótimo para sua branch pessoal antes do merge, proibido na `main` compartilhada.",
-        "`squash` no rebase interativo combina vários commits pequenos em um só commit organizado.",
-        "Se der conflito durante o rebase: resolva o arquivo, rode `git add .` e depois `git rebase --continue`."
+        "Regra de ouro: só faça `rebase` na sua branch local — nunca em commits públicos na `main`.",
+        "Se surgir conflito no rebase, resolva o arquivo, rode `git add .` e depois `git rebase --continue`."
       ]
     },
     {
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "Durante um `git rebase main`, apareceu um conflito em `app.ts`. Você já corrigiu o arquivo e rodou `git add app.ts`. Qual comando conclui essa etapa do rebase?",
+      "codeSnippet": "git rebase main\n# conflito corrigido em app.ts\ngit add app.ts\n# ???",
+      "options": [
+        "git rebase --continue",
+        "git commit -m \"merge\"",
+        "git init",
+        "git push --tags"
+      ],
+      "correctIndex": 0,
+      "hint": "Durante um rebase, não rodamos `git commit` manual — avisamos o rebase para continuar!",
+      "expectedOutput": "Successfully rebased and updated refs/heads/feat/busca.",
+      "explanation": "Após `git add`, `git rebase --continue` retoma a aplicação dos commits (e `git rebase --abort` cancela tudo se quiser recomeçar)."
+    },
+    {
       "type": "fill_in_blank",
-      "prompt": "Complete os comandos para atualizar a branch atual no topo da `main` com rebase e continuar após resolver um conflito:",
-      "codeTemplate": "git {{blank}} main\n# Após resolver conflito e rodar git add .:\ngit rebase {{blank}}",
+      "prompt": "Reaplique sua branch no topo da `main` e continue o rebase após resolver um conflito:",
+      "codeTemplate": "git {{blank}} main\n# após corrigir conflito e rodar git add .\ngit rebase {{blank}}",
       "blanks": [
         { "answer": "rebase", "placeholder": "reaplicar" },
         { "answer": "--continue", "placeholder": "continuar" }
       ],
-      "options": ["rebase", "--continue", "merge", "--amend", "--abort"],
-      "explanation": "`git rebase main` reaplica seus commits sobre a `main`, e `git rebase --continue` prossegue após `git add`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual é a \"Regra de Ouro\" do `git rebase` em projetos colaborativos?",
-      "options": [
-        "Sempre rodar `git rebase` diretamente na branch `main` pública",
-        "Nunca fazer `rebase` em commits que já foram enviados para uma branch compartilhada por outras pessoas",
-        "Usar `git rebase` apenas quando não existem commits locais",
-        "Substituir todo `git commit` por `git rebase`"
-      ],
-      "correctIndex": 1,
-      "explanation": "Como o `rebase` reescreve os hashes dos commits, aplicá-lo em branches públicas compartilhadas quebra o histórico dos demais colegas."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "Durante um `git rebase main`, houve um conflito em `app.ts`. O desenvolvedor resolveu o arquivo, mas tentou finalizar da forma errada! Clique na linha incorreta:",
-      "lines": [
-        "git rebase main",
-        "# conflito resolvido manualmente em app.ts",
-        "git add app.ts",
-        "git commit -m \"resolve conflito\""
-      ],
-      "buggyLineIndex": 3,
-      "explanation": "Durante um rebase, não criamos um novo commit com `git commit`; após `git add`, devemos continuar o rebase com `git rebase --continue`."
+      "options": ["rebase", "--continue", "merge", "--abort"],
+      "hint": "Use `rebase` para atualizar e `--continue` para seguir adiante.",
+      "expectedOutput": "Successfully rebased and updated.",
+      "explanation": "Mandou bem! E lembre: se travar num conflito, `git rebase --abort` volta tudo ao normal sem estresse."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os comandos para mudar para sua branch `feat/login`, reaplicar seus commits sobre a `main` e depois fazer squash dos últimos 3 commits:",
+      "prompt": "Ordene os comandos para entrar na branch `feat/login`, atualizar sobre a `main` e abrir o squash dos últimos 3 commits:",
       "blocks": [
+        "git rebase -i HEAD~3",
         "git switch feat/login",
-        "git rebase main",
-        "git rebase -i HEAD~3"
+        "git rebase main"
       ],
-      "correctOrder": [0, 1, 2],
-      "explanation": "Primeiro entramos na branch da feature, atualizamos sobre a `main` com `git rebase main` e depois limpamos os commits com `git rebase -i HEAD~3`."
+      "correctOrder": [1, 2, 0],
+      "hint": "Primeiro entre na branch, depois faça `rebase main` e por fim o rebase interativo `-i`.",
+      "expectedOutput": "Switched -> Rebased -> Interactive squash aberto",
+      "explanation": "Com esse fluxo, seu Pull Request chega redondinho para revisão!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva os comandos Git para mudar para a branch `feat/ui` e iniciar um rebase interativo envolvendo os últimos 2 commits dessa branch.",
-      "starterCode": "",
+      "prompt": "Mude para a branch `feat/ui` e inicie um rebase interativo com os últimos 2 commits (`HEAD~2`).",
+      "starterCode": "# TODO: entre em feat/ui e abra o rebase interativo dos últimos 2 commits\n",
       "requiredTokens": ["git switch", "feat/ui", "git rebase", "-i", "HEAD~2"],
       "sampleSolution": "git switch feat/ui\ngit rebase -i HEAD~2",
-      "hint": "Troque para a branch `feat/ui` e execute o rebase com a flag interativa apontando para 2 commits antes de `HEAD`.",
-      "explanation": "`HEAD~2` aponta para 2 commits atrás do topo atual da branch, permitindo editar ou fazer squash dos dois últimos commits."
+      "hint": "Use `git switch feat/ui` seguido de `git rebase -i HEAD~2`.",
+      "expectedOutput": "pick a1b2c3d feat: layout\nsquash d4e5f6g wip: ajuste",
+      "explanation": "Perfeito! `HEAD~2` seleciona exatamente os dois últimos commits para você limpar como quiser."
     }
   ]
 }

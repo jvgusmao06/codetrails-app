@@ -1,94 +1,75 @@
 {
   "id": "rust-borrowing-02",
-  "title": "Borrowing: Referências (& e &mut)",
-  "description": "Empreste valores sem transferir ownership usando &T (leitura) e &mut T (escrita), respeitando o Borrow Checker.",
-  "xp": 35,
+  "title": "Emprestar sem Perder (& e &mut)",
+  "description": "Mostre ou modifique dados em funções sem perder a posse usando referências (& para ler, &mut para alterar).",
+  "mission": "Missão 9: Exibir o nome do herói e curar seu HP sem tomar posse das variáveis.",
+  "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Emprestando Valores Sem Perder a Posse",
-      "content": "Mover a posse toda vez que chamamos uma função seria cansativo. Em vez disso, podemos **emprestar** (*borrow*) uma referência com `&`: quem recebe `&String` pode ler o texto sem virar dono dele. Para alterar o valor emprestado, usamos referência mutável `&mut` (exigindo que a variável original também seja `mut`). Quando queremos modificar diretamente um valor primitivo atrás de uma referência mutável (como `n: &mut i32`), usamos o operador de **desreferenciação `*`** (`*n += 1;`) para acessar e alterar o valor original na memória. A regra de ouro do **Borrow Checker**: ao mesmo tempo, você pode ter **quantas referências imutáveis (`&`) quiser**, OU **apenas uma referência mutável (`&mut`)** — nunca as duas juntas!",
-      "codeExample": "fn tamanho(s: &String) -> usize {\n    s.len() // apenas lê, não toma posse\n}\n\nfn somar_um(n: &mut i32) {\n    *n += 1; // '*' desreferencia &mut i32 para alterar o valor original\n}\n\nfn main() {\n    let texto = String::from(\"Rust\");\n    println!(\"Tam: {}\", tamanho(&texto));\n    let mut pontos = 10;\n    somar_um(&mut pontos);\n}",
+      "title": "Emprestar para ler (&) ou para alterar (&mut)",
+      "content": "Ficar clonando tudo seria lento. Em vez de entregar a posse, você **empresta** com `&`:\n• `&valor` = empréstimo **só de leitura** (vários amigos podem ler juntos).\n• `&mut valor` = empréstimo **para editar** (só **um** por vez, e use `*n` para alterar o número dentro).\nAssim, o dono original nunca perde o item!",
+      "codeExample": "fn curar(hp: &mut i32) {\n    *hp += 20; // '*' acessa o valor emprestado\n}\n\nfn main() {\n    let mut vida = 60;\n    curar(&mut vida);\n    println!(\"Vida curada: {}\", vida);\n}",
+      "expectedOutput": "Vida curada: 80",
       "keyTakeaways": [
-        "`&valor` cria um empréstimo imutável (somente leitura) sem mover a posse.",
-        "`&mut valor` cria um empréstimo mutável; use `*ref` (desreferenciação) para ler ou gravar diretamente no valor apontado (ex: `*n += 1;`).",
-        "Nunca podem existir duas referências `&mut` simultâneas, nem `&mut` junto com `&` ativo."
+        "`&valor` empresta para leitura; `&mut valor` empresta para escrita (1 por vez).",
+        "Dentro da função, `*n += 1;` altera o valor original apontado por `&mut`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é a principal vantagem de uma função receber `s: &String` em vez de `s: String`?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal depois de chamar `buff(&mut ataque)`?",
+      "codeSnippet": "fn buff(atk: &mut i32) {\n    *atk += 5;\n}\n\nlet mut ataque = 10;\nbuff(&mut ataque);\nprintln!(\"Ataque: {}\", ataque);",
       "options": [
-        "Ela apenas empresta o valor para leitura, sem tomar a posse (*ownership*) de quem chamou",
-        "Ela transforma a `String` em um inteiro na Stack",
-        "Ela permite modificar a `String` mesmo sem `mut`",
-        "Ela duplica a `String` na Heap automaticamente"
+        "Ataque: 15",
+        "Ataque: 10",
+        "Ataque: 5",
+        "Erro porque ataque foi movido"
       ],
       "correctIndex": 0,
-      "explanation": "`&String` cria um empréstimo imutável: a função pode ler os dados, e o chamador continua sendo o dono da `String`."
+      "hint": "`buff` recebeu `&mut ataque` e somou 5 diretamente em `*atk`.",
+      "expectedOutput": "Ataque: 15",
+      "explanation": "Como `ataque` foi emprestado com `&mut`, `buff` aumentou o valor original de 10 para 15!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para emprestar `contador` de forma mutável à função `incrementar` sem mover a posse:",
-      "codeTemplate": "fn incrementar(n: {{blank}} i32) {\n    *n += 1;\n}\n\nlet {{blank}} contador = 0;\nincrementar({{blank}} contador);",
+      "prompt": "Empreste `hp` de forma mutável para a função `curar`:",
+      "codeTemplate": "fn curar(hp: {{blank}} i32) {\n    *hp += 10;\n}\n\nlet mut vida = 50;\ncurar({{blank}} vida);",
       "blanks": [
         { "answer": "&mut", "placeholder": "ref mutável" },
-        { "answer": "mut", "placeholder": "mutável" },
-        { "answer": "&mut", "placeholder": "empréstimo" }
+        { "answer": "&mut", "placeholder": "emprestar" }
       ],
-      "options": ["&mut", "mut", "&", "ref", "*mut"],
-      "explanation": "Tanto a variável (`let mut`), quanto o parâmetro (`&mut i32`) e a chamada (`&mut contador`) precisam indicar mutabilidade explícita, e `*n` desreferencia para alterar o valor."
+      "options": ["&mut", "&", "mut", "*"],
+      "hint": "Tanto o parâmetro quanto a chamada usam `&mut` para empréstimo mutável.",
+      "expectedOutput": "vida agora vale 60",
+      "explanation": "O Rust exige `&mut` nos dois lugares para deixar bem visível quem está modificando a variável."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O Borrow Checker proíbe duas referências mutáveis simultâneas (`cannot borrow x as mutable more than once at a time`). Clique na linha que viola essa regra:",
+      "prompt": "O Borrow Checker só permite UM empréstimo mutável (`&mut`) ativo por vez. Clique na linha que quebra essa regra:",
       "lines": [
         "fn main() {",
-        "    let mut x = 10;",
-        "    let r1 = &mut x;",
-        "    let r2 = &mut x;",
-        "    *r1 += *r2;",
+        "    let mut ouro = 100;",
+        "    let loja1 = &mut ouro;",
+        "    let loja2 = &mut ouro;",
+        "    *loja1 += *loja2;",
         "}"
       ],
       "buggyLineIndex": 3,
-      "explanation": "Na linha 4, `r1` ainda está ativo (usado na linha 5), então criar uma segunda referência mutável `r2 = &mut x` viola a exclusividade de `&mut`."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "Também é proibido manter uma referência imutável (`&`) ativa ao mesmo tempo que uma referência mutável (`&mut`). Clique na linha que causa o erro:",
-      "lines": [
-        "fn main() {",
-        "    let mut saldo = 50;",
-        "    let leitura = &saldo;",
-        "    let escrita = &mut saldo;",
-        "    println!(\"{} {}\", leitura, escrita);",
-        "}"
-      ],
-      "buggyLineIndex": 3,
-      "explanation": "Na linha 4, `leitura` (`&saldo`) ainda será usada na linha 5, portanto o Borrow Checker impede criar `escrita` (`&mut saldo`) enquanto `leitura` estiver ativa."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para definir uma função que dobra um inteiro por referência mutável e imprimí-lo em `main`:",
-      "blocks": [
-        "    dobrar(&mut valor);",
-        "fn dobrar(n: &mut i32) { *n *= 2; }",
-        "    let mut valor = 5;",
-        "fn main() {",
-        "    println!(\"{}\", valor);",
-        "}"
-      ],
-      "correctOrder": [1, 3, 2, 0, 4, 5],
-      "explanation": "Definimos `fn dobrar(n: &mut i32)`, declaramos `let mut valor = 5;` em `main`, passamos `&mut valor` e imprimimos `valor`."
+      "hint": "`loja1` ainda vai ser usada na linha 5, mas outra referência `&mut` foi aberta antes!",
+      "expectedOutput": "Sem corrida de dados!",
+      "explanation": "Na linha 4, abrir um segundo `&mut ouro` enquanto `loja1` está ativo é bloqueado pelo Rust para evitar conflitos."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma função chamada `zerar` que receba uma referência mutável para um inteiro `i32` (parâmetro `n`) e altere o valor original para `0` usando desreferenciação.",
-      "starterCode": "",
-      "requiredTokens": ["fn", "zerar", "&mut", "i32", "*n", "0"],
-      "sampleSolution": "fn zerar(n: &mut i32) {\n    *n = 0;\n}",
-      "hint": "Declare `fn zerar(n: &mut i32)` e atribua `*n = 0;` dentro do corpo.",
-      "explanation": "`n: &mut i32` recebe o empréstimo mutável e `*n = 0;` desreferencia para gravar `0` diretamente na variável original."
+      "prompt": "Complete a função `zerar` para colocar `0` no valor emprestado `n` usando `*n`.",
+      "starterCode": "fn zerar(n: &mut i32) {\n    // TODO: altere o valor apontado por `n` para 0 usando `*n`\n    \n}\n\nfn main() {\n    let mut veneno = 15;\n    zerar(&mut veneno);\n    println!(\"Veneno: {}\", veneno);\n}",
+      "requiredTokens": ["fn", "zerar", "&mut i32", "*n", "0"],
+      "sampleSolution": "fn zerar(n: &mut i32) {\n    *n = 0;\n}\n\nfn main() {\n    let mut veneno = 15;\n    zerar(&mut veneno);\n    println!(\"Veneno: {}\", veneno);\n}",
+      "hint": "Dentro de `zerar`, escreva `*n = 0;`.",
+      "expectedOutput": "Veneno: 0",
+      "explanation": "Pronto! `*n = 0;` desreferencia `&mut i32` e zera o veneno direto na variável original."
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "id": "nodejs-hono-api",
   "title": "Node.js & Hono / Express APIs",
-  "description": "Construa servidores HTTP, rotas REST, middlewares e tratamento de JSON no backend com TypeScript e Hono/Node.js.",
+  "description": "Crie a BiteAPI (backend de pedidos de uma lanchonete) em TypeScript com Hono: rotas GET/POST, JSON e middlewares leves.",
   "category": "framework",
   "languageId": "typescript-javascript",
   "prerequisites": ["typescript-javascript"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-rotas-middlewares",
-      "title": "Módulo 1: Rotas HTTP, Contexto JSON e Middlewares",
-      "description": "Crie endpoints REST ultrarrápidos e tipados em TypeScript.",
+      "title": "Módulo 1: Rotas HTTP e Middlewares na BiteAPI",
+      "description": "Receba pedidos em JSON, leia parâmetros de URL e meça o tempo das requisições com middlewares.",
       "lessons": ["lesson-01-hono-express-routes"]
     }
   ]

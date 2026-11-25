@@ -1,86 +1,72 @@
 {
   "id": "ts-operadores-condicionais-03",
-  "title": "03. Igualdade Estrita (===), switch, Ternário, ?? e ?.",
-  "description": "Evite coerções perigosas com ===, selecione casos com switch/case, simplifique condições com ternário e proteja acessos com ?. e ??.",
+  "title": "Igualdade (===), Ternário, ?. e ??",
+  "description": "Tome decisões sem sustos: compare tipos com ===, proteja leituras com ?. e defina valores padrão com ??.",
+  "mission": "Missão 3: Ler as preferências de volume e tema do TaskBeat sem quebrar quando algum campo vier vazio.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Igualdade Estrita, switch, Ternário, ?. e ??",
-      "content": "Operadores e estruturas condicionais modernas eliminam os bugs mais clássicos do JavaScript:\n\n1. **Igualdade Estrita (`===` e `!==`)**: `==` faz coerção implícita (`\"5\" == 5` é `true`). Use sempre `===` e `!==` para comparar valor e tipo.\n2. **`switch / case / break / default`**: Ideal para comparar uma variável com múltiplos valores fixos; lembre-se do `break` ao final de cada `case` para evitar *fall-through*.\n3. **Operador Ternário (`cond ? a : b`)**: Expressão curta para escolher entre dois valores.\n4. **Optional Chaining (`?.`) e Nullish Coalescing (`??`)**: `obj?.prop` retorna `undefined` com segurança se `obj` for `null`/`undefined`. `valor ?? padrao` só usa o padrão se `valor` for `null` ou `undefined` (preservando `0` e `\"\"`, ao contrário de `||`).",
-      "codeExample": "const status: string = \"pago\";\nswitch (status) {\n  case \"pago\":\n    console.log(\"Liberado\");\n    break;\n  default:\n    console.log(\"Aguardando\");\n}\n\nconst desconto = 0;\nconst final = desconto ?? 10;        // 0 (preservado!)\nconst porta = config?.servidor?.porta ?? 3000;",
+      "title": "Decisões seguras com ===, ?. e ??",
+      "content": "No JS, `==` tenta adivinhar tipos (`\"5\" == 5` vira `true`!) — por isso usamos sempre `===` para comparar valor e tipo. Para escolhas curtas, o ternário `cond ? sim : nao` resolve em uma linha.\nE quando um dado pode vir `null` ou `undefined`, combine `?.` (lê sem quebrar) com `??` (usa um padrão só se for nulo/indefinido, preservando `0`!).",
+      "codeExample": "const config = { som: { volume: 0 } };\nconst volume = config?.som?.volume ?? 50; // 0 preservado!\nconst status = volume === 0 ? \"Mudo\" : \"Ativo\";\nconsole.log(`${status} (${volume})`);",
+      "expectedOutput": "Mudo (0)",
       "keyTakeaways": [
-        "Use sempre === e !== em vez de == e != para evitar coerção de tipos.",
-        "switch/case exige break em cada caso (ou return) para não executar o próximo case.",
-        "Use ?. para acesso seguro e ?? para fallback apenas quando for null ou undefined."
+        "Prefira sempre `===` e `!==` para evitar surpresas de conversão automática.",
+        "`?.` acessa propriedades com segurança e `??` só aplica o padrão se for `null` ou `undefined`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é o resultado da expressão (\"10\" === 10) em JavaScript/TypeScript?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no console ao rodar este trecho?",
+      "codeSnippet": "const volume = 0;\nconst final = volume ?? 80;\nconst modo = final === 0 ? \"Silencioso\" : \"Normal\";\nconsole.log(modo);",
       "options": [
-        "true, porque os dígitos são iguais",
-        "false, porque string e number têm tipos diferentes",
-        "undefined",
-        "Lança um TypeError"
+        "Silencioso",
+        "Normal",
+        "80",
+        "undefined"
       ],
-      "correctIndex": 1,
-      "explanation": "O operador === exige que tanto o valor quanto o tipo sejam idênticos."
+      "correctIndex": 0,
+      "hint": "Lembre que `??` preserva `0` — ele só troca para `80` se `volume` for `null` ou `undefined`.",
+      "expectedOutput": "Silencioso",
+      "explanation": "Como `0` não é `null` nem `undefined`, `final` continua `0` e o ternário escolhe `\"Silencioso\"`."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Leia o tema dentro de `config` com segurança e use `\"claro\"` como padrão se vier vazio:",
+      "codeTemplate": "const tema = config{{blank}}tema {{blank}} \"claro\";",
+      "blanks": [
+        { "answer": "?.", "placeholder": "acesso seguro" },
+        { "answer": "??", "placeholder": "padrão" }
+      ],
+      "options": ["?.", ".", "??", "||"],
+      "hint": "Optional chaining usa `?.` e nullish coalescing usa `??`.",
+      "expectedOutput": "claro",
+      "explanation": "Na mosca! `config?.tema` evita erro se `config` for nulo e `?? \"claro\"` garante um valor padrão."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este código quer manter o desconto 0 quando desconto for 0, usando 10 apenas se for null/undefined. Clique na linha com o bug:",
+      "prompt": "O desconto `0` deveria continuar sendo `0`, mas o código está imprimindo `10`! Clique na linha com o bug:",
       "lines": [
         "const desconto: number | null = 0;",
         "const aplicado = desconto || 10;",
-        "console.log(aplicado); // imprime 10!"
+        "console.log(aplicado);"
       ],
       "buggyLineIndex": 1,
-      "explanation": "O operador '||' trata 0 como falsy e cai no fallback 10. O correto é usar Nullish Coalescing: 'desconto ?? 10'."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete o switch para tratar o cargo 'admin' sem vazar para o caso padrão, e use o ternário para definir o rótulo:",
-      "codeTemplate": "switch (cargo) {\n  case \"admin\":\n    nivel = 10;\n    {{blank}};\n  {{blank}}:\n    nivel = 1;\n}\nconst acesso = nivel === 10 {{blank}} \"Total\" : \"Restrito\";",
-      "blanks": [
-        { "answer": "break", "placeholder": "parar" },
-        { "answer": "default", "placeholder": "padrão" },
-        { "answer": "?", "placeholder": "ternário" }
-      ],
-      "options": ["break", "continue", "default", "else", "?"],
-      "explanation": "Cada case do switch precisa de break, default trata valores não previstos e o ternário usa '?' e ':'."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para ler com segurança a porta de um objeto opcional e exibir se é produção usando ===:",
-      "blocks": [
-        "const porta = config?.porta ?? 3000;",
-        "const ehProd = env === \"production\" ? true : false;",
-        "console.log(porta, ehProd);"
-      ],
-      "correctOrder": [0, 1, 2],
-      "explanation": "Lemos config?.porta com fallback ??, verificamos igualdade estrita com === no ternário e exibimos."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Combine Optional Chaining e Nullish Coalescing para ler o timeout da configuração com fallback 5000:",
-      "codeTemplate": "const timeout = config{{blank}}rede{{blank}}timeout {{blank}} 5000;",
-      "blanks": [
-        { "answer": "?.", "placeholder": "acesso seguro" },
-        { "answer": "?.", "placeholder": "acesso seguro" },
-        { "answer": "??", "placeholder": "fallback" }
-      ],
-      "options": ["?.", ".", "??", "||"],
-      "explanation": "Encadeamos '?.' para navegar sem erro caso config ou rede sejam null/undefined, e '??' para o valor padrão."
+      "hint": "O operador `||` trata `0` como falso — existe um operador melhor para `null`/`undefined`!",
+      "expectedOutput": "0",
+      "explanation": "Na linha 2, `||` joga o `0` fora e cai no `10`. Trocar para `desconto ?? 10` preserva o `0` perfeitamente!"
     },
     {
       "type": "write_code",
-      "prompt": "Dado um objeto opcional 'config', leia a propriedade aninhada 'porta' de forma segura definindo 3000 como valor padrão caso seja nula ou indefinida, guarde na constante 'porta', e crie uma constante 'modo' usando operador ternário e igualdade estrita verificando se 'porta' é igual a 3000.",
-      "starterCode": "",
+      "prompt": "Leia `config?.porta` com fallback `3000` usando `??` e defina `modo` como `\"dev\"` se `porta === 3000` (senão `\"custom\"`).",
+      "starterCode": "const config: { porta?: number } = {};\n// TODO: leia config?.porta com fallback 3000 usando ??\nconst porta = \n// TODO: use === e ternário (? :) para definir \"dev\" ou \"custom\"\nconst modo = \nconsole.log(porta, modo);",
       "requiredTokens": ["const", "porta", "?.", "??", "3000", "===", "?"],
-      "sampleSolution": "const porta = config?.porta ?? 3000;\nconst modo = porta === 3000 ? \"dev\" : \"custom\";",
-      "hint": "Use '?.' antes de '.porta', '?? 3000' para o fallback e 'porta === 3000 ? ... : ...' para o ternário.",
-      "explanation": "A solução integra Optional Chaining (?.), Nullish Coalescing (??), igualdade estrita (===) e operador ternário."
+      "sampleSolution": "const config: { porta?: number } = {};\nconst porta = config?.porta ?? 3000;\nconst modo = porta === 3000 ? \"dev\" : \"custom\";\nconsole.log(porta, modo);",
+      "hint": "Escreva `config?.porta ?? 3000;` e `porta === 3000 ? \"dev\" : \"custom\";`.",
+      "expectedOutput": "3000 dev",
+      "explanation": "Excelente! Seu código agora lê configurações opcionais sem crashar e decide o modo com segurança."
     }
   ]
 }

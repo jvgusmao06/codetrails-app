@@ -1,46 +1,53 @@
 {
   "id": "git-pull-push-03",
-  "title": "Repositórios Remotos (remote, push, pull, clone) e git stash",
-  "description": "Sincronize seu código com o GitHub usando git clone, git pull e git push, e guarde rascunhos temporários na gaveta com git stash.",
+  "title": "Remotos (pull, push) e a Gaveta Mágica (git stash)",
+  "description": "Sincronize seu código com o GitHub usando git pull/push e guarde rascunhos temporários com git stash.",
+  "mission": "Missão 5: Pausar uma tarefa no meio sem perder nada para ajudar um colega no Nave App.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Sincronizando com o GitHub e Guardando Trabalho (Stash)",
-      "content": "Para colaborar na nuvem (GitHub/GitLab), conectamos nosso repositório local a um servidor remoto (geralmente apelidado de `origin`). Com `git clone <url>` baixamos um projeto; com `git pull` trazemos novidades da nuvem; e com `git push` enviamos nossos commits locais. E se você estiver no meio de uma alteração inacabada e precisar trocar de branch urgente? Use `git stash` para guardar suas mudanças numa \"gaveta\" temporária e `git stash pop` para recuperá-las depois!",
-      "codeExample": "# Clonar repositório existente\ngit clone https://github.com/org/projeto.git\n\n# Guardar mudanças atuais não-commitadas na gaveta\ngit stash\n\n# Atualizar branch com novidades do servidor remoto\ngit pull origin main\n\n# Recuperar mudanças da gaveta e enviar commits\ngit stash pop\ngit push -u origin minha-branch",
+      "title": "Sincronizando na nuvem e usando git stash",
+      "content": "No trabalho em equipe, `git pull origin main` traz os commits novos dos colegas e `git push origin main` envia os seus para o remoto (`origin`).\nEstá no meio de uma edição inacabada e surgiu uma urgência? `git stash` guarda tudo numa gaveta segura e limpa sua pasta; depois `git stash pop` traz suas alterações de volta!",
+      "codeExample": "git stash\ngit pull origin main\ngit stash pop\ngit push origin main",
+      "expectedOutput": "Saved working directory\nAlready up to date.\nDropped refs/stash@{0}",
       "keyTakeaways": [
-        "`origin` é o apelido padrão do servidor remoto (você pode ver com `git remote -v`).",
-        "`git pull` equivale a `git fetch` (buscar dados) + `git merge` (integrar na branch atual).",
-        "`git stash` limpa sua Working Tree guardando o trabalho em andamento numa pilha temporária; `git stash pop` restaura."
+        "`git stash` guarda alterações não-commitadas numa gaveta; `git stash pop` restaura tudo.",
+        "Sempre dê `git pull` antes de `git push` para trazer as novidades da equipe."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Você está editando arquivos na branch `main`, ainda não quer fazer commit, mas precisa limpar o diretório de trabalho imediatamente para trocar de branch e corrigir um bug urgente. Qual comando salva suas modificações atuais temporariamente sem fazer commit?",
+      "kind": "predict_output",
+      "prompt": "Você editou `home.ts` (sem commitar) e rodou `git stash`. O que aparece ao rodar `git status` logo depois?",
+      "codeSnippet": "git stash\ngit status",
       "options": [
-        "git reset --hard",
-        "git stash",
-        "git push --force",
-        "git rm -rf"
+        "working tree clean (suas edições foram guardadas no stash com segurança)",
+        "home.ts continua aparecendo como modified",
+        "home.ts foi deletado para sempre",
+        "Um novo commit chamado stash foi criado no GitHub"
       ],
-      "correctIndex": 1,
-      "explanation": "O comando `git stash` guarda todas as modificações não-commitadas numa pilha segura e deixa o diretório limpo; depois basta rodar `git stash pop` para trazê-las de volta."
+      "correctIndex": 0,
+      "hint": "O `git stash` guarda o rascunho na gaveta e deixa sua pasta limpinha para você trocar de branch!",
+      "expectedOutput": "nothing to commit, working tree clean",
+      "explanation": "Sua pasta fica limpa na hora — e quando quiser continuar, basta rodar `git stash pop`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete os comandos para listar os servidores remotos configurados e restaurar o trabalho salvo anteriormente no stash:",
+      "prompt": "Complete os comandos para listar os servidores remotos e restaurar o rascunho da gaveta:",
       "codeTemplate": "git {{blank}} -v\ngit stash {{blank}}",
       "blanks": [
         { "answer": "remote", "placeholder": "remotos" },
         { "answer": "pop", "placeholder": "restaurar" }
       ],
-      "options": ["remote", "pop", "origin", "push", "pull"],
-      "explanation": "`git remote -v` exibe as URLs dos remotos (como `origin`) e `git stash pop` reaplica e remove o último item guardado no stash."
+      "options": ["remote", "pop", "origin", "pull"],
+      "hint": "Use `remote -v` para ver o endereço de `origin` e `stash pop` para recuperar seu trabalho.",
+      "expectedOutput": "origin https://github.com/nave/app.git\nOn branch main: modified home.ts",
+      "explanation": "`git remote -v` mostra para onde seu push vai e `git stash pop` devolve seu código intacto."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Um desenvolvedor guardou alterações no stash, atualizou o código e depois apagou tudo sem querer! Clique na linha que destrói o trabalho não-commitado em vez de apenas guardá-lo:",
+      "prompt": "Ops! O colega queria guardar as edições temporárias antes do `pull`, mas escolheu um comando que apaga tudo sem volta! Clique na linha com bug:",
       "lines": [
         "git status",
         "git reset --hard",
@@ -48,28 +55,19 @@
         "git stash pop"
       ],
       "buggyLineIndex": 1,
-      "explanation": "`git reset --hard` apaga permanentemente as alterações não-commitadas em vez de salvá-las. O correto para guardar temporariamente é `git stash`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os comandos para guardar rascunhos locais, atualizar a branch `main` com o remoto, restaurar os rascunhos e enviar commits:",
-      "blocks": [
-        "git stash",
-        "git pull origin main",
-        "git stash pop",
-        "git push origin main"
-      ],
-      "correctOrder": [0, 1, 2, 3],
-      "explanation": "Guardamos com `git stash`, puxamos as novidades com `git pull origin main`, restauramos com `git stash pop` e, após commitar, enviamos com `git push origin main`."
+      "hint": "Qual comando na lista destrói as alterações locais em vez de guardá-las na gaveta?",
+      "expectedOutput": "Saved working directory -> pulled -> restored!",
+      "explanation": "`git reset --hard` apaga edições não-commitadas! Para guardar com segurança, use `git stash`."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva os comandos Git para atualizar sua branch `main` local puxando as novidades do remoto `origin` e, na sequência, enviar seus commits locais de `main` para `origin`.",
-      "starterCode": "",
+      "prompt": "Atualize sua branch `main` local puxando as novidades de `origin` e depois envie seus commits para `origin main`.",
+      "starterCode": "# TODO: puxe novidades de origin main e depois envie seus commits\n",
       "requiredTokens": ["git pull", "origin", "main", "git push"],
       "sampleSolution": "git pull origin main\ngit push origin main",
-      "hint": "Use o comando de recebimento seguido do remoto e da branch, e na linha seguinte o comando de envio para o mesmo remoto e branch.",
-      "explanation": "Fazer `git pull origin main` antes de `git push origin main` garante que seu histórico local inclua os commits mais recentes dos seus colegas."
+      "hint": "Escreva `git pull origin main` e na linha seguinte `git push origin main`.",
+      "expectedOutput": "Already up to date.\nmain -> main",
+      "explanation": "Sincronizado! Com `pull`, `push` e `stash`, colaborar em equipe fica super tranquilo."
     }
   ]
 }

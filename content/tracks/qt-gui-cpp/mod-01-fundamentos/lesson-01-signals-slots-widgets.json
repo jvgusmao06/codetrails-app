@@ -1,58 +1,53 @@
 {
   "id": "qt-signals-01",
-  "title": "Qt 6: QApplication, QPushButton e Signals & Slots (connect)",
-  "description": "Entenda a arquitetura Signals & Slots type-safe do Qt 6 e o gerenciamento automático de memória pai-filho.",
+  "title": "Qt 6: Botões e Signals & Slots",
+  "description": "Abra janelas desktop nativas com QApplication e conecte cliques de QPushButton a lambdas C++ com QObject::connect.",
+  "mission": "Missão 1: Criar o botão de lançamento no painel desktop da nave Nova-9 em Qt 6.",
   "xp": 50,
   "steps": [
     {
       "type": "theory",
-      "title": "Signals & Slots: A Alma da UI Reativa no Qt",
-      "content": "O **Qt** é o framework padrão para softwares desktop em C++. Toda aplicação GUI começa instanciando `QApplication app(argc, argv);` e termina iniciando o event loop gráfico com `return app.exec();`.\n\nSua arquitetura de eventos usa **Signals & Slots**: quando um widget como `QPushButton` é clicado, ele emite o sinal `&QPushButton::clicked`. Conectamos esse sinal a um método ou lambda C++ usando `QObject::connect(emissor, sinal, ...)` com checagem de tipos em tempo de compilação. Além disso, widgets que recebem um `QObject* parent` são destruídos automaticamente quando o pai é destruído.",
-      "codeExample": "#include <QApplication>\n#include <QPushButton>\n\nint main(int argc, char *argv[]) {\n    QApplication app(argc, argv);\n    QPushButton btn(\"Clique aqui\");\n\n    QObject::connect(&btn, &QPushButton::clicked, []() {\n        qDebug(\"Botão pressionado!\");\n    });\n\n    btn.show();\n    return app.exec();\n}",
+      "title": "Conectando cliques com Signals & Slots",
+      "content": "No **Qt 6**, todo app gráfico cria `QApplication app(argc, argv);` no início e roda `return app.exec();` no final para ouvir cliques e janelas.\nQuando o usuário clica num `QPushButton`, ele emite o sinal `&QPushButton::clicked`, que você liga a qualquer lambda C++ usando `QObject::connect`!",
+      "codeExample": "QApplication app(argc, argv);\nQPushButton btn(\"Decolar!\");\nQObject::connect(&btn, &QPushButton::clicked, []() {\n    qDebug(\"Motores ligados!\");\n});\nbtn.show();\nreturn app.exec();",
+      "expectedOutput": "Janela com botão [Decolar!] -> ao clicar: Motores ligados!",
       "keyTakeaways": [
-        "`QApplication` gerencia a aplicação GUI e `app.exec()` inicia o Event Loop gráfico.",
-        "Use a sintaxe moderna com ponteiros de função (`&QPushButton::clicked`) em `QObject::connect` para checagem em tempo de compilação e suporte a lambdas.",
-        "Objetos filhos com `QObject* parent` são liberados automaticamente quando o pai é destruído."
+        "`btn.show()` exibe o widget na tela e `app.exec()` mantém o app vivo ouvindo eventos.",
+        "`QObject::connect(&btn, &QPushButton::clicked, lambda)` conecta cliques com checagem de tipos na compilação."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Por que a sintaxe moderna de `QObject::connect(&btn, &QPushButton::clicked, ...)` é preferida em vez das macros antigas `SIGNAL(clicked())`?",
+      "kind": "predict_output",
+      "prompt": "O que acontece quando o usuário clica no botão `[Ping]` deste app Qt 6?",
+      "codeSnippet": "QPushButton btn(\"Ping\");\nQObject::connect(&btn, &QPushButton::clicked, []() {\n    qDebug(\"Pong da Nova-9!\");\n});\nbtn.show();",
       "options": [
-        "Porque macros SIGNAL/SLOT só funcionam no Windows",
-        "Porque ponteiros de função são verificados pelo compilador em tempo de compilação e aceitam lambdas C++",
-        "Porque remove a necessidade de QApplication",
-        "Porque desenha botões em 3D"
+        "Imprime `Pong da Nova-9!` no console de debug a cada clique",
+        "Fecha a janela imediatamente sem imprimir nada",
+        "Só imprime antes de o usuário clicar no botão",
+        "Não compila porque Qt não aceita lambdas C++"
       ],
-      "correctIndex": 1,
-      "explanation": "A conexão com `&Classe::sinal` garante segurança de tipos em tempo de compilação e permite conectar lambdas diretamente."
+      "correctIndex": 0,
+      "hint": "O sinal `&QPushButton::clicked` dispara a lambda toda vez que o botão é pressionado!",
+      "expectedOutput": "Pong da Nova-9!",
+      "explanation": "A lambda conectada ao sinal `&QPushButton::clicked` roda sempre que o botão recebe um clique, imprimindo `Pong da Nova-9!`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a função `main` do Qt para exibir o botão e iniciar o Event Loop da interface gráfica:",
-      "codeTemplate": "QApplication app(argc, argv);\nQPushButton btn(\"OK\");\nbtn.{{blank}}();\nreturn app.{{blank}}();",
+      "prompt": "Exiba o botão na tela e inicie o loop de eventos do Qt:",
+      "codeTemplate": "QApplication app(argc, argv);\nQPushButton btn(\"Lancar\");\nbtn.{{blank}}();\nreturn app.{{blank}}();",
       "blanks": [
         { "answer": "show", "placeholder": "exibir" },
         { "answer": "exec", "placeholder": "loop" }
       ],
-      "options": ["show", "exec", "run", "render"],
-      "explanation": "`btn.show()` torna o widget visível e `app.exec()` inicia o loop de eventos do Qt."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "No modelo de memória do Qt, o que acontece quando um `QPushButton` é alocado passando uma janela pai (`QWidget* parent`) e essa janela pai é destruída?",
-      "options": [
-        "Ocorre vazamento de memória se você não chamar delete manualmente no botão",
-        "O Qt destrói automaticamente todos os objetos filhos ligados àquele pai",
-        "O botão continua vivo em uma nova janela separada",
-        "O compilador proíbe passar ponteiros parent em widgets"
-      ],
-      "correctIndex": 1,
-      "explanation": "A árvore pai-filho de `QObject` libera automaticamente os filhos quando o objeto pai é destruído."
+      "options": ["show", "exec", "run", "open"],
+      "hint": "Widgets aparecem com `.show()` e o `QApplication` entra no loop gráfico com `.exec()`.",
+      "expectedOutput": "Janela aberta com botão [Lancar]",
+      "explanation": "`btn.show()` torna o botão visível e `app.exec()` mantém a janela respondendo a cliques."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este programa Qt compila, mas a janela fecha imediatamente sem processar cliques. Clique na linha com o problema:",
+      "prompt": "O programa compila direitinho, mas a janela fecha num piscar de olhos sem esperar cliques! Qual linha tem o bug?",
       "lines": [
         "int main(int argc, char *argv[]) {",
         "    QApplication app(argc, argv);",
@@ -62,16 +57,19 @@
         "}"
       ],
       "buggyLineIndex": 4,
-      "explanation": "Na linha 5, faltou chamar `return app.exec();` para iniciar o Event Loop gráfico; retornando `0` diretamente, `main` termina na hora."
+      "hint": "Sem o Event Loop de `app`, a função `main` encerra assim que cria a janela!",
+      "expectedOutput": "Janela aberta aguardando interação do usuário",
+      "explanation": "Na linha 5, faltou trocar `return 0;` por `return app.exec();` para iniciar o Event Loop gráfico do Qt."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma conexão de sinal e slot em Qt 6 usando `QObject::connect` para que, ao clicar no botão `&btn` (`QPushButton`), uma lambda capture o contexto por referência e encerre a aplicação chamando o método `quit()` de `app`.",
-      "starterCode": "",
+      "prompt": "Conecte o clique de `&btn` a uma lambda que chama `app.quit();` usando `QObject::connect`.",
+      "starterCode": "#include <QApplication>\n#include <QPushButton>\n\nint main(int argc, char *argv[]) {\n    QApplication app(argc, argv);\n    QPushButton btn(\"Encerrar\");\n    // TODO: conecte &btn e &QPushButton::clicked a uma lambda que chama app.quit()\n    \n    btn.show();\n    return app.exec();\n}",
       "requiredTokens": ["QObject::connect", "&btn", "&QPushButton::clicked", "app.quit()"],
-      "sampleSolution": "QObject::connect(&btn, &QPushButton::clicked, [&]() {\n    app.quit();\n});",
-      "hint": "Passe `&btn`, `&QPushButton::clicked` e uma lambda `[&]() { ... }` que invoca `app.quit()`.",
-      "explanation": "Lambdas com `QObject::connect` e ponteiros de sinal type-safe permitem reagir a eventos de UI sem precisar declarar classes ou slots extras."
+      "sampleSolution": "#include <QApplication>\n#include <QPushButton>\n\nint main(int argc, char *argv[]) {\n    QApplication app(argc, argv);\n    QPushButton btn(\"Encerrar\");\n    QObject::connect(&btn, &QPushButton::clicked, [&]() {\n        app.quit();\n    });\n    btn.show();\n    return app.exec();\n}",
+      "hint": "Escreva `QObject::connect(&btn, &QPushButton::clicked, [&]() { app.quit(); });`.",
+      "expectedOutput": "Ao clicar em [Encerrar], o app Qt fecha com segurança",
+      "explanation": "Painel desktop pronto! `QObject::connect` com lambdas deixa a interface reativa, limpa e type-safe."
     }
   ]
 }

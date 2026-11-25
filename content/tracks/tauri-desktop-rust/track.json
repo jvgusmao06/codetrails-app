@@ -1,7 +1,7 @@
 {
   "id": "tauri-desktop-rust",
   "title": "Tauri (Apps Desktop Rust + Web)",
-  "description": "Crie aplicativos desktop leves (Windows/macOS/Linux) combinando frontend React/Next.js com backend seguro em Rust via #[tauri::command].",
+  "description": "Crie o painel desktop ultraleve da Guilda do Ferris com Tauri: frontend web + comandos nativos em Rust via #[tauri::command].",
   "category": "framework",
   "languageId": "rust-systems",
   "prerequisites": ["rust-systems"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: Comandos IPC #[tauri::command] e State",
-      "description": "Exponha funções Rust rápidas e seguras para o frontend TypeScript com Tauri.",
+      "title": "Módulo 1: Comandos IPC #[tauri::command]",
+      "description": "Conecte telas React/TypeScript a funções rápidas em Rust com invoke() e generate_handler!.",
       "lessons": ["lesson-01-tauri-commands"]
     }
   ]

@@ -1,7 +1,7 @@
 {
   "id": "go-gorm-sqlc",
   "title": "Go + PostgreSQL (sqlc & GORM)",
-  "description": "Conecte serviços Go ao PostgreSQL com queries SQL 100% type-safe usando sqlc ou produtividade com GORM.",
+  "description": "Salve os pedidos da Central do Gopher no PostgreSQL com SQL 100% tipado no sqlc ou consultas rápidas com GORM.",
   "category": "library",
   "languageId": "golang-cloud",
   "prerequisites": ["golang-cloud", "sql-databases"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: sqlc (SQL -> Go Type-Safe) e GORM",
-      "description": "Gere código Go seguro a partir de SQL puro com sqlc e entenda o básico de GORM.",
+      "title": "Módulo 1: sqlc Type-Safe e GORM",
+      "description": "Transforme arquivos .sql em funções Go seguras com sqlc e entenda ponteiros no GORM.",
       "lessons": ["lesson-01-sqlc-gorm"]
     }
   ]

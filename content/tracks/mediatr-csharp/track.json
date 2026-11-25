@@ -1,7 +1,7 @@
 {
   "id": "mediatr-csharp",
   "title": "MediatR",
-  "description": "Desacople controllers e casos de uso em .NET com o padrão Mediator, CQRS, IRequest e Pipeline Behaviors.",
+  "description": "Organize os comandos e consultas da PixelShop sem acoplamento: IRequest<T>, IRequestHandler e a diferença entre Send e Publish.",
   "category": "library",
   "languageId": "csharp-dotnet",
   "prerequisites": [
@@ -13,8 +13,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "CQRS e Handlers com MediatR",
-      "description": "Modele comandos e queries com IRequest<T> e IRequestHandler<TReq, TRes>.",
+      "title": "Módulo 1: Correio Interno da PixelShop (CQRS e MediatR)",
+      "description": "Separe leitura e escrita de forma limpa com IRequest, Handlers e IMediator.Send.",
       "lessons": [
         "lesson-01-cqrs-handlers"
       ]

@@ -1,75 +1,73 @@
 {
   "id": "lesson-01-cqrs-handlers",
-  "title": "IRequest, INotification, Handlers e Send vs Publish",
-  "description": "Envie comandos e queries desacoplados via IMediator.Send e publique eventos com INotification e Publish.",
+  "title": "MediatR: IRequest, Handlers e Send vs Publish",
+  "description": "Desacople seus endpoints usando pedidos IRequest<T> com um Handler dedicado via mediator.Send.",
+  "mission": "Missão 1: Despachar consultas de saldo e pedidos na PixelShop via MediatR sem acoplar endpoints.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Desacoplando endpoints com MediatR",
-      "content": "O **MediatR** implementa o padrão Mediator em memória no .NET, sendo a base mais popular para arquiteturas **CQRS** (Command Query Responsibility Segregation) e Vertical Slice.\n\nOs blocos essenciais:\n1. **Request (`IRequest<TResponse>`) + `Send`**: um `record` representando um Command (escrita) ou Query (leitura), processado por **um único** `IRequestHandler<TRequest, TResponse>` via `await mediator.Send(req)`.\n2. **Notification (`INotification`) + `Publish`**: um evento sem retorno (ex: `PedidoCriadoEvent : INotification`) enviado com `await mediator.Publish(evt)` para **zero ou múltiplos** `INotificationHandler<T>`.",
-      "codeExample": "using MediatR;\n\npublic record ObterSaldoQuery(int ContaId) : IRequest<decimal>;\n\npublic class ObterSaldoHandler : IRequestHandler<ObterSaldoQuery, decimal>\n{\n    public Task<decimal> Handle(ObterSaldoQuery request, CancellationToken ct)\n        => Task.FromResult(1500.00m);\n}\n\npublic record SaldoConsultadoEvent(int ContaId) : INotification;\n\n// No endpoint:\n// var saldo = await mediator.Send(new ObterSaldoQuery(42));\n// await mediator.Publish(new SaldoConsultadoEvent(42));"
+      "title": "Send (1 Handler com retorno) vs Publish (vários ouvintes)",
+      "content": "O **MediatR** funciona como um correio interno no seu app .NET: o endpoint só entrega um `record` de pedido (`IRequest<T>`) para `mediator.Send(req)` e o `IRequestHandler<TReq, TRes>` correspondente resolve tudo!\nJá quando algo aconteceu e vários lugares precisam saber (sem retorno), usamos um evento `INotification` com `mediator.Publish(evt)`.",
+      "codeExample": "public record ObterSaldoQuery(int ContaId) : IRequest<decimal>;\n\npublic class ObterSaldoHandler : IRequestHandler<ObterSaldoQuery, decimal> {\n    public Task<decimal> Handle(ObterSaldoQuery req, CancellationToken ct)\n        => Task.FromResult(150.00m);\n}\n// No endpoint: var saldo = await mediator.Send(new ObterSaldoQuery(1));",
+      "expectedOutput": "saldo == 150.00m",
+      "keyTakeaways": [
+        "`IRequest<T>` + `mediator.Send(...)` vai para **1 único Handler** e devolve `T`.",
+        "`INotification` + `mediator.Publish(...)` avisa **0 ou vários Handlers** sem retorno."
+      ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual interface um record de Query que retorna um ProdutoDto deve implementar no MediatR?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal quando despachamos `PingQuery` pelo `mediator.Send`?",
+      "codeSnippet": "public record PingQuery() : IRequest<string>;\npublic class PingHandler : IRequestHandler<PingQuery, string> {\n    public Task<string> Handle(PingQuery r, CancellationToken ct) => Task.FromResult(\"Pong!\");\n}\nvar resp = await mediator.Send(new PingQuery());\nConsole.WriteLine(resp);",
       "options": [
-        "IRequest<ProdutoDto>",
-        "INotification<ProdutoDto>",
-        "IRequestHandler<ProdutoDto>",
-        "IPipelineBehavior<ProdutoDto>"
+        "Pong!",
+        "PingQuery",
+        "null",
+        "Erro porque falta chamar mediator.Publish"
       ],
       "correctIndex": 0,
-      "explanation": "IRequest<TResponse> define o contrato de entrada e o tipo de retorno esperado pelo IMediator.Send."
+      "hint": "`mediator.Send(new PingQuery())` encontra automaticamente `PingHandler` e executa `Handle(...)`!",
+      "expectedOutput": "Pong!",
+      "explanation": "O MediatR liga `PingQuery` ao `PingHandler`, roda `Handle` e devolve `\"Pong!\"` para o chamador."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a definição do Command e de seu Handler no MediatR:",
-      "codeTemplate": "public record CriarPedidoCommand(string Cliente) : {{blank}}<int>;\n\npublic class CriarPedidoHandler : {{blank}}<CriarPedidoCommand, int>\n{\n    public Task<int> {{blank}}(CriarPedidoCommand req, CancellationToken ct)\n        => Task.FromResult(101);\n}",
+      "prompt": "Complete o `Command` com `IRequest` e o método obrigatório `Handle` do Handler:",
+      "codeTemplate": "public record CriarPedidoCmd(string Cliente) : {{blank}}<int>;\npublic class CriarPedidoHandler : IRequestHandler<CriarPedidoCmd, int> {\n    public Task<int> {{blank}}(CriarPedidoCmd req, CancellationToken ct) => Task.FromResult(101);\n}",
       "blanks": [
-        { "answer": "IRequest" },
-        { "answer": "IRequestHandler" },
-        { "answer": "Handle" }
+        { "answer": "IRequest", "placeholder": "contrato" },
+        { "answer": "Handle", "placeholder": "método handler" }
       ],
-      "options": ["IRequest", "INotification", "IRequestHandler", "Handle", "Execute"],
-      "explanation": "O request implementa IRequest<TResponse>, o handler implementa IRequestHandler<TRequest, TResponse> e o método obrigatório é Handle."
+      "options": ["IRequest", "Handle", "INotification", "Execute"],
+      "hint": "Comandos com retorno implementam `IRequest<T>` e o método da interface do handler se chama `Handle`.",
+      "expectedOutput": "Pedido criado com ID 101",
+      "explanation": "Certinho! Esse par `IRequest<T>` + `Handle` mantém cada caso de uso isolado e fácil de testar."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Identifique o erro na chamada do MediatR dentro do endpoint:",
+      "prompt": "Ops! Este endpoint não compila porque usou o método errado do `IMediator` para despachar um `IRequest<int>` que retorna um ID. Clique na linha com o bug:",
       "lines": [
-        "app.MapPost(\"/pedidos\", async (CriarPedidoCommand cmd, IMediator mediator) =>",
-        "{",
+        "app.MapPost(\"/pedidos\", async (CriarPedidoCmd cmd, IMediator mediator) => {",
         "    var id = await mediator.Publish(cmd);",
         "    return Results.Ok(id);",
         "});"
       ],
-      "buggyLineIndex": 2,
-      "explanation": "Publish é usado apenas para INotification (eventos sem retorno para múltiplos handlers). Para IRequest<T> com retorno, deve-se usar mediator.Send(cmd)."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para definir uma Query no MediatR, seu Handler e dispará-la com `Send`:",
-      "blocks": [
-        "var saldo = await mediator.Send(new ObterSaldoQuery(42));",
-        "public record ObterSaldoQuery(int ContaId) : IRequest<decimal>;",
-        "public class ObterSaldoHandler : IRequestHandler<ObterSaldoQuery, decimal> { public Task<decimal> Handle(ObterSaldoQuery r, CancellationToken ct) => Task.FromResult(10m); }"
-      ],
-      "correctOrder": [1, 2, 0],
-      "explanation": "Primeiro declaramos o record `IRequest<decimal>`, depois o `IRequestHandler` correspondente e por fim despachamos com `mediator.Send(...)`."
+      "buggyLineIndex": 1,
+      "hint": "`Publish` é para notificações sem retorno — qual método envia um `IRequest` e devolve o resultado?",
+      "expectedOutput": "200 OK 101",
+      "explanation": "Na linha 2, troque `mediator.Publish(cmd)` por `mediator.Send(cmd)` para executar o Handler e receber o `id`!"
     },
     {
       "type": "write_code",
-      "prompt": "Implemente em C# com MediatR uma query imutável chamada `PingQuery` (sem parâmetros) que retorna `string`, junto com seu handler `PingHandler` retornando `\"Pong\"` via `Task.FromResult`.",
-      "starterCode": "",
-      "requiredTokens": [
-        "IRequest<string>",
-        "IRequestHandler<PingQuery, string>",
-        "Handle("
-      ],
-      "sampleSolution": "using MediatR;\n\npublic record PingQuery() : IRequest<string>;\n\npublic class PingHandler : IRequestHandler<PingQuery, string>\n{\n    public Task<string> Handle(PingQuery request, CancellationToken ct)\n    {\n        return Task.FromResult(\"Pong\");\n    }\n}",
-      "hint": "Crie `public record PingQuery() : IRequest<string>;` e a classe `PingHandler` implementando `IRequestHandler<PingQuery, string>` com o método `Handle`.",
-      "explanation": "Cada caso de uso fica isolado em seu próprio par Request/Handler, mantendo controllers e Minimal APIs enxutos."
+      "prompt": "Complete a `PingQuery` implementando `IRequest<string>` e o método `Handle` em `PingHandler` retornando `Task.FromResult(\"Pong\")`.",
+      "starterCode": "using MediatR;\n// TODO: faça PingQuery implementar IRequest<string>\npublic record PingQuery();\n\npublic class PingHandler : IRequestHandler<PingQuery, string> {\n    // TODO: implemente public Task<string> Handle(PingQuery req, CancellationToken ct)\n}",
+      "requiredTokens": ["IRequest<string>", "Handle(", "Task.FromResult"],
+      "sampleSolution": "using MediatR;\npublic record PingQuery() : IRequest<string>;\n\npublic class PingHandler : IRequestHandler<PingQuery, string> {\n    public Task<string> Handle(PingQuery req, CancellationToken ct) => Task.FromResult(\"Pong\");\n}",
+      "hint": "Adicione `: IRequest<string>` em `PingQuery()` e implemente `public Task<string> Handle(PingQuery req, CancellationToken ct) => Task.FromResult(\"Pong\");`.",
+      "expectedOutput": "Pong",
+      "explanation": "Mandou bem! Seu correio interno com MediatR está configurado e desacoplado."
     }
   ]
 }

@@ -1,46 +1,53 @@
 {
   "id": "algo-ordenacao-twopointers-02",
-  "title": "Ordenação O(n log n) e Técnica de Dois Ponteiros (Two Pointers)",
-  "description": "Compare algoritmos quadráticos O(n²) com ordenações eficientes O(n log n) e domine o padrão de Dois Ponteiros para resolver desafios em O(n).",
+  "title": "Ordenação O(n log n) e Dois Ponteiros (Two Pointers)",
+  "description": "Use ordenação eficiente O(n log n) e o truque de Dois Ponteiros (esq e dir) para resolver problemas em O(n).",
+  "mission": "Missão 6: Decifrar senhas palíndromas nas portas secretas da Ilha do Tesouro!",
   "xp": 45,
   "steps": [
     {
       "type": "theory",
-      "title": "Ordenação Eficiente e o Padrão Two Pointers",
-      "content": "Algoritmos simples de ordenação como Bubble Sort comparam todos contra todos e custam **$O(n^2)$** — inviável para listas grandes. Já algoritmos baseados em Dividir para Conquistar (como **Merge Sort**, **Quick Sort** e o **Timsort** nativo de Python/Java/JS) ordenam em **$O(n \\log n)$**! Além disso, em arrays ou strings (especialmente já ordenados), a técnica de **Dois Ponteiros (Two Pointers)** — colocar um índice `esq = 0` no início e `dir = len(s) - 1` no fim, movendo-os para o centro — resolve problemas como inverter listas, checar palíndromos ou encontrar pares de soma em tempo linear **$O(n)$** e memória constante **$O(1)$**!",
-      "codeExample": "def eh_palindromo(texto):\n    esq = 0\n    dir = len(texto) - 1\n    while esq < dir:\n        if texto[esq] != texto[dir]:\n            return False\n        esq += 1\n        dir -= 1\n    return True\n\nprint(eh_palindromo('radar'))  # True",
+      "title": "Ordenação rápida e Dois Ponteiros das pontas ao centro",
+      "content": "O `.sort()` nativo do Python usa **Timsort**, que ordena em **O(n log n)** — muito mais rápido que métodos O(n²) como Bubble Sort!\nJá a técnica de **Dois Ponteiros (Two Pointers)** coloca `esq = 0` no começo e `dir = len(texto) - 1` no final e caminha até o centro, resolvendo palíndromos e pares de soma em **O(n)** sem gastar memória extra!",
+      "codeExample": "def eh_palindromo(texto):\n    esq, dir = 0, len(texto) - 1\n    while esq < dir:\n        if texto[esq] != texto[dir]:\n            return False\n        esq += 1\n        dir -= 1\n    return True",
+      "expectedOutput": "eh_palindromo('radar') -> True",
       "keyTakeaways": [
-        "Para 1 milhão de itens, $O(n^2)$ faz ~1 trilhão de operações, enquanto $O(n \\log n)$ faz apenas ~20 milhões!",
-        "Use sempre o `.sort()` / `sorted()` nativo da linguagem (que implementa Timsort/PDQSort em $O(n \\log n)$).",
-        "O padrão Two Pointers (`esq` e `dir` caminhando um em direção ao outro) evita criar cópias na memória e roda em $O(n)$."
+        "Use `.sort()` / `sorted()` nativo: roda em O(n log n) em vez de O(n²).",
+        "Two Pointers começa em `0` e `len(s) - 1`, avançando `esq += 1` e recuando `dir -= 1`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é a complexidade de tempo dos algoritmos de ordenação nativos das linguagens modernas (como Timsort em Python/Java ou Merge Sort) no caso médio e pior caso?",
+      "kind": "predict_output",
+      "prompt": "Qual valor `eh_palindromo('mapa')` retorna na primeira volta do `while`?",
+      "codeSnippet": "texto = 'mapa'\nesq, dir = 0, 3\n# compara texto[0] ('m') com texto[3] ('a')",
       "options": [
-        "O(n²)",
-        "O(n log n)",
-        "O(2ⁿ)",
-        "O(1)"
+        "False imediatamente, porque 'm' != 'a'",
+        "True, porque tem 4 letras",
+        "False só depois de percorrer todas as letras",
+        "IndexError"
       ],
-      "correctIndex": 1,
-      "explanation": "Algoritmos eficientes de ordenação por comparação como Merge Sort e Timsort dividem o problema ao meio recursivamente (log n níveis) fazendo trabalho linear (n) por nível: O(n log n)."
+      "correctIndex": 0,
+      "hint": "`texto[0]` é `'m'` e `texto[3]` é `'a'` — já são diferentes logo de cara!",
+      "expectedOutput": "False",
+      "explanation": "Os dois ponteiros detectam a diferença na primeira comparação e já retornam `False` sem perder tempo!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a função com Dois Ponteiros para verificar se uma string é um palíndromo:",
-      "codeTemplate": "esq = 0\ndir = len(texto) - 1\nwhile {{blank}}:\n    if texto[esq] != texto[dir]:\n        return False\n    esq += 1\n    dir {{blank}} 1",
+      "prompt": "Complete a condição do loop e o recuo do ponteiro direito em `eh_palindromo`:",
+      "codeTemplate": "esq, dir = 0, len(texto) - 1\nwhile {{blank}}:\n    if texto[esq] != texto[dir]:\n        return False\n    esq += 1\n    dir {{blank}} 1",
       "blanks": [
         { "answer": "esq < dir", "placeholder": "condição" },
         { "answer": "-=", "placeholder": "recuar" }
       ],
-      "options": ["esq < dir", "-=", "+=", "esq <= len(texto)", "=="],
-      "explanation": "Enquanto `esq < dir`, comparamos as pontas e avançamos `esq += 1` e recuamos `dir -= 1` em direção ao centro."
+      "options": ["esq < dir", "-=", "+=", "=="],
+      "hint": "Continue enquanto `esq < dir`, diminuindo `dir` de 1 em 1 (`-= 1`).",
+      "expectedOutput": "eh_palindromo('arara') -> True",
+      "explanation": "Lindo! Enquanto `esq < dir`, os dois ponteiros se encontram no meio em O(n)."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Esta função usando Dois Ponteiros lança `IndexError: list index out of range` na primeira iteração! Clique na linha com o bug:",
+      "prompt": "O robô Bit levou um `IndexError: list index out of range` logo no começo da inversão! Clique na linha com bug:",
       "lines": [
         "def inverter(arr):",
         "    esq = 0",
@@ -50,31 +57,19 @@
         "        esq += 1; dir -= 1"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Como arrays começam no índice 0, o último índice válido é `len(arr) - 1`, não `len(arr)`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para ordenar uma lista em $O(n \\log n)$ e usar Dois Ponteiros para verificar se existem dois números cuja soma seja igual a `alvo`:",
-      "blocks": [
-        "nums.sort()",
-        "esq, dir = 0, len(nums) - 1",
-        "while esq < dir:",
-        "    soma = nums[esq] + nums[dir]",
-        "    if soma == alvo: return True",
-        "    elif soma < alvo: esq += 1",
-        "    else: dir -= 1"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4, 5, 6],
-      "explanation": "Ordenar primeiro custa $O(n \\log n)$ e permite que os Dois Ponteiros ajustem `esq` (para aumentar a soma) ou `dir` (para diminuir a soma) em $O(n)$."
+      "hint": "Qual é o último índice válido de um array de tamanho `len(arr)`?",
+      "expectedOutput": "inverter([1, 2, 3]) -> [3, 2, 1]",
+      "explanation": "Como índices começam em `0`, o último índice válido é `len(arr) - 1`, não `len(arr)`!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Implemente uma função `eh_palindromo(texto)` em Python usando a técnica de Dois Ponteiros, retornando `True` se a string for igual de trás para frente e `False` caso contrário.",
-      "starterCode": "",
-      "requiredTokens": ["def", "eh_palindromo", "while", "return", "True", "False"],
-      "sampleSolution": "def eh_palindromo(texto):\n    esq = 0\n    dir = len(texto) - 1\n    while esq < dir:\n        if texto[esq] != texto[dir]:\n            return False\n        esq += 1\n        dir -= 1\n    return True",
-      "hint": "Use dois índices nas extremidades da string (`0` e `len(texto) - 1`) e compare os caracteres enquanto eles caminham um em direção ao outro.",
-      "explanation": "Mover dois índices das extremidades até se encontrarem no meio visita cada elemento uma única vez: O(n) de tempo e O(1) de espaço extra!"
+      "prompt": "Complete `eh_palindromo(texto)` usando o laço `while esq < dir` com Dois Ponteiros.",
+      "starterCode": "def eh_palindromo(texto):\n    esq, dir = 0, len(texto) - 1\n    # TODO: compare texto[esq] e texto[dir] enquanto esq < dir\n    \n    return True",
+      "requiredTokens": ["while", "if", "return", "False", "+=", "-="],
+      "sampleSolution": "def eh_palindromo(texto):\n    esq, dir = 0, len(texto) - 1\n    while esq < dir:\n        if texto[esq] != texto[dir]:\n            return False\n        esq += 1\n        dir -= 1\n    return True",
+      "hint": "No `while esq < dir:`, se `texto[esq] != texto[dir]: return False`; depois faça `esq += 1` e `dir -= 1`.",
+      "expectedOutput": "eh_palindromo('radar') -> True",
+      "explanation": "Porta secreta aberta! Two Pointers é um dos padrões mais úteis em desafios de código."
     }
   ]
 }

@@ -1,74 +1,73 @@
 {
   "id": "numpy-vetorizacao-broadcast-03",
-  "title": "Vetorização, Broadcasting e ufuncs (np.round, np.sqrt)",
-  "description": "Entenda como o Broadcasting permite somar escalares ou vetores a matrizes em velocidade C e aplique ufuncs como np.round.",
+  "title": "Vetorização, Broadcasting e ufuncs",
+  "description": "Aplique contas em matrizes inteiras de uma vez com Broadcasting e funções universais como np.sqrt e np.round.",
+  "mission": "Missão 3: Aplicar bônus de ataque em todo o esquadrão de uma vez com Broadcasting.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "A Mágica do Broadcasting e das ufuncs no NumPy",
-      "content": "No Python puro, somar 10 a cada elemento de uma lista exige um loop `for` lento. No NumPy, escrevemos apenas **`precos * 1.1`** ou **`matriz + vetor`**! O mecanismo de **Broadcasting** estica virtualmente (sem copiar na memória!) o escalar ou vetor menor para combinar com o formato da matriz maior — usando instruções SIMD do processador.\n\nAlém disso, funções universais (**ufuncs**) como `np.sqrt(arr)`, `np.exp(arr)` e **`np.round(arr, 2)`** (arredondamento vetorizado para `N` casas decimais) operam elemento a elemento em C!",
-      "codeExample": "import numpy as np\n\nprecos = np.array([100.0, 200.0, 300.0])\ncom_desconto = np.round(precos * 0.9, 2)  # [90., 180., 270.]\n\n# Broadcasting: soma vetor (3,) em cada linha da matriz (2, 3)\nmatriz = np.array([[1, 2, 3], [4, 5, 6]])\nbias = np.array([10, 20, 30])\nresultado = matriz + bias  # [[11, 22, 33], [14, 25, 36]]",
+      "title": "A mágica do Broadcasting",
+      "content": "No NumPy, você não precisa de `for` para aplicar um bônus em todos os heróis: basta escrever **`ataques * 1.1`** ou **`matriz + bonus`**! O **Broadcasting** estica virtualmente o valor menor para casar com a matriz maior sem copiar memória.\nAlém disso, funções universais (**ufuncs**) como **`np.sqrt()`** e **`np.round(arr, 2)`** operam elemento a elemento em C!",
+      "codeExample": "import numpy as np\n\nataques = np.array([10.0, 20.0, 30.0])\ncom_buff = np.round(ataques * 1.15, 2)\nprint(com_buff)\n\nmatriz = np.array([[1, 2], [3, 4]])\nprint(matriz + np.array([10, 20]))",
+      "expectedOutput": "[11.5 23.  34.5]\n[[11 22]\n [13 24]]",
       "keyTakeaways": [
-        "Regra do Broadcasting: comparando os `.shape` da direita para a esquerda, dimensões são compatíveis se forem iguais ou se uma delas for `1`.",
-        "Nunca escreva `for i in range(len(arr)):` para matemática em arrays NumPy — use operações vetorizadas!",
-        "Funções universais (`ufuncs`) como `np.sqrt(arr)`, `np.exp(arr)`, `np.log(arr)` e `np.round(arr, casas)` rodam elemento a elemento em C."
+        "Broadcasting compara os `.shape` da direita para a esquerda: dimensões precisam ser iguais ou uma delas ser `1`.",
+        "Ufuncs como `np.sqrt()`, `np.exp()` e `np.round(arr, casas)` rodam no array inteiro sem loops."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Se `A` tem shape `(3, 4)` e `B` tem shape `(4,)`, o que acontece ao executar `A + B` no NumPy?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal ao somar o bônus `+ 5` no vetor de dano do esquadrão?",
+      "codeSnippet": "import numpy as np\ndano = np.array([10, 20, 30])\nprint(dano + 5)",
       "options": [
-        "Lança ValueError imediatamente",
-        "O NumPy usa Broadcasting e soma `B` em cada uma das 3 linhas de `A`, resultando em shape `(3, 4)`",
-        "Trunca `A` para `(1, 4)`",
-        "Concatena `B` ao final gerando `(4, 4)`"
+        "[15 25 35]",
+        "[10 20 30 5]",
+        "[15 20 30]",
+        "Erro porque 5 não é um array"
       ],
-      "correctIndex": 1,
-      "explanation": "A última dimensão coincide (`4 == 4`), então o NumPy estica `B` ao longo das 3 linhas via Broadcasting."
+      "correctIndex": 0,
+      "hint": "O escalar `5` é somado a **cada** elemento do array via Broadcasting!",
+      "expectedOutput": "[15 25 35]",
+      "explanation": "O Broadcasting aplica `+ 5` em todos os elementos de uma vez, gerando `[15 25 35]`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código usando ufuncs do NumPy para calcular a raiz quadrada e arredondar para 2 casas decimais:",
-      "codeTemplate": "raizes = np.{{blank}}(valores)\nformatado = np.{{blank}}(raizes, 2)",
+      "prompt": "Complete as ufuncs para calcular a raiz quadrada da energia e arredondar para 2 casas decimais:",
+      "codeTemplate": "raizes = np.{{blank}}(energia)\nfinal = np.{{blank}}(raizes, 2)\nprint(final)",
       "blanks": [
         { "answer": "sqrt", "placeholder": "raiz" },
         { "answer": "round", "placeholder": "arredondar" }
       ],
       "options": ["sqrt", "round", "exp", "mean", "abs"],
-      "explanation": "`np.sqrt` calcula a raiz quadrada elemento a elemento e `np.round(arr, 2)` arredonda cada elemento para 2 casas decimais."
+      "hint": "Raiz quadrada em inglês é `sqrt` (*square root*), e arredondar é `round`.",
+      "expectedOutput": "[2.   3.16 4.  ]",
+      "explanation": "`np.sqrt` calcula a raiz de todos os itens e `np.round(..., 2)` deixa tudo bonitinho com 2 casas decimais."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Identifique a linha que causa `ValueError: operands could not be broadcast together`:",
+      "prompt": "Ops! O bônus do esquadrão falhou com `ValueError: operands could not be broadcast together`. Qual linha causa o erro?",
       "lines": [
         "import numpy as np",
         "matriz = np.ones((3, 4))",
-        "vetor = np.array([1, 2, 3])",
-        "res = matriz + vetor"
+        "bonus = np.array([1, 2, 3])",
+        "res = matriz + bonus"
       ],
       "buggyLineIndex": 3,
-      "explanation": "Comparando os shapes `(3, 4)` e `(3,)` da direita para a esquerda, `4 != 3` e nenhum dos dois é `1`. Para somar por linha, `vetor` precisaria ter shape `(3, 1)`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para aplicar uma taxa de 10% sobre `precos` via broadcasting e arredondar o resultado:",
-      "blocks": [
-        "final = np.round(com_taxa, 2)",
-        "precos = np.array([19.99, 49.50])",
-        "com_taxa = precos * 1.1"
-      ],
-      "correctOrder": [1, 2, 0],
-      "explanation": "Definimos `precos`, multiplicamos pelo escalar `1.1` com broadcasting e arredondamos com `np.round(..., 2)`."
+      "hint": "Compare os shapes da direita para a esquerda: `(3, 4)` vs `(3,)`. O `4` bate com o `3`?",
+      "expectedOutput": "[[2. 2. 2. 2.]\n [3. 3. 3. 3.]\n [4. 4. 4. 4.]]",
+      "explanation": "Na linha 4, `4 != 3` impede o Broadcasting! Para somar por linha, `bonus` precisaria ter shape `(3, 1)` (ou tamanho 4 para colunas)."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Dado o array NumPy `salarios`, calcule a variável `reajustados` aplicando um aumento vetorizado de 15% e arredondando todos os valores para 2 casas decimais.",
-      "starterCode": "",
-      "requiredTokens": ["reajustados", "salarios * 1.15", "np.round("],
-      "sampleSolution": "reajustados = np.round(salarios * 1.15, 2)",
-      "hint": "Multiplique `salarios * 1.15` e passe o resultado junto com `2` para `np.round(...)`.",
-      "explanation": "Multiplicar por `1.15` usa broadcasting escalar e `np.round(..., 2)` arredonda todo o array em C."
+      "prompt": "Aplique um bônus de 15% em `ataques` (`* 1.15`) e arredonde tudo para 2 casas decimais na variável `turbinados`.",
+      "starterCode": "import numpy as np\n\nataques = np.array([10.0, 25.0, 40.0])\n# TODO: multiplique por 1.15 e arredonde com np.round(..., 2)\nturbinados = \nprint(turbinados)",
+      "requiredTokens": ["turbinados", "ataques * 1.15", "np.round("],
+      "sampleSolution": "import numpy as np\n\nataques = np.array([10.0, 25.0, 40.0])\nturbinados = np.round(ataques * 1.15, 2)\nprint(turbinados)",
+      "hint": "Passe `ataques * 1.15` e `2` para `np.round(...)`.",
+      "expectedOutput": "[11.5  28.75 46.  ]",
+      "explanation": "Esquadrão turbinado! Zero loops, matemática vetorizada em uma linha."
     }
   ]
 }

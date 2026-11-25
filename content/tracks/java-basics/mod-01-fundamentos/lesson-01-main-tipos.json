@@ -1,101 +1,75 @@
 {
   "id": "java-main-01",
-  "title": "Ponto de Entrada e Tipagem Forte",
-  "description": "Escrevendo seu primeiro código na JVM com o método main, tipos primitivos, String e saída padrão.",
+  "title": "Olá, Duke! main, Tipos e println",
+  "description": "Dê o primeiro passo na JVM guardando dados com int, double e String e exibindo mensagens com System.out.println.",
+  "mission": "Missão 1: Imprimir o primeiro recibo da Cafeteria do Duke no terminal.",
   "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "Método main, Tipagem Estática e Saída Padrão na JVM",
-      "content": "Java é uma linguagem fortemente tipada e compilada para bytecode da JVM. Todo programa executável começa pelo método `public static void main(String[] args)` dentro de uma classe. Toda variável precisa ter seu tipo declarado explicitamente antes do nome: tipos primitivos (`int`, `double`, `boolean`) começam com letra minúscula, enquanto `String` é uma classe e começa com maiúscula. Para exibir uma linha no terminal, usamos `System.out.println()`.",
-      "codeExample": "public class Main {\n  public static void main(String[] args) {\n    int idade = 25;\n    double altura = 1.75;\n    boolean ativo = true;\n    String nome = \"Duke\";\n    System.out.println(nome);\n  }\n}",
+      "title": "Guardando dados e exibindo no console",
+      "content": "Em Java, todo programa começa no método `main` e cada variável avisa seu tipo antes do nome.\nTipos simples como `int` (inteiro) e `double` (decimal) começam com minúscula, enquanto `String` (texto) começa com maiúscula.\nPara mostrar qualquer mensagem no terminal, basta chamar `System.out.println()`.",
+      "codeExample": "public class Main {\n  public static void main(String[] args) {\n    String barista = \"Duke\";\n    int cafes = 2;\n    double total = 15.5;\n    System.out.println(barista + \" serviu \" + cafes + \" cafés: R$ \" + total);\n  }\n}",
+      "expectedOutput": "Duke serviu 2 cafés: R$ 15.5",
       "keyTakeaways": [
-        "`public static void main(String[] args)` é o ponto de entrada padrão da JVM.",
-        "`System.out.println()` imprime texto no console e pula uma linha.",
-        "Tipos primitivos (`int`, `double`, `boolean`) começam com letra minúscula; `String` começa com maiúscula."
+        "Tipos primitivos (`int`, `double`, `boolean`) são minúsculos; `String` começa com `S` maiúsculo.",
+        "`System.out.println(...)` mostra o texto no terminal e pula uma linha."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual comando exibe uma linha de texto no console padrão em Java?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no painel da cafeteria ao rodar este código?",
+      "codeSnippet": "String cliente = \"Ana\";\nint xicaras = 3;\nSystem.out.println(cliente + \" pediu \" + xicaras + \" cafés\");",
       "options": [
-        "Console.WriteLine(\"Olá\");",
-        "System.out.println(\"Olá\");",
-        "print(\"Olá\");",
-        "std::cout << \"Olá\";"
+        "Ana pediu 3 cafés",
+        "cliente pediu xicaras cafés",
+        "Ana pediu + xicaras + cafés",
+        "Erro porque não podemos juntar String com int"
       ],
-      "correctIndex": 1,
-      "explanation": "Em Java, utilizamos o fluxo de saída padrão dentro da classe System: `System.out.println()`."
+      "correctIndex": 0,
+      "hint": "O operador `+` com uma `String` junta o texto com o valor de `xicaras`.",
+      "expectedOutput": "Ana pediu 3 cafés",
+      "explanation": "O Java concatena os valores de `cliente` (\"Ana\") e `xicaras` (3) com os textos, exibindo `Ana pediu 3 cafés`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a declaração de uma variável inteira, uma decimal e um texto em Java:",
-      "codeTemplate": "{{blank}} idade = 25;\n{{blank}} preco = 19.90;\n{{blank}} nome = \"Duke\";",
+      "prompt": "Complete os tipos do recibo para guardar a quantidade inteira e o nome da bebida:",
+      "codeTemplate": "{{blank}} qtd = 2;\n{{blank}} bebida = \"Expresso\";\nSystem.out.println(qtd + \"x \" + bebida);",
       "blanks": [
-        {
-          "answer": "int",
-          "placeholder": "tipo inteiro"
-        },
-        {
-          "answer": "double",
-          "placeholder": "tipo decimal"
-        },
-        {
-          "answer": "String",
-          "placeholder": "tipo texto"
-        }
+        { "answer": "int", "placeholder": "inteiro" },
+        { "answer": "String", "placeholder": "texto" }
       ],
-      "options": ["int", "double", "String", "str", "float", "var"],
-      "explanation": "Em Java, tipos primitivos como `int` e `double` começam com minúscula, enquanto `String` é uma classe e começa com letra maiúscula."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para montar um programa Java válido com o ponto de entrada `main`:",
-      "blocks": [
-        "public class Main {",
-        "  public static void main(String[] args) {",
-        "    System.out.println(\"Olá, JVM!\");",
-        "  }",
-        "}"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4],
-      "explanation": "Todo código executável em Java fica dentro de uma classe e inicia pelo método `public static void main(String[] args)`."
+      "options": ["int", "String", "string", "double"],
+      "hint": "Números inteiros usam `int`, e textos sempre usam `String` com `S` maiúsculo.",
+      "expectedOutput": "2x Expresso",
+      "explanation": "`int` guarda números inteiros sem casas decimais e `String` guarda textos."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este programa Java falha ao compilar por causa de um erro de tipagem. Clique na linha com o bug:",
+      "prompt": "Ops! O recibo não compilou por causa de uma letra minúscula no tipo. Qual linha tem o bug?",
       "lines": [
-        "public class App {",
+        "public class Recibo {",
         "  public static void main(String[] args) {",
-        "    int pontos = 100;",
-        "    string usuario = \"Ana\";",
-        "    System.out.println(usuario);",
-        "  }",
-        "}"
+        "    int mesa = 4;",
+        "    string pedido = \"Cappuccino\";",
+        "    System.out.println(mesa + \": \" + pedido);",
+        "  }"
       ],
       "buggyLineIndex": 3,
-      "explanation": "Em Java, `String` é uma classe e diferencia maiúsculas de minúsculas: `string` em minúsculo não existe e gera erro de compilação."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "O que acontece ao compilar `int idade = \"25\";` dentro do método `main` em Java?",
-      "options": [
-        "O Java converte \"25\" para 25 automaticamente",
-        "O compilador acusa erro de tipos incompatíveis (String não pode ser atribuída a int)",
-        "O código compila e lança erro apenas se idade for impressa",
-        "A variável idade passa a ser do tipo String"
-      ],
-      "correctIndex": 1,
-      "explanation": "Por ter tipagem estática e forte, o compilador Java rejeita imediatamente a atribuição de uma `String` a uma variável `int`."
+      "hint": "Dê uma olhada no tipo declarado para a variável `pedido` na linha 4.",
+      "expectedOutput": "4: Cappuccino",
+      "explanation": "Em Java, `String` é uma classe e precisa começar com `S` maiúsculo (`String pedido = \"Cappuccino\";`)."
     },
     {
       "type": "write_code",
-      "prompt": "Declare uma variável inteira chamada `idade` com valor `20`, uma variável de texto chamada `nome` com valor `\"Ana\"` e exiba `nome` no console usando a saída padrão do Java.",
-      "starterCode": "",
-      "requiredTokens": ["int", "idade", "String", "nome", "System.out.println"],
-      "sampleSolution": "int idade = 20;\nString nome = \"Ana\";\nSystem.out.println(nome);",
-      "hint": "Declare `int idade = 20;`, depois `String nome = \"Ana\";` e imprima com `System.out.println(nome);`.",
-      "explanation": "Combinamos a declaração de um tipo primitivo (`int`), uma classe de texto (`String`) e a exibição com `System.out.println()`."
+      "prompt": "Complete o recibo criando `int qtd = 2;` e `String bebida = \"Latte\";` para exibir o pedido do cliente.",
+      "starterCode": "public class Main {\n  public static void main(String[] args) {\n    // TODO: declare `int qtd = 2;` e `String bebida = \"Latte\";`\n    \n    System.out.println(qtd + \"x \" + bebida);\n  }\n}",
+      "requiredTokens": ["int", "qtd", "String", "bebida", "Latte", "System.out.println"],
+      "sampleSolution": "public class Main {\n  public static void main(String[] args) {\n    int qtd = 2;\n    String bebida = \"Latte\";\n    System.out.println(qtd + \"x \" + bebida);\n  }\n}",
+      "hint": "Adicione `int qtd = 2;` e `String bebida = \"Latte\";` acima do `System.out.println`.",
+      "expectedOutput": "2x Latte",
+      "explanation": "Mandou bem! Seu primeiro código Java já sabe declarar tipos e imprimir o pedido da Cafeteria do Duke."
     }
   ]
 }

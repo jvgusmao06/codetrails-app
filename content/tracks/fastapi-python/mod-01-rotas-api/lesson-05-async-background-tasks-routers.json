@@ -1,77 +1,73 @@
 {
   "id": "fastapi-routers-background-05",
-  "title": "APIRouter Modular, async def vs def e BackgroundTasks",
-  "description": "Organize APIs grandes com APIRouter, entenda o event loop (async vs sync) e dispare tarefas em segundo plano sem travar o cliente.",
+  "title": "APIRouter, async vs def e BackgroundTasks",
+  "description": "Organize rotas em módulos com APIRouter, evite travar o event loop e rode tarefas em segundo plano.",
+  "mission": "Missão 5: Modularizar a TaskFlow API com APIRouter e enviar e-mails em segundo plano com BackgroundTasks.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Escalando Projetos FastAPI com APIRouter e BackgroundTasks",
-      "content": "Em APIs reais, não deixamos 50 rotas no mesmo `main.py`! Separamos por domínio usando **`APIRouter(prefix=\"/usuarios\", tags=[\"Usuários\"])`** e plugamos no app principal com `app.include_router(router)`. Além disso:\n- Use `async def` quando chamar bibliotecas assíncronas (`await httpx`, `await asyncpg`), e `def` normal quando chamar código bloqueante (o FastAPI roda `def` em uma ThreadPool para não travar o Event Loop!).\n- Use **`BackgroundTasks`** para enviar e-mails ou logs após responder `202/200` rápido ao usuário.",
-      "codeExample": "from fastapi import APIRouter, BackgroundTasks\n\nrouter = APIRouter(prefix=\"/emails\", tags=[\"Emails\"])\n\ndef enviar_email(destino: str):\n    print(f\"Enviando para {destino}\")\n\n@router.post(\"/boas-vindas\")\nasync def boas_vindas(email: str, bg: BackgroundTasks):\n    bg.add_task(enviar_email, email)\n    return {\"status\": \"agendado\"}",
+      "title": "Escalando com APIRouter e BackgroundTasks",
+      "content": "Quando a API cresce, agrupamos rotas por assunto com `APIRouter(prefix=\"/tarefas\")` e conectamos no app principal via `app.include_router(router)`.\nPara não deixar o usuário esperando por e-mails ou logs, agende com `bg.add_task(funcao, arg)` usando `BackgroundTasks` — e lembre: nunca rode código lento bloqueante (`time.sleep`) dentro de `async def` (use `def` comum ou `await`).",
+      "codeExample": "router = APIRouter(prefix=\"/emails\")\ndef enviar_email(destino: str):\n    print(f\"Enviado para {destino}\")\n\n@router.post(\"/boas-vindas\")\nasync def boas_vindas(email: str, bg: BackgroundTasks):\n    bg.add_task(enviar_email, email)\n    return {\"status\": \"agendado\"}",
+      "expectedOutput": "HTTP 200 -> {\"status\": \"agendado\"}\nEnviado para py@dev.com",
       "keyTakeaways": [
-        "NUNCA chame `time.sleep()` ou `requests.get()` dentro de `async def` — isso trava todo o servidor! Use `def` ou `await` assíncrono.",
-        "`APIRouter` + `app.include_router()` mantém o projeto modular e organizado.",
-        "`bg.add_task(fn, arg)` executa após a resposta HTTP ser enviada ao cliente."
+        "`APIRouter` + `app.include_router(router)` dividem a API em arquivos organizados.",
+        "`bg.add_task(fn, arg)` roda depois da resposta sair; evite `time.sleep()` dentro de `async def`."
       ]
     },
     {
-      "type": "spot_the_bug",
-      "prompt": "Esta rota FastAPI congela o Event Loop inteiro do servidor para TODOS os usuários durante 5 segundos por misturar `async def` com chamada síncrona bloqueante. Clique na linha problemática:",
-      "lines": [
-        "@app.get(\"/relatorio\")",
-        "async def gerar_relatorio():",
-        "    time.sleep(5)  # Chamada síncrona bloqueante!",
-        "    return {\"ok\": True}"
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "Quando o cliente chama `POST /emails/boas-vindas?email=py@dev.com`, o que acontece primeiro?",
+      "codeSnippet": "@router.post(\"/boas-vindas\")\nasync def boas_vindas(email: str, bg: BackgroundTasks):\n    bg.add_task(enviar_email, email)\n    return {\"status\": \"agendado\"}",
+      "options": [
+        "O cliente recebe {\"status\": \"agendado\"} na hora e enviar_email roda logo depois em segundo plano",
+        "O cliente fica esperando enviar_email terminar antes de receber a resposta",
+        "A função enviar_email nunca é executada",
+        "O servidor retorna erro 500 porque enviar_email não é async"
       ],
-      "buggyLineIndex": 2,
-      "explanation": "Na linha 3, `time.sleep(5)` bloqueia a thread única do Event Loop dentro de `async def`. O correto é usar `await asyncio.sleep(5)` ou declarar a rota como `def` normal."
+      "correctIndex": 0,
+      "hint": "O objetivo do `BackgroundTasks` é devolver a resposta rápida e fazer o trabalho pesado logo depois!",
+      "expectedOutput": "{\"status\": \"agendado\"}",
+      "explanation": "Exatamente! O usuário recebe `{\"status\": \"agendado\"}` instantaneamente enquanto o FastAPI dispara `enviar_email` em segundo plano."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a criação do `APIRouter` e o agendamento de uma tarefa em segundo plano com `BackgroundTasks`:",
-      "codeTemplate": "router = {{blank}}(prefix=\"/notificacoes\")\n\n@router.post(\"/enviar\")\nasync def notificar(email: str, bg: {{blank}}):\n    bg.{{blank}}(enviar_email, email)\n    return {\"status\": \"ok\"}",
+      "prompt": "Complete a criação do roteador modular e o agendamento da tarefa em segundo plano:",
+      "codeTemplate": "router = {{blank}}(prefix=\"/notificacoes\")\n\n@router.post(\"/enviar\")\nasync def notificar(email: str, bg: BackgroundTasks):\n    bg.{{blank}}(enviar_email, email)\n    return {\"status\": \"ok\"}",
       "blanks": [
         { "answer": "APIRouter", "placeholder": "roteador" },
-        { "answer": "BackgroundTasks", "placeholder": "tipo" },
-        { "answer": "add_task", "placeholder": "método" }
+        { "answer": "add_task", "placeholder": "agendar" }
       ],
-      "options": ["APIRouter", "BackgroundTasks", "add_task", "FastAPI", "run_async", "Thread"],
-      "explanation": "`APIRouter` modulariza as rotas e `bg.add_task(fn, arg)` agenda a execução após o envio da resposta HTTP."
+      "options": ["APIRouter", "add_task", "FastAPI", "run_async"],
+      "hint": "Criamos o módulo de rotas com `APIRouter` e agendamos a função com `bg.add_task(...)`.",
+      "expectedOutput": "{\"status\": \"ok\"}",
+      "explanation": "`APIRouter` organiza o prefixo `/notificacoes` e `bg.add_task()` agenda a tarefa sem travar o cliente."
     },
     {
-      "type": "multiple_choice",
-      "prompt": "Se você precisa chamar uma biblioteca síncrona bloqueante (como `requests.get`) em uma rota FastAPI, qual assinatura evita travar o Event Loop do servidor?",
-      "options": [
-        "Usar `async def` normalmente",
-        "Usar `def` comum (sem `async`), para o FastAPI executar em uma ThreadPool",
-        "Colocar a chamada dentro de `BaseModel`",
-        "Usar `APIRouter` sem `prefix`"
+      "type": "spot_the_bug",
+      "prompt": "Esta rota congela o Event Loop inteiro do servidor por 5 segundos para todos os usuários! Clique na linha com o bug:",
+      "lines": [
+        "@app.get(\"/relatorio\")",
+        "async def gerar_relatorio():",
+        "    time.sleep(5)",
+        "    return {\"ok\": True}"
       ],
-      "correctIndex": 1,
-      "explanation": "O FastAPI executa rotas declaradas com `def` comum em uma ThreadPool separada, preservando o Event Loop principal."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para criar um `APIRouter`, definir uma rota nele e conectá-lo ao `app`:",
-      "blocks": [
-        "@router.get(\"/\")",
-        "router = APIRouter(prefix=\"/pedidos\")",
-        "app.include_router(router)",
-        "def listar_pedidos():",
-        "    return []"
-      ],
-      "correctOrder": [1, 0, 3, 4, 2],
-      "explanation": "Primeiro criamos o `router`, registramos a rota `@router.get(\"/\")` e por fim conectamos com `app.include_router(router)`."
+      "buggyLineIndex": 2,
+      "hint": "Qual linha faz uma espera síncrona bloqueante dentro de uma função `async def`?",
+      "expectedOutput": "{\"ok\": true}",
+      "explanation": "Dentro de `async def`, `time.sleep(5)` trava todo o servidor! Use `await asyncio.sleep(5)` ou declare a rota como `def` normal."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Instancie um roteador modular na variável `router` com o prefixo `\"/pedidos\"` e registre-o na aplicação principal `app`.",
-      "starterCode": "from fastapi import APIRouter\n",
+      "prompt": "Complete o código criando `router = APIRouter(prefix=\"/pedidos\")` e conectando-o ao `app` com `app.include_router(router)`.",
+      "starterCode": "from fastapi import APIRouter, FastAPI\n\napp = FastAPI()\n# TODO: instancie router com prefix=\"/pedidos\" e conecte em app\n",
       "requiredTokens": ["APIRouter(", "prefix=\"/pedidos\"", "app.include_router(router)"],
-      "sampleSolution": "router = APIRouter(prefix=\"/pedidos\")\napp.include_router(router)",
-      "hint": "Crie o roteador com `APIRouter` passando `prefix=\"/pedidos\"` e conecte-o usando `include_router`.",
-      "explanation": "`APIRouter` permite dividir rotas em arquivos como `routers/pedidos.py` e `routers/usuarios.py`."
+      "sampleSolution": "from fastapi import APIRouter, FastAPI\n\napp = FastAPI()\nrouter = APIRouter(prefix=\"/pedidos\")\napp.include_router(router)",
+      "hint": "Escreva `router = APIRouter(prefix=\"/pedidos\")` e depois `app.include_router(router)`.",
+      "expectedOutput": "Rotas /pedidos registradas no app!",
+      "explanation": "Parabéns! Sua TaskFlow API agora está modular, rápida e pronta para crescer."
     }
   ]
 }

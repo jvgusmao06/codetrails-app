@@ -1,86 +1,73 @@
 {
   "id": "java-colecoes-list-map-03",
-  "title": "Coleções: ArrayList, HashMap, HashSet e Generics",
-  "description": "Armazene listas dinâmicas com ArrayList, pares chave-valor em O(1) com HashMap e conjuntos únicos com HashSet.",
+  "title": "Coleções: ArrayList, HashMap e HashSet",
+  "description": "Use listas que crescem com ArrayList, buscas rápidas por chave com HashMap e itens únicos com HashSet.",
+  "mission": "Missão 9: Montar a fila dinâmica (ArrayList), a tabela de preços (HashMap) e os sabores únicos (HashSet).",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "ArrayList, HashMap, HashSet e Generics no pacote java.util",
-      "content": "Arrays fixos (`int[]`) não crescem de tamanho. No dia a dia em Java, usamos a Collections Framework com **Generics `<Tipo>`** (exigindo classes wrapper como `Integer` e `Double`, já que Generics não aceitam primitivos como `int`):\n- **`List<String> nomes = new ArrayList<>()`**: lista dinâmica indexada.\n- **`Map<String, Integer> estoque = new HashMap<>()`**: dicionário chave -> valor com busca $O(1)$ e método `.getOrDefault(chave, padrao)`.\n- **`Set<String> tags = new HashSet<>()`**: conjunto que elimina duplicatas automaticamente.",
-      "codeExample": "import java.util.*;\n\nList<String> linguagens = new ArrayList<>();\nlinguagens.add(\"Java\");\n\nMap<String, Integer> pontos = new HashMap<>();\npontos.put(\"Ana\", 100);\nint p = pontos.getOrDefault(\"Bia\", 0); // 0\n\nSet<String> tags = new HashSet<>();\ntags.add(\"backend\");\ntags.add(\"backend\"); // ignorado (sem duplicatas)",
+      "title": "Escolhendo a coleção certa: List, Map e Set",
+      "content": "Quando a fila de pedidos cresce, trocamos arrays fixos por `List<String> fila = new ArrayList<>()`.\nPara guardar pares chave -> valor (como cliente -> pontos), use `Map<String, Integer> pontos = new HashMap<>()` com `.getOrDefault()` para evitar `null`.\nE se quiser eliminar duplicatas sozinho, vá de `Set<String> sabores = new HashSet<>()` — lembrando que Generics `<...>` sempre pedem `Integer`, nunca `int`!",
+      "codeExample": "import java.util.*;\n\nMap<String, Integer> pontos = new HashMap<>();\npontos.put(\"Ana\", 100);\nint bia = pontos.getOrDefault(\"Bia\", 0);\nSet<String> tags = new HashSet<>();\ntags.add(\"café\"); tags.add(\"café\");\nSystem.out.println(bia + \" | tags: \" + tags.size());",
+      "expectedOutput": "0 | tags: 1",
       "keyTakeaways": [
-        "Programe voltado para a interface: `List<String> x = new ArrayList<>();`, `Map<K, V> m = new HashMap<>();` e `Set<T> s = new HashSet<>();`.",
-        "Generics em Java exigem tipos de referência (`List<Integer>`, nunca `List<int>`).",
-        "`map.getOrDefault(chave, padrao)` evita `null` quando a chave ainda não existe no `HashMap`."
+        "Use sempre wrappers em Generics (`List<Integer>`, nunca `List<int>`) e instancie a classe concreta (`new ArrayList<>()`).",
+        "`HashMap.getOrDefault(chave, 0)` devolve um valor padrão seguro; `HashSet` ignora duplicatas."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual declaração de lista dinâmica de números inteiros é válida em Java?",
+      "kind": "predict_output",
+      "prompt": "Qual número aparece na tela ao imprimir `sabores.size()`?",
+      "codeSnippet": "Set<String> sabores = new HashSet<>();\nsabores.add(\"Mocha\");\nsabores.add(\"Latte\");\nsabores.add(\"Mocha\");\nSystem.out.println(sabores.size());",
       "options": [
-        "List<int> nums = new ArrayList<>();",
-        "List<Integer> nums = new ArrayList<>();",
-        "ArrayList<int> nums = new List<>();",
-        "List[] nums = new ArrayList();"
+        "2",
+        "3",
+        "1",
+        "Erro por item duplicado"
       ],
-      "correctIndex": 1,
-      "explanation": "Generics em Java não aceitam tipos primitivos (`int`), exigindo a classe Wrapper (`Integer`). Além disso, `List` é interface e `ArrayList` é a implementação."
+      "correctIndex": 0,
+      "hint": "O `HashSet` não guarda elementos repetidos: o segundo `\"Mocha\"` é ignorado sem erro.",
+      "expectedOutput": "2",
+      "explanation": "Como `\"Mocha\"` já estava no conjunto, `sabores` fica só com `Mocha` e `Latte` — tamanho `2`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para criar um conjunto sem duplicatas com `HashSet` e consultar um `HashMap` com valor padrão seguro:",
+      "prompt": "Crie o conjunto sem duplicatas e leia a pontuação de `\"Ana\"` com fallback `0`:",
       "codeTemplate": "Set<String> tags = new {{blank}}<>();\nint score = pontos.{{blank}}(\"Ana\", 0);",
       "blanks": [
-        { "answer": "HashSet", "placeholder": "implementação Set" },
+        { "answer": "HashSet", "placeholder": "classe Set" },
         { "answer": "getOrDefault", "placeholder": "leitura segura" }
       ],
-      "options": ["HashSet", "getOrDefault", "Set", "getOrNull", "ArrayList", "contains"],
-      "explanation": "`HashSet` implementa `Set` sem permitir elementos repetidos, e `getOrDefault(chave, padrao)` retorna o valor padrão quando a chave não existe."
+      "options": ["HashSet", "getOrDefault", "Set", "getOrNull"],
+      "hint": "`Set` é interface, então instanciamos `HashSet`; para ler com padrão no `Map`, usamos `getOrDefault`.",
+      "expectedOutput": "score = 0",
+      "explanation": "`new HashSet<>()` garante elementos únicos e `getOrDefault` evita surpresas com `null`!"
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este código tenta criar uma lista dinâmica de textos, mas falha na compilação. Clique na linha com o bug:",
+      "prompt": "A fila de clientes não compilou porque tentou dar `new` numa interface! Clique na linha com o bug:",
       "lines": [
         "import java.util.*;",
-        "List<String> nomes = new List<>();",
-        "nomes.add(\"Duke\");"
+        "List<String> fila = new List<>();",
+        "fila.add(\"Duke\");",
+        "System.out.println(fila);"
       ],
       "buggyLineIndex": 1,
-      "explanation": "`List` é uma `interface` e não pode ser instanciada diretamente com `new List<>()`. O correto é `new ArrayList<>()`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para criar um `HashMap`, inserir a pontuação de `\"Ana\"` e consultar `\"Bia\"` com valor padrão `0`:",
-      "blocks": [
-        "Map<String, Integer> pontos = new HashMap<>();",
-        "pontos.put(\"Ana\", 100);",
-        "int p = pontos.getOrDefault(\"Bia\", 0);",
-        "System.out.println(p);"
-      ],
-      "correctOrder": [0, 1, 2, 3],
-      "explanation": "Instanciamos o `HashMap`, inserimos com `.put(...)` e lemos com `.getOrDefault(...)` para evitar retorno `null`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual será o valor de `tags.size()` após adicionar `\"Java\"`, `\"Python\"` e `\"Java\"` em um `Set<String> tags = new HashSet<>();`?",
-      "options": [
-        "3",
-        "2",
-        "1",
-        "Lança exceção por elemento duplicado"
-      ],
-      "correctIndex": 1,
-      "explanation": "`HashSet` descarta silenciosamente elementos duplicados (`.add(\"Java\")` retorna `false` na segunda vez), mantendo tamanho `2`."
+      "hint": "`List` é uma `interface` — qual classe concreta devemos instanciar com `new`?",
+      "expectedOutput": "[Duke]",
+      "explanation": "Não podemos fazer `new List<>()`; o correto é `List<String> fila = new ArrayList<>();`."
     },
     {
       "type": "write_code",
-      "prompt": "Crie um `Map` com chaves `String` e valores `Integer` chamado `idades` (instanciado como `HashMap`) e insira a chave `\"Joao\"` com o valor `25`.",
-      "starterCode": "",
+      "prompt": "Complete o `Map<String, Integer> idades` instanciando um `HashMap` e adicionando `\"Joao\"` com valor `25`.",
+      "starterCode": "// TODO: crie `Map<String, Integer> idades = new HashMap<>();` e insira (\"Joao\", 25)\nMap<String, Integer> idades = new HashMap<>();\n// TODO: use .put(...) para adicionar \"Joao\" -> 25\n",
       "requiredTokens": ["Map<String, Integer>", "idades", "HashMap", ".put(", "\"Joao\"", "25"],
       "sampleSolution": "Map<String, Integer> idades = new HashMap<>();\nidades.put(\"Joao\", 25);",
-      "hint": "Declare `Map<String, Integer> idades = new HashMap<>();` e use `.put(\"Joao\", 25)`.",
-      "explanation": "O operador diamante `<>` infere os tipos `<String, Integer>` automaticamente no `new HashMap<>()`."
+      "hint": "Adicione `idades.put(\"Joao\", 25);` logo abaixo da criação do mapa.",
+      "expectedOutput": "{Joao=25}",
+      "explanation": "Mandou bem! Com `HashMap` e `.put()`, você busca e atualiza registros por chave em tempo instantâneo."
     }
   ]
 }

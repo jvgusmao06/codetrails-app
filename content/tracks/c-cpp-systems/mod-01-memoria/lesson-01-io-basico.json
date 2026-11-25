@@ -1,82 +1,74 @@
 {
   "id": "cpp-io-01",
-  "title": "Entrada e Saída em C e C++",
-  "description": "Usando printf da stdio.h e std::cout da iostream.",
+  "title": "Olá, Nova-9! printf e std::cout",
+  "description": "Dê a partida no terminal exibindo mensagens em C com printf e em C++ com std::cout.",
+  "mission": "Missão 1: Acender o painel de bordo da nave Nova-9 no terminal.",
   "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "Fluxos de Saída em C (printf) e C++ (std::cout)",
-      "content": "Todo programa em C ou C++ começa pela função `main()`, que retorna `0` ao sistema operacional quando termina com sucesso. Na linguagem C clássica, incluímos `<stdio.h>` e usamos `printf()` com especificadores de formato: `%d` para inteiros (`int`), `%f` para decimais (`float`/`double`) e `%s` para strings. Já em C++, incluímos `<iostream>` e enviamos dados para o fluxo `std::cout` encadeando o operador `<<`, podendo finalizar a linha com `std::endl` ou `\"\\n\"`.",
-      "codeExample": "// Em C:\n#include <stdio.h>\nint main() {\n    int porta = 8080;\n    printf(\"Porta: %d\\n\", porta);\n    return 0;\n}\n\n// Em C++:\n#include <iostream>\nint main() {\n    std::cout << \"Sistema Online!\" << std::endl;\n    return 0;\n}",
+      "title": "Mostrando mensagens com printf e std::cout",
+      "content": "Todo programa C ou C++ começa pela função `main()`, que devolve `0` quando tudo corre bem.\nEm C clássico (`<stdio.h>`), `printf` troca `%d` por um número inteiro. Em C++ (`<iostream>`), `std::cout` envia texto e números para a tela usando as setas `<<`.",
+      "codeExample": "#include <iostream>\n\nint main() {\n    int combustivel = 100;\n    std::cout << \"Nova-9 pronta! Combustivel: \" << combustivel << \"\\n\";\n    return 0;\n}",
+      "expectedOutput": "Nova-9 pronta! Combustivel: 100",
       "keyTakeaways": [
-        "Em C, <stdio.h> fornece printf() com especificadores %d (int), %f (decimal) e %s (string).",
-        "Em C++, <iostream> fornece std::cout com o operador de inserção <<.",
-        "A função main() retorna 0 para indicar execução bem-sucedida."
+        "Em C++, `#include <iostream>` libera `std::cout` com `<<` para imprimir na tela.",
+        "Em C, `#include <stdio.h>` usa `printf(\"Valor: %d\\n\", n);` trocando `%d` por inteiros."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Na linguagem C, qual especificador de formato usamos dentro de `printf()` para imprimir um número inteiro (`int`)?",
-      "codeSnippet": "int porta = 8080;\nprintf(\"Porta ativa!\", porta);",
-      "options": ["%s", "%d", "%f", "%c"],
-      "correctIndex": 1,
-      "explanation": "O especificador %d formata um valor inteiro decimal com sinal na função printf()."
+      "kind": "predict_output",
+      "prompt": "O que aparece no painel ao rodar este código em C++?",
+      "codeSnippet": "int setor = 7;\nstd::cout << \"Setor \" << setor << \" ativo\\n\";",
+      "options": [
+        "Setor 7 ativo",
+        "Setor setor ativo",
+        "7 Setor ativo",
+        "Erro porque faltou usar %d"
+      ],
+      "correctIndex": 0,
+      "hint": "Cada `<<` encaixa o próximo texto ou valor da variável na ordem em que aparece.",
+      "expectedOutput": "Setor 7 ativo",
+      "explanation": "`std::cout` junta `\"Setor \"`, o valor de `setor` (`7`) e `\" ativo\"` automaticamente — sem precisar de `%d`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Em C++, complete o comando para enviar a mensagem para a saída padrão:",
-      "codeTemplate": "#include <iostream>\n\nint main() {\n  std::{{blank}} << \"Sistema Online!\" << std::endl;\n  return 0;\n}",
+      "prompt": "Complete o painel de C++ para exibir o status da nave:",
+      "codeTemplate": "#include <iostream>\nint main() {\n    std::{{blank}} {{blank}} \"Motores OK\\n\";\n    return 0;\n}",
       "blanks": [
-        {
-          "answer": "cout",
-          "placeholder": "stream"
-        }
+        { "answer": "cout", "placeholder": "saída" },
+        { "answer": "<<", "placeholder": "operador" }
       ],
-      "options": ["cout", "cin", "printf", "out"],
-      "explanation": "std::cout (character output) combinado com o operador << envia dados para a saída padrão em C++."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual cabeçalho devemos incluir para utilizar `printf()` em C?",
-      "options": ["<iostream>", "<stdio.h>", "<string>", "<vector>"],
-      "correctIndex": 1,
-      "explanation": "A função printf() pertence à biblioteca padrão de entrada e saída de C, declarada em <stdio.h>."
+      "options": ["cout", "<<", ">>", "cin"],
+      "hint": "Pense em `<<` como setas empurrando o texto para dentro do `std::cout`.",
+      "expectedOutput": "Motores OK",
+      "explanation": "`std::cout` é a saída padrão do C++ e `<<` envia os dados para o terminal."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O programa C++ abaixo deveria imprimir um texto usando `std::cout`, mas não compila. Clique na linha com erro:",
+      "prompt": "Ops! O painel da nave não compilou porque uma seta apontou para o lado errado. Qual linha tem o bug?",
       "lines": [
         "#include <iostream>",
         "int main() {",
-        "  std::cout >> \"Iniciando servidor\" << std::endl;",
-        "  return 0;",
+        "    std::cout >> \"Decolando...\\n\";",
+        "    return 0;",
         "}"
       ],
       "buggyLineIndex": 2,
-      "explanation": "std::cout utiliza o operador de inserção << (setas para a esquerda), e não >> (que é usado para entrada com std::cin)."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para montar um programa C completo que declara um inteiro e o imprime com `printf()`:",
-      "blocks": [
-        "#include <stdio.h>",
-        "int main() {",
-        "  int nivel = 5;",
-        "  printf(\"Nivel: %d\\n\", nivel);",
-        "  return 0;\n}"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4],
-      "explanation": "Primeiro incluímos <stdio.h>, abrimos main(), declaramos a variável, imprimimos com %d e retornamos 0."
+      "hint": "Olhe o operador logo depois de `std::cout`: ele está apontando para a esquerda ou direita?",
+      "expectedOutput": "Decolando...",
+      "explanation": "`std::cout` sempre usa `<<` (setas para a esquerda). `>>` serve para ler entrada com `std::cin`."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva um programa completo em C++ que inclua o cabeçalho de fluxos padrão, defina a função principal, crie uma variável inteira `porta` com valor `3000` e exiba o texto `\"Porta: \"` seguido do valor da variável e quebra de linha usando a saída padrão de C++.",
-      "starterCode": "",
-      "requiredTokens": ["#include", "<iostream>", "int main", "std::cout", "<<", "porta", "return 0"],
-      "sampleSolution": "#include <iostream>\n\nint main() {\n    int porta = 3000;\n    std::cout << \"Porta: \" << porta << std::endl;\n    return 0;\n}",
-      "hint": "Inclua <iostream>, declare int porta = 3000; dentro de int main() e encadeie << em std::cout antes de return 0;.",
-      "explanation": "Em C++, std::cout aceita múltiplos operandos encadeados com <<, imprimindo texto literal e variáveis na mesma instrução."
+      "prompt": "Complete o programa para criar a variável `porta` valendo `3000` e exibir `Porta: 3000` com `std::cout`.",
+      "starterCode": "#include <iostream>\n\nint main() {\n    // TODO: declare int porta = 3000 e exiba com std::cout\n    \n    return 0;\n}",
+      "requiredTokens": ["int porta", "3000", "std::cout", "<<"],
+      "sampleSolution": "#include <iostream>\n\nint main() {\n    int porta = 3000;\n    std::cout << \"Porta: \" << porta << \"\\n\";\n    return 0;\n}",
+      "hint": "Escreva `int porta = 3000;` e depois `std::cout << \"Porta: \" << porta << \"\\n\";`.",
+      "expectedOutput": "Porta: 3000",
+      "explanation": "Painel aceso! Você declarou uma variável inteira e encadeou texto e número no `std::cout`."
     }
   ]
 }

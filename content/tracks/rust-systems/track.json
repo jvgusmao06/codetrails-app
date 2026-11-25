@@ -1,7 +1,7 @@
 {
   "id": "rust-systems",
   "title": "Rust & Memory Safety",
-  "description": "Aprenda Rust passo a passo do zero: variáveis, fluxo, funções, structs, ownership, borrowing, slices, Option/Result, coleções, traits, generics e testes.",
+  "description": "Aprenda Rust construindo um mini-RPG no terminal passo a passo: lições curtinhas, sem punição, com saída visual e código guiado.",
   "category": "language",
   "color": "#F74C00",
   "icon": "🦀",
@@ -9,19 +9,22 @@
   "modules": [
     {
       "id": "mod-00-sintaxe",
-      "title": "Módulo 1: Fundamentos da Linguagem",
-      "description": "Variáveis (let/mut/const), tipos primitivos, condicionais, loops, funções com retorno implícito, structs e métodos.",
+      "title": "Módulo 1: Primeiros Passos (Mini-RPG com Ferris)",
+      "description": "Comece sem pressão: um conceito por lição para dar vida ao seu herói no terminal.",
       "lessons": [
         "lesson-00-variaveis-tipos-primitivos",
+        "lesson-00b-mutabilidade",
+        "lesson-00c-tipos-const",
         "lesson-01-controle-fluxo-loops",
+        "lesson-01b-loops-for-while",
         "lesson-02-funcoes-expressoes",
         "lesson-03-structs-metodos"
       ]
     },
     {
       "id": "mod-01-ownership",
-      "title": "Módulo 2: Ownership, Borrowing e Memória",
-      "description": "Entenda move vs copy, referências (& e &mut), slices (&str, &[T]), lifetimes ('a) e smart pointers (Box, Rc, Arc).",
+      "title": "Módulo 2: O Superpoder do Rust (Posse e Empréstimos)",
+      "description": "Entenda Ownership, Borrowing (& e &mut), fatias (&str, &[T]) e caixas inteligentes (Box, Rc, Arc) de forma visual e leve.",
       "lessons": [
         "lesson-01-ownership-move",
         "lesson-02-borrowing-referencias",
@@ -31,8 +34,8 @@
     },
     {
       "id": "mod-02-enums-match",
-      "title": "Módulo 3: Enums, Erros, Coleções, Traits e Testes",
-      "description": "Domine Option, Result, match, if let, operador ?, Vec/HashMap/closures, traits, generics <T> e testes com #[test].",
+      "title": "Módulo 3: Código à Prova de Bugs",
+      "description": "Elimine null com Option/Result, use atalhos (if let, ?), mochila Vec, ranking HashMap, Traits e testes com #[test].",
       "lessons": [
         "lesson-01-option-result",
         "lesson-02-if-let-operador-interrogacao",

@@ -1,78 +1,75 @@
 {
   "id": "tw-flex-01",
-  "title": "Layouts com Flexbox",
-  "description": "Alinhando elementos horizontalmente e verticalmente.",
+  "title": "Flexbox e Espaçamento no Tailwind",
+  "description": "Alinhe itens lado a lado com flex, items-center e justify-between e controle respiros com p-4 e gap-4.",
+  "mission": "Missão 1: Montar o cabeçalho alinhado do cardápio digital do CaféDev.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Classes Utilitárias de Layout e Espaçamento",
-      "content": "Em vez de criar arquivos CSS separados para cada componente, o Tailwind oferece classes atômicas previsíveis. Cada unidade numérica na escala de espaçamento equivale a `0.25rem` (4px): portanto, `p-4` aplica `16px` (`1rem`) de padding em todos os lados, `m-4` aplica margem e `gap-4` define o espaçamento entre itens flex.\n\nPara alinhar elementos lado a lado, combinamos `flex` (ativa o Flexbox), `items-center` (centraliza no eixo cruzado/vertical) e `justify-between` (distribui os itens nas extremidades do eixo principal).",
-      "codeExample": "<header className=\"flex items-center justify-between p-4 gap-4\">\n  <span>Logo</span>\n  <nav>Menu</nav>\n</header>",
+      "title": "Alinhamento e espaço sem sair do JSX",
+      "content": "No Tailwind, você monta o layout somando classes curtinhas direto no `className`. Com `flex`, `items-center` (centraliza na vertical) e `justify-between` (empurra para as pontas), seu cabeçalho fica pronto em segundos!\nE na escala de espaço, cada unidade vale `4px` (`0.25rem`): então `p-4` dá `16px` de padding interno e `gap-4` separa os filhos por `16px`.",
+      "codeExample": "<header className=\"flex items-center justify-between p-4 gap-4\">\n  <span>CaféDev</span>\n  <button>Pedido</button>\n</header>",
+      "expectedOutput": "[ CaféDev                    Pedido ] (16px de respiro interno)",
       "keyTakeaways": [
-        "`flex` ativa o Flexbox, `items-center` centraliza verticalmente e `justify-between` afasta os extremos.",
-        "Na escala padrão (1 unidade = 0.25rem), `p-4` aplica 1rem (16px) de padding.",
-        "`gap-4` adiciona espaçamento uniforme de 16px entre filhos de um container flex."
+        "`flex items-center justify-between` alinha itens na mesma linha, centralizados e nas pontas.",
+        "Cada passo numérico vale `4px`: `p-4` = 16px de padding e `gap-4` = 16px entre filhos."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Ative o Flexbox e centralize os itens no eixo vertical com Tailwind:",
-      "codeTemplate": "<div className=\"{{blank}} {{blank}} justify-between\">",
-      "blanks": [
-        {
-          "answer": "flex",
-          "placeholder": "display"
-        },
-        {
-          "answer": "items-center",
-          "placeholder": "alinhamento"
-        }
-      ],
-      "options": ["flex", "items-center", "block", "text-center"],
-      "explanation": "A classe `flex` define `display: flex` e `items-center` aplica `align-items: center`."
-    },
-    {
       "type": "multiple_choice",
-      "prompt": "Qual classe do Tailwind adiciona espaçamento interno (padding) de 1rem (16px) em todos os lados?",
-      "options": ["m-4", "p-4", "gap-4", "space-x-4"],
-      "correctIndex": 1,
-      "explanation": "Na escala padrão do Tailwind (1 unidade = 0.25rem), `p-4` equivale a `padding: 1rem` (16px)."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual combinação de classes coloca dois botões lado a lado com 16px de distância entre eles e alinhados às pontas opostas do container?",
+      "kind": "predict_output",
+      "prompt": "Como este `<div />` vai se comportar visualmente na tela?",
+      "codeSnippet": "<div className=\"flex items-center justify-between p-4\">\n  <span>Expresso</span>\n  <span>R$ 8</span>\n</div>",
       "options": [
-        "flex justify-between gap-4",
-        "block items-center m-4",
-        "flex flex-col p-4",
-        "inline text-center gap-4"
+        "\"Expresso\" na esquerda e \"R$ 8\" na direita, alinhados no centro vertical com 16px de padding",
+        "Um embaixo do outro encostados nas bordas",
+        "Os dois colados no centro sem nenhum espaçamento",
+        "O texto fica invisível porque faltou block"
       ],
       "correctIndex": 0,
-      "explanation": "`flex` habilita o layout flex, `justify-between` distribui os itens nas extremidades e `gap-4` garante 16px de distância mínima entre eles."
+      "hint": "`justify-between` joga os itens para pontas opostas e `p-4` dá 16px de padding.",
+      "expectedOutput": "[ Expresso                   R$ 8 ]",
+      "explanation": "`flex` coloca lado a lado, `items-center` centraliza verticalmente, `justify-between` separa nas pontas e `p-4` aplica 16px de padding!"
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Ative o Flexbox e centralize os itens verticalmente na barra do CaféDev:",
+      "codeTemplate": "<div className=\"{{blank}} {{blank}} justify-between p-4\">",
+      "blanks": [
+        { "answer": "flex", "placeholder": "display" },
+        { "answer": "items-center", "placeholder": "vertical" }
+      ],
+      "options": ["flex", "items-center", "block", "text-center"],
+      "hint": "Use `flex` para ativar Flexbox e `items-center` para alinhar no centro vertical.",
+      "expectedOutput": "Itens alinhados lado a lado e centralizados na vertical",
+      "explanation": "Certinho! `flex` aplica `display: flex` e `items-center` aplica `align-items: center`."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este header deveria centralizar os itens verticalmente e aplicar 16px de padding interno, mas o alinhamento vertical não funciona. Clique na linha com o erro:",
+      "prompt": "O logo e o menu ficaram desalinhados na vertical porque faltou uma classe no `<header>`! Clique na linha com o bug:",
       "lines": [
         "<header className=\"flex justify-between p-4\">",
-        "  <span>Marca</span>",
-        "  <nav className=\"text-center gap-4\">",
-        "    <a href=\"/\">Início</a>",
+        "  <span>CaféDev</span>",
+        "  <nav className=\"flex gap-4\">",
+        "    <a href=\"/\">Cardápio</a>",
         "  </nav>",
         "</header>"
       ],
       "buggyLineIndex": 0,
-      "explanation": "Na linha 1, faltou a classe `items-center` no container `<header>` para centralizar os filhos no eixo vertical."
+      "hint": "Olhe as classes do `<header>` na linha 1 — qual classe centraliza os filhos verticalmente?",
+      "expectedOutput": "Logo e link alinhados exatamente no mesmo eixo vertical",
+      "explanation": "Faltou `items-center` no `<header>`: `<header className=\"flex items-center justify-between p-4\">`."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva um elemento `<header>` em JSX usando Tailwind CSS que ative Flexbox, centralize os itens verticalmente, distribua os filhos nas extremidades e aplique 16px de padding interno, contendo dois elementos filhos (por exemplo, um título e um botão).",
-      "starterCode": "",
+      "prompt": "Complete o `className` do `<header>` com `flex`, `items-center`, `justify-between` e `p-4`.",
+      "starterCode": "// TODO: adicione flex, items-center, justify-between e p-4 no className do <header>\nconst Header = () => (\n  <header className=\"\">\n    <span>CaféDev</span>\n    <button>Entrar</button>\n  </header>\n);",
       "requiredTokens": ["<header", "className=", "flex", "items-center", "justify-between", "p-4"],
-      "sampleSolution": "<header className=\"flex items-center justify-between p-4\">\n  <span>App</span>\n  <button>Entrar</button>\n</header>",
-      "hint": "Combine `flex`, `items-center`, `justify-between` e `p-4` dentro do `className` de `<header>`.",
-      "explanation": "Você combinou as utilitárias de eixo principal (`justify-between`), eixo cruzado (`items-center`), layout (`flex`) e espaçamento (`p-4`)."
+      "sampleSolution": "const Header = () => (\n  <header className=\"flex items-center justify-between p-4\">\n    <span>CaféDev</span>\n    <button>Entrar</button>\n  </header>\n);",
+      "hint": "Preencha `className=\"flex items-center justify-between p-4\"`.",
+      "expectedOutput": "[ CaféDev                    Entrar ]",
+      "explanation": "Lindo! Você acabou de montar o cabeçalho padrão mais usado em apps web com Tailwind."
     }
   ]
 }

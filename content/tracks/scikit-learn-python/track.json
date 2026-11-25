@@ -1,7 +1,7 @@
 {
   "id": "scikit-learn-python",
   "title": "Scikit-Learn (Machine Learning)",
-  "description": "Treine modelos de Machine Learning clássico em Python com train_test_split, Pipeline, StandardScaler e RandomForestClassifier.",
+  "description": "Monte o detector de renovações do streaming StreamPulse com train_test_split, StandardScaler, Pipeline e RandomForest sem vazar dados.",
   "category": "library",
   "languageId": "python-basics",
   "prerequisites": ["python-basics"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: Pipeline, fit/predict e Prevenção de Data Leakage",
-      "description": "Construa pipelines de ML limpos com Scikit-Learn.",
+      "title": "Módulo 1: Pipeline Limpo no StreamPulse",
+      "description": "Separe treino e teste corretamente e encapsule normalização + modelo num Pipeline à prova de Data Leakage.",
       "lessons": ["lesson-01-pipeline-fit-predict"]
     }
   ]

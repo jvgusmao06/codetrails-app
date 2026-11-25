@@ -1,7 +1,7 @@
 {
   "id": "signalr-csharp",
   "title": "SignalR",
-  "description": "Implemente comunicação em tempo real bidirecional com WebSockets, Hubs e grupos no ASP.NET Core.",
+  "description": "Envie alertas de ofertas e mensagens de chat ao vivo na PixelShop com ASP.NET Core SignalR, Hubs e Clients.All.SendAsync.",
   "category": "framework",
   "languageId": "csharp-dotnet",
   "prerequisites": [
@@ -13,8 +13,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Hubs em Tempo Real com SignalR",
-      "description": "Crie Hubs, envie mensagens com Clients.All.SendAsync e mapeie rotas com MapHub.",
+      "title": "Módulo 1: Alertas Ao Vivo da PixelShop (SignalR)",
+      "description": "Crie Hubs em tempo real com WebSockets, Clients.All.SendAsync e MapHub.",
       "lessons": [
         "lesson-01-hubs-realtime"
       ]

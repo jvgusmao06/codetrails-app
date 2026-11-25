@@ -1,87 +1,73 @@
 {
   "id": "ts-sintaxe-01",
-  "title": "01. Variáveis (const/let), Template Literals e Arrow Functions",
-  "description": "Declare variáveis com const e let, interpole textos com template literals e escreva arrow functions evitando a armadilha de retorno de objeto.",
+  "title": "Variáveis, Crases e Arrow Functions",
+  "description": "Guarde dados com const e let, monte mensagens com template literals e escreva funções curtinhas com =>.",
+  "mission": "Missão 1: Criar o cartão de boas-vindas e o contador de tarefas do TaskBeat.",
   "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "const/let, Template Literals e Arrow Functions",
-      "content": "No JavaScript e TypeScript modernos (ES6+), a sintaxe é concisa e expressiva:\n\n1. **`const` vs `let`**: Use `const` por padrão para referências que não serão reatribuídas e `let` apenas quando o valor precisar mudar (evite `var`).\n2. **Template Literals**: Usam crases (`` ` ``) e permitem interpolar variáveis ou expressões com `${expressao}`.\n3. **Arrow Functions e a Armadilha de Objeto**: Funções de seta `(a, b) => a + b` têm retorno implícito quando escritas em uma única expressão sem chaves. **Atenção**: se você quiser retornar um objeto diretamente, `() => { ativo: true }` **não funciona**, pois o JS interpreta `{ }` como o bloco da função e retorna `undefined`! Para retornar um objeto implicitamente, envolva-o em parênteses: `() => ({ ativo: true })`.",
-      "codeExample": "const nome = \"Lia\";\nlet pontos = 10;\npontos += 5;\n\nconst msg = `Olá, ${nome}! Pontos: ${pontos}`;\nconst dobrar = (n: number): number => n * 2;\nconst criarStatus = () => ({ ativo: true });",
+      "title": "const, let, crases e seta (=>)",
+      "content": "No JS e TS modernos, use `const` por padrão e `let` só quando o valor precisar mudar. Com crases (`` ` ``) e `${...}`, você encaixa variáveis direto no texto sem ficar somando strings.\nE para funções rápidas, a **arrow function** `(n) => n * 2` já retorna o resultado — só lembre dos parênteses `=> ({ ... })` quando retornar um objeto!",
+      "codeExample": "const usuario = \"Lia\";\nlet concluidas = 2;\nconcluidas += 1;\n\nconst dobrar = (n: number) => n * 2;\nconst criarItem = (nome: string) => ({ nome, feita: false });\nconsole.log(`${usuario}: ${concluidas} tarefas (${dobrar(concluidas)} XP)`);",
+      "expectedOutput": "Lia: 3 tarefas (6 XP)",
       "keyTakeaways": [
-        "Prefira const; use let apenas quando a variável precisar ser reatribuída.",
-        "Template literals usam crases (`...`) e interpolam com ${...}.",
-        "Para retornar um objeto implicitamente em uma arrow function, use parênteses: () => ({ chave: valor })."
+        "Use `const` por padrão; só troque para `let` quando o valor for reatribuído.",
+        "Arrow function retornando objeto direto precisa de parênteses: `() => ({ chave: valor })`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é a diferença entre declarar uma variável com const ou let em JavaScript/TypeScript?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no console ao rodar este código?",
+      "codeSnippet": "const app = \"TaskBeat\";\nlet metas = 3;\nmetas += 2;\nconsole.log(`${app} tem ${metas} metas`);",
       "options": [
-        "const só aceita números e let só aceita textos",
-        "const impede reatribuição da variável; let permite reatribuir um novo valor",
-        "let tem escopo global e const só existe dentro de classes",
-        "Não há diferença em tempo de execução"
+        "TaskBeat tem 5 metas",
+        "TaskBeat tem 3 metas",
+        "${app} tem ${metas} metas",
+        "Erro porque let não aceita +="
       ],
-      "correctIndex": 1,
-      "explanation": "const cria uma ligação constante (sem reatribuição), enquanto let permite alterar o valor da variável posteriormente."
+      "correctIndex": 0,
+      "hint": "`metas` começa em 3, soma 2 e depois entra no texto com `${metas}`.",
+      "expectedOutput": "TaskBeat tem 5 metas",
+      "explanation": "Como `metas` foi criada com `let`, ela muda para `5`, e as crases trocam `${app}` e `${metas}` pelos valores reais."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a template literal para interpolar o nome do usuário:",
-      "codeTemplate": "const usuario = \"Bia\";\nconst saudacao = {{blank}}Bem-vinda, {{blank}}{usuario}!{{blank}};",
+      "prompt": "Complete a arrow function para somar os pontos e montar a mensagem do TaskBeat:",
+      "codeTemplate": "const somar = (a: number, b: number) {{blank}} a + b;\nconst aviso = `Total: {{blank}}{somar(4, 6)} pts`;",
       "blanks": [
-        { "answer": "`", "placeholder": "crase" },
-        { "answer": "$", "placeholder": "símbolo" },
-        { "answer": "`", "placeholder": "crase" }
+        { "answer": "=>", "placeholder": "seta" },
+        { "answer": "$", "placeholder": "interpolação" }
       ],
-      "options": ["`", "\"", "$", "#"],
-      "explanation": "Template literals são delimitadas por crases (`) e interpolam expressões com ${...}."
+      "options": ["=>", "->", "$", "#"],
+      "hint": "Arrow functions usam `=>`, e template literals interpolam valores com `${...}`.",
+      "expectedOutput": "Total: 10 pts",
+      "explanation": "Show! `=>` cria a função com retorno implícito e `${...}` insere o resultado direto na frase."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Esta arrow function deveria retornar um objeto { ativo: true }, mas retorna undefined! Clique na linha com o bug:",
+      "prompt": "Ops! Esta arrow function deveria retornar o objeto `{ nome, ativa: true }`, mas devolve `undefined`. Qual linha tem o bug?",
       "lines": [
-        "const criarConta = (nome: string) => {",
-        "  ativo: true",
+        "const criarPlaylist = (nome: string) => {",
+        "  nome, ativa: true",
         "};",
-        "console.log(criarConta(\"Ana\"));"
+        "console.log(criarPlaylist(\"Foco\"));"
       ],
       "buggyLineIndex": 0,
-      "explanation": "Sem parênteses ao redor das chaves, o JS interpreta '{ ativo: true }' como corpo de função sem return. O correto é '=> ({ ativo: true })'."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete a arrow function tipada em TypeScript para somar dois números com retorno implícito:",
-      "codeTemplate": "{{blank}} somar = (a: number, b: number): number {{blank}} a + b;",
-      "blanks": [
-        { "answer": "const", "placeholder": "declaração" },
-        { "answer": "=>", "placeholder": "seta" }
-      ],
-      "options": ["const", "var", "=>", "->"],
-      "explanation": "Declaramos a função em uma constante e usamos '=>' para o retorno implícito da soma."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para declarar um contador com let, incrementá-lo e formatar a mensagem com template literal:",
-      "blocks": [
-        "const aviso = `Tentativas: ${tentativas}`;",
-        "tentativas += 1;",
-        "let tentativas = 0;",
-        "console.log(aviso);"
-      ],
-      "correctOrder": [2, 1, 0, 3],
-      "explanation": "Como tentativas muda de valor, usamos let; depois incrementamos, montamos a template literal com const e exibimos."
+      "hint": "Quando uma arrow function abre `{` logo depois de `=>`, o JS acha que é o corpo da função, não um objeto!",
+      "expectedOutput": "{ nome: \"Foco\", ativa: true }",
+      "explanation": "Para retornar um objeto implicitamente, envolva as chaves em parênteses: `=> ({ nome, ativa: true })`."
     },
     {
       "type": "write_code",
-      "prompt": "Crie uma arrow function chamada 'criarPerfil' que receba 'nome' (string) e retorne implicitamente um objeto contendo as propriedades 'nome' e 'ativo' (true), usando parênteses no retorno de objeto. Em seguida, crie uma constante 'saudacao' usando template literal.",
-      "starterCode": "",
+      "prompt": "Complete `criarPerfil` para retornar `{ nome, ativo: true }` usando arrow function e monte `saudacao` com crases.",
+      "starterCode": "// TODO: crie `criarPerfil` retornando ({ nome, ativo: true })\nconst criarPerfil = (nome: string) => \n\n// TODO: use template literal com criarPerfil(\"Ana\").nome\nconst saudacao = \nconsole.log(saudacao);",
       "requiredTokens": ["const", "criarPerfil", "=>", "({", "ativo", "`", "${"],
-      "sampleSolution": "const criarPerfil = (nome: string) => ({ nome, ativo: true });\nconst saudacao = `Perfil criado: ${criarPerfil(\"Ana\").nome}`;",
-      "hint": "Lembre-se de envolver o objeto retornado pela arrow function em parênteses: => ({ ... }) e usar crases (`) na template literal.",
-      "explanation": "A solução aplica const, arrow function com retorno implícito de objeto entre parênteses e interpolação com template literal."
+      "sampleSolution": "const criarPerfil = (nome: string) => ({ nome, ativo: true });\nconst saudacao = `Olá, ${criarPerfil(\"Ana\").nome}!`;\nconsole.log(saudacao);",
+      "hint": "Use `({ nome, ativo: true })` na primeira linha e `` `Olá, ${criarPerfil(\"Ana\").nome}!` `` na segunda.",
+      "expectedOutput": "Olá, Ana!",
+      "explanation": "Mandou bem! Você já domina `const`, arrow functions com objeto entre parênteses e template literals."
     }
   ]
 }

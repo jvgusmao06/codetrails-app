@@ -1,7 +1,7 @@
 {
   "id": "tailwind-css",
   "title": "Tailwind CSS",
-  "description": "Estilize interfaces responsivas mobile-first diretamente no HTML/JSX com classes utilitárias modernas.",
+  "description": "Estilize o cardápio digital da cafeteria CaféDev direto no JSX: Flexbox sem dor de cabeça e responsividade mobile-first.",
   "category": "framework",
   "languageId": "typescript-javascript",
   "prerequisites": ["typescript-javascript"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-utilitarios",
-      "title": "Módulo 1: Flexbox e Responsividade",
-      "description": "Construa layouts adaptáveis para celular e desktop sem sair do componente.",
+      "title": "Módulo 1: Flexbox e Responsividade no CaféDev",
+      "description": "Alinhe cabeçalhos e adapte cards do celular ao desktop usando classes curtas e previsíveis.",
       "lessons": ["lesson-01-flexbox-espaco", "lesson-02-responsivo"]
     }
   ]

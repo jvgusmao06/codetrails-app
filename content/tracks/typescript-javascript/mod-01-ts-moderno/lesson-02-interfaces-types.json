@@ -1,88 +1,73 @@
 {
   "id": "ts-types-02",
-  "title": "05. Interfaces e Type Aliases no TypeScript",
-  "description": "Defina contratos estáticos para objetos com interface, crie apelidos e uniões com type, e marque campos opcionais com ?.",
+  "title": "Interfaces e Type Aliases",
+  "description": "Avise o TypeScript qual formato seus objetos têm com interface, crie opções fixas com type e marque campos opcionais com ?.",
+  "mission": "Missão 5: Tipar os cartões de tarefa e o plano de conta no TaskBeat para pegar erros antes de rodar.",
   "xp": 25,
   "steps": [
     {
       "type": "theory",
-      "title": "Contratos Estáticos com interface e type",
-      "content": "O TypeScript adiciona verificação estática de tipos antes mesmo do código rodar:\n\n1. **`interface`**: Descreve o formato de um objeto e os tipos de suas propriedades (em minúsculo: `string`, `number`, `boolean`). Ex: `interface Usuario { id: number; nome: string; }`.\n2. **Propriedades opcionais (`?`)**: Adicionar `?` após o nome (`email?: string;`) indica que a propriedade pode existir ou ser `undefined`.\n3. **`type` Aliases e Union Types**: A palavra-chave `type` cria apelidos para qualquer tipo, inclusive **uniões literais** (algo que `interface` não faz diretamente): `type Status = \"ativo\" | \"inativo\";` ou `type ID = string | number;`.",
-      "codeExample": "type Status = \"ativo\" | \"pendente\";\n\ninterface Usuario {\n  id: number;\n  nome: string;\n  status: Status;\n  apelido?: string;\n}",
+      "title": "Contratos claros com interface e type",
+      "content": "No TypeScript, `interface` descreve o formato de um objeto (usando `string`, `number`, `boolean`) e `?` marca campos opcionais.\nJá `type` brilha quando queremos limitar valores permitidos numa união (Union Type), como `type Plano = \"free\" | \"pro\"` — assim nenhum erro de digitação passa batido!",
+      "codeExample": "type Status = \"aberta\" | \"feita\";\ninterface Tarefa {\n  titulo: string;\n  status: Status;\n  nota?: string;\n}\nconst t: Tarefa = { titulo: \"Estudar\", status: \"aberta\" };\nconsole.log(t.titulo, t.status);",
+      "expectedOutput": "Estudar aberta",
       "keyTakeaways": [
-        "Use interface para descrever a forma de objetos, com tipos primitivos string, number e boolean.",
-        "O modificador '?' torna uma propriedade opcional na interface ou type.",
-        "Use type para criar aliases e uniões (Union Types) como \"ativo\" | \"inativo\"."
+        "`interface` define o formato de objetos e `?` torna um campo opcional.",
+        "`type A = \"x\" | \"y\"` restringe uma variável apenas aos valores listados."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Defina uma interface TypeScript para um usuário com id numérico, nome em texto e telefone opcional:",
-      "codeTemplate": "{{blank}} Usuario {\n  id: {{blank}};\n  nome: {{blank}};\n  telefone{{blank}}: string;\n}",
-      "blanks": [
-        { "answer": "interface", "placeholder": "palavra-chave" },
-        { "answer": "number", "placeholder": "tipo" },
-        { "answer": "string", "placeholder": "tipo" },
-        { "answer": "?", "placeholder": "opcional" }
-      ],
-      "options": ["interface", "class", "number", "string", "?"],
-      "explanation": "Interfaces usam tipos primitivos em minúsculo (number, string) e '?' após o nome da propriedade opcional."
-    },
-    {
       "type": "multiple_choice",
-      "prompt": "O que o símbolo '?' após o nome de uma propriedade faz em uma interface TypeScript?",
+      "kind": "predict_output",
+      "prompt": "O que acontece quando o TypeScript analisa este código?",
+      "codeSnippet": "type Nivel = \"facil\" | \"medio\";\ninterface Fase { nome: string; nivel: Nivel; dica?: string; }\nconst f: Fase = { nome: \"Intro\", nivel: \"facil\" };\nconsole.log(f.nome);",
       "options": [
-        "Torna a propriedade somente leitura",
-        "Marca a propriedade como opcional (pode ser omitida ou undefined)",
-        "Converte a propriedade para boolean",
-        "Permite qualquer tipo (any)"
+        "Compila sem erro e imprime Intro",
+        "Erro porque faltou informar a propriedade dica",
+        "Erro porque Nivel não pode usar strings",
+        "Imprime undefined"
       ],
-      "correctIndex": 1,
-      "explanation": "O modificador '?' indica que a propriedade não é obrigatória ao criar um objeto daquela interface."
+      "correctIndex": 0,
+      "hint": "Repare no `?` em `dica?: string;` — ele libera omitir esse campo!",
+      "expectedOutput": "Intro",
+      "explanation": "Como `dica?` é opcional e `\"facil\"` pertence ao tipo `Nivel`, o objeto é 100% válido e imprime `Intro`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o type alias para restringir o papel do usuário apenas a 'admin' ou 'membro':",
+      "prompt": "Crie a união `Papel` aceitando só `\"admin\"` ou `\"membro\"`:",
       "codeTemplate": "{{blank}} Papel = \"admin\" {{blank}} \"membro\";",
       "blanks": [
         { "answer": "type", "placeholder": "palavra-chave" },
         { "answer": "|", "placeholder": "união" }
       ],
       "options": ["type", "interface", "|", "&"],
-      "explanation": "Declaramos um Union Type usando 'type Nome = A | B;'."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "O contrato abaixo tenta aceitar apenas os valores 'pago' ou 'aberto' usando interface diretamente em uma união, mas gera erro de sintaxe. Qual linha tem o bug?",
-      "lines": [
-        "interface Estado = \"pago\" | \"aberto\";",
-        "interface Pedido {",
-        "  id: number;",
-        "  estado: Estado;",
-        "}"
-      ],
-      "buggyLineIndex": 0,
-      "explanation": "Interfaces descrevem objetos ({ ... }) e não aceitam '=' nem uniões literais. Para uniões, use 'type Estado = \"pago\" | \"aberto\";'."
+      "hint": "Uniões literais usam `type` e a barra vertical `|`.",
+      "expectedOutput": "Tipo Papel = \"admin\" | \"membro\"",
+      "explanation": "Isso aí! `type` cria apelidos e uniões com `|`, travando os valores aceitos."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os blocos para definir um type Status, usá-lo na interface Tarefa e tipar uma constante:",
+      "prompt": "Ordene os blocos para definir `Status`, criar a interface `Tarefa` e declarar a variável `t`:",
       "blocks": [
-        "const t: Tarefa = { titulo: \"Estudar TS\", status: \"aberta\" };",
-        "type Status = \"aberta\" | \"concluida\";",
-        "interface Tarefa { titulo: string; status: Status; nota?: string; }"
+        "const t: Tarefa = { titulo: \"Criar playlist\", status: \"aberta\" };",
+        "interface Tarefa { titulo: string; status: Status; }",
+        "type Status = \"aberta\" | \"feita\";",
+        "console.log(t.status);"
       ],
-      "correctOrder": [1, 2, 0],
-      "explanation": "Primeiro definimos o type Status, depois a interface Tarefa que o utiliza, e por fim a variável tipada."
+      "correctOrder": [2, 1, 0, 3],
+      "hint": "Primeiro defina `Status`, depois a interface que usa `Status`, e só então crie `t`.",
+      "expectedOutput": "aberta",
+      "explanation": "Ordem limpinha: definimos os tipos de baixo para cima e usamos `Tarefa` na variável."
     },
     {
       "type": "write_code",
-      "prompt": "Crie um type alias chamado 'Plano' que aceite apenas \"free\" ou \"pro\", e uma interface chamada 'Conta' com 'id' numérico, 'plano' do tipo Plano e 'empresa' opcional em texto. Depois declare uma constante 'minhaConta' tipada como Conta.",
-      "starterCode": "",
-      "requiredTokens": ["type", "Plano", "|", "interface", "Conta", "number", "?:", "const", "minhaConta"],
-      "sampleSolution": "type Plano = \"free\" | \"pro\";\n\ninterface Conta {\n  id: number;\n  plano: Plano;\n  empresa?: string;\n}\n\nconst minhaConta: Conta = { id: 1, plano: \"pro\" };",
-      "hint": "Use 'type Plano = ... | ...', 'interface Conta { ... empresa?: string; }' e declare 'const minhaConta: Conta = ...'.",
-      "explanation": "Combinamos type alias com união literal, interface com propriedade opcional '?' e anotação de tipo em constante."
+      "prompt": "Complete o tipo `Plano` (`\"free\" | \"pro\"`), a interface `Conta` (com `empresa?: string`) e a constante `minhaConta`.",
+      "starterCode": "// TODO: crie type Plano aceitando \"free\" | \"pro\"\n\ninterface Conta {\n  id: number;\n  plano: Plano;\n  // TODO: adicione empresa opcional (string)\n}\n\nconst minhaConta: Conta = { id: 1, plano: \"pro\" };\nconsole.log(minhaConta.plano);",
+      "requiredTokens": ["type", "Plano", "|", "interface", "Conta", "?:", "minhaConta"],
+      "sampleSolution": "type Plano = \"free\" | \"pro\";\n\ninterface Conta {\n  id: number;\n  plano: Plano;\n  empresa?: string;\n}\n\nconst minhaConta: Conta = { id: 1, plano: \"pro\" };\nconsole.log(minhaConta.plano);",
+      "hint": "Escreva `type Plano = \"free\" | \"pro\";` no topo e `empresa?: string;` dentro de `Conta`.",
+      "expectedOutput": "pro",
+      "explanation": "Perfeito! Você combinou Union Type, interface com campo opcional e checagem estática."
     }
   ]
 }

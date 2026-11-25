@@ -1,23 +1,53 @@
 {
   "id": "unity-mono-01",
-  "title": "Unity C#: MonoBehaviour, Update vs FixedUpdate e [SerializeField]",
-  "description": "Domine o ciclo de vida de scripts na Unity e evite chamar GetComponent dentro do Update().",
+  "title": "Unity C#: MonoBehaviour, Update e Time.deltaTime",
+  "description": "Controle o movimento e a física da sua nave na Unity mantendo o FPS sempre alto.",
+  "mission": "Missão 1: Fazer a nave do jogo indie StarRunner voar suave na Unity sem travar o FPS.",
   "xp": 50,
   "steps": [
     {
       "type": "theory",
-      "title": "Ciclo de Vida de Scripts na Unity",
-      "content": "Na **Unity**, todo script anexado a um `GameObject` herda de **`MonoBehaviour`**. Três métodos controlam o comportamento:\n- **`Awake()` / `Start()`**: rodam uma vez na inicialização — ideal para fazer cache de `GetComponent<Rigidbody>()`.\n- **`Update()`**: roda a cada frame visual — multiplique movimentos por **`Time.deltaTime`** para manter velocidade independente do FPS.\n- **`FixedUpdate()`**: roda em intervalo fixo de física — use aqui para aplicar forças com `Rigidbody`.\n\nPara expor um campo no Inspector sem quebrar o encapsulamento com `public`, use **`[SerializeField] private`**.",
-      "codeExample": "using UnityEngine;\n\npublic class Jogador : MonoBehaviour {\n    [SerializeField] private float velocidade = 6f;\n    private Rigidbody _rb;\n\n    void Awake() => _rb = GetComponent<Rigidbody>();\n\n    void Update() {\n        transform.Translate(Vector3.forward * velocidade * Time.deltaTime);\n    }\n\n    void FixedUpdate() {\n        _rb.AddForce(Vector3.up * 2f);\n    }\n}",
+      "title": "Ciclo de vida: Awake, Update e FixedUpdate",
+      "content": "Na Unity, scripts anexados a objetos herdam de `MonoBehaviour`. Guarde componentes como `Rigidbody` uma única vez em `Awake()`, mova objetos em `Update()` multiplicando por `Time.deltaTime` (para andar igual em 30 ou 144 FPS!) e aplique física em `FixedUpdate()`.\nQuer ajustar um valor no Inspector sem deixá-lo `public`? Use `[SerializeField] private`!",
+      "codeExample": "public class Nave : MonoBehaviour {\n    [SerializeField] private float speed = 6f;\n    private Rigidbody _rb;\n\n    void Awake() => _rb = GetComponent<Rigidbody>();\n    void Update() => transform.Translate(Vector3.forward * speed * Time.deltaTime);\n    void FixedUpdate() => _rb.AddForce(Vector3.up * 2f);\n}",
+      "expectedOutput": "Nave avança 6 unidades/seg em qualquer FPS + física estável",
       "keyTakeaways": [
-        "NUNCA chame `GetComponent<T>()` dentro de `Update()` — faça cache no `Awake()` ou `Start()`.",
-        "Use `[SerializeField] private` em vez de `public` para manter encapsulamento e ainda editar no Inspector.",
-        "Multiplique movimentos no `Update()` por `Time.deltaTime` e use `FixedUpdate()` para física (`Rigidbody`)."
+        "Faça cache de `GetComponent<T>()` no `Awake()` — nunca dentro de `Update()`.",
+        "Use `Time.deltaTime` em `Update()`, física (`Rigidbody`) em `FixedUpdate()` e `[SerializeField] private` para o Inspector."
       ]
     },
     {
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "Em um monitor de 60 FPS (`Time.deltaTime ≈ 0.0167s`), o que acontece após 1 segundo rodando este script?",
+      "codeSnippet": "public class Nave : MonoBehaviour {\n    [SerializeField] private float speed = 10f;\n    void Update() {\n        transform.Translate(Vector3.right * speed * Time.deltaTime);\n    }\n}",
+      "options": [
+        "A nave anda exatamente 10 unidades para a direita (igual em 30, 60 ou 144 FPS!)",
+        "A nave anda 600 unidades para a direita",
+        "A nave fica parada porque speed é private",
+        "Erro porque Update não aceita transform.Translate"
+      ],
+      "correctIndex": 0,
+      "hint": "60 frames × `10 * (1/60)` = 10 unidades por segundo!",
+      "expectedOutput": "Deslocamento de +10 unidades no eixo X em 1 segundo",
+      "explanation": "Multiplicar por `Time.deltaTime` compensa o tempo entre frames: sua nave corre a mesma distância por segundo em qualquer PC!"
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Exponha `speed` no Inspector mantendo-o `private` e faça o cache do `Rigidbody` em `Awake`:",
+      "codeTemplate": "[{{blank}}] private float speed = 5f;\nprivate Rigidbody _rb;\nvoid {{blank}}() => _rb = GetComponent<Rigidbody>();",
+      "blanks": [
+        { "answer": "SerializeField", "placeholder": "atributo" },
+        { "answer": "Awake", "placeholder": "inicialização" }
+      ],
+      "options": ["SerializeField", "Awake", "Update", "Public"],
+      "hint": "`[SerializeField]` mostra o campo privado no Inspector e `Awake()` roda uma única vez ao nascer.",
+      "expectedOutput": "Campo editável no Inspector + _rb em cache",
+      "explanation": "Show! Encapsulamento preservado e zero desperdício de CPU buscando o componente toda hora."
+    },
+    {
       "type": "spot_the_bug",
-      "prompt": "Este script Unity causa queda de FPS em cenas grandes porque busca o componente na árvore toda a cada frame. Clique na linha ineficiente:",
+      "prompt": "Esse script derruba o FPS em cenas grandes porque procura o componente na hierarquia 60+ vezes por segundo! Clique na linha com o bug:",
       "lines": [
         "void Update() {",
         "    var rb = GetComponent<Rigidbody>();",
@@ -25,53 +55,19 @@
         "}"
       ],
       "buggyLineIndex": 1,
-      "explanation": "Na linha 2, `GetComponent<Rigidbody>()` está sendo chamado dentro de `Update()`! Faça cache de `_rb` em `Awake()` e aplique forças em `FixedUpdate()`."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Exponha o campo privado `velocidade` no Inspector da Unity mantendo o encapsulamento e faça o cache do `Rigidbody` na inicialização:",
-      "codeTemplate": "[{{blank}}] private float velocidade = 5f;\nprivate Rigidbody _rb;\nvoid {{blank}}() => _rb = GetComponent<Rigidbody>();",
-      "blanks": [
-        { "answer": "SerializeField", "placeholder": "atributo" },
-        { "answer": "Awake", "placeholder": "ciclo inicial" }
-      ],
-      "options": ["SerializeField", "Awake", "Update", "Public"],
-      "explanation": "`[SerializeField]` expõe campos `private` no Inspector e `Awake()` executa uma única vez na inicialização."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual método do ciclo de vida do `MonoBehaviour` deve ser usado para aplicar forças contínuas em um `Rigidbody`?",
-      "options": [
-        "Update()",
-        "FixedUpdate()",
-        "OnGUI()",
-        "Awake()"
-      ],
-      "correctIndex": 1,
-      "explanation": "`FixedUpdate()` é executado em passos de tempo fixos sincronizados com o motor de física da Unity."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene as linhas de um script `MonoBehaviour` bem estruturado com cache de componente e movimento independente de FPS:",
-      "blocks": [
-        "public class Nave : MonoBehaviour {",
-        "    [SerializeField] private float speed = 8f;",
-        "    private Rigidbody _rb;",
-        "    void Awake() { _rb = GetComponent<Rigidbody>(); }",
-        "    void Update() { transform.Translate(Vector3.forward * speed * Time.deltaTime); }",
-        "}"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4, 5],
-      "explanation": "Declaramos a classe herdando de `MonoBehaviour`, os campos (`[SerializeField] private` e cache), o cache em `Awake()` e o movimento com `Time.deltaTime` em `Update()`."
+      "hint": "Qual chamada pesada nunca deve ficar dentro do loop de cada frame (`Update`)?",
+      "expectedOutput": "60+ FPS estáveis com _rb cacheado em Awake()",
+      "explanation": "Na linha 2, `GetComponent<Rigidbody>()` roda a cada frame! Guarde `_rb` no `Awake()` e aplique a força em `FixedUpdate()`."
     },
     {
       "type": "write_code",
-      "prompt": "Crie uma classe `Inimigo` pública que herde de `MonoBehaviour`, possua um campo privado inteiro `vida` inicializado em `100` e visível no Inspector, e implemente `Update()` movendo o objeto com `transform.Translate` multiplicado por `Time.deltaTime`.",
-      "starterCode": "",
-      "requiredTokens": ["public class Inimigo : MonoBehaviour", "[SerializeField]", "private int vida", "void Update()", "Time.deltaTime"],
+      "prompt": "Complete a classe `Inimigo` com `[SerializeField] private int vida = 100;` e mova-o em `Update()` usando `Time.deltaTime`.",
+      "starterCode": "public class Inimigo : MonoBehaviour {\n    // TODO: adicione `[SerializeField] private int vida = 100;`\n    void Update() {\n        // TODO: chame transform.Translate(Vector3.right * Time.deltaTime);\n    }\n}",
+      "requiredTokens": ["[SerializeField]", "private int vida", "transform.Translate", "Time.deltaTime"],
       "sampleSolution": "public class Inimigo : MonoBehaviour {\n    [SerializeField] private int vida = 100;\n    void Update() {\n        transform.Translate(Vector3.right * Time.deltaTime);\n    }\n}",
-      "hint": "Herde de `MonoBehaviour`, use `[SerializeField] private int vida = 100;` e multiplique o vetor de movimento por `Time.deltaTime` dentro de `void Update()`.",
-      "explanation": "Essa estrutura combina herança de `MonoBehaviour`, encapsulamento com `[SerializeField]` e movimentação independente de taxa de quadros via `Time.deltaTime`."
+      "hint": "Declare `[SerializeField] private int vida = 100;` e dentro de `Update()` escreva `transform.Translate(Vector3.right * Time.deltaTime);`.",
+      "expectedOutput": "Inimigo (vida = 100) patrulhando suave a 1 un/seg",
+      "explanation": "Nave e inimigo no ar! Você já domina os fundamentos de ouro de qualquer script Unity."
     }
   ]
 }

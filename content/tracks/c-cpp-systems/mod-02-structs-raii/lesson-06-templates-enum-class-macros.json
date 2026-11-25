@@ -1,74 +1,73 @@
 {
   "id": "cpp-templates-constexpr-06",
-  "title": "Templates <typename T>, enum class e constexpr vs #define",
-  "description": "Escreva código genérico com zero custo usando templates, enums fortemente tipados com enum class e constantes constexpr.",
+  "title": "C++ Moderno: Templates, enum class e constexpr",
+  "description": "Escreva funções genéricas com template <typename T>, estados seguros com enum class e constantes constexpr.",
+  "mission": "Missão 12: Criar o piloto automático genérico e os estados seguros da Nova-9.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Programação Genérica, enum class e constexpr em C++ Moderno",
-      "content": "Para escrever funções que funcionam com qualquer tipo sem duplicar código nem perder performance, usamos **Templates**: `template <typename T>` gera versões específicas em tempo de compilação. Para constantes, C++ moderno prefere **`constexpr`** em vez de `#define`: `constexpr` respeita escopo, tem tipo verificado pelo compilador e pode ser avaliado em tempo de compilação. Por fim, **`enum class`** cria enumerações fortemente tipadas cujo escopo fica isolado (`Cor::Azul`), evitando colisões de nomes e conversões implícitas para `int` que ocorriam no `enum` antigo de C.",
-      "codeExample": "constexpr int LIMITE = 50;\n\nenum class Estado { Ativo, Inativo };\n\ntemplate <typename T>\nT menor(T a, T b) {\n    return (a < b) ? a : b;\n}\n\nEstado atual = Estado::Ativo;\nint m = menor(10, LIMITE);",
+      "title": "Código genérico e seguro em tempo de compilação",
+      "content": "`template <typename T>` permite escrever uma única função que funciona para `int`, `double` ou qualquer tipo — sem custo extra na execução!\nAlém disso, o C++ moderno troca `#define` por `constexpr` (com tipo real) e usa `enum class` para que estados como `Modo::Seguro` nunca se misturem com números por acidente.",
+      "codeExample": "constexpr int MAX_VEL = 100;\nenum class Modo { Rapido, Seguro };\n\ntemplate <typename T>\nT menor(T a, T b) { return (a < b) ? a : b; }\n\nstd::cout << menor(40, MAX_VEL) << \"\\n\";",
+      "expectedOutput": "40",
       "keyTakeaways": [
-        "`template <typename T>` cria funções/classes genéricas resolvidas em tempo de compilação (zero overhead).",
-        "`constexpr` substitui `#define` com checagem de tipo e respeito a escopo.",
-        "`enum class` isola os valores no escopo do enum e impede conversões implícitas perigosas para `int`."
+        "`template <typename T>` cria funções genéricas resolvidas na compilação (zero overhead).",
+        "`constexpr` substitui `#define` com checagem de tipo, e `enum class` exige `Tipo::Valor`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Por que C++ moderno recomenda `constexpr int LIMITE = 50;` em vez de `#define LIMITE 50`?",
+      "kind": "predict_output",
+      "prompt": "O que aparece na tela ao chamar a função template `dobro` duas vezes?",
+      "codeSnippet": "template <typename T>\nT dobro(T x) { return x + x; }\n\nstd::cout << dobro(5) << \" \" << dobro(2.5) << \"\\n\";",
       "options": [
-        "Porque `#define` só funciona para strings",
-        "Porque `constexpr` possui tipo definido, respeita escopo e é avaliado pelo compilador (não é substituição cega de texto)",
-        "Porque `constexpr` permite alterar o valor da constante em tempo de execução",
-        "Porque `#define` causa vazamento de memória na Heap"
+        "10 5",
+        "10 4",
+        "5 2.5",
+        "Erro porque `dobro` não aceita int e double juntos"
       ],
-      "correctIndex": 1,
-      "explanation": "`#define` é uma macro de pré-processador sem tipo nem escopo; `constexpr` oferece segurança de tipos e avaliação em compilação."
+      "correctIndex": 0,
+      "hint": "O compilador gera uma versão de `dobro` para `int` (5+5) e outra para `double` (2.5+2.5)!",
+      "expectedOutput": "10 5",
+      "explanation": "Templates deduzem `T` em cada chamada: `dobro(5)` retorna `10` e `dobro(2.5)` retorna `5`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a definição de um `enum class` e o acesso qualificado ao seu valor:",
-      "codeTemplate": "enum {{blank}} Nivel { Baixo, Alto };\nNivel atual = {{blank}}::Alto;",
+      "prompt": "Complete o `enum class` e acesse o estado `Alto` pelo escopo certo:",
+      "codeTemplate": "enum {{blank}} Alerta { Baixo, Alto };\nAlerta atual = {{blank}}::Alto;",
       "blanks": [
-        { "answer": "class", "placeholder": "scoped enum" },
-        { "answer": "Nivel", "placeholder": "escopo" }
+        { "answer": "class", "placeholder": "enum seguro" },
+        { "answer": "Alerta", "placeholder": "escopo" }
       ],
-      "options": ["class", "struct", "Nivel", "Alto"],
-      "explanation": "`enum class` exige qualificar o enumerador com o nome do tipo (`Nivel::Alto`), evitando conflitos globais."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete o cabeçalho do template genérico em C++ para aceitar qualquer tipo `T`:",
-      "codeTemplate": "{{blank}} <{{blank}} T>\nT dobrar(T valor) {\n    return valor + valor;\n}",
-      "blanks": [
-        { "answer": "template", "placeholder": "palavra-chave" },
-        { "answer": "typename", "placeholder": "parâmetro de tipo" }
-      ],
-      "options": ["template", "typename", "generic", "class", "auto"],
-      "explanation": "`template <typename T>` declara um parâmetro de tipo genérico `T` resolvido na compilação."
+      "options": ["class", "Alerta", "struct", "Alto"],
+      "hint": "Um enum fortemente tipado usa `enum class` e exige o prefixo `NomeDoEnum::`.",
+      "expectedOutput": "atual == Alerta::Alto",
+      "explanation": "`enum class` mantém `Baixo` e `Alto` organizados dentro de `Alerta::`, evitando colisões de nomes."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O código abaixo usa `enum class` e `constexpr`, mas comete um erro típico ao tentar usar o valor do enum sem qualificação de escopo. Clique na linha com bug:",
+      "prompt": "O código usa `enum class`, mas esqueceu de qualificar o valor do enum! Clique na linha com o bug:",
       "lines": [
-        "constexpr int MAX_TENTATIVAS = 3;",
+        "constexpr int TENTATIVAS = 3;",
         "enum class Status { Ok, Erro };",
         "Status s = Ok;",
         "if (s == Status::Ok) return 0;"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Em `enum class`, os valores não vazam para o escopo externo; é obrigatório escrever `Status s = Status::Ok;`."
+      "hint": "Em `enum class`, você não pode escrever `Ok` solto — precisa dizer de qual enum ele vem.",
+      "expectedOutput": "0 (compilação limpa com Status::Ok)",
+      "explanation": "Na linha 3, o correto é `Status s = Status::Ok;` porque `enum class` protege o escopo dos valores."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva em C++: 1) uma constante avaliada em compilação chamada `LIMITE` igual a `100`, 2) um `enum class` chamado `Modo` com os valores `Rapido` e `Seguro`, e 3) uma função template genérica chamada `menor` com parâmetro de tipo `T` que receba dois valores do tipo `T` e retorne o menor deles.",
-      "starterCode": "",
-      "requiredTokens": ["constexpr", "LIMITE", "enum class Modo", "template", "typename T", "menor", "return"],
+      "prompt": "Complete com `constexpr int LIMITE = 100;`, o `enum class Modo` e a função template `menor`.",
+      "starterCode": "// TODO: declare constexpr int LIMITE = 100;\n\nenum class Modo { Rapido, Seguro };\n\n// TODO: escreva template <typename T> T menor(T a, T b)\n",
+      "requiredTokens": ["constexpr", "LIMITE", "template", "typename T", "menor", "return"],
       "sampleSolution": "constexpr int LIMITE = 100;\n\nenum class Modo { Rapido, Seguro };\n\ntemplate <typename T>\nT menor(T a, T b) {\n    return (a < b) ? a : b;\n}",
-      "hint": "Use `constexpr int LIMITE`, `enum class Modo { ... };` e `template <typename T> T menor(T a, T b)`.",
-      "explanation": "Combinar `constexpr`, `enum class` e `template <typename T>` garante abstração genérica com segurança de tipos e zero custo em runtime."
+      "hint": "Escreva `constexpr int LIMITE = 100;` e `template <typename T> T menor(T a, T b) { return (a < b) ? a : b; }`.",
+      "expectedOutput": "menor(30, LIMITE) -> 30",
+      "explanation": "Missão cumprida! Você fechou C & C++ Sistemas dominando `constexpr`, `enum class` e templates."
     }
   ]
 }

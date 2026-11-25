@@ -1,48 +1,53 @@
 {
   "id": "django-admin-forms-03",
-  "title": "Django Admin (@admin.register) e ModelForm para Validação",
-  "description": "Gere um painel administrativo completo em 4 linhas com Django Admin e valide formulários com ModelForm.",
+  "title": "Django Admin e ModelForm",
+  "description": "Ative um painel administrativo completo em poucas linhas com @admin.register e valide cadastros com ModelForm.",
+  "mission": "Missão 3: Ligar o painel Admin da CodePage e criar formulários validados automaticamente com ModelForm.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Produtividade Extrema com Django Admin e ModelForm",
-      "content": "Um dos maiores diferenciais do Django é o **Django Admin** (`/admin`): basta registrar seu Model no `admin.py` com **`@admin.register(Produto)`** em uma classe herdando de `admin.ModelAdmin` e definir `list_display`, `search_fields` e `list_filter` para ganhar busca, filtros e CRUD completos sem escrever HTML!\n\nAlém disso, **`forms.ModelForm`** gera e valida formulários automaticamente a partir dos campos e regras do seu `models.Model` usando `class Meta:` com `model` e `fields`.",
-      "codeExample": "from django.contrib import admin\nfrom django import forms\nfrom .models import Produto\n\n@admin.register(Produto)\nclass ProdutoAdmin(admin.ModelAdmin):\n    list_display = (\"nome\", \"preco\", \"ativo\")\n    search_fields = (\"nome\",)\n    list_filter = (\"ativo\",)\n\nclass ProdutoForm(forms.ModelForm):\n    class Meta:\n        model = Produto\n        fields = [\"nome\", \"preco\", \"ativo\"]",
+      "title": "Superprodutividade com @admin.register e ModelForm",
+      "content": "Com apenas 4 linhas no `admin.py`, o Django te dá um painel completo em `/admin`: basta decorar uma classe `admin.ModelAdmin` com `@admin.register(Produto)` e escolher `list_display`, `search_fields` e `list_filter`!\nE para formulários no site, `forms.ModelForm` reaproveita automaticamente todas as regras do seu Model usando `class Meta:`.",
+      "codeExample": "@admin.register(Produto)\nclass ProdutoAdmin(admin.ModelAdmin):\n    list_display = (\"nome\", \"preco\", \"ativo\")\n    search_fields = (\"nome\",)\nclass ProdutoForm(forms.ModelForm):\n    class Meta:\n        model = Produto\n        fields = [\"nome\", \"preco\"]",
+      "expectedOutput": "/admin -> Tabela com colunas nome, preco, ativo + barra de busca!",
       "keyTakeaways": [
-        "`@admin.register(Model)` + `admin.ModelAdmin` configura o painel Admin com `list_display` (colunas), `search_fields` (busca) e `list_filter` (filtros laterais).",
-        "`forms.ModelForm` evita duplicar regras de validação entre o Model e o formulário HTML.",
-        "Todo `ModelForm` define uma classe interna `Meta` especificando `model` e `fields`."
+        "`@admin.register(Model)` + `admin.ModelAdmin` personaliza colunas (`list_display`) e busca (`search_fields`).",
+        "`forms.ModelForm` usa `class Meta:` (`model` e `fields`) para validar dados sem repetir regras."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "No `admin.py` do Django, qual atributo de `admin.ModelAdmin` controla quais colunas são exibidas na listagem da tabela?",
+      "kind": "predict_output",
+      "prompt": "Com a configuração abaixo no `admin.py`, o que você vê ao abrir a lista de produtos em `/admin`?",
+      "codeSnippet": "@admin.register(Produto)\nclass ProdutoAdmin(admin.ModelAdmin):\n    list_display = (\"nome\", \"preco\")\n    search_fields = (\"nome\",)",
       "options": [
-        "fields_list",
-        "list_display",
-        "show_columns",
-        "admin_columns"
+        "Uma tabela com as colunas nome e preco, além de uma barra de busca por nome",
+        "Uma página vazia porque faltou escrever o HTML manualmente",
+        "Apenas uma barra de busca sem nenhuma coluna visível",
+        "Erro porque ModelAdmin não aceita tuplas"
       ],
-      "correctIndex": 1,
-      "explanation": "`list_display = (\"campo1\", \"campo2\")` configura as colunas exibidas na lista de registros do Django Admin."
+      "correctIndex": 0,
+      "hint": "`list_display` define as colunas da tabela e `search_fields` ativa a caixa de pesquisa no topo.",
+      "expectedOutput": "Colunas: nome | preco + Barra de pesquisa por nome",
+      "explanation": "O Django Admin gera a tabela com as colunas de `list_display` e a barra de busca de `search_fields` automaticamente!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o registro do `Produto` no Django Admin com barra de pesquisa por nome e filtro lateral por status ativo:",
-      "codeTemplate": "@admin.{{blank}}(Produto)\nclass ProdutoAdmin(admin.{{blank}}):\n    list_display = (\"nome\", \"preco\")\n    {{blank}} = (\"nome\",)\n    {{blank}} = (\"ativo\",)",
+      "prompt": "Complete o registro do model `Produto` no painel administrativo do Django:",
+      "codeTemplate": "@admin.{{blank}}(Produto)\nclass ProdutoAdmin(admin.{{blank}}):\n    list_display = (\"nome\", \"preco\")\n    search_fields = (\"nome\",)",
       "blanks": [
         { "answer": "register", "placeholder": "decorator" },
-        { "answer": "ModelAdmin", "placeholder": "classe base" },
-        { "answer": "search_fields", "placeholder": "busca" },
-        { "answer": "list_filter", "placeholder": "filtro" }
+        { "answer": "ModelAdmin", "placeholder": "classe base" }
       ],
-      "options": ["register", "ModelAdmin", "search_fields", "list_filter", "ModelForm", "filter_by"],
-      "explanation": "`@admin.register(Produto)` decora uma subclasse de `admin.ModelAdmin` com `search_fields` para pesquisa e `list_filter` para filtros."
+      "options": ["register", "ModelAdmin", "ModelForm", "route"],
+      "hint": "O decorator é `@admin.register(...)` e a classe herda de `admin.ModelAdmin`.",
+      "expectedOutput": "Produto registrado em /admin!",
+      "explanation": "Prontinho! Em 4 linhas você já ganhou busca, listagem e CRUD prontos no `/admin`."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este formulário tenta gerar campos automaticamente a partir do model `Produto`, mas falha porque herda da classe errada. Clique na linha com o erro:",
+      "prompt": "Este formulário tentou gerar campos a partir do model `Produto`, mas herdou da classe errada! Clique na linha com o bug:",
       "lines": [
         "from django import forms",
         "from .models import Produto",
@@ -52,12 +57,14 @@
         "        fields = [\"nome\", \"preco\"]"
       ],
       "buggyLineIndex": 2,
-      "explanation": "`forms.Form` não possui suporte automático a `class Meta: model = ...`. Para vincular a um Model, a classe deve herdar de `forms.ModelForm`."
+      "hint": "Qual classe de `forms` entende `class Meta: model = Produto`?",
+      "expectedOutput": "Formulário validado vinculado ao model Produto",
+      "explanation": "`forms.Form` é para formulários avulsos! Para vincular a um Model com `class Meta:`, herde de `forms.ModelForm`."
     },
     {
       "type": "write_code",
-      "prompt": "Registre o model `Pedido` no Django Admin configurando `PedidoAdmin` para exibir as colunas `\"id\"` e `\"total\"` na listagem e habilitar a busca pelo campo `\"id\"`. Em seguida, crie a classe `PedidoForm` usando `ModelForm` para o model `Pedido` expondo os campos `\"cliente\"` e `\"total\"`.",
-      "starterCode": "",
+      "prompt": "Complete o registro de `Pedido` no Admin (`list_display` e `search_fields`) e o `PedidoForm` herdando de `forms.ModelForm`.",
+      "starterCode": "from django.contrib import admin\nfrom django import forms\n\n# TODO: registre PedidoAdmin com @admin.register(Pedido), list_display e search_fields\n\n# TODO: crie PedidoForm(forms.ModelForm) com class Meta: model = Pedido\n",
       "requiredTokens": [
         "@admin.register(Pedido)",
         "admin.ModelAdmin",
@@ -67,9 +74,10 @@
         "class Meta:",
         "model = Pedido"
       ],
-      "sampleSolution": "@admin.register(Pedido)\nclass PedidoAdmin(admin.ModelAdmin):\n    list_display = (\"id\", \"total\")\n    search_fields = (\"id\",)\n\nclass PedidoForm(forms.ModelForm):\n    class Meta:\n        model = Pedido\n        fields = [\"cliente\", \"total\"]",
-      "hint": "Use `@admin.register(Pedido)` sobre `class PedidoAdmin(admin.ModelAdmin):` com `list_display` e `search_fields`, e depois `class PedidoForm(forms.ModelForm):` com `class Meta:`.",
-      "explanation": "Combinar `ModelAdmin` e `ModelForm` permite construir tanto o painel administrativo quanto a validação de formulários reaproveitando as definições do Model."
+      "sampleSolution": "from django.contrib import admin\nfrom django import forms\n\n@admin.register(Pedido)\nclass PedidoAdmin(admin.ModelAdmin):\n    list_display = (\"id\", \"total\")\n    search_fields = (\"id\",)\n\nclass PedidoForm(forms.ModelForm):\n    class Meta:\n        model = Pedido\n        fields = [\"cliente\", \"total\"]",
+      "hint": "Use `@admin.register(Pedido)` sobre `class PedidoAdmin(admin.ModelAdmin):` e depois `class PedidoForm(forms.ModelForm):` com `class Meta:`.",
+      "expectedOutput": "PedidoAdmin ativo no /admin e PedidoForm pronto!",
+      "explanation": "Show! Com `ModelAdmin` e `ModelForm`, você reutiliza as regras do Model sem duplicar código."
     }
   ]
 }

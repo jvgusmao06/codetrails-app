@@ -1,87 +1,72 @@
 {
   "id": "java-nativas-02",
-  "title": "Métodos Nativos da Biblioteca Padrão (String, Math, Arrays)",
-  "description": "Use os métodos nativos mais importantes do JDK (java.lang e java.util) e resolva um desafio de código em Java.",
+  "title": "Ferramentas Nativas (String, Math e Arrays)",
+  "description": "Limpe textos com String, converta números com Integer.parseInt, compare com Math.max e ordene com Arrays.sort.",
+  "mission": "Missão 8: Limpar nomes de clientes, converter cupons de texto em número e ordenar as notas da cafeteria.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "APIs Nativas Essenciais do Java (String, Math, Arrays, Integer)",
-      "content": "O pacote `java.lang` é importado automaticamente em todo arquivo Java: **`String`** traz métodos nativos como `.length()`, `.toUpperCase()`, `.trim()`, `.contains()` e `.substring()` (lembrando que Strings são imutáveis e retornam uma nova String); **`Math`** oferece `Math.max(a, b)`, `Math.min()` e `Math.abs()`; **`Integer.parseInt(\"42\")`** converte texto em `int`; e **`java.util.Arrays.sort(arr)`** ordena arrays in-place.",
-      "codeExample": "import java.util.Arrays;\n\nString texto = \"  java 21  \".trim().toUpperCase(); // \"JAVA 21\"\nint numero = Integer.parseInt(\"150\");\nint maior = Math.max(numero, 100); // 150\n\nint[] notas = {9, 4, 7};\nArrays.sort(notas); // [4, 7, 9]",
+      "title": "Atalhos prontos do Java: String, Integer, Math e Arrays",
+      "content": "O Java já traz ferramentas prontas para o dia a dia: `String` tem `.trim()` e `.toUpperCase()` — mas lembre que `String` é imutável, então guarde o retorno numa variável!\nPara transformar texto em inteiro usamos `Integer.parseInt(\"42\")`, e `Math.max(a, b)` devolve o maior valor na hora.\nJá para ordenar um array em ordem crescente, basta chamar `Arrays.sort(notas)`.",
+      "codeExample": "import java.util.Arrays;\n\nString nome = \"  duke  \".trim().toUpperCase();\nint pontos = Integer.parseInt(\"150\");\nint premio = Math.max(pontos, 100);\nint[] notas = {9, 4, 7};\nArrays.sort(notas);\nSystem.out.println(nome + \" - \" + premio + \" - menor: \" + notas[0]);",
+      "expectedOutput": "DUKE - 150 - menor: 4",
       "keyTakeaways": [
-        "Tamanhos em Java: arrays usam `.length` (atributo), `String` usa `.length()` (método) e coleções (`List`) usam `.size()`.",
-        "`String` é imutável: métodos como `.trim()` e `.toUpperCase()` retornam uma nova `String` sem alterar a original.",
-        "`Integer.parseInt(str)` converte texto numérico para `int`, e `Arrays.sort(arr)` ordena arrays in-place."
+        "`String` é imutável: reatribua o resultado de `.trim()` e `.toUpperCase()`.",
+        "Tamanhos: array usa `.length`, `String` usa `.length()` e `List` usa `.size()`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é a diferença correta para obter a quantidade de elementos de um Array (`int[]`), uma `String` e uma `List<T>` em Java?",
+      "kind": "predict_output",
+      "prompt": "Qual saída aparece no terminal após ordenar o array `notas`?",
+      "codeSnippet": "int[] notas = {8, 3, 5};\nArrays.sort(notas);\nSystem.out.println(notas[0] + \" de \" + notas.length);",
       "options": [
-        "Todos usam .size()",
-        "Array usa .length, String usa .length() e List usa .size()",
-        "Todos usam len(x)",
-        "Array usa .count(), String usa .size() e List usa .length"
+        "3 de 3",
+        "8 de 3",
+        "3 de 8",
+        "Erro porque Arrays.sort precisa ser atribuído"
       ],
-      "correctIndex": 1,
-      "explanation": "Em Java, arrays têm o atributo `.length`, objetos `String` têm o método `.length()` e coleções (`List`, `Map`, `Set`) usam `.size()`."
+      "correctIndex": 0,
+      "hint": "`Arrays.sort(notas)` ordena o próprio array do menor para o maior (`{3, 5, 8}`).",
+      "expectedOutput": "3 de 3",
+      "explanation": "Depois do `Arrays.sort`, o menor valor (`3`) vai para `notas[0]`, e `notas.length` continua sendo `3`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para remover espaços das pontas da String, converter o texto em `int` e ordenar o array `notas`:",
-      "codeTemplate": "String limpa = \"  42  \".{{blank}}();\nint valor = {{blank}}.parseInt(limpa);\n{{blank}}.sort(notas);",
+      "prompt": "Limpe os espaços do cupom e converta o texto numérico para `int`:",
+      "codeTemplate": "String limpo = \"  25  \".{{blank}}();\nint desconto = {{blank}}.parseInt(limpo);",
       "blanks": [
-        { "answer": "trim", "placeholder": "limpar espaços" },
-        { "answer": "Integer", "placeholder": "classe wrapper" },
-        { "answer": "Arrays", "placeholder": "utilitário array" }
+        { "answer": "trim", "placeholder": "limpar" },
+        { "answer": "Integer", "placeholder": "classe" }
       ],
-      "options": ["trim", "Integer", "Arrays", "strip", "Int", "Collections"],
-      "explanation": "`.trim()` remove espaços das extremidades, `Integer.parseInt(...)` faz o parsing para `int` e `Arrays.sort(...)` ordena o array."
+      "options": ["trim", "Integer", "Int", "clean"],
+      "hint": "Use `.trim()` para tirar espaços das pontas e `Integer.parseInt(...)` para converter texto em `int`.",
+      "expectedOutput": "25",
+      "explanation": "`.trim()` remove espaços extras e `Integer.parseInt` transforma `\"25\"` no inteiro `25`!"
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O código abaixo tenta limpar os espaços e deixar `nome` em maiúsculas, mas imprime `\"  duke  \"` sem alteração. Clique na linha com o bug:",
+      "prompt": "Tentamos deixar o nome em maiúsculas sem espaços, mas ele continuou imprimindo `\"  duke  \"`! Clique na linha com o bug:",
       "lines": [
-        "String nome = \"  duke  \";",
-        "nome.trim().toUpperCase();",
-        "System.out.println(nome);"
+        "String cliente = \"  duke  \";",
+        "cliente.trim().toUpperCase();",
+        "System.out.println(cliente);"
       ],
       "buggyLineIndex": 1,
-      "explanation": "Em Java, `String` é imutável: `nome.trim().toUpperCase()` cria uma nova `String` e a descarta se não for reatribuída (`nome = nome.trim().toUpperCase();`)."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para limpar uma entrada de texto, convertê-la para inteiro e garantir que o valor seja no mínimo 10 usando `Math.max`:",
-      "blocks": [
-        "String entrada = \" 7 \".trim();",
-        "int numero = Integer.parseInt(entrada);",
-        "int ajustado = Math.max(numero, 10);",
-        "System.out.println(ajustado);"
-      ],
-      "correctOrder": [0, 1, 2, 3],
-      "explanation": "Primeiro limpamos com `.trim()`, depois convertemos com `Integer.parseInt` e por fim aplicamos `Math.max(numero, 10)`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Após executar `int[] nums = {8, 3, 5}; Arrays.sort(nums);`, qual será o valor de `nums[0]` e `nums.length`?",
-      "options": [
-        "`nums[0]` é `8` e `nums.length` é `3`",
-        "`nums[0]` é `3` e `nums.length` é `3`",
-        "`nums[0]` é `3` e `nums.length()` é `3`",
-        "Lança erro porque `Arrays.sort` retorna um novo array"
-      ],
-      "correctIndex": 1,
-      "explanation": "`Arrays.sort(nums)` ordena o array original in-place em ordem crescente (`{3, 5, 8}`), e o tamanho do array é obtido com `.length`."
+      "hint": "Como `String` é imutável, o retorno de `.trim().toUpperCase()` foi jogado fora sem ser guardado!",
+      "expectedOutput": "DUKE",
+      "explanation": "Na linha 2, precisamos guardar o novo texto: `cliente = cliente.trim().toUpperCase();`."
     },
     {
       "type": "write_code",
-      "prompt": "Crie um método público e estático chamado `maiorValor` que receba dois inteiros (`a` e `b`) e retorne o maior entre eles usando a classe `Math`.",
-      "starterCode": "",
+      "prompt": "Complete o método estático `maiorValor` para retornar o maior número entre `a` e `b` usando `Math.max`.",
+      "starterCode": "public static int maiorValor(int a, int b) {\n  // TODO: retorne o maior entre `a` e `b` usando Math.max\n}",
       "requiredTokens": ["public", "static", "int", "maiorValor", "return", "Math.max"],
-      "sampleSolution": "public static int maiorValor(int a, int b) {\n    return Math.max(a, b);\n}",
-      "hint": "Defina a assinatura `public static int maiorValor(int a, int b)` e retorne o resultado de `Math.max(a, b)`.",
-      "explanation": "`Math.max(a, b)` faz parte de `java.lang` e retorna imediatamente o maior entre dois valores numéricos."
+      "sampleSolution": "public static int maiorValor(int a, int b) {\n  return Math.max(a, b);\n}",
+      "hint": "Escreva `return Math.max(a, b);` dentro do método.",
+      "expectedOutput": "15",
+      "explanation": "Simples e direto! `Math.max(a, b)` já vem pronto no Java para comparar dois valores."
     }
   ]
 }

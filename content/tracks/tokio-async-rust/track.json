@@ -1,7 +1,7 @@
 {
   "id": "tokio-async-rust",
   "title": "Tokio (Async Runtime Rust)",
-  "description": "Execute milhares de tarefas concorrentes em Rust com #[tokio::main], tokio::spawn, canais mpsc e tokio::select!.",
+  "description": "Atenda milhares de aventureiros ao mesmo tempo no Servidor RPG do Ferris com #[tokio::main], tokio::spawn e tokio::join!.",
   "category": "library",
   "languageId": "rust-systems",
   "prerequisites": ["rust-systems"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: Futures, tokio::spawn e Select",
-      "description": "Domine programação assíncrona de zero custo com o runtime padrão do Rust.",
+      "title": "Módulo 1: Futures, tokio::spawn e join!",
+      "description": "Execute tarefas concorrentes leves no runtime assíncrono mais usado do Rust.",
       "lessons": ["lesson-01-tokio-spawn-select"]
     }
   ]

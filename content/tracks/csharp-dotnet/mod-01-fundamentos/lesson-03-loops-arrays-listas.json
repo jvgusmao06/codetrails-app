@@ -1,90 +1,73 @@
 {
   "id": "csharp-loops-lists-03",
-  "title": "Loops (for, while, foreach) e Coleções (Arrays vs List<T>)",
-  "description": "Percorra dados com foreach, for e while, e escolha entre arrays fixos (.Length) e List<T> (.Count) com collection expressions.",
+  "title": "Carrinho de Compras: List<T>, foreach e [ ]",
+  "description": "Crie listas modernas com colchetes [...], adicione itens com .Add() e percorra tudo sem dor de cabeça com foreach.",
+  "mission": "Missão 3: Montar e listar o carrinho de jogos do cliente na PixelShop.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Laços de Repetição, Arrays e List<T> no .NET",
-      "content": "Em C#, temos os loops **`for`** (quando precisamos do índice), **`while`** (enquanto uma condição for verdadeira) e **`foreach (var item in colecao)`** (mais seguro para percorrer coleções sem erro de índice). Para tamanho fixo usamos **arrays** (`int[]`, medidos com **`.Length`**); para coleções dinâmicas usamos **`List<T>`** com **`.Add()`** e **`.Count`**. No C# 12+, **collection expressions** (`[...]`) inicializam tanto arrays quanto listas de forma enxuta!",
-      "codeExample": "int[] notas = [8, 9, 10]; // Array com collection expression\nfor (int i = 0; i < notas.Length; i++) {\n    Console.WriteLine(notas[i]);\n}\n\nList<string> langs = [\"C#\", \"Python\"];\nlangs.Add(\"Rust\");\nforeach (var lang in langs) {\n    Console.WriteLine(lang);\n}\n\nint tent = 0;\nwhile (tent < langs.Count) {\n    tent++;\n}",
+      "title": "Listas dinâmicas com [...] e foreach",
+      "content": "Quando a quantidade de itens pode crescer — como um carrinho de compras — usamos `List<T>`. No C# moderno, você já cria a lista direto com colchetes `[...]` e adiciona novos itens com `.Add()`.\nPara passar por cada item sem se preocupar com índices, o `foreach` é seu melhor amigo! Lembre: listas usam `.Count` e arrays fixos (`int[]`) usam `.Length`.",
+      "codeExample": "List<string> carrinho = [\"StarRunner\", \"PixelQuest\"];\ncarrinho.Add(\"NeonDrift\");\n\nforeach (var jogo in carrinho) {\n    Console.WriteLine($\"- {jogo}\");\n}\nConsole.WriteLine($\"Total: {carrinho.Count}\");",
+      "expectedOutput": "- StarRunner\n- PixelQuest\n- NeonDrift\nTotal: 3",
       "keyTakeaways": [
-        "`foreach (var x in lista)` é mais seguro e legível que `for (int i = 0; ...)` quando não precisamos do índice.",
-        "Array `int[]` usa `.Length`; `List<int>` usa `.Count`.",
-        "No C# 12+, colchetes `[1, 2, 3]` (collection expressions) inicializam tanto arrays quanto `List<T>` de forma enxuta."
+        "`List<T>` cresce com `.Add()` e informa seu tamanho em `.Count` (já arrays usam `.Length`).",
+        "`foreach (var item in lista)` percorre toda a coleção de forma limpa e sem erro de índice."
       ]
     },
     {
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal ao executar este trecho?",
+      "codeSnippet": "List<int> pontos = [10, 20];\npontos.Add(30);\nConsole.WriteLine($\"Itens: {pontos.Count}, Último: {pontos[2]}\");",
+      "options": [
+        "Itens: 3, Último: 30",
+        "Itens: 2, Último: 20",
+        "Itens: 3, Último: 20",
+        "Erro porque List não aceita colchetes [...]"
+      ],
+      "correctIndex": 0,
+      "hint": "Começa com 2 itens (`[10, 20]`), ganha `30` no índice `2`, ficando com 3 itens no total.",
+      "expectedOutput": "Itens: 3, Último: 30",
+      "explanation": "A lista ficou `[10, 20, 30]`: `.Count` vale `3` e o índice `2` (terceiro elemento) guarda `30`."
+    },
+    {
       "type": "fill_in_blank",
-      "prompt": "Complete o código C# para criar uma `List<int>`, adicionar `40` e percorrê-la com `foreach`:",
-      "codeTemplate": "var nums = new {{blank}}<int> { 10, 20, 30 };\nnums.{{blank}}(40);\n{{blank}} (var n in nums) {\n    Console.WriteLine(n);\n}",
+      "prompt": "Adicione `\"NeonDrift\"` ao carrinho e percorra os itens com `foreach`:",
+      "codeTemplate": "List<string> carrinho = [\"StarRunner\"];\ncarrinho.{{blank}}(\"NeonDrift\");\n{{blank}} (var jogo in carrinho) {\n    Console.WriteLine(jogo);\n}",
       "blanks": [
-        { "answer": "List", "placeholder": "lista" },
         { "answer": "Add", "placeholder": "adicionar" },
         { "answer": "foreach", "placeholder": "loop" }
       ],
-      "options": ["List", "Add", "foreach", "Array", "push", "forin"],
-      "explanation": "`List<T>` é a lista dinâmica padrão, `.Add()` insere no final e `foreach (var n in nums)` itera sobre ela."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete o loop `for` para percorrer um array `idades` usando sua propriedade de tamanho:",
-      "codeTemplate": "int[] idades = [18, 25, 30];\n{{blank}} (int i = 0; i < idades.{{blank}}; i++) {\n    Console.WriteLine(idades[i]);\n}",
-      "blanks": [
-        { "answer": "for", "placeholder": "loop por índice" },
-        { "answer": "Length", "placeholder": "tamanho do array" }
-      ],
-      "options": ["for", "Length", "Count", "while", "Size"],
-      "explanation": "Arrays em C# usam `.Length` (com L maiúsculo) para informar a quantidade de elementos, e `for` percorre pelos índices `0` até `Length - 1`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual declaração usa corretamente uma **collection expression** do C# 12+ para inicializar uma `List<string>` e obter seu tamanho?",
-      "options": [
-        "List<string> tags = [\"api\", \"web\"]; int n = tags.Length;",
-        "List<string> tags = [\"api\", \"web\"]; int n = tags.Count;",
-        "List<string> tags = (\"api\", \"web\"); int n = tags.Count;",
-        "string[] tags = [\"api\", \"web\"]; int n = tags.Count;"
-      ],
-      "correctIndex": 1,
-      "explanation": "Collection expressions usam `[...]` tanto para arrays quanto para `List<T>`, e `List<T>` expõe seu tamanho via `.Count` (não `.Length`)."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "Este loop `while` entra em loop infinito porque nunca avança a condição de parada. Clique na linha com o bug:",
-      "lines": [
-        "int tentativas = 0;",
-        "while (tentativas < 3) {",
-        "    Console.WriteLine($\"Tentativa {tentativas}\");",
-        "    tentativas = 0;",
-        "}"
-      ],
-      "buggyLineIndex": 3,
-      "explanation": "Na linha 4, `tentativas = 0;` reinicia o contador a cada iteração em vez de incrementá-lo (`tentativas++;`), causando loop infinito."
+      "options": ["Add", "foreach", "Push", "for"],
+      "hint": "Em C#, listas usam `.Add(...)` (com A maiúsculo) e iteramos com `foreach`.",
+      "expectedOutput": "StarRunner\nNeonDrift",
+      "explanation": "Show! `.Add()` coloca o novo jogo no fim da lista e `foreach` imprime cada um na ordem."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os blocos para criar uma `List<int>` com collection expression, adicionar um item e esvaziá-la com `while`:",
+      "prompt": "Organize os blocos para montar o carrinho, adicionar um jogo e exibir a quantidade final:",
       "blocks": [
-        "List<int> fila = [10, 20];",
-        "fila.Add(30);",
-        "while (fila.Count > 0) {",
-        "    Console.WriteLine(fila[0]);",
-        "    fila.RemoveAt(0);",
-        "}"
+        "Console.WriteLine($\"Total: {carrinho.Count}\");",
+        "List<string> carrinho = [\"StarRunner\"];",
+        "foreach (var j in carrinho) Console.WriteLine(j);",
+        "carrinho.Add(\"PixelQuest\");"
       ],
-      "correctOrder": [0, 1, 2, 3, 4, 5],
-      "explanation": "Inicializamos `List<int>` com `[10, 20]`, adicionamos `30` e usamos `while (fila.Count > 0)` removendo o primeiro item a cada passo."
+      "correctOrder": [1, 3, 2, 0],
+      "hint": "Primeiro criamos a lista, depois adicionamos o segundo jogo, imprimimos os itens e mostramos o total.",
+      "expectedOutput": "StarRunner\nPixelQuest\nTotal: 2",
+      "explanation": "Ordem certinha: declarar `carrinho`, chamar `.Add()`, percorrer com `foreach` e fechar mostrando `.Count`."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Crie uma `List<int>` inicializada com os valores `10, 20, 30` usando collection expression (`[...]`), adicione o número `40`, percorra os itens com `foreach` imprimindo cada um, e também faça um loop `for` usando `.Count` para imprimir os índices.",
-      "starterCode": "",
-      "requiredTokens": ["List<int>", "[", ".Add(40)", "foreach", "for", ".Count", "Console.WriteLine"],
-      "sampleSolution": "List<int> valores = [10, 20, 30];\nvalores.Add(40);\nforeach (var v in valores) {\n    Console.WriteLine(v);\n}\nfor (int i = 0; i < valores.Count; i++) {\n    Console.WriteLine(i);\n}",
-      "hint": "Use `List<int> valores = [10, 20, 30];`, `.Add(40)`, `foreach (var v in valores)` e `for (int i = 0; i < valores.Count; i++)`.",
-      "explanation": "Collection expressions (`[...]`) deixam a criação de listas limpa, `foreach` lê os valores com segurança e `for` com `.Count` dá acesso ao índice."
+      "prompt": "Adicione `30` à lista `precos` usando `.Add(30)` e percorra a lista com `foreach` imprimindo cada valor.",
+      "starterCode": "List<int> precos = [10, 20];\n// TODO: adicione 30 com .Add(30) e use foreach para imprimir cada item\n",
+      "requiredTokens": [".Add(30)", "foreach", "Console.WriteLine"],
+      "sampleSolution": "List<int> precos = [10, 20];\nprecos.Add(30);\nforeach (var p in precos) {\n    Console.WriteLine(p);\n}",
+      "hint": "Chame `precos.Add(30);` e depois escreva `foreach (var p in precos) { Console.WriteLine(p); }`.",
+      "expectedOutput": "10\n20\n30",
+      "explanation": "Pronto! Carrinho montado e percorrido com segurança usando `List<T>` e `foreach`."
     }
   ]
 }

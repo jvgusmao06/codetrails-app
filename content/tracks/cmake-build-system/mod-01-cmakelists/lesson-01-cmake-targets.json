@@ -1,59 +1,53 @@
 {
   "id": "cmake-01",
-  "title": "Estrutura do CMakeLists.txt, Executáveis, Bibliotecas e Linkagem",
-  "description": "Defina a versão do C++20, crie targets com add_executable e add_library e conecte bibliotecas com target_link_libraries.",
+  "title": "CMakeLists.txt: Targets e Linkagem",
+  "description": "Configure a versão do CMake, crie bibliotecas e executáveis e conecte tudo com target_link_libraries.",
+  "mission": "Missão 1: Montar o CMakeLists.txt que compila o motor e o executável da nave Nova-9.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Modern CMake Baseado em Targets",
-      "content": "O **CMake** é o padrão da indústria para gerenciar builds de C e C++. Todo projeto tem um arquivo `CMakeLists.txt` na raiz que declara a versão mínima (`cmake_minimum_required`), o nome do projeto (`project`), o padrão da linguagem (`set(CMAKE_CXX_STANDARD 20)`), os alvos de compilação — **`add_library`** para bibliotecas reutilizáveis e **`add_executable`** para binários finais — e suas dependências com **`target_link_libraries`**.",
-      "codeExample": "cmake_minimum_required(VERSION 3.20)\nproject(MotorFisica LANGUAGES CXX)\n\nset(CMAKE_CXX_STANDARD 20)\nset(CMAKE_CXX_STANDARD_REQUIRED ON)\n\nadd_library(matematica src/vetor.cpp)\nadd_executable(app src/main.cpp)\n\ntarget_link_libraries(app PRIVATE matematica)",
+      "title": "Construindo projetos C++ por targets",
+      "content": "O `CMakeLists.txt` é a receita universal para compilar projetos C/C++ em Windows, Linux e macOS.\nEle sempre começa com `cmake_minimum_required` e `project()`, depois define bibliotecas com `add_library`, executáveis com `add_executable` e conecta dependências com `target_link_libraries`!",
+      "codeExample": "cmake_minimum_required(VERSION 3.20)\nproject(Nova9 LANGUAGES CXX)\nset(CMAKE_CXX_STANDARD 20)\n\nadd_library(motor src/motor.cpp)\nadd_executable(nave src/main.cpp)\ntarget_link_libraries(nave PRIVATE motor)",
+      "expectedOutput": "[100%] Built target motor\n[100%] Built target nave",
       "keyTakeaways": [
-        "`cmake_minimum_required()` deve ser sempre a primeira linha do `CMakeLists.txt`.",
-        "`add_library(nome arquivos...)` cria uma biblioteca interna; `add_executable(nome arquivos...)` gera o executável.",
-        "`target_link_libraries(alvo PRIVATE lib)` vincula bibliotecas externas ou internas ao seu executável."
+        "`cmake_minimum_required()` e `project()` vêm sempre no topo do `CMakeLists.txt`.",
+        "`add_library` cria bibliotecas, `add_executable` cria o binário e `target_link_libraries` conecta os dois."
       ]
     },
     {
-      "type": "order_code",
-      "prompt": "Ordene os comandos de um `CMakeLists.txt` válido do início até a criação do executável:",
-      "blocks": [
-        "cmake_minimum_required(VERSION 3.20)",
-        "project(MeuJogo CXX)",
-        "set(CMAKE_CXX_STANDARD 20)",
-        "add_executable(jogo main.cpp)"
-      ],
-      "correctOrder": [0, 1, 2, 3],
-      "explanation": "Um `CMakeLists.txt` começa sempre com `cmake_minimum_required`, seguido por `project()`, configurações de padrão C++ e finalmente `add_executable()`."
-    },
-    {
       "type": "multiple_choice",
-      "prompt": "Qual comando CMake você deve usar para compilar `src/vetor.cpp` como uma biblioteca reutilizável (em vez de um binário executável final)?",
+      "kind": "predict_output",
+      "prompt": "O que o CMake gera ao configurar e compilar este `CMakeLists.txt`?",
+      "codeSnippet": "cmake_minimum_required(VERSION 3.20)\nproject(Estaleiro CXX)\nadd_library(fisica src/fisica.cpp)\nadd_executable(simulador src/main.cpp)\ntarget_link_libraries(simulador PRIVATE fisica)",
       "options": [
-        "add_executable(matematica src/vetor.cpp)",
-        "add_library(matematica src/vetor.cpp)",
-        "target_link_libraries(matematica src/vetor.cpp)",
-        "project(matematica)"
+        "Compila a biblioteca `fisica` e gera o executável `simulador` ligado a ela",
+        "Gera dois executáveis independentes chamados `fisica` e `simulador`",
+        "Falha porque `add_library` precisa vir depois de `add_executable`",
+        "Apenas copia os arquivos `.cpp` sem compilar nada"
       ],
-      "correctIndex": 1,
-      "explanation": "`add_library` cria um target de biblioteca que pode ser vinculado a um ou mais executáveis ou testes via `target_link_libraries`."
+      "correctIndex": 0,
+      "hint": "Repare que `fisica` foi criada com `add_library` e ligada ao `simulador` com `target_link_libraries`.",
+      "expectedOutput": "[100%] Built target fisica\n[100%] Built target simulador",
+      "explanation": "`add_library` compila a biblioteca reutilizável `fisica` e `target_link_libraries` vincula ela ao executável `simulador`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o `CMakeLists.txt` para criar o executável `servidor` e vincular a biblioteca `rede` a ele:",
-      "codeTemplate": "{{blank}}(servidor main.cpp)\n{{blank}}(servidor PRIVATE {{blank}})",
+      "prompt": "Crie o executável `servidor` e ligue a biblioteca `rede` a ele:",
+      "codeTemplate": "{{blank}}(servidor main.cpp)\n{{blank}}(servidor PRIVATE rede)",
       "blanks": [
         { "answer": "add_executable", "placeholder": "criar binário" },
-        { "answer": "target_link_libraries", "placeholder": "linkar" },
-        { "answer": "rede", "placeholder": "biblioteca" }
+        { "answer": "target_link_libraries", "placeholder": "vincular" }
       ],
-      "options": ["add_executable", "target_link_libraries", "rede", "add_library", "main.cpp"],
-      "explanation": "`add_executable` cria o target binário e `target_link_libraries` conecta a biblioteca `rede` ao target `servidor`."
+      "options": ["add_executable", "target_link_libraries", "add_library", "project"],
+      "hint": "Use `add_executable` para gerar o binário e `target_link_libraries` para ligar a biblioteca.",
+      "expectedOutput": "[100%] Built target servidor",
+      "explanation": "Pronto! `add_executable` cria `servidor` e `target_link_libraries` conecta `rede` de forma privada."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este `CMakeLists.txt` falha na configuração porque um target é definido antes dos comandos obrigatórios de cabeçalho! Clique na linha com o erro:",
+      "prompt": "Ops! O CMake reclamou da ordem deste arquivo porque um target apareceu antes do cabeçalho obrigatório. Qual linha tem o bug?",
       "lines": [
         "add_executable(app src/main.cpp)",
         "cmake_minimum_required(VERSION 3.20)",
@@ -61,16 +55,19 @@
         "target_link_libraries(app PRIVATE util)"
       ],
       "buggyLineIndex": 0,
-      "explanation": "`cmake_minimum_required()` e `project()` devem vir antes de qualquer `add_executable` ou `add_library`."
+      "hint": "Qual comando deveria esperar `cmake_minimum_required` e `project` virem primeiro?",
+      "expectedOutput": "Configuração CMake concluída com sucesso",
+      "explanation": "`add_executable` na linha 1 veio cedo demais — `cmake_minimum_required` e `project` sempre devem abrir o arquivo!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva um `CMakeLists.txt` completo que exija CMake 3.20, defina o projeto `Calculadora` em C++, crie uma biblioteca `math` a partir de `src/math.cpp`, um executável `calc` a partir de `src/main.cpp` e vincule `math` ao executável de forma privada.",
-      "starterCode": "",
-      "requiredTokens": ["cmake_minimum_required", "project", "add_library", "add_executable", "target_link_libraries", "PRIVATE"],
+      "prompt": "Complete o `CMakeLists.txt` criando a biblioteca `math` (`src/math.cpp`), o executável `calc` (`src/main.cpp`) e ligando `math` a `calc` com `PRIVATE`.",
+      "starterCode": "cmake_minimum_required(VERSION 3.20)\nproject(Calculadora LANGUAGES CXX)\n# TODO: declare a biblioteca math (src/math.cpp), o executavel calc (src/main.cpp) e conecte-os de modo privado\n",
+      "requiredTokens": ["add_library", "add_executable", "target_link_libraries", "PRIVATE"],
       "sampleSolution": "cmake_minimum_required(VERSION 3.20)\nproject(Calculadora LANGUAGES CXX)\nadd_library(math src/math.cpp)\nadd_executable(calc src/main.cpp)\ntarget_link_libraries(calc PRIVATE math)",
-      "hint": "Declare primeiro a versão mínima e o projeto, depois registre os targets de biblioteca e executável e por último faça a linkagem com `PRIVATE`.",
-      "explanation": "Essa estrutura modular (separar lógica em `add_library` e ponto de entrada em `add_executable`) facilita também conectar testes unitários como GoogleTest."
+      "hint": "Escreva `add_library(math src/math.cpp)`, `add_executable(calc src/main.cpp)` e `target_link_libraries(calc PRIVATE math)`.",
+      "expectedOutput": "[100%] Built target math\n[100%] Built target calc",
+      "explanation": "Build pronto! Separar a lógica em `add_library` e ligar ao executável facilita reutilizar código e rodar testes."
     }
   ]
 }

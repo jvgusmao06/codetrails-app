@@ -1,7 +1,7 @@
 {
   "id": "playwright-e2e",
   "title": "Playwright E2E Testing",
-  "description": "Automatize testes End-to-End reais no Chromium, Firefox e WebKit com auto-waiting, locators acessíveis e zero flakiness.",
+  "description": "Automatize o robô QA do CheckFlow com Playwright: testes reais no navegador usando getByRole, auto-waiting e zero sleep().",
   "category": "tool",
   "languageId": "typescript-javascript",
   "prerequisites": ["typescript-javascript"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: Locators, Auto-Waiting e Asserções E2E",
-      "description": "Escreva testes de navegador confiáveis usando getByRole, click e expect(locator).toBeVisible().",
+      "title": "Módulo 1: Locators Acessíveis e Auto-Waiting no CheckFlow",
+      "description": "Teste telas de login e navegação de ponta a ponta sem testes instáveis.",
       "lessons": ["lesson-01-locators-expect"]
     }
   ]

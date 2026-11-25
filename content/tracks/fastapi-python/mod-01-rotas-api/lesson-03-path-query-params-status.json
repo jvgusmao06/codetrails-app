@@ -1,78 +1,74 @@
 {
   "id": "fastapi-params-errors-03",
-  "title": "Path Params, Query Params e Erros HTTPException (404 / 400)",
-  "description": "Capture parâmetros de URL (/users/{id}), paginação (?limit=10) e retorne erros HTTP padronizados com HTTPException.",
+  "title": "Path Params, Query Params e HTTPException",
+  "description": "Capture IDs da URL, adicione filtros opcionais na query string e retorne 404 limpo com HTTPException.",
+  "mission": "Missão 3: Buscar uma tarefa específica por ID, aceitar filtros opcionais e devolver 404 quando ela não existir.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Parâmetros Tipados e HTTPException no FastAPI",
-      "content": "No FastAPI, qualquer parâmetro da função que **aparece na string da rota** (ex: `/{item_id}`) é um **Path Parameter**; qualquer parâmetro que **não** está na rota (ex: `skip: int = 0, limit: int = 10`) vira automaticamente um **Query Parameter** (`?skip=0&limit=10`)! E quando um recurso não é encontrado, lançamos **`raise HTTPException(status_code=404, detail=\"...\")`**.",
-      "codeExample": "from fastapi import FastAPI, HTTPException\n\napp = FastAPI()\n\n@app.get(\"/itens/{item_id}\")\nasync def buscar_item(item_id: int, detalhado: bool = False):\n    if item_id <= 0:\n        raise HTTPException(status_code=404, detail=\"Item não encontrado\")\n    return {\"id\": item_id, \"detalhado\": detalhado}",
+      "title": "Path vs Query Params e erros 404 com HTTPException",
+      "content": "A regra no FastAPI é super intuitiva: se o parâmetro aparece entre chaves na rota (`/{item_id}`), é um **Path Parameter**; se não está na rota (`detalhado: bool = False`), vira **Query Parameter** (`?detalhado=true`)!\nE quando um ID não existe, interrompemos a rota com `raise HTTPException(status_code=404, detail=\"...\")`.",
+      "codeExample": "from fastapi import HTTPException\n\n@app.get(\"/tarefas/{tarefa_id}\")\nasync def buscar_tarefa(tarefa_id: int, detalhado: bool = False):\n    if tarefa_id <= 0:\n        raise HTTPException(status_code=404, detail=\"Tarefa não encontrada\")\n    return {\"id\": tarefa_id, \"detalhado\": detalhado}",
+      "expectedOutput": "GET /tarefas/7?detalhado=true -> {\"id\": 7, \"detalhado\": true}",
       "keyTakeaways": [
-        "Tipar `item_id: int` faz o FastAPI rejeitar `/itens/abc` automaticamente com erro 422.",
-        "Parâmetros com valor padrão (`limit: int = 20`) viram Query Params opcionais.",
-        "`raise HTTPException(status_code=404, detail=...)` interrompe a rota e envia JSON de erro padronizado."
+        "Parâmetro na rota (`/{id}`) = Path Param; fora da rota (`limit: int = 10`) = Query Param.",
+        "Use sempre `raise HTTPException(status_code=404, detail=\"...\")` (com `raise`, não `return`)."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Na rota `@app.get(\"/cursos/{curso_id}\")` com função `def ler(curso_id: int, ativo: bool = True):`, como o parâmetro `ativo` é enviado pelo cliente?",
+      "kind": "predict_output",
+      "prompt": "O que o FastAPI responde quando o cliente acessa `GET /tarefas/5?ativo=false`?",
+      "codeSnippet": "@app.get(\"/tarefas/{tarefa_id}\")\nasync def ler(tarefa_id: int, ativo: bool = True):\n    return {\"id\": tarefa_id, \"ativo\": ativo}",
       "options": [
-        "No corpo JSON (Request Body)",
-        "Como Query Parameter na URL: `/cursos/5?ativo=false`",
-        "Apenas em headers HTTP",
-        "Como variável global"
+        "{\"id\": 5, \"ativo\": false}",
+        "{\"id\": \"5\", \"ativo\": true}",
+        "HTTP 422 porque ativo deveria ir no corpo JSON",
+        "HTTP 404 Not Found"
       ],
-      "correctIndex": 1,
-      "explanation": "Parâmetros simples que não estão na string da rota (`/cursos/{curso_id}`) são automaticamente tratados como Query Params."
+      "correctIndex": 0,
+      "hint": "`tarefa_id: int` converte `5` para inteiro, e `?ativo=false` sobrescreve o padrão `True` para `False`.",
+      "expectedOutput": "{\"id\": 5, \"ativo\": false}",
+      "explanation": "O FastAPI converte `5` para `int` e `false` da query string para booleano `False`, respondendo `{\"id\": 5, \"ativo\": false}`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a rota com tipagem inteira no Path Parameter e lançamento de erro 404 com `HTTPException`:",
-      "codeTemplate": "@app.get(\"/produtos/{produto_id}\")\nasync def buscar_produto(produto_id: {{blank}}, completo: bool = False):\n    if produto_id <= 0:\n        {{blank}} {{blank}}(status_code=404, detail=\"Não encontrado\")\n    return {\"id\": produto_id, \"completo\": completo}",
+      "prompt": "Complete a rota para lançar um erro HTTP 404 quando o `produto_id` for inválido:",
+      "codeTemplate": "@app.get(\"/produtos/{produto_id}\")\nasync def buscar(produto_id: int):\n    if produto_id <= 0:\n        {{blank}} {{blank}}(status_code=404, detail=\"Não encontrado\")\n    return {\"id\": produto_id}",
       "blanks": [
-        { "answer": "int", "placeholder": "tipo" },
-        { "answer": "raise", "placeholder": "palavra-chave" },
+        { "answer": "raise", "placeholder": "lançar" },
         { "answer": "HTTPException", "placeholder": "exceção" }
       ],
-      "options": ["int", "raise", "HTTPException", "return", "str", "Error"],
-      "explanation": "Tipar `produto_id: int` valida o Path Parameter, e `raise HTTPException(status_code=404, ...)` interrompe a rota com erro 404."
+      "options": ["raise", "return", "HTTPException", "Error"],
+      "hint": "Exceções no FastAPI são disparadas com `raise` usando a classe `HTTPException`.",
+      "expectedOutput": "HTTP 404 -> {\"detail\": \"Não encontrado\"}",
+      "explanation": "`raise HTTPException(status_code=404, detail=...)` interrompe a função e devolve o JSON de erro padronizado."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Quando `livro_id` é inválido, esta rota não interrompe com status 404 corretamente porque usa o comando errado para a exceção. Clique na linha com o bug:",
+      "prompt": "Quando o livro não existe, esta rota devolveu o objeto de erro como se fosse 200 OK em vez de lançar 404! Clique na linha com o bug:",
       "lines": [
         "@app.get(\"/livros/{livro_id}\")",
         "async def ler_livro(livro_id: int):",
         "    if livro_id <= 0:",
-        "        return HTTPException(status_code=404, detail=\"Livro não encontrado\")",
+        "        return HTTPException(status_code=404, detail=\"Não encontrado\")",
         "    return {\"id\": livro_id}"
       ],
       "buggyLineIndex": 3,
-      "explanation": "Na linha 4, `HTTPException` é uma exceção e deve ser lançada com `raise HTTPException(...)`, nunca retornada com `return`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para criar uma rota com Path Parameter, Query Parameter opcional e validação 404:",
-      "blocks": [
-        "    if user_id < 1:",
-        "@app.get(\"/usuarios/{user_id}\")",
-        "        raise HTTPException(status_code=404, detail=\"Não encontrado\")",
-        "async def ler_usuario(user_id: int, ativo: bool = True):",
-        "    return {\"id\": user_id, \"ativo\": ativo}"
-      ],
-      "correctOrder": [1, 3, 0, 2, 4],
-      "explanation": "Definimos o decorator com `{user_id}`, a assinatura com `user_id: int` e `ativo: bool = True`, a checagem com `raise HTTPException` e o retorno final."
+      "hint": "Olhe para a palavra-chave no começo da linha 4 — exceções não se retornam!",
+      "expectedOutput": "HTTP 404 -> {\"detail\": \"Não encontrado\"}",
+      "explanation": "Na linha 4, troque `return HTTPException(...)` por `raise HTTPException(...)` para o FastAPI enviar o status 404!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva uma verificação condicional para a variável `usuario`: caso ela seja falsa ou `None`, lance uma exceção HTTP do FastAPI com código 404 e uma mensagem no campo `detail`.",
-      "starterCode": "",
+      "prompt": "Complete a verificação: se `not usuario`, lance `HTTPException` com `status_code=404` e um `detail`.",
+      "starterCode": "from fastapi import HTTPException\n\ndef checar_usuario(usuario):\n    # TODO: se not usuario, lance raise HTTPException(status_code=404, detail=...)\n    \n    return usuario\n",
       "requiredTokens": ["if not usuario:", "raise", "HTTPException", "status_code=404", "detail="],
-      "sampleSolution": "if not usuario:\n    raise HTTPException(status_code=404, detail=\"Não encontrado\")",
-      "hint": "Combine uma checagem `if not usuario` com `raise HTTPException` passando `status_code` e `detail`.",
-      "explanation": "Lançar `HTTPException` torna o fluxo da rota limpo com *early return*."
+      "sampleSolution": "from fastapi import HTTPException\n\ndef checar_usuario(usuario):\n    if not usuario:\n        raise HTTPException(status_code=404, detail=\"Usuário não encontrado\")\n    return usuario",
+      "hint": "Escreva `if not usuario:` e na linha indentada `raise HTTPException(status_code=404, detail=\"Não encontrado\")`.",
+      "expectedOutput": "HTTP 404 -> {\"detail\": \"Usuário não encontrado\"}",
+      "explanation": "Limpo e direto! O *early return* com `raise HTTPException` deixa suas rotas muito mais fáceis de ler."
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "id": "c-cpp-systems",
   "title": "C & C++ Sistemas",
-  "description": "Domine C e C++ do zero às funções nativas: tipos, ponteiros, loops, sizeof, nullptr, structs, classes, RAII e stdlib.",
+  "description": "Aprenda C e C++ construindo o computador de bordo da nave Nova-9: lições curtinhas, código guiado e saída visual sem complicação.",
   "category": "language",
   "color": "#3B82F6",
   "icon": "⚙️",
@@ -9,8 +9,8 @@
   "modules": [
     {
       "id": "mod-01-memoria",
-      "title": "Módulo 1: Variáveis, Ponteiros, Loops e Funções",
-      "description": "Manipule dados em baixo nível com printf, std::cout, ponteiros, const, sizeof, nullptr, loops, strings e funções.",
+      "title": "Módulo 1: Primeiros Passos na Nave Nova-9",
+      "description": "Comece leve: painel no terminal, ponteiros, const/nullptr, loops, strings e funções por referência.",
       "lessons": [
         "lesson-01-io-basico",
         "lesson-02-ponteiros",
@@ -22,8 +22,8 @@
     },
     {
       "id": "mod-02-structs-raii",
-      "title": "Módulo 2: Structs, Classes, Smart Pointers e STL",
-      "description": "Use structs, std::unique_ptr (RAII), classes, algoritmos nativos, memória dinâmica, STL e templates.",
+      "title": "Módulo 2: Sistemas Avançados e C++ Moderno",
+      "description": "Organize a nave com structs, smart pointers (RAII), classes, algoritmos, memória Heap, STL e templates.",
       "lessons": [
         "lesson-01-structs-smart-pointers",
         "lesson-02-classes-encapsulamento",

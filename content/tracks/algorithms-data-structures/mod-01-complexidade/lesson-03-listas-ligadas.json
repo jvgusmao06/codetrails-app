@@ -1,48 +1,55 @@
 {
   "id": "algo-linked-list-03",
-  "title": "Listas Ligadas (Linked Lists): Nós, Ponteiros e Trade-offs vs Arrays",
-  "description": "Entenda como nós encadeados funcionam na memória, quando inserir no início custa O(1) e por que acessar pelo índice custa O(n).",
+  "title": "Listas Ligadas (Linked Lists): Nós e Ponteiros",
+  "description": "Entenda nós ligados por ponteiros next, inserção instantânea O(1) no início e travessia com while.",
+  "mission": "Missão 4: Seguir a corrente de pistas espalhadas pela Ilha do Tesouro usando nós ligados.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Array Contíguo vs Lista Ligada (Linked List)",
-      "content": "Diferente de um Array (blocos colados na RAM), uma **Lista Ligada (Linked List)** armazena cada elemento dentro de um **Nó (`Node`)** espalhado na memória, contendo o `valor` e um ponteiro **`next`** para o próximo nó (ou `None`/`null` no último). Por isso, inserir ou remover no início (`head`) custa apenas **$O(1)$** (basta criar o nó apontando para o antigo `head` e atualizar `head`), mas acessar o 500º item custa **$O(n)$** porque precisamos caminhar nó por nó desde o início!",
-      "codeExample": "class Node:\n    def __init__(self, valor, proximo=None):\n        self.valor = valor\n        self.next = proximo\n\n# Criando: 10 -> 20 -> None\nhead = Node(10, Node(20))\n\n# Inserindo 5 no início em O(1)\nhead = Node(5, head)\n\n# Percorrendo a lista ligada em O(n)\natual = head\nwhile atual:\n    print(atual.valor)\n    atual = atual.next",
+      "title": "Seguindo pistas de nó em nó",
+      "content": "Numa **Lista Ligada**, cada pista é um **Nó (`Node`)** que guarda um `valor` e uma seta `next` apontando para o próximo nó (até chegar em `None`).\nPor isso, encaixar uma nova pista no começo (`head`) custa só **O(1)** — mas chegar ao 100º nó custa **O(n)**, porque precisamos seguir as setas uma por uma!",
+      "codeExample": "class Node:\n    def __init__(self, valor, proximo=None):\n        self.valor = valor\n        self.next = proximo\n\nhead = Node(10, Node(20))\nhead = Node(5, head)  # Insere no início em O(1)!\nprint(head.valor, '->', head.next.valor)",
+      "expectedOutput": "5 -> 10",
       "keyTakeaways": [
-        "Array: acesso por índice $O(1)$, inserção no início $O(n)$.",
-        "Lista Ligada: inserção/remoção na ponta conhecida (`head`) $O(1)$, acesso ao índice $i$ custa $O(n)$.",
-        "Listas Duplamente Ligadas têm ponteiros `next` e `prev` (base de caches **LRU** em $O(1)$ junto com Hash Map!)."
+        "Inserir no início (`head`) de uma Lista Ligada custa O(1); acessar por posição custa O(n).",
+        "Para percorrer: comece em `atual = head` e avance sempre com `atual = atual.next`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é a complexidade de tempo para acessar diretamente o milésimo elemento de uma Lista Ligada simples (tendo apenas a referência `head`)?",
+      "kind": "predict_output",
+      "prompt": "Temos a corrente `5 -> 10 -> 20 -> None`. O que este trecho imprime?",
+      "codeSnippet": "atual = head\nwhile atual:\n    print(atual.valor)\n    atual = atual.next",
       "options": [
-        "O(1)",
-        "O(log n)",
-        "O(n) — pois é preciso seguir os ponteiros `next` a partir do `head`",
-        "O(n²)"
+        "5, 10 e 20 (um por linha)",
+        "Apenas 5",
+        "20, 10 e 5 (de trás para frente)",
+        "Loop infinito imprimindo 5"
       ],
-      "correctIndex": 2,
-      "explanation": "Como os nós não são contíguos na RAM, não é possível calcular o endereço pelo índice — é necessário percorrer nó a nó em $O(n)$."
+      "correctIndex": 0,
+      "hint": "O `while` começa no `head` (`5`), imprime e avança para `.next` até chegar em `None`.",
+      "expectedOutput": "5\n10\n20",
+      "explanation": "A cada volta do `while`, `atual = atual.next` caminha um passo na corrente até atingir `None`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para percorrer uma Lista Ligada do início (`head`) até o final (`None`):",
+      "prompt": "Complete a travessia da corrente de pistas até chegar em `None`:",
       "codeTemplate": "atual = head\nwhile {{blank}}:\n    print(atual.valor)\n    atual = atual.{{blank}}",
       "blanks": [
         { "answer": "atual", "placeholder": "condição" },
-        { "answer": "next", "placeholder": "próximo nó" }
+        { "answer": "next", "placeholder": "próximo" }
       ],
-      "options": ["atual", "next", "head", "valor", "prev"],
-      "explanation": "O laço continua enquanto `atual` não for `None`, e `atual = atual.next` move o ponteiro para o próximo nó da corrente."
+      "options": ["atual", "next", "head", "valor"],
+      "hint": "Continue enquanto `atual` não for `None`, avançando pelo ponteiro `next`.",
+      "expectedOutput": "5\n10\n20",
+      "explanation": "Esse `while atual: ... atual = atual.next` é o padrão clássico de toda Lista Ligada!"
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Esta função deveria somar os valores da lista ligada, mas entra em loop infinito! Clique na linha responsável pelo erro:",
+      "prompt": "O robô Bit ficou preso no primeiro nó somando sem parar (loop infinito)! Clique na linha onde faltou avançar:",
       "lines": [
-        "def somar_lista(head):",
+        "def somar_nos(head):",
         "    total = 0",
         "    atual = head",
         "    while atual:",
@@ -50,28 +57,19 @@
         "    return total"
       ],
       "buggyLineIndex": 4,
-      "explanation": "Dentro do `while atual:`, faltou avançar o ponteiro com `atual = atual.next`. Sem isso, `atual` permanece sempre no primeiro nó."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para inserir um novo nó com o valor `99` no início (`head`) de uma Lista Ligada em $O(1)$ e depois imprimir o novo primeiro valor:",
-      "blocks": [
-        "novo = Node(99)",
-        "novo.next = head",
-        "head = novo",
-        "print(head.valor)"
-      ],
-      "correctOrder": [0, 1, 2, 3],
-      "explanation": "Primeiro criamos o nó, apontamos seu `.next` para o antigo `head`, atualizamos `head` para o novo nó e então acessamos `head.valor`."
+      "hint": "Dentro do `while`, o que muda o valor de `atual` para a próxima volta?",
+      "expectedOutput": "somar_nos(5 -> 10 -> 20) -> 35",
+      "explanation": "Faltou adicionar `atual = atual.next` dentro do `while` para caminhar até o fim da lista!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Implemente uma função `somar_nos(head)` em Python que percorra todos os nós de uma lista ligada (usando o atributo `.valor` e `.next`) e retorne a soma total dos valores.",
-      "starterCode": "",
-      "requiredTokens": ["def", "somar_nos", "while", "atual.valor", "atual.next", "return"],
+      "prompt": "Complete `somar_nos(head)` somando `atual.valor` e avançando `atual = atual.next` enquanto `atual` existir.",
+      "starterCode": "def somar_nos(head):\n    total = 0\n    atual = head\n    # TODO: some atual.valor e avance para atual.next em um while\n    \n    return total",
+      "requiredTokens": ["while", "atual.valor", "atual.next"],
       "sampleSolution": "def somar_nos(head):\n    total = 0\n    atual = head\n    while atual:\n        total += atual.valor\n        atual = atual.next\n    return total",
-      "hint": "Inicialize um acumulador e um ponteiro `atual` apontando para `head`; enquanto `atual` existir, some `atual.valor` e avance para `atual.next`.",
-      "explanation": "Avançar com `atual = atual.next` até atingir `None` é o padrão fundamental de travessia de listas ligadas em $O(n)$."
+      "hint": "Escreva `while atual:`, some `total += atual.valor` e avance `atual = atual.next`.",
+      "expectedOutput": "somar_nos(5 -> 10 -> 20) -> 35",
+      "explanation": "Corrente decifrada! Agora você sabe navegar por nós e ponteiros sem cair em loop infinito."
     }
   ]
 }

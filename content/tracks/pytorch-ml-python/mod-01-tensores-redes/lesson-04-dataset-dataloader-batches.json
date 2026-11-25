@@ -1,58 +1,53 @@
 {
   "id": "pytorch-dataloader-eval-04",
-  "title": "Dataset, DataLoader (Mini-Batches) e Modo Avaliação (eval / no_grad)",
-  "description": "Carregue dados em mini-batches paralelos com DataLoader e faça inferência rápida sem gastar VRAM com model.eval() e torch.no_grad().",
+  "title": "DataLoader (Mini-Batches), eval() e no_grad()",
+  "description": "Fatie datasets em mini-lotes com DataLoader e faça inferência rápida economizando VRAM com model.eval() e torch.no_grad().",
+  "mission": "Missão 4: Alimentar o CineIA em mini-lotes com DataLoader e fazer previsões rápidas sem gastar VRAM.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Treino em Mini-Batches e Inferência Correta",
-      "content": "Não passamos 1 milhão de exemplos de uma vez para a GPU! Usamos **`DataLoader(dataset, batch_size=32, shuffle=True)`** para fatiar os dados em lotes embaralhados. E na hora de **avaliar ou rodar em produção**, duas chamadas são obrigatórias:\n1. **`model.eval()`**: desativa `Dropout` e congela estatísticas de `BatchNorm` (o contrário de `model.train()`).\n2. **`with torch.no_grad():`**: desliga o Autograd, economizando muita memória RAM/VRAM e acelerando a inferência!",
-      "codeExample": "from torch.utils.data import DataLoader\n\ntrain_loader = DataLoader(dataset, batch_size=32, shuffle=True)\n\n# Na avaliação / produção:\nmodel.eval()\nwith torch.no_grad():\n    previsoes = model(X_teste)",
+      "title": "Mini-batches no treino e modo turbo na inferência",
+      "content": "Em vez de jogar todos os filmes na GPU de uma vez, usamos **`DataLoader(dataset, batch_size=32, shuffle=True)`** para servir os dados em lotes embaralhados.\nNa hora de prever em produção, sempre combine **`model.eval()`** (desliga `Dropout`) com **`with torch.no_grad():`** (desliga gradientes para poupar memória e acelerar tudo)!",
+      "codeExample": "from torch.utils.data import DataLoader\n\ntrain_loader = DataLoader(dataset, batch_size=32, shuffle=True)\n\nmodel.eval()\nwith torch.no_grad():\n    previsoes = model(X_teste)",
+      "expectedOutput": "previsoes geradas sem gradiente (VRAM economizada!)",
       "keyTakeaways": [
-        "Use `shuffle=True` no `DataLoader` de treino para o modelo não decorar a ordem dos dados, e `shuffle=False` na validação.",
-        "Esquecer `model.eval()` deixa camadas como `Dropout` desligando neurônios aleatoriamente na produção!",
-        "`with torch.no_grad():` evita construir o grafo de gradientes durante a inferência."
+        "Use `shuffle=True` no `DataLoader` de treino e `shuffle=False` na validação.",
+        "Na avaliação/produção, use sempre `model.eval()` + `with torch.no_grad():`."
       ]
     },
     {
-      "type": "spot_the_bug",
-      "prompt": "Este código de validação/inferência em produção está gastando o dobro de VRAM e gerando previsões instáveis porque esqueceu `model.eval()` e `torch.no_grad()`. Clique na linha onde a previsão está sendo executada sem proteção:",
-      "lines": [
-        "def prever(model, X_teste):",
-        "    # Falta model.eval() e with torch.no_grad():",
-        "    saida = model(X_teste)",
-        "    return saida.argmax(dim=1)"
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal ao checar `y.requires_grad` dentro de `with torch.no_grad():`?",
+      "codeSnippet": "import torch\nx = torch.tensor([2.0], requires_grad=True)\nwith torch.no_grad():\n    y = x * 3\nprint(y.requires_grad)",
+      "options": [
+        "False",
+        "True",
+        "None",
+        "Erro porque x tem requires_grad=True"
       ],
-      "buggyLineIndex": 2,
-      "explanation": "Na linha 3, `model(X_teste)` roda em modo treino e rastreando gradientes na memória! Sempre envolva com `model.eval()` e `with torch.no_grad():`."
+      "correctIndex": 0,
+      "hint": "O bloco `torch.no_grad()` desliga o rastreamento de gradientes para qualquer operação feita lá dentro.",
+      "expectedOutput": "False",
+      "explanation": "Mesmo com `x` rastreável, dentro de `torch.no_grad()` o resultado `y` nasce com `requires_grad = False`, poupando memória!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a criação do `DataLoader` de treino com lotes de tamanho 32 e embaralhamento ativado:",
+      "prompt": "Complete a criação do `DataLoader` de treino do CineIA com lotes de 32 filmes e embaralhamento ligado:",
       "codeTemplate": "from torch.utils.data import {{blank}}\n\ntrain_loader = DataLoader(dataset, batch_size=32, {{blank}}=True)",
       "blanks": [
         { "answer": "DataLoader", "placeholder": "classe" },
-        { "answer": "shuffle", "placeholder": "parâmetro" }
+        { "answer": "shuffle", "placeholder": "embaralhar" }
       ],
-      "options": ["DataLoader", "shuffle", "eval", "no_grad", "Sequential"],
-      "explanation": "`DataLoader` fatia o `dataset` em mini-batches e `shuffle=True` embaralha os dados no treino."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual é a diferença de comportamento ao chamar `model.eval()` antes de avaliar o modelo em validação?",
-      "options": [
-        "Apaga todos os pesos treinados do modelo",
-        "Desativa camadas como `Dropout` e congela estatísticas de `BatchNorm` para previsões determinísticas",
-        "Ativa o cálculo automático de gradientes",
-        "Embaralha o `DataLoader` de validação"
-      ],
-      "correctIndex": 1,
-      "explanation": "`model.eval()` coloca o modelo em modo de inferência, garantindo comportamento determinístico em `Dropout` e `BatchNorm`."
+      "options": ["DataLoader", "shuffle", "eval", "no_grad", "Dataset"],
+      "hint": "Importamos `DataLoader` e ativamos o embaralhamento com `shuffle=True`.",
+      "expectedOutput": "DataLoader pronto: 32 exemplos por lote",
+      "explanation": "`shuffle=True` evita que a rede decore a ordem fixa dos filmes a cada época!"
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os blocos para preparar o `DataLoader` de validação e executar a inferência com `model.eval()` e `torch.no_grad()`:",
+      "prompt": "Ordene os blocos para criar o `DataLoader` de validação e rodar a inferência de forma segura:",
       "blocks": [
         "with torch.no_grad():",
         "val_loader = DataLoader(val_ds, batch_size=32, shuffle=False)",
@@ -60,16 +55,19 @@
         "model.eval()"
       ],
       "correctOrder": [1, 3, 0, 2],
-      "explanation": "Criamos o `DataLoader` de validação com `shuffle=False`, ativamos `model.eval()` e executamos `model(X_val)` dentro de `with torch.no_grad():`."
+      "hint": "Primeiro monte o `val_loader`, ative `model.eval()` e abra o bloco `with torch.no_grad():` antes de chamar `model(X_val)`.",
+      "expectedOutput": "Validação concluída com previsões determinísticas!",
+      "explanation": "Essa dupla (`model.eval()` + `torch.no_grad()`) garante previsões rápidas e estáveis em produção."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Coloque `model` em modo de avaliação e, dentro de um bloco que desativa o rastreamento de gradientes do PyTorch, armazene em `pred` o resultado da inferência de `model` sobre `x`.",
-      "starterCode": "",
+      "prompt": "Coloque `model` em modo avaliação e, dentro de `with torch.no_grad():`, calcule `pred = model(x)`.",
+      "starterCode": "import torch\n\n# TODO: chame model.eval() e rode `pred = model(x)` dentro de `with torch.no_grad():`\n",
       "requiredTokens": ["model.eval()", "with torch.no_grad():", "pred = model(x)"],
-      "sampleSolution": "model.eval()\nwith torch.no_grad():\n    pred = model(x)",
-      "hint": "Chame o método `eval()` de `model` e use o gerenciador de contexto `torch.no_grad()`.",
-      "explanation": "Essa dupla é obrigatória em qualquer endpoint de inferência com PyTorch."
+      "sampleSolution": "import torch\n\nmodel.eval()\nwith torch.no_grad():\n    pred = model(x)",
+      "hint": "Comece com `model.eval()`, depois `with torch.no_grad():` e idente `pred = model(x)`.",
+      "expectedOutput": "pred calculado em modo avaliação!",
+      "explanation": "Show! Seu endpoint de recomendação do CineIA já roda leve e sem vazar VRAM."
     }
   ]
 }

@@ -1,46 +1,53 @@
 {
   "id": "django-urls-views-02",
-  "title": "URLs (path), Views e Respostas HTTP (render vs JsonResponse)",
-  "description": "Roteie requisições em urls.py com path(), crie views seguras e retorne HTML ou JSON.",
+  "title": "URLs (path), Views e JsonResponse",
+  "description": "Mapeie rotas tipadas em urls.py, crie views recebendo request e devolva HTML ou JSON.",
+  "mission": "Missão 2: Conectar as URLs do catálogo CodePage às views que respondem HTML e JSON.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Roteamento MVT: urls.py -> views.py",
-      "content": "No Django (arquitetura MVT: Model-View-Template), toda requisição HTTP passa primeiro pelo arquivo **`urls.py`**, onde mapeamos rotas com **`path('rota/', minha_view, name='nome')`** dentro da lista `urlpatterns`.\n\nA função View recebe o objeto `request` como primeiro argumento (além de eventuais parâmetros da URL) e retorna um `HttpResponse`, `render(request, 'template.html', contexto)` para HTML ou **`JsonResponse({...})`** para APIs JSON.",
-      "codeExample": "from django.urls import path\nfrom django.http import JsonResponse\nfrom django.shortcuts import render\n\ndef health_check(request):\n    return JsonResponse({\"status\": \"ok\"})\n\ndef detalhe_produto(request, id):\n    return render(request, \"produto.html\", {\"id\": id})\n\nurlpatterns = [\n    path(\"health/\", health_check, name=\"health\"),\n    path(\"produtos/<int:id>/\", detalhe_produto, name=\"detalhe-produto\"),\n]",
+      "title": "Ligando urls.py -> views.py no Django",
+      "content": "No Django, toda requisição bate primeiro em `urls.py`, dentro de `urlpatterns`, onde mapeamos rotas com `path(\"produtos/<int:id>/\", detalhe_produto, name=\"detalhe-produto\")`.\nA view sempre recebe `request` como primeiro argumento e devolve HTML com `render(request, \"pagina.html\", contexto)` ou JSON direto com `JsonResponse({...})`!",
+      "codeExample": "from django.urls import path\nfrom django.http import JsonResponse\ndef detalhe_produto(request, id):\n    return JsonResponse({\"produto_id\": id})\n\nurlpatterns = [\n    path(\"produtos/<int:id>/\", detalhe_produto, name=\"detalhe-produto\"),\n]",
+      "expectedOutput": "GET /produtos/42/ -> {\"produto_id\": 42}",
       "keyTakeaways": [
-        "`path('produtos/<int:id>/', ...)` captura parâmetros tipados da URL e passa `id` como argumento para a view.",
-        "Sempre dê um `name='...'` nas rotas para usar `reverse()` ou `{% url %}` sem hardcode de URLs.",
-        "`render(request, 'template.html', contexto)` renderiza HTML, enquanto `JsonResponse` serializa dicionários Python direto para JSON."
+        "`path('produtos/<int:id>/', view, name='...')` converte `id` para `int` e nomeia a rota para reuso.",
+        "`render(request, 'tpl.html', ctx)` gera HTML; `JsonResponse({...})` responde JSON."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Por que é uma boa prática informar `name=\"detalhe-produto\"` dentro de `path(\"produtos/<int:id>/\", detalhe_produto, name=\"detalhe-produto\")`?",
+      "kind": "predict_output",
+      "prompt": "Um visitante acessa `/produtos/42/`. Qual JSON esta view devolve?",
+      "codeSnippet": "def detalhe(request, id):\n    return JsonResponse({\"id\": id, \"dobro\": id * 2})\n\nurlpatterns = [\n    path(\"produtos/<int:id>/\", detalhe, name=\"detalhe\"),\n]",
       "options": [
-        "Para permitir gerar a URL dinamicamente com `reverse()` ou `{% url %}` sem duplicar caminhos fixos",
-        "Porque o Django recusa iniciar o servidor se uma rota não tiver `name`",
-        "Para converter automaticamente a resposta HTML em `JsonResponse`",
-        "Para validar se o parâmetro `<int:id>` existe no banco de dados"
+        "{\"id\": 42, \"dobro\": 84}",
+        "{\"id\": \"42\", \"dobro\": \"4242\"}",
+        "Erro 500 porque id chega sempre como texto",
+        "Uma página HTML com o número 42"
       ],
       "correctIndex": 0,
-      "explanation": "Nomear rotas com `name='...'` desacopla templates e views da string literal da URL, permitindo usar `reverse()` e `{% url %}`."
+      "hint": "O conversor `<int:id>` na rota transforma `42` em número inteiro antes de chamar a view!",
+      "expectedOutput": "{\"id\": 42, \"dobro\": 84}",
+      "explanation": "Graças ao `<int:id>`, `id` já chega como `int` (`42`), então `id * 2` resulta em `84` no JSON!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o mapeamento de rota em `urls.py` e o retorno JSON na view Django:",
+      "prompt": "Complete a view de status em JSON e o registro dela em `urlpatterns`:",
       "codeTemplate": "def status_view(request):\n    return {{blank}}({\"online\": True})\n\nurlpatterns = [\n    {{blank}}(\"status/\", status_view, name=\"status\"),\n]",
       "blanks": [
         { "answer": "JsonResponse", "placeholder": "resposta JSON" },
         { "answer": "path", "placeholder": "rota" }
       ],
-      "options": ["JsonResponse", "path", "render", "route", "HttpResponse"],
-      "explanation": "`JsonResponse` retorna JSON e `path()` registra a rota dentro da lista `urlpatterns`."
+      "options": ["JsonResponse", "path", "render", "route"],
+      "hint": "Para responder JSON usamos `JsonResponse(...)`, e para declarar rotas em `urls.py` usamos `path(...)`.",
+      "expectedOutput": "GET /status/ -> {\"online\": true}",
+      "explanation": "Fácil assim! `JsonResponse` serializa o dicionário e `path()` conecta a URL à view."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Esta view tenta renderizar um template HTML com contexto, mas falha por um erro na chamada de `render`. Clique na linha incorreta:",
+      "prompt": "Esta view tentou renderizar um template HTML, mas esqueceu um argumento obrigatório do `render()`. Clique na linha com o bug:",
       "lines": [
         "from django.shortcuts import render",
         "def lista_produtos(request):",
@@ -48,24 +55,14 @@
         "    return render(\"lista.html\", contexto)"
       ],
       "buggyLineIndex": 3,
-      "explanation": "A função `render` do Django exige `request` como primeiro argumento: `return render(request, \"lista.html\", contexto)`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para definir uma view JSON e registrá-la em `urlpatterns`:",
-      "blocks": [
-        "    path(\"info/\", api_info, name=\"api-info\"),\n]",
-        "from django.urls import path\nfrom django.http import JsonResponse",
-        "urlpatterns = [",
-        "def api_info(request):\n    return JsonResponse({\"app\": \"CodeTrails\"})"
-      ],
-      "correctOrder": [1, 3, 2, 0],
-      "explanation": "Importamos `path` e `JsonResponse`, definimos a função `api_info(request)` e depois a registramos dentro de `urlpatterns`."
+      "hint": "Qual é o PRIMEIRO argumento que `render(...)` sempre exige no Django?",
+      "expectedOutput": "HTML renderizado de lista.html",
+      "explanation": "`render` sempre precisa receber `request` primeiro: `return render(request, \"lista.html\", contexto)`."
     },
     {
       "type": "write_code",
-      "prompt": "Implemente uma view Django chamada `detalhe_produto` que recebe `request` e o parâmetro `id`, retornando uma resposta JSON com a chave `\"produto_id\"` contendo esse `id`. Em seguida, registre essa view em `urlpatterns` na rota tipada para inteiro `\"produtos/<int:id>/\"` com o nome `\"detalhe-produto\"`.",
-      "starterCode": "",
+      "prompt": "Complete a view `detalhe_produto(request, id)` retornando `JsonResponse({\"produto_id\": id})` e registre-a em `urlpatterns` com `<int:id>` e `name=\"detalhe-produto\"`.",
+      "starterCode": "from django.urls import path\nfrom django.http import JsonResponse\n\n# TODO: defina detalhe_produto(request, id) retornando JsonResponse\n\nurlpatterns = [\n    # TODO: registre path(\"produtos/<int:id>/\", ..., name=\"detalhe-produto\")\n]\n",
       "requiredTokens": [
         "def detalhe_produto(request, id):",
         "JsonResponse(",
@@ -74,9 +71,10 @@
         "<int:id>",
         "name=\"detalhe-produto\""
       ],
-      "sampleSolution": "def detalhe_produto(request, id):\n    return JsonResponse({\"produto_id\": id})\n\nurlpatterns = [\n    path(\"produtos/<int:id>/\", detalhe_produto, name=\"detalhe-produto\"),\n]",
-      "hint": "Defina `def detalhe_produto(request, id):` retornando `JsonResponse({\"produto_id\": id})` e mapeie em `urlpatterns` usando `path(\"produtos/<int:id>/\", detalhe_produto, name=\"detalhe-produto\")`.",
-      "explanation": "Parâmetros tipados como `<int:id>` em `path()` são convertidos para `int` e passados automaticamente como argumento para a view."
+      "sampleSolution": "from django.urls import path\nfrom django.http import JsonResponse\n\ndef detalhe_produto(request, id):\n    return JsonResponse({\"produto_id\": id})\n\nurlpatterns = [\n    path(\"produtos/<int:id>/\", detalhe_produto, name=\"detalhe-produto\"),\n]",
+      "hint": "Escreva `def detalhe_produto(request, id):` com `return JsonResponse({\"produto_id\": id})` e adicione `path(\"produtos/<int:id>/\", detalhe_produto, name=\"detalhe-produto\")` em `urlpatterns`.",
+      "expectedOutput": "GET /produtos/7/ -> {\"produto_id\": 7}",
+      "explanation": "Rota conectada! Nomear rotas com `name=` ainda permite gerar links com `reverse()` sem duplicar URLs."
     }
   ]
 }

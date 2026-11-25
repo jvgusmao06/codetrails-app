@@ -1,91 +1,73 @@
 {
   "id": "java-excecoes-try-resources-04",
-  "title": "Exceções (try/catch/throw/throws) e Try-with-Resources",
-  "description": "Entenda Checked vs Unchecked Exceptions, lance erros com throw, declare com throws e feche recursos automaticamente com try-with-resources.",
+  "title": "Exceções (try/catch/throw) e Try-with-Resources",
+  "description": "Trate erros sem derrubar o app com try/catch, avise entradas inválidas com throw e feche recursos sozinho.",
+  "mission": "Missão 10: Proteger o caixa contra valores negativos com throw/try/catch e fechar o Scanner automaticamente.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Exceções Checked vs Unchecked, throw/throws e Try-with-Resources",
-      "content": "Em Java existem dois grupos de exceções: **Unchecked** (`RuntimeException`, como `IllegalArgumentException` ou `NumberFormatException`, que não obrigam `try/catch`) e **Checked** (`IOException`, `SQLException`, que o compilador obriga você a capturar com `try/catch` ou declarar na assinatura do método com **`throws`**). Para disparar um erro manualmente no código, usamos **`throw new ...`**. Já para fechar arquivos, `Scanner` ou conexões automaticamente sem precisar de `finally { close(); }`, usamos **try-with-resources**: `try (var sc = new Scanner(System.in)) { ... }`.",
-      "codeExample": "import java.io.IOException;\n\npublic static void lerArquivo() throws IOException {\n    throw new IOException(\"Arquivo não encontrado\");\n}\n\npublic static void sacar(double valor) {\n    if (valor <= 0) {\n        throw new IllegalArgumentException(\"Valor deve ser positivo\");\n    }\n}\n\n// Try-with-resources: fecha 'sc' automaticamente ao sair do bloco\ntry (var sc = new java.util.Scanner(System.in)) {\n    sacar(-10);\n} catch (IllegalArgumentException e) {\n    System.out.println(\"Erro: \" + e.getMessage());\n}",
+      "title": "Lançando com throw, tratando com try/catch e fechando sozinho",
+      "content": "Quando chega um pedido com valor negativo, podemos disparar um erro claro usando `throw new IllegalArgumentException(...)`.\nQuem chama protege a execução com `try { ... } catch (Exception e) { ... }` para mostrar uma mensagem amigável em vez de quebrar o sistema.\nE para fechar recursos como `Scanner` automaticamente (com erro ou sem erro), coloque-o entre parênteses no `try (var sc = ...)`!",
+      "codeExample": "static void cobrar(double valor) {\n  if (valor <= 0) throw new IllegalArgumentException(\"Valor inválido\");\n}\ntry {\n  cobrar(-5);\n} catch (IllegalArgumentException e) {\n  System.out.println(\"Ops: \" + e.getMessage());\n}",
+      "expectedOutput": "Ops: Valor inválido",
       "keyTakeaways": [
-        "`throw new ...` dispara uma exceção; `throws` na assinatura do método avisa quem chama que ele pode lançar uma exceção Checked.",
-        "Exceções `RuntimeException` são Unchecked (não exigem `throws`); `IOException` e `SQLException` são Checked.",
-        "Try-with-resources (`try (recurso)`) fecha automaticamente qualquer classe que implemente `AutoCloseable`."
+        "`throw new ...` dispara a exceção no código; `throws` só vai na assinatura do método para exceções Checked (`IOException`).",
+        "Try-with-resources (`try (var sc = new Scanner(...))`) chama `.close()` automaticamente no fim."
       ]
     },
     {
-      "type": "fill_in_blank",
-      "prompt": "Complete o código para lançar uma exceção quando a quantidade for inválida e capturá-la no bloco `try/catch`:",
-      "codeTemplate": "if (qtd < 0) {{blank}} new IllegalArgumentException(\"Negativo\");\n\n{{blank}} {\n    processar(-1);\n} {{blank}} (IllegalArgumentException ex) {\n    System.out.println(ex.getMessage());\n}",
-      "blanks": [
-        { "answer": "throw", "placeholder": "lançar" },
-        { "answer": "try", "placeholder": "tentar" },
-        { "answer": "catch", "placeholder": "capturar" }
-      ],
-      "options": ["throw", "throws", "try", "catch", "except", "raise"],
-      "explanation": "`throw` dispara a instância da exceção, enquanto `try / catch` captura e trata o erro."
-    },
-    {
       "type": "multiple_choice",
-      "prompt": "Qual é a diferença entre exceções Checked (como `IOException`) e Unchecked (como `IllegalArgumentException`) em Java?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no console quando `Integer.parseInt(\"abc\")` falha dentro do `try`?",
+      "codeSnippet": "try {\n  int qtd = Integer.parseInt(\"abc\");\n  System.out.println(\"Qtd: \" + qtd);\n} catch (NumberFormatException e) {\n  System.out.println(\"Digite só números!\");\n}",
       "options": [
-        "Checked obrigam o chamador a tratar com `try/catch` ou declarar `throws` na assinatura; Unchecked não obrigam",
-        "Unchecked sempre encerram a JVM antes de entrar no `catch`",
-        "Checked só existem dentro de blocos `static`",
-        "Não há diferença em tempo de compilação"
+        "Digite só números!",
+        "Qtd: 0",
+        "Qtd: abc",
+        "O programa trava sem entrar no catch"
       ],
       "correctIndex": 0,
-      "explanation": "O compilador Java verifica exceções Checked em tempo de compilação, exigindo `try/catch` ou `throws`; já subclasses de `RuntimeException` são Unchecked."
+      "hint": "`\"abc\"` não é um número válido, então o Java pula direto para o bloco `catch`.",
+      "expectedOutput": "Digite só números!",
+      "explanation": "`Integer.parseInt(\"abc\")` lança `NumberFormatException`, o `println` de dentro do `try` é pulado e o `catch` exibe `Digite só números!`."
     },
     {
-      "type": "spot_the_bug",
-      "prompt": "O método abaixo confunde `throw` com `throws` na hora de disparar uma exceção. Clique na linha com o bug:",
-      "lines": [
-        "public static void validar(int idade) {",
-        "    if (idade < 0) {",
-        "        throws new IllegalArgumentException(\"Inválida\");",
-        "    }",
-        "}"
+      "type": "fill_in_blank",
+      "prompt": "Dispare a exceção para quantidade negativa e capture o erro no bloco abaixo:",
+      "codeTemplate": "if (qtd < 0) {{blank}} new IllegalArgumentException(\"Negativo\");\ntry { validar(-1); } {{blank}} (Exception e) { System.out.println(e.getMessage()); }",
+      "blanks": [
+        { "answer": "throw", "placeholder": "disparar" },
+        { "answer": "catch", "placeholder": "capturar" }
       ],
-      "buggyLineIndex": 2,
-      "explanation": "`throws` só é usado na assinatura do método; para lançar uma exceção dentro do bloco de código, usa-se `throw` (no singular)."
+      "options": ["throw", "throws", "catch", "except"],
+      "hint": "Para lançar uma exceção dentro do código usamos `throw` (no singular), e para capturá-la usamos `catch`.",
+      "expectedOutput": "Negativo",
+      "explanation": "`throw` dispara a exceção e `catch` a intercepta para exibir a mensagem sem derrubar o programa."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os blocos para usar `try-with-resources` com `Scanner` e capturar uma possível exceção:",
+      "prompt": "Ordene os blocos para abrir um `Scanner` com `try-with-resources` (que fecha sozinho) e capturar qualquer erro:",
       "blocks": [
-        "try (var sc = new Scanner(System.in)) {",
-        "    String linha = sc.nextLine();",
-        "    System.out.println(linha);",
+        "  System.out.println(sc.nextLine());",
         "} catch (Exception e) {",
-        "    System.out.println(e.getMessage());",
-        "}"
+        "try (var sc = new Scanner(System.in)) {",
+        "  System.out.println(e.getMessage());\n}"
       ],
-      "correctOrder": [0, 1, 2, 3, 4, 5],
-      "explanation": "No `try-with-resources`, o recurso é aberto entre parênteses logo após `try` e fechado automaticamente ao final do bloco."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "O que o `try-with-resources` garante mesmo se uma exceção for lançada com `throw` dentro do bloco `try`?",
-      "options": [
-        "Que a exceção será ignorada sem entrar no `catch`",
-        "Que o método `.close()` do recurso (`AutoCloseable`) será chamado automaticamente",
-        "Que o programa continuará executando a próxima linha do `try`",
-        "Que toda exceção Checked se transforma em Unchecked"
-      ],
-      "correctIndex": 1,
-      "explanation": "Qualquer recurso declarado no cabeçalho do `try (...)` que implemente `AutoCloseable` tem seu método `.close()` invocado automaticamente, ocorra erro ou não."
+      "correctOrder": [2, 0, 1, 3],
+      "hint": "Comece abrindo o recurso dentro de `try (var sc = ...)` e termine com o bloco `catch`.",
+      "expectedOutput": "Expresso (Scanner fechado automaticamente!)",
+      "explanation": "Com `try (var sc = ...)`, o Java fecha o `Scanner` automaticamente ao sair do bloco, dando certo ou dando erro!"
     },
     {
       "type": "write_code",
-      "prompt": "Escreva um bloco `try/catch` que tente converter o texto `\"abc\"` para inteiro usando `Integer.parseInt` e, ao capturar uma `Exception`, imprima a mensagem de erro utilizando `getMessage()`.",
-      "starterCode": "",
+      "prompt": "Complete o `try/catch` para tentar `Integer.parseInt(\"abc\")` e imprimir `e.getMessage()` caso ocorra uma `Exception`.",
+      "starterCode": "try {\n  int n = Integer.parseInt(\"abc\");\n} catch (Exception e) {\n  // TODO: imprima `e.getMessage()` com System.out.println\n}",
       "requiredTokens": ["try", "Integer.parseInt", "catch", "Exception", "getMessage()"],
-      "sampleSolution": "try {\n    int n = Integer.parseInt(\"abc\");\n} catch (Exception e) {\n    System.out.println(e.getMessage());\n}",
-      "hint": "Coloque a chamada a `Integer.parseInt(\"abc\")` dentro de `try { ... }` e trate `Exception e` no `catch` imprimindo `e.getMessage()`.",
-      "explanation": "`Integer.parseInt` lança `NumberFormatException` (subclasse de `Exception`) quando o texto não é um número válido."
+      "sampleSolution": "try {\n  int n = Integer.parseInt(\"abc\");\n} catch (Exception e) {\n  System.out.println(e.getMessage());\n}",
+      "hint": "Escreva `System.out.println(e.getMessage());` dentro do `catch`.",
+      "expectedOutput": "For input string: \"abc\"",
+      "explanation": "Caixa blindado! Seu código agora captura entradas inválidas com elegância e mostra o motivo do erro."
     }
   ]
 }

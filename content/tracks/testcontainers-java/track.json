@@ -1,7 +1,7 @@
 {
   "id": "testcontainers-java",
   "title": "Testcontainers (Testes com Docker)",
-  "description": "Rode testes de integração em Java contra PostgreSQL, Redis e Kafka reais descartáveis usando @Testcontainers e @ServiceConnection.",
+  "description": "Teste a API de Entregas contra um PostgreSQL real em Docker que nasce e some sozinho: @Testcontainers, @Container e @ServiceConnection sem dor de cabeça.",
   "category": "tool",
   "languageId": "java-basics",
   "prerequisites": ["java-basics", "spring-boot-java"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: Containers Reais com @Container e @ServiceConnection",
-      "description": "Abandone bancos em memória H2 que mascaram bugs SQL e teste no PostgreSQL real.",
+      "title": "Módulo 1: PostgreSQL Real em Docker com @ServiceConnection",
+      "description": "Troque bancos falsos em memória por containers descartáveis reais com configuração zero no Spring Boot 3.1+.",
       "lessons": ["lesson-01-testcontainers-postgres"]
     }
   ]

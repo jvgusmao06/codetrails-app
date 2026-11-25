@@ -1,76 +1,73 @@
 {
   "id": "numpy-ndarray-01",
-  "title": "Arrays NumPy (ndarray): Criação, .shape, .dtype e Funções Geradoras",
-  "description": "Entenda por que ndarrays são até 50x mais rápidos que listas Python e crie arrays com zeros, ones, arange e linspace.",
+  "title": "Arrays NumPy: .shape, .dtype e Geradores",
+  "description": "Crie matrizes super rápidas com np.array, np.zeros, np.arange e descubra seu formato com .shape e .dtype.",
+  "mission": "Missão 1: Criar o mapa 2D do jogo PixelQuest usando arrays rápidos do NumPy.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Por que NumPy é a Base de Pandas, PyTorch e Scikit-Learn?",
-      "content": "Uma lista Python guarda ponteiros espalhados na RAM para objetos variados. Já um **`np.ndarray`** armazena todos os elementos do **mesmo tipo (`dtype`, ex: `float64`, `int32`)** lado a lado em blocos contíguos em C! Além de `np.array([1, 2, 3])`, usamos geradores nativos como `np.zeros((2, 3))`, `np.ones((2, 2))`, `np.arange(0, 10, 2)` e `np.linspace(0, 1, 5)`.",
-      "codeExample": "import numpy as np\n\nmatriz = np.array([[1, 2, 3], [4, 5, 6]])\nprint(matriz.shape)  # (2, 3) -> 2 linhas, 3 colunas\nprint(matriz.dtype)  # int64\nprint(matriz.ndim)   # 2\n\nzeros = np.zeros((3, 3))\nfaixa = np.arange(0, 10, 2)  # [0, 2, 4, 6, 8]",
+      "title": "Por que o NumPy voa baixo?",
+      "content": "Enquanto listas Python guardam objetos espalhados na memória, um **`np.ndarray`** coloca números do mesmo tipo (`dtype`) lado a lado em C, rodando até 50x mais rápido!\nVocê pode inspecionar o formato com **`.shape`**, criar mapas vazios com **`np.zeros((linhas, colunas))`** e sequências com **`np.arange()`** ou **`np.linspace()`**.",
+      "codeExample": "import numpy as np\n\nmapa = np.array([[1, 2, 3], [4, 5, 6]])\nprint(mapa.shape)       # (2, 3)\nprint(mapa.dtype)       # int64\n\nvazio = np.zeros((2, 2))\nprint(np.arange(0, 6, 2))",
+      "expectedOutput": "(2, 3)\nint64\n[0 2 4]",
       "keyTakeaways": [
-        "`.shape` mostra as dimensões `(linhas, colunas)`; `.ndim` mostra o número de dimensões.",
-        "`np.zeros((l, c))` e `np.ones((l, c))` recebem uma tupla com as dimensões.",
-        "`np.arange(inicio, fim, passo)` avança por passo; `np.linspace(inicio, fim, qtd)` gera `qtd` pontos igualmente espaçados.",
-        "Todos os elementos de um `ndarray` compartilham o mesmo `dtype` para máxima velocidade de cache da CPU."
+        "`.shape` mostra `(linhas, colunas)` e `.dtype` mostra o tipo único dos elementos.",
+        "`np.zeros((l, c))` recebe uma tupla com as dimensões; `np.arange` usa passo e `np.linspace` gera N pontos iguais."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é o valor de `arr.shape` para `arr = np.array([[10, 20, 30], [40, 50, 60]])`?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal ao consultar `.shape` deste mapa do jogo?",
+      "codeSnippet": "import numpy as np\nmapa = np.array([[10, 20, 30], [40, 50, 60]])\nprint(mapa.shape)",
       "options": [
-        "(3, 2)",
         "(2, 3)",
+        "(3, 2)",
         "(6,)",
         "2"
       ],
-      "correctIndex": 1,
-      "explanation": "A matriz tem 2 linhas (eixo 0) e 3 colunas (eixo 1), portanto `.shape` é `(2, 3)`."
+      "correctIndex": 0,
+      "hint": "Conte primeiro quantas linhas (listas internas) existem e depois quantas colunas em cada linha.",
+      "expectedOutput": "(2, 3)",
+      "explanation": "O mapa tem 2 linhas e 3 colunas, então `mapa.shape` imprime `(2, 3)`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete os geradores NumPy para criar uma sequência de 0 a 8 de 2 em 2, um vetor com 5 pontos entre 0 e 1, e inspecionar o tipo dos dados:",
-      "codeTemplate": "pares = np.{{blank}}(0, 10, 2)\nintervalo = np.{{blank}}(0, 1, 5)\nprint(intervalo.{{blank}})",
+      "prompt": "Complete os geradores do radar para criar passos de 2 em 2 e 5 pontos igualmente espaçados entre 0 e 1:",
+      "codeTemplate": "pares = np.{{blank}}(0, 10, 2)\nradar = np.{{blank}}(0, 1, 5)\nprint(pares)",
       "blanks": [
-        { "answer": "arange", "placeholder": "passo" },
-        { "answer": "linspace", "placeholder": "pontos" },
-        { "answer": "dtype", "placeholder": "tipo" }
+        { "answer": "arange", "placeholder": "por passo" },
+        { "answer": "linspace", "placeholder": "N pontos" }
       ],
-      "options": ["arange", "linspace", "dtype", "shape", "zeros", "range"],
-      "explanation": "`np.arange` usa passo fixo, `np.linspace` divide o intervalo em N pontos iguais e `.dtype` retorna o tipo dos elementos."
+      "options": ["arange", "linspace", "zeros", "range", "shape"],
+      "hint": "`arange` avança por passo fixo; `linspace` divide o intervalo em `N` pontos iguais.",
+      "expectedOutput": "[0 2 4 6 8]",
+      "explanation": "Na mosca! `np.arange(0, 10, 2)` gera `[0 2 4 6 8]` e `np.linspace(0, 1, 5)` gera 5 pontos de `0.0` até `1.0`."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Identifique a linha com erro ao tentar criar uma matriz 2x4 preenchida com zeros no NumPy:",
+      "prompt": "Ops! O mapa 2x4 deu `TypeError` porque faltou um par de parênteses na criação da matriz. Qual linha tem o bug?",
       "lines": [
         "import numpy as np",
-        "m = np.zeros(2, 4)",
-        "print(m.shape)",
-        "print(m.ndim)"
+        "mapa = np.zeros(2, 4)",
+        "print(mapa.shape)",
+        "print(mapa.ndim)"
       ],
       "buggyLineIndex": 1,
-      "explanation": "`np.zeros` espera uma tupla de dimensões como primeiro argumento (`np.zeros((2, 4))`), pois o segundo parâmetro posicional é o `dtype`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para importar o NumPy, criar uma matriz 2x3 de uns e exibir seu formato e número de dimensões:",
-      "blocks": [
-        "print(mat.shape, mat.ndim)",
-        "import numpy as np",
-        "mat = np.ones((2, 3))"
-      ],
-      "correctOrder": [1, 2, 0],
-      "explanation": "Primeiro importamos `numpy as np`, depois criamos `mat` com `np.ones((2, 3))` e inspecionamos `.shape` e `.ndim`."
+      "hint": "`np.zeros` espera uma **tupla** `(linhas, colunas)` como primeiro argumento.",
+      "expectedOutput": "(2, 4)\n2",
+      "explanation": "Na linha 2, precisamos passar uma tupla: `np.zeros((2, 4))`, porque o segundo argumento de `zeros` é o `dtype`!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Importe o NumPy com o alias padrão `np`, crie uma matriz `m` preenchida com zeros de 2 linhas por 4 colunas e imprima o formato (shape) de `m`.",
-      "starterCode": "",
-      "requiredTokens": ["import numpy as np", "np.zeros((2, 4))", "print(", "m.shape"],
-      "sampleSolution": "import numpy as np\nm = np.zeros((2, 4))\nprint(m.shape)",
-      "hint": "Importe `numpy as np`, passe a tupla `(2, 4)` para `np.zeros(...)` e imprima `m.shape`.",
-      "explanation": "Passar a tupla `(2, 4)` para `np.zeros` aloca instantaneamente uma matriz 2x4 preenchida com `0.0`."
+      "prompt": "Crie uma matriz `mapa` de 2 linhas por 4 colunas preenchida com zeros e imprima `mapa.shape`.",
+      "starterCode": "import numpy as np\n\n# TODO: crie `mapa` com 2 linhas e 4 colunas de zeros e imprima o shape\nmapa = \nprint(mapa.shape)",
+      "requiredTokens": ["import numpy as np", "np.zeros((2, 4))", "mapa.shape"],
+      "sampleSolution": "import numpy as np\n\nmapa = np.zeros((2, 4))\nprint(mapa.shape)",
+      "hint": "Escreva `mapa = np.zeros((2, 4))` lembrando da tupla dentro dos parênteses.",
+      "expectedOutput": "(2, 4)",
+      "explanation": "Mapa criado! Você alocou uma grade 2x4 em C com uma única linha de NumPy."
     }
   ]
 }

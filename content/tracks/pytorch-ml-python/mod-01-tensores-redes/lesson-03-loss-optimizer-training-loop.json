@@ -1,97 +1,73 @@
 {
   "id": "pytorch-training-loop-03",
-  "title": "O Loop de Treino: zero_grad(), loss.backward() e optimizer.step()",
-  "description": "Domine os 5 passos sagrados do treinamento em PyTorch e evite o bug clássico de esquecer zero_grad().",
+  "title": "Os 5 Passos do Loop de Treino",
+  "description": "Domine a sequência zero_grad(), forward, loss, backward() e optimizer.step() para ensinar sua rede a errar menos.",
+  "mission": "Missão 3: Ensinar a rede do CineIA a errar menos com os 5 passos do loop de treino.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Os 5 Passos de Toda Época de Treinamento",
-      "content": "Em PyTorch, você tem controle explícito sobre o loop de treino usando uma função de perda (ex: `nn.MSELoss()`, `nn.CrossEntropyLoss()`) e um otimizador (ex: `torch.optim.AdamW(model.parameters(), lr=1e-3)`). A ordem exata dentro do loop é sempre:\n1. **`optimizer.zero_grad()`** (limpa gradientes do passo anterior!)\n2. **`preds = model(X)`** (Forward pass)\n3. **`loss = criterion(preds, y)`** (calcula o erro)\n4. **`loss.backward()`** (Backpropagation)\n5. **`optimizer.step()`** (atualiza os pesos).",
-      "codeExample": "optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)\ncriterion = nn.CrossEntropyLoss()\n\nfor X_batch, y_batch in loader:\n    optimizer.zero_grad()          # 1. Zera gradientes\n    preds = model(X_batch)         # 2. Forward\n    loss = criterion(preds, y_batch) # 3. Loss\n    loss.backward()                # 4. Backward\n    optimizer.step()               # 5. Atualiza pesos",
+      "title": "A dança de 5 passos do treinamento",
+      "content": "Para treinar qualquer rede no PyTorch, combinamos uma função de erro (como `nn.MSELoss()` ou `nn.CrossEntropyLoss()`) e um otimizador (como `torch.optim.AdamW`).\nA cada rodada, repetimos sempre os mesmos 5 passos: zerar gradientes (`zero_grad`), prever (`model(X)`), medir o erro (`criterion`), calcular gradientes (`backward`) e atualizar os pesos (`step`)!",
+      "codeExample": "optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)\ncriterion = nn.CrossEntropyLoss()\n\noptimizer.zero_grad()            # 1. Zera gradientes\npreds = model(X_batch)           # 2. Previsão\nloss = criterion(preds, y_batch) # 3. Erro\nloss.backward()                  # 4. Gradientes\noptimizer.step()                 # 5. Atualiza pesos",
+      "expectedOutput": "loss: 0.4218 -> pesos atualizados!",
       "keyTakeaways": [
-        "Se esquecer `optimizer.zero_grad()`, o PyTorch SOMA os gradientes de todos os batches anteriores e o treino diverge!",
-        "`AdamW` é o otimizador padrão recomendado na maioria dos projetos modernos.",
-        "`nn.CrossEntropyLoss()` já aplica Softmax internamente — passe os *logits* crus da última camada `nn.Linear`."
+        "Nunca esqueça `optimizer.zero_grad()` antes do `backward()`: sem ele, os gradientes acumulam e o treino diverge.",
+        "`nn.CrossEntropyLoss()` já aplica Softmax internamente — passe os logits crus do modelo."
       ]
     },
     {
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "O CineIA previu nota `3.0`, mas o usuário deu `5.0`. Qual erro quadrático (`MSELoss`) aparece no terminal?",
+      "codeSnippet": "import torch\nimport torch.nn as nn\nloss_fn = nn.MSELoss()\npred = torch.tensor([3.0])\nalvo = torch.tensor([5.0])\nprint(loss_fn(pred, alvo))",
+      "options": [
+        "tensor(4.)",
+        "tensor(2.)",
+        "tensor(-2.)",
+        "tensor(8.)"
+      ],
+      "correctIndex": 0,
+      "hint": "MSE eleva a diferença ao quadrado: `(3.0 - 5.0) ** 2`.",
+      "expectedOutput": "tensor(4.)",
+      "explanation": "A diferença é `-2.0`, e `(-2.0) ** 2 = 4.0`! Quanto menor a loss, mais perto da nota real o CineIA está."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a configuração do otimizador `AdamW` e da função de perda `CrossEntropyLoss`:",
+      "codeTemplate": "optimizer = torch.optim.{{blank}}(model.parameters(), lr=1e-3)\ncriterion = nn.{{blank}}()",
+      "blanks": [
+        { "answer": "AdamW", "placeholder": "otimizador" },
+        { "answer": "CrossEntropyLoss", "placeholder": "loss" }
+      ],
+      "options": ["AdamW", "CrossEntropyLoss", "Sequential", "backward", "DataLoader"],
+      "hint": "O otimizador moderno é `AdamW` e a perda para classificação é `CrossEntropyLoss`.",
+      "expectedOutput": "AdamW configurado com lr=0.001",
+      "explanation": "`AdamW` ajusta todos os `model.parameters()` e `CrossEntropyLoss` mede o erro de classificação."
+    },
+    {
       "type": "order_code",
-      "prompt": "Ordene os 4 passos essenciais dentro de uma iteração do loop de treino em PyTorch:",
+      "prompt": "Ordene os 4 blocos na sequência exata de uma iteração de treino no PyTorch:",
       "blocks": [
         "loss.backward()",
         "optimizer.zero_grad()",
         "optimizer.step()",
         "loss = criterion(model(X), y)"
       ],
-      "correctOrder": [
-        1,
-        3,
-        0,
-        2
-      ],
-      "explanation": "Primeiro zeramos (`zero_grad`), depois calculamos `loss`, propagamos gradientes (`backward`) e atualizamos pesos (`step`)."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete a inicialização do otimizador `AdamW` e da função de perda `CrossEntropyLoss`:",
-      "codeTemplate": "optimizer = torch.optim.{{blank}}(model.parameters(), lr=1e-3)\ncriterion = nn.{{blank}}()",
-      "blanks": [
-        {
-          "answer": "AdamW",
-          "placeholder": "otimizador"
-        },
-        {
-          "answer": "CrossEntropyLoss",
-          "placeholder": "loss"
-        }
-      ],
-      "options": [
-        "AdamW",
-        "CrossEntropyLoss",
-        "Sequential",
-        "backward",
-        "DataLoader"
-      ],
-      "explanation": "`torch.optim.AdamW` recebe `model.parameters()` e `nn.CrossEntropyLoss()` instancia a função de perda para classificação."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "Neste loop de treino, os gradientes estão se acumulando a cada batch fazendo o modelo divergir. Clique na linha do início da iteração onde falta limpar os gradientes:",
-      "lines": [
-        "for X_batch, y_batch in loader:",
-        "    preds = model(X_batch)",
-        "    loss = criterion(preds, y_batch)",
-        "    loss.backward()",
-        "    optimizer.step()"
-      ],
-      "buggyLineIndex": 0,
-      "explanation": "Sem `optimizer.zero_grad()` no início de cada iteração do loop, o PyTorch soma os gradientes dos batches anteriores."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Ao treinar um classificador multiclasse com `nn.CrossEntropyLoss()`, o que a última camada `nn.Linear` do modelo deve retornar?",
-      "options": [
-        "Os logits crus, pois `CrossEntropyLoss` já aplica Softmax internamente",
-        "Apenas valores booleanos `True`/`False`",
-        "Um dicionário JSON",
-        "Os pesos do otimizador"
-      ],
-      "correctIndex": 0,
-      "explanation": "`nn.CrossEntropyLoss()` combina `LogSoftmax` e `NLLLoss` internamente, portanto espera os logits crus."
+      "correctOrder": [1, 3, 0, 2],
+      "hint": "Comece limpando os gradientes antigos (`zero_grad`) e termine dando o passo (`step`).",
+      "expectedOutput": "Época 1 concluída — loss reduzida!",
+      "explanation": "Essa ordem (`zero_grad` -> `loss` -> `backward` -> `step`) funciona igual de redes pequenas até LLMs!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Considerando que `optimizer.zero_grad()` e `preds = model(x)` já foram executados, complete as três instruções finais da iteração: calcule a variável `loss` usando `criterion` com `preds` e `y`, execute a retropropagação e dê o passo de atualização do otimizador.",
-      "starterCode": "",
-      "requiredTokens": [
-        "loss = criterion(preds, y)",
-        "loss.backward()",
-        "optimizer.step()"
-      ],
-      "sampleSolution": "loss = criterion(preds, y)\nloss.backward()\noptimizer.step()",
-      "hint": "Calcule `loss` chamando `criterion(preds, y)`, depois chame `backward()` em `loss` e `step()` em `optimizer`.",
-      "explanation": "Esse ciclo de 5 linhas é idêntico seja treinando uma regressão linear ou um LLM gigante."
+      "prompt": "Com `zero_grad()` e `preds` já prontos, complete os 3 passos finais: calcule `loss = criterion(preds, y)`, rode `loss.backward()` e `optimizer.step()`.",
+      "starterCode": "optimizer.zero_grad()\npreds = model(x)\n# TODO: calcule `loss`, execute `loss.backward()` e `optimizer.step()`\n",
+      "requiredTokens": ["loss = criterion(preds, y)", "loss.backward()", "optimizer.step()"],
+      "sampleSolution": "optimizer.zero_grad()\npreds = model(x)\nloss = criterion(preds, y)\nloss.backward()\noptimizer.step()",
+      "hint": "Escreva as 3 linhas: `loss = criterion(preds, y)`, `loss.backward()` e `optimizer.step()`.",
+      "expectedOutput": "loss atualizada e pesos ajustados!",
+      "explanation": "A rede do CineIA acaba de aprender sua primeira lição! Esse ciclo de 5 passos é o coração do PyTorch."
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "id": "ef-core-csharp",
   "title": "Entity Framework Core (EF Core)",
-  "description": "Mapeie tabelas com DbContext/DbSet<T>, consulte com LINQ assíncrono (ToListAsync) e otimize leituras com AsNoTracking().",
+  "description": "Consulte o banco da PixelShop usando C# e LINQ: DbContext, AsNoTracking() para leituras turbo e Include() para evitar consultas extras.",
   "category": "library",
   "languageId": "csharp-dotnet",
   "prerequisites": ["csharp-dotnet", "sql-databases"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: DbContext, AsNoTracking() e SaveChangesAsync",
-      "description": "Evite gargalos comuns no EF Core e faça queries SQL rápidas via LINQ.",
+      "title": "Módulo 1: Consultas Leves no Banco da PixelShop",
+      "description": "Domine DbContext, AsNoTracking(), Include() e SaveChangesAsync sem gargalos.",
       "lessons": ["lesson-01-dbcontext-notracking"]
     }
   ]

@@ -1,91 +1,73 @@
 {
   "id": "rust-basico-00",
-  "title": "Variáveis (let, mut, const) e Tipos Primitivos",
-  "description": "Comece do zero em Rust: fn main, imutabilidade por padrão, mutabilidade explícita com mut, constantes e tipos escalares.",
-  "xp": 25,
+  "title": "Olá, Ferris! println! e let",
+  "description": "Dê o primeiro passo sem complicação: guarde valores com let e exiba mensagens no terminal com println!.",
+  "mission": "Missão 1: Apresentar o herói Ferris no painel do terminal.",
+  "xp": 20,
   "steps": [
     {
       "type": "theory",
-      "title": "Variáveis Imutáveis, Mutáveis, Tipos (:) e Macros (!)",
-      "content": "Todo programa Rust começa em `fn main()`. Criamos variáveis com `let`, que são **imutáveis por padrão**; para permitir alteração de valor, adicionamos `mut` (`let mut nivel = 1;`). Sempre que queremos indicar o tipo explícito, colocamos **dois-pontos (`:`)** após o nome (ex: `let ativo: bool = true;`). Constantes usam `const`, nome em MAIÚSCULAS e tipo obrigatório com `:`. Os principais tipos primitivos são inteiros (`i32`, `u32`, `u8`), decimais (`f64`), booleanos (`bool`) e caracteres (`char`). Para imprimir, usamos `println!(\"{}\", valor);` — o **`!`** indica que `println!` é uma **macro** (um gerador de código expandido na compilação, diferente de uma função comum).",
-      "codeExample": "const LIMITE: i32 = 100;\n\nfn main() {\n    let ativo: bool = true;\n    let mut nivel: i32 = 1;\n    nivel += 1;\n\n    println!(\"Ativo: {}, Nível: {}, Limite: {}\", ativo, nivel, LIMITE);\n}",
+      "title": "Guardando dados com let e exibindo com println!",
+      "content": "Em Rust, você guarda um valor usando `let` e mostra na tela com `println!`.\nO `{}` dentro das aspas funciona como um espaço onde o Rust encaixa sua variável. E o `!` no fim de `println!` só avisa que ela é uma macro (um atalho poderoso da linguagem).",
+      "codeExample": "fn main() {\n    let heroi = \"Ferris\";\n    let nivel = 1;\n    println!(\"{} entrou no nível {}\", heroi, nivel);\n}",
+      "expectedOutput": "Ferris entrou no nível 1",
       "keyTakeaways": [
-        "`let x = 5;` cria uma variável imutável; `let mut x = 5;` permite alterar o valor depois.",
-        "Para declarar o tipo explicitamente, use `:` após o nome: `let idade: i32 = 20;` ou `const MAX: u8 = 5;`.",
-        "Nomes terminados em `!` (como `println!`) são **macros**: elas geram código em tempo de compilação e por isso aceitam formatos variáveis como `\"{}, {}\"`."
+        "`let nome = valor;` guarda um valor numa variável.",
+        "`println!(\"{}\", nome);` troca `{}` pelo valor da variável e mostra no terminal."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "O que acontece ao tentar executar `let x = 10; x = 20;` em Rust?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no terminal ao rodar este código?",
+      "codeSnippet": "let heroi = \"Ferris\";\nlet ouro = 50;\nprintln!(\"{} tem {} moedas\", heroi, ouro);",
       "options": [
-        "Erro de compilação, pois variáveis criadas com `let` são imutáveis por padrão",
-        "Funciona normalmente e `x` passa a valer `20`",
-        "Gera apenas um aviso (*warning*) em tempo de execução",
-        "Converte `x` automaticamente em uma `const`"
+        "Ferris tem 50 moedas",
+        "heroi tem ouro moedas",
+        "{} tem {} moedas",
+        "Erro porque faltou declarar o tipo de ouro"
       ],
       "correctIndex": 0,
-      "explanation": "Em Rust, toda variável declarada com `let` é imutável por padrão. Para permitir reatribuição, é obrigatório declarar `let mut x = 10;`."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Por que `println!` termina com um ponto de exclamação (`!`) em Rust?",
-      "options": [
-        "Porque indica que ela pode falhar em tempo de execução",
-        "Porque é uma macro expandida em tempo de compilação, não uma função comum",
-        "Porque é uma função assíncrona",
-        "Porque imprime apenas constantes"
-      ],
-      "correctIndex": 1,
-      "explanation": "O sufixo `!` identifica uma macro em Rust. Macros geram código durante a compilação, permitindo aceitar quantidade variável de argumentos."
+      "hint": "Cada `{}` é substituído na ordem pelas variáveis passadas depois da vírgula.",
+      "expectedOutput": "Ferris tem 50 moedas",
+      "explanation": "O primeiro `{}` recebe `heroi` (\"Ferris\") e o segundo recebe `ouro` (50) — e o Rust descobre os tipos sozinho!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código Rust declarando uma constante tipada, uma variável mutável e imprimindo seu valor:",
-      "codeTemplate": "{{blank}} MAX_VIDAS: u8 = 5;\nlet {{blank}} pontos = 10;\npontos += 5;\n{{blank}}(\"{}\", pontos);",
+      "prompt": "Complete o placar inicial para guardar o `hp` e mostrar na tela:",
+      "codeTemplate": "{{blank}} hp = 100;\n{{blank}}(\"HP inicial: {}\", hp);",
       "blanks": [
-        { "answer": "const", "placeholder": "constante" },
-        { "answer": "mut", "placeholder": "mutável" },
-        { "answer": "println!", "placeholder": "macro" }
+        { "answer": "let", "placeholder": "criar" },
+        { "answer": "println!", "placeholder": "exibir" }
       ],
-      "options": ["const", "mut", "println!", "var", "let", "print"],
-      "explanation": "Usamos `const` para constantes com tipo explícito, `let mut` para variáveis mutáveis e `println!` para imprimir."
+      "options": ["let", "println!", "print", "var"],
+      "hint": "Em Rust criamos variáveis com `let` e imprimimos com `println!` (com `!` no final).",
+      "expectedOutput": "HP inicial: 100",
+      "explanation": "Simples assim: `let` guarda o valor e `println!` exibe com quebra de linha."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este código não compila por causa de uma regra das constantes em Rust. Clique na linha com o erro:",
+      "prompt": "Ops! O painel do jogo não compilou porque faltou um detalhe na linha de impressão. Qual linha tem o bug?",
       "lines": [
         "fn main() {",
-        "    const LIMITE = 50;",
-        "    let mut total: i32 = 10;",
-        "    println!(\"{} {}\", total, LIMITE);",
+        "    let fase = 1;",
+        "    println(\"Fase {}\", fase);",
         "}"
       ],
-      "buggyLineIndex": 1,
-      "explanation": "Na linha 2, `const LIMITE = 50;` está sem o tipo explícito obrigatório. O correto é `const LIMITE: i32 = 50;`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para montar um programa Rust válido com constante, variável mutável e impressão:",
-      "blocks": [
-        "    nivel += 1;",
-        "fn main() {",
-        "    println!(\"{} {}\", nivel, MAX);",
-        "const MAX: u8 = 10;",
-        "    let mut nivel: u8 = 1;",
-        "}"
-      ],
-      "correctOrder": [3, 1, 4, 0, 2, 5],
-      "explanation": "Declaramos `const MAX: u8 = 10;`, abrimos `fn main()`, criamos `let mut nivel`, incrementamos, imprimimos com `println!` e fechamos `}`."
+      "buggyLineIndex": 2,
+      "hint": "Dê uma olhada no final do nome `println` — está faltando um símbolo!",
+      "expectedOutput": "Fase 1",
+      "explanation": "Como `println!` é uma macro, ela sempre precisa do `!` no final: `println!(\"Fase {}\", fase);`."
     },
     {
       "type": "write_code",
-      "prompt": "Declare uma variável mutável chamada `idade` (tipo `i32`) com valor `20` e imprima seu valor no console.",
-      "starterCode": "",
-      "requiredTokens": ["let", "mut", "idade", "i32", "20", "println!"],
-      "sampleSolution": "let mut idade: i32 = 20;\nprintln!(\"{}\", idade);",
-      "hint": "Use `let mut idade: i32 = 20;` na primeira linha e `println!(\"{}\", idade);` na segunda.",
-      "explanation": "A combinação `let mut` informa ao compilador Rust que a variável pode ter seu valor alterado no escopo."
+      "prompt": "Complete o código para criar a variável `nome` com `\"Ferris\"` e exibir a saudação no terminal.",
+      "starterCode": "fn main() {\n    // TODO: crie a variável `nome` com \"Ferris\"\n    \n    println!(\"Bem-vindo, {}!\", nome);\n}",
+      "requiredTokens": ["let", "nome", "Ferris", "println!"],
+      "sampleSolution": "fn main() {\n    let nome = \"Ferris\";\n    println!(\"Bem-vindo, {}!\", nome);\n}",
+      "hint": "Escreva `let nome = \"Ferris\";` na linha vazia.",
+      "expectedOutput": "Bem-vindo, Ferris!",
+      "explanation": "Você escreveu seu primeiro código em Rust! `let nome = \"Ferris\";` cria a variável e `println!` mostra na tela."
     }
   ]
 }

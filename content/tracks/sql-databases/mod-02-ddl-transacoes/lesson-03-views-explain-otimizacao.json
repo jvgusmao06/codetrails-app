@@ -1,83 +1,73 @@
 {
   "id": "sql-views-explain-03",
   "title": "09. Views, EXPLAIN ANALYZE e Otimização",
-  "description": "Encapsule consultas reutilizáveis com CREATE VIEW, diagnostique gargalos com EXPLAIN ANALYZE e entenda Seq Scan vs Index Scan.",
+  "description": "Reaproveite consultas com CREATE VIEW e descubra gargalos de performance com EXPLAIN ANALYZE.",
+  "mission": "Missão 10: Deixar a busca da PixelQuest Store voando mesmo com milhões de pedidos!",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "CREATE VIEW, EXPLAIN ANALYZE e Seq Scan vs Index Scan",
-      "content": "Em bancos em produção, legibilidade e performance caminham juntas:\n\n1. **`CREATE VIEW`**: Salva uma consulta `SELECT` com um nome reutilizável, funcionando como uma tabela virtual: `CREATE VIEW clientes_ativos AS SELECT id, nome FROM clientes WHERE ativo = true;`.\n2. **`EXPLAIN ANALYZE`**: Mostra o plano de execução real e o tempo gasto pelo PostgreSQL para rodar uma query.\n3. **`Seq Scan` vs `Index Scan`**: `Seq Scan` lê a tabela inteira linha por linha (lento em milhões de registros); `Index Scan` vai direto aos registros usando um índice criado com `CREATE INDEX`.\n4. **Evite `SELECT *` em produção**: Selecionar apenas as colunas necessárias reduz tráfego de rede e permite *Index-Only Scans*.",
-      "codeExample": "CREATE VIEW pedidos_recentes AS\nSELECT id, cliente_id, total\nFROM pedidos\nWHERE total > 100;\n\nCREATE INDEX idx_pedidos_cliente ON pedidos(cliente_id);\n\nEXPLAIN ANALYZE\nSELECT id, total FROM pedidos WHERE cliente_id = 10;",
+      "title": "Views reutilizáveis e raio-X de performance",
+      "content": "`CREATE VIEW` salva um `SELECT` com um nome simples para você reutilizar como se fosse uma tabela virtual.\nJá o `EXPLAIN ANALYZE` faz um raio-X da consulta e mostra se o PostgreSQL precisou ler a tabela inteira (`Seq Scan`) ou foi direto ao ponto usando um índice (`Index Scan`)!",
+      "codeExample": "CREATE VIEW jogos_destaque AS\nSELECT id, titulo, preco\nFROM jogos WHERE nota >= 9.0;\n\nEXPLAIN ANALYZE\nSELECT id, titulo FROM jogos WHERE genero = 'rpg';",
+      "expectedOutput": "Index Scan using idx_jogos_genero (actual time=0.04ms)",
       "keyTakeaways": [
-        "CREATE VIEW nome AS SELECT ... encapsula consultas complexas sem duplicar dados.",
-        "EXPLAIN ANALYZE revela se a query está fazendo Seq Scan (varredura total) ou Index Scan.",
-        "Evite SELECT * em produção e indexe colunas frequentemente filtradas no WHERE."
+        "`CREATE VIEW nome AS SELECT ...` encapsula consultas frequentes sem duplicar dados.",
+        "`EXPLAIN ANALYZE` revela `Seq Scan` (lento em tabelas grandes) vs `Index Scan` (rápido com índice)."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Ao rodar EXPLAIN ANALYZE em uma tabela com 5 milhões de linhas filtrada por WHERE cpf = '...', você vê Seq Scan levando 1200ms. Qual é a melhor correção?",
+      "kind": "predict_output",
+      "prompt": "Você rodou o comando abaixo em uma tabela de 2 milhões de pedidos sem índice em `cliente_id`. O que o plano tende a mostrar?",
+      "codeSnippet": "EXPLAIN ANALYZE\nSELECT id, total FROM pedidos WHERE cliente_id = 42;",
       "options": [
-        "Trocar SELECT por SELECT *",
-        "Criar um índice na coluna cpf com CREATE INDEX para habilitar Index Scan",
-        "Remover a cláusula WHERE",
-        "Converter a query em uma VIEW"
+        "Seq Scan em pedidos (varrendo a tabela inteira)",
+        "Index Scan automático mesmo sem índice",
+        "Erro porque falta CREATE VIEW",
+        "Nenhuma saída porque EXPLAIN não roda a query"
       ],
-      "correctIndex": 1,
-      "explanation": "Um índice na coluna filtrada permite que o banco substitua o Seq Scan por um Index Scan muito mais rápido."
+      "correctIndex": 0,
+      "hint": "Sem um índice na coluna filtrada, o banco precisa olhar linha por linha.",
+      "expectedOutput": "Seq Scan on pedidos (actual time=840ms)",
+      "explanation": "Sem índice em `cliente_id`, o banco faz `Seq Scan`. Criar `CREATE INDEX idx_pedidos_cliente ON pedidos(cliente_id)` troca para `Index Scan`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o comando para criar uma View chamada 'usuarios_ativos' selecionando apenas id e nome:",
-      "codeTemplate": "{{blank}} VIEW usuarios_ativos {{blank}}\nSELECT id, nome\nFROM usuarios\nWHERE ativo = true;",
+      "prompt": "Crie a View `jogos_ativos` e inspecione a consulta com o raio-X de performance:",
+      "codeTemplate": "{{blank}} VIEW jogos_ativos AS\nSELECT id, titulo FROM jogos WHERE ativo = true;\n\n{{blank}} ANALYZE\nSELECT id, titulo FROM jogos_ativos;",
       "blanks": [
         { "answer": "CREATE", "placeholder": "criar" },
-        { "answer": "AS", "placeholder": "como" }
+        { "answer": "EXPLAIN", "placeholder": "inspecionar" }
       ],
-      "options": ["CREATE", "INSERT", "AS", "ON"],
-      "explanation": "A sintaxe padrão de criação de View é CREATE VIEW nome AS SELECT ..."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete o comando para inspecionar o plano de execução real de uma consulta filtrada por email:",
-      "codeTemplate": "{{blank}} ANALYZE\nSELECT id, nome FROM usuarios WHERE email = 'ana@dev.io';",
-      "blanks": [
-        { "answer": "EXPLAIN", "placeholder": "analisar" }
-      ],
-      "options": ["EXPLAIN", "DESCRIBE", "SHOW", "DEBUG"],
-      "explanation": "No PostgreSQL, EXPLAIN ANALYZE executa a consulta e exibe o plano de execução e tempos reais."
+      "options": ["CREATE", "EXPLAIN", "SHOW", "DEBUG"],
+      "hint": "Criamos views com `CREATE VIEW` e analisamos execução com `EXPLAIN ANALYZE`.",
+      "expectedOutput": "CREATE VIEW\nIndex Scan (actual time=0.05ms)",
+      "explanation": "Simples e poderoso: `CREATE VIEW` organiza e `EXPLAIN ANALYZE` mede a velocidade real."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "A equipe quer otimizar o tráfego de rede e evitar buscar colunas desnecessárias, mas a query abaixo ainda comete uma má prática de produção. Qual linha deve ser melhorada?",
+      "prompt": "A consulta de produção quer economizar banda buscando só o necessário, mas ainda puxa todas as colunas da tabela. Qual linha melhorar?",
       "lines": [
         "EXPLAIN ANALYZE",
         "SELECT *",
         "FROM pedidos",
-        "WHERE cliente_id = 10;"
+        "WHERE cliente_id = 42;"
       ],
       "buggyLineIndex": 1,
-      "explanation": "Usar 'SELECT *' traz todas as colunas da tabela, aumentando I/O e tráfego de rede e impedindo otimizações como Index-Only Scan."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os comandos para indexar a coluna 'cliente_id' de 'pedidos' e em seguida verificar o plano de execução:",
-      "blocks": [
-        "EXPLAIN ANALYZE SELECT id, total FROM pedidos WHERE cliente_id = 10;",
-        "CREATE INDEX idx_pedidos_cliente ON pedidos(cliente_id);"
-      ],
-      "correctOrder": [1, 0],
-      "explanation": "Primeiro criamos o índice com CREATE INDEX e depois rodamos EXPLAIN ANALYZE para confirmar o uso do Index Scan."
+      "hint": "Evite puxar todas as colunas com `*` quando só precisa de `id` e `total`.",
+      "expectedOutput": "Index Only Scan (actual time=0.02ms)",
+      "explanation": "Trocar `SELECT *` por `SELECT id, total` reduz tráfego de rede e libera otimizações como *Index-Only Scan*."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva os comandos SQL para: 1) criar um índice chamado 'idx_pedidos_cliente' na coluna 'cliente_id' da tabela 'pedidos', e 2) analisar com EXPLAIN ANALYZE uma consulta que selecione apenas 'id' e 'total' de 'pedidos' filtrando por 'cliente_id = 10'.",
-      "starterCode": "",
-      "requiredTokens": ["CREATE", "INDEX", "ON", "pedidos", "EXPLAIN", "ANALYZE", "SELECT", "WHERE"],
-      "sampleSolution": "CREATE INDEX idx_pedidos_cliente ON pedidos(cliente_id);\n\nEXPLAIN ANALYZE\nSELECT id, total\nFROM pedidos\nWHERE cliente_id = 10;",
-      "hint": "Crie o índice com CREATE INDEX ... ON pedidos(cliente_id); e depois execute EXPLAIN ANALYZE SELECT id, total FROM pedidos WHERE cliente_id = 10;.",
-      "explanation": "Combinamos indexação com CREATE INDEX, seleção explícita de colunas (evitando SELECT *) e diagnóstico com EXPLAIN ANALYZE."
+      "prompt": "Crie o índice `idx_pedidos_cliente` em `pedidos(cliente_id)` e rode `EXPLAIN ANALYZE` selecionando `id` e `total` onde `cliente_id = 42`.",
+      "starterCode": "-- TODO: crie o índice em pedidos(cliente_id) e rode EXPLAIN ANALYZE\nCREATE INDEX idx_pedidos_cliente ON pedidos(cliente_id);\n\n",
+      "requiredTokens": ["CREATE", "INDEX", "EXPLAIN", "ANALYZE", "SELECT", "WHERE"],
+      "sampleSolution": "CREATE INDEX idx_pedidos_cliente ON pedidos(cliente_id);\n\nEXPLAIN ANALYZE\nSELECT id, total\nFROM pedidos\nWHERE cliente_id = 42;",
+      "hint": "Escreva `EXPLAIN ANALYZE` seguido de `SELECT id, total FROM pedidos WHERE cliente_id = 42;`.",
+      "expectedOutput": "CREATE INDEX\nIndex Scan using idx_pedidos_cliente (actual time=0.03ms)",
+      "explanation": "Parabéns! Você concluiu a trilha SQL deixando a PixelQuest Store rápida, segura e pronta para produção!"
     }
   ]
 }

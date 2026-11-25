@@ -1,7 +1,7 @@
 {
   "id": "pytest-testing",
   "title": "Pytest & Qualidade em Python",
-  "description": "Escreva testes automatizados limpos em Python usando assert nativo, @pytest.fixture e parametrização.",
+  "description": "Blinde o carrinho da loja BugZero com testes limpos e rápidos usando assert nativo, @pytest.fixture e pytest.raises.",
   "category": "tool",
   "languageId": "python-basics",
   "prerequisites": ["python-basics"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-assertions-fixtures",
-      "title": "Módulo 1: Assert, Fixtures e Parametrize",
-      "description": "Estruture suítes de testes rápidas e reutilizáveis com Pytest.",
+      "title": "Módulo 1: Escudo de Testes da Loja BugZero",
+      "description": "Escreva testes legíveis e isolados com assert, injeção de fixtures e verificação de erros.",
       "lessons": ["lesson-01-pytest-fixtures"]
     }
   ]

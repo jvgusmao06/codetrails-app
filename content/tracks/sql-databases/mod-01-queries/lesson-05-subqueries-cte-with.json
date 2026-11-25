@@ -1,86 +1,72 @@
 {
   "id": "sql-cte-subqueries-05",
   "title": "05. Subqueries, EXISTS e CTEs (WITH ... AS)",
-  "description": "Estruture consultas complexas com subqueries, verifique existência com EXISTS e escreva SQL legível usando CTEs (WITH ... AS).",
+  "description": "Organize consultas em etapas legíveis com CTEs (WITH ... AS) e cheque existência de registros com EXISTS.",
+  "mission": "Missão 6: Separar os clientes VIP da PixelQuest Store usando consultas em etapas limpas.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Subqueries, EXISTS e CTEs (WITH ... AS)",
-      "content": "Quando uma consulta depende do resultado de outra, temos três recursos essenciais:\n\n1. **Subqueries**: Uma query dentro de outra (entre parênteses), como `WHERE preco > (SELECT AVG(preco) FROM produtos)` ou `WHERE id IN (SELECT cliente_id FROM pedidos)`.\n2. **`EXISTS (SELECT 1 FROM ...)`**: Verifica se a subquery retorna pelo menos uma linha. Costuma ser mais seguro e rápido que `IN` quando há valores `NULL` envolvidos.\n3. **CTEs (`WITH nome AS (SELECT ...)`)**: *Common Table Expressions* criam tabelas temporárias nomeadas no topo da query, tornando consultas em múltiplas etapas muito mais limpas e fáceis de manter.",
-      "codeExample": "WITH totais_cliente AS (\n    SELECT cliente_id, SUM(valor) AS total\n    FROM pedidos\n    GROUP BY cliente_id\n)\nSELECT c.nome, t.total\nFROM clientes c\nINNER JOIN totais_cliente t ON c.id = t.cliente_id\nWHERE t.total > 1000;",
+      "title": "Quebrando queries grandes com WITH (CTE)",
+      "content": "Quando uma consulta tem várias etapas, em vez de empilhar subqueries confusas, criamos uma **CTE** (`WITH nome AS (...)`) no topo — ela funciona como uma tabela temporária super legível.\nE quando você só quer saber se um cliente já fez algum pedido, `EXISTS (SELECT 1 FROM ...)` responde rapidinho sem sofrer com valores `NULL`.",
+      "codeExample": "WITH gastos AS (\n  SELECT cliente_id, SUM(total) AS soma\n  FROM pedidos\n  GROUP BY cliente_id\n)\nSELECT c.nome, g.soma\nFROM clientes c INNER JOIN gastos g ON c.id = g.cliente_id\nWHERE g.soma >= 300;",
+      "expectedOutput": "nome | gasto\nLuna | 450.00\nCaio | 320.00",
       "keyTakeaways": [
-        "Subqueries permitem usar o resultado de um SELECT dentro de outro.",
-        "EXISTS (SELECT 1 FROM ...) testa existência de registros sem sofrer com NULLs.",
-        "CTEs (WITH nome AS (...)) organizam consultas complexas em blocos legíveis."
+        "`WITH nome AS (SELECT ...)` cria um passo temporário nomeado que deixa o SQL limpo.",
+        "`EXISTS (SELECT 1 FROM ...)` verifica se existe ao menos uma linha correspondente."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é a principal vantagem de usar uma CTE (WITH ... AS) em vez de várias subqueries aninhadas no FROM?",
+      "kind": "predict_output",
+      "prompt": "Os jogos custam 40, 60 e 110 (média = 70). O que esta subquery retorna?",
+      "codeSnippet": "SELECT titulo, preco\nFROM jogos\nWHERE preco > (SELECT AVG(preco) FROM jogos);",
       "options": [
-        "CTEs dispensam a cláusula SELECT",
-        "CTEs nomeiam etapas intermediárias, tornando a query mais legível e fácil de manter",
-        "CTEs gravam os dados permanentemente no disco",
-        "Subqueries não funcionam com WHERE"
+        "Apenas o jogo de 110",
+        "Os jogos de 60 e 110",
+        "Todos os 3 jogos",
+        "Erro porque AVG não funciona em subquery"
       ],
-      "correctIndex": 1,
-      "explanation": "CTEs quebram uma consulta complexa em passos nomeados no início da query, evitando aninhamento confuso."
+      "correctIndex": 0,
+      "hint": "A subquery calcula a média `70`, e o `WHERE` busca apenas quem tem `preco > 70`.",
+      "expectedOutput": "titulo       | preco\nChrono Blade | 110",
+      "explanation": "A subquery devolve `70` primeiro, e a consulta externa filtra `preco > 70`, retornando só o jogo de 110."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a subquery para buscar produtos com preço acima da média geral:",
-      "codeTemplate": "SELECT nome, preco\nFROM produtos\nWHERE preco > ({{blank}} AVG(preco) {{blank}} produtos);",
-      "blanks": [
-        { "answer": "SELECT", "placeholder": "selecionar" },
-        { "answer": "FROM", "placeholder": "origem" }
-      ],
-      "options": ["SELECT", "FROM", "WHERE", "WITH"],
-      "explanation": "Uma subquery escalar entre parênteses calcula AVG(preco) para comparação no WHERE."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete a consulta usando EXISTS para listar apenas clientes que já fizeram pelo menos um pedido:",
-      "codeTemplate": "SELECT c.nome\nFROM clientes c\nWHERE {{blank}} (\n    SELECT 1 FROM pedidos p WHERE p.cliente_id = c.id\n);",
+      "prompt": "Complete a consulta para listar clientes que já fizeram pelo menos um pedido usando `EXISTS`:",
+      "codeTemplate": "SELECT c.nome\nFROM clientes c\nWHERE {{blank}} (\n  SELECT 1 FROM pedidos p WHERE p.cliente_id = c.id\n);",
       "blanks": [
         { "answer": "EXISTS", "placeholder": "existência" }
       ],
-      "options": ["EXISTS", "IN", "HAVING", "JOIN"],
-      "explanation": "EXISTS retorna verdadeiro assim que a subquery encontra a primeira correspondência para c.id."
+      "options": ["EXISTS", "IN", "HAVING", "WITH"],
+      "hint": "Qual operador retorna verdadeiro assim que a subquery encontra 1 correspondência?",
+      "expectedOutput": "nome\nLuna\nCaio",
+      "explanation": "`EXISTS` para na primeira linha encontrada para aquele cliente — rápido, limpo e seguro contra `NULL`."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "A CTE abaixo tenta listar pedidos acima de 1000, mas tem um erro de sintaxe na definição do WITH. Qual linha está errada?",
+      "prompt": "A CTE abaixo falhou com erro de sintaxe logo na abertura. Clique na linha com bug:",
       "lines": [
-        "WITH resumo_pedidos (",
-        "    SELECT cliente_id, SUM(valor) AS total",
-        "    FROM pedidos GROUP BY cliente_id",
+        "WITH pagos (",
+        "  SELECT id, total FROM pedidos WHERE status = 'pago'",
         ")",
-        "SELECT * FROM resumo_pedidos WHERE total > 1000;"
+        "SELECT id, total FROM pagos ORDER BY total DESC;"
       ],
       "buggyLineIndex": 0,
-      "explanation": "Na linha 1 faltou a palavra-chave 'AS' entre o nome da CTE e o parêntese: 'WITH resumo_pedidos AS ('."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para definir uma CTE de pedidos pagos e consultá-la ordenando pelo maior valor:",
-      "blocks": [
-        "SELECT id, valor FROM pagos ORDER BY valor DESC;",
-        "    SELECT id, valor FROM pedidos WHERE status = 'pago'",
-        "WITH pagos AS (",
-        ")"
-      ],
-      "correctOrder": [2, 1, 3, 0],
-      "explanation": "A CTE começa com WITH nome AS (...), fecha os parênteses e é seguida pela query principal."
+      "hint": "Faltou uma palavrinha de 2 letras entre o nome `pagos` e o parêntese `(`!",
+      "expectedOutput": "id | total\n10 | 180.00",
+      "explanation": "Toda CTE precisa da palavra `AS`: o certo é `WITH pagos AS (`."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma consulta usando uma CTE chamada 'ativos' que selecione 'id' e 'nome' dos registros da tabela 'usuarios' onde 'ativo' é verdadeiro, e em seguida faça um SELECT na CTE ordenando por 'nome'.",
-      "starterCode": "",
-      "requiredTokens": ["WITH", "ativos", "AS", "SELECT", "FROM", "usuarios", "WHERE", "ORDER BY"],
-      "sampleSolution": "WITH ativos AS (\n    SELECT id, nome\n    FROM usuarios\n    WHERE ativo = true\n)\nSELECT id, nome\nFROM ativos\nORDER BY nome ASC;",
-      "hint": "Abra com 'WITH ativos AS ( ... )' contendo o filtro de ativos e depois selecione de 'ativos' ordenando por nome.",
-      "explanation": "Combinamos CTE (WITH ... AS), filtro WHERE e ordenação ORDER BY na consulta principal."
+      "prompt": "Crie a CTE `jogos_ativos` selecionando `id` e `titulo` de `jogos` onde `ativo = true`, e depois faça o `SELECT` final ordenando por `titulo`.",
+      "starterCode": "-- TODO: defina a CTE `jogos_ativos` com WITH ... AS (...)\n\nSELECT id, titulo\nFROM jogos_ativos\nORDER BY titulo ASC;",
+      "requiredTokens": ["WITH", "jogos_ativos", "AS", "SELECT", "FROM", "jogos", "WHERE"],
+      "sampleSolution": "WITH jogos_ativos AS (\n  SELECT id, titulo\n  FROM jogos\n  WHERE ativo = true\n)\nSELECT id, titulo\nFROM jogos_ativos\nORDER BY titulo ASC;",
+      "hint": "Escreva `WITH jogos_ativos AS ( SELECT id, titulo FROM jogos WHERE ativo = true )` antes do `SELECT` final.",
+      "expectedOutput": "id | titulo\n2  | Pixel Kart\n1  | Pixel Quest",
+      "explanation": "Limpinho! CTEs são um dos recursos favoritos de quem escreve SQL em projetos reais."
     }
   ]
 }

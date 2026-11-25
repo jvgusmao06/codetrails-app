@@ -1,59 +1,53 @@
 {
   "id": "lesson-01-hubs-realtime",
-  "title": "Hubs e Clients.All.SendAsync",
-  "description": "Crie seu primeiro Hub SignalR para transmitir eventos em tempo real para clientes conectados.",
+  "title": "SignalR: Hubs Ao Vivo e Clients.All.SendAsync",
+  "description": "Transmita mensagens e notificações em tempo real para todos os usuários conectados via WebSockets no .NET.",
+  "mission": "Missão 1: Disparar alertas de ofertas relâmpago ao vivo para todos os jogadores na PixelShop.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Tempo real sem complicação no .NET",
-      "content": "O **ASP.NET Core SignalR** simplifica comunicação em tempo real (chat, dashboards ao vivo, notificações) usando **WebSockets** automaticamente com fallback transparente para Server-Sent Events ou Long Polling.\n\nFluxo básico:\n1. Crie uma classe herdando de `Hub`.\n2. Dentro dos métodos do Hub, use `Clients.All.SendAsync(\"NomeDoEvento\", dados)` (ou `Clients.Group(...)` / `Clients.Caller`) para invocar métodos nos clientes conectados.\n3. No `Program.cs`, registre `builder.Services.AddSignalR()` e mapeie a rota com `app.MapHub<ChatHub>(\"/hubs/chat\")`.",
-      "codeExample": "using Microsoft.AspNetCore.SignalR;\n\npublic class ChatHub : Hub\n{\n    public async Task EnviarMensagem(string usuario, string texto)\n    {\n        await Clients.All.SendAsync(\"ReceberMensagem\", usuario, texto);\n    }\n}\n\n// Program.cs:\n// builder.Services.AddSignalR();\n// app.MapHub<ChatHub>(\"/hubs/chat\");",
+      "title": "Tempo real simples com Hub e MapHub",
+      "content": "Com o **SignalR**, você envia dados em tempo real (chat, placar, ofertas ao vivo) sem configurar WebSockets na mão! Crie uma classe herdando de `Hub` e use `await Clients.All.SendAsync(\"Evento\", dados)` para avisar todo mundo conectado.\nNo `Program.cs`, só não esqueça da dupla: `builder.Services.AddSignalR()` antes de `Build()` e `app.MapHub<SeuHub>(\"/hubs/...\")` depois!",
+      "codeExample": "public class ChatHub : Hub {\n    public async Task Enviar(string user, string msg) {\n        await Clients.All.SendAsync(\"NovaMensagem\", user, msg);\n    }\n}\n// Program.cs: builder.Services.AddSignalR(); ... app.MapHub<ChatHub>(\"/hubs/chat\");",
+      "expectedOutput": "Todos os clientes recebem evento \"NovaMensagem\" instantaneamente",
       "keyTakeaways": [
-        "Todo Hub SignalR herda de `Hub` e expõe métodos `async Task` que os clientes podem invocar via RPC.",
-        "`Clients.All.SendAsync(...)` envia para todos os clientes; `Clients.Caller` e `Clients.Group(...)` permitem envio direcionado.",
-        "No `Program.cs`, é obrigatório registrar `builder.Services.AddSignalR()` antes de `builder.Build()` e mapear a rota com `app.MapHub<THub>(rota)`."
+        "Herde de `Hub` e use `Clients.All.SendAsync(\"Evento\", ...)` para transmitir a todos os conectados.",
+        "Registre `builder.Services.AddSignalR()` antes de `builder.Build()` e exponha a rota com `app.MapHub<THub>(rota)`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual método no Program.cs registra o endpoint de um Hub SignalR para os clientes se conectarem?",
+      "kind": "predict_output",
+      "prompt": "Se 3 jogadores estiverem conectados ao `OfertaHub` e o método abaixo rodar, o que acontece?",
+      "codeSnippet": "public class OfertaHub : Hub {\n    public async Task Anunciar(string jogo) {\n        await Clients.All.SendAsync(\"OfertaRelampago\", jogo);\n    }\n}",
       "options": [
-        "app.MapHub<ChatHub>(\"/hubs/chat\")",
-        "app.MapGet<ChatHub>(\"/hubs/chat\")",
-        "app.UseWebSockets<ChatHub>()",
-        "app.AddSignalR<ChatHub>()"
+        "Os 3 jogadores recebem o evento \"OfertaRelampago\" com o nome do jogo ao vivo",
+        "Apenas quem chamou recebe o evento",
+        "Nada acontece porque falta um loop foreach",
+        "O servidor desconecta os outros 2 jogadores"
       ],
       "correctIndex": 0,
-      "explanation": "`builder.Services.AddSignalR()` registra os serviços no container de DI e `app.MapHub<THub>(rota)` expõe o endpoint do Hub."
+      "hint": "`Clients.All` faz o broadcast automático para todas as conexões ativas no Hub!",
+      "expectedOutput": "3 clientes recebem: OfertaRelampago(\"StarRunner\")",
+      "explanation": "O SignalR gerencia todas as conexões abertas e `Clients.All.SendAsync` entrega a notificação a todo mundo em tempo real!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o Hub SignalR para transmitir uma atualização de preço a todos os clientes conectados:",
-      "codeTemplate": "public class CotacaoHub : {{blank}}\n{\n    public async Task AtualizarPreco(string ativo, decimal preco)\n    {\n        await {{blank}}.All.{{blank}}(\"PrecoAtualizado\", ativo, preco);\n    }\n}",
+      "prompt": "Complete o Hub herdando de `Hub` e transmitindo o evento com `SendAsync`:",
+      "codeTemplate": "public class PlacarHub : {{blank}} {\n    public async Task Atualizar(int pontos) {\n        await Clients.All.{{blank}}(\"PlacarNovo\", pontos);\n    }\n}",
       "blanks": [
-        { "answer": "Hub" },
-        { "answer": "Clients" },
-        { "answer": "SendAsync" }
+        { "answer": "Hub", "placeholder": "classe base" },
+        { "answer": "SendAsync", "placeholder": "enviar evento" }
       ],
-      "options": ["Hub", "ControllerBase", "Clients", "Users", "SendAsync", "Broadcast"],
-      "explanation": "A classe herda de `Hub` e utiliza `Clients.All.SendAsync` para enviar o evento a todos os clientes conectados."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "Encontre a linha onde a falta de registro do serviço impede o SignalR de funcionar no `Program.cs`:",
-      "lines": [
-        "var builder = WebApplication.CreateBuilder(args);",
-        "var app = builder.Build();",
-        "app.MapHub<ChatHub>(\"/chat\");",
-        "app.Run();"
-      ],
-      "buggyLineIndex": 1,
-      "explanation": "Antes de `builder.Build()` (linha 2), faltou registrar os serviços do SignalR com `builder.Services.AddSignalR()`."
+      "options": ["Hub", "SendAsync", "Controller", "Broadcast"],
+      "hint": "Todo Hub herda de `Hub` e dispara eventos nos clientes com `.SendAsync(...)`.",
+      "expectedOutput": "Evento \"PlacarNovo\" enviado para todos",
+      "explanation": "Simples assim! Em poucas linhas você já tem comunicação em tempo real pronta."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os blocos para configurar e expor um Hub SignalR corretamente no `Program.cs`:",
+      "prompt": "Ordene as linhas do `Program.cs` para registrar o SignalR e colocar o `ChatHub` no ar:",
       "blocks": [
         "app.MapHub<ChatHub>(\"/hubs/chat\");",
         "builder.Services.AddSignalR();",
@@ -61,21 +55,19 @@
         "var app = builder.Build();"
       ],
       "correctOrder": [1, 3, 0, 2],
-      "explanation": "Primeiro registra-se `AddSignalR()` nos serviços, depois constrói-se o `app` com `builder.Build()`, mapeia-se o Hub com `MapHub` e inicia-se com `app.Run()`."
+      "hint": "Primeiro registramos `AddSignalR()`, depois construímos `app`, mapeamos o Hub e rodamos `app.Run()`.",
+      "expectedOutput": "SignalR Hub ativo em /hubs/chat",
+      "explanation": "Ordem exata: `AddSignalR()` -> `Build()` -> `MapHub<ChatHub>(...)` -> `Run()`!"
     },
     {
       "type": "write_code",
-      "prompt": "Crie uma classe `NotificacaoHub` que herde de `Hub`, com um método assíncrono `AvisarTodos` recebendo uma `string mensagem` e enviando o evento `NovaNotificacao` para todos os clientes conectados.",
-      "starterCode": "",
-      "requiredTokens": [
-        ": Hub",
-        "AvisarTodos",
-        "Clients.All.SendAsync",
-        "NovaNotificacao"
-      ],
-      "sampleSolution": "public class NotificacaoHub : Hub\n{\n    public async Task AvisarTodos(string mensagem)\n    {\n        await Clients.All.SendAsync(\"NovaNotificacao\", mensagem);\n    }\n}",
-      "hint": "Herde de `Hub` e, dentro de `public async Task AvisarTodos(string mensagem)`, chame `await Clients.All.SendAsync(\"NovaNotificacao\", mensagem);`.",
-      "explanation": "Com poucas linhas de código, o Hub gerencia conexões, serialização e broadcast para todos os clientes."
+      "prompt": "Complete a classe `NotificacaoHub` herdando de `Hub` e chamando `await Clients.All.SendAsync(\"NovaNotificacao\", msg);` dentro de `AvisarTodos`.",
+      "starterCode": "using Microsoft.AspNetCore.SignalR;\n// TODO: faça NotificacaoHub herdar de Hub\npublic class NotificacaoHub {\n    public async Task AvisarTodos(string msg) {\n        // TODO: envie \"NovaNotificacao\" com msg para Clients.All via SendAsync\n    }\n}",
+      "requiredTokens": [": Hub", "Clients.All.SendAsync", "NovaNotificacao"],
+      "sampleSolution": "using Microsoft.AspNetCore.SignalR;\npublic class NotificacaoHub : Hub {\n    public async Task AvisarTodos(string msg) {\n        await Clients.All.SendAsync(\"NovaNotificacao\", msg);\n    }\n}",
+      "hint": "Coloque `: Hub` na declaração da classe e `await Clients.All.SendAsync(\"NovaNotificacao\", msg);` no corpo do método.",
+      "expectedOutput": "Evento \"NovaNotificacao\" recebido ao vivo por todos os clientes",
+      "explanation": "Show! Agora a PixelShop tem alertas em tempo real prontos para qualquer oferta relâmpago."
     }
   ]
 }

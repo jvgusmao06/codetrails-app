@@ -1,58 +1,53 @@
 {
   "id": "algo-bigo-01",
   "title": "Complexidade Big O e Busca Binária",
-  "description": "Meça como o tempo de execução cresce conforme a entrada aumenta ($O(1)$, $O(\\log n)$, $O(n)$, $O(n^2)$) e domine a Busca Binária em listas ordenadas.",
+  "description": "Compare O(1), O(log n), O(n) e O(n²) e ache alvos em listas ordenadas cortando o caminho ao meio.",
+  "mission": "Missão 2: Encontrar a coordenada exata do tesouro no mapa ordenado usando Busca Binária!",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Notação Big O e Busca Binária em O(log n)",
-      "content": "A **notação Big O** descreve como o tempo de execução de um algoritmo cresce conforme o tamanho da entrada ($n$) aumenta:\n- **$O(1)$ — Constante**: acesso direto por índice (`lista[0]`) ou chave de Hash Map.\n- **$O(\\log n)$ — Logarítmico**: reduz o espaço de busca pela metade a cada passo, como na **Busca Binária** (que exige uma lista **previamente ordenada**).\n- **$O(n)$ — Linear**: percorre os elementos um a um (Busca Linear).\n- **$O(n^2)$ — Quadrático**: típico de **dois loops aninhados** percorrendo a mesma lista (comparar todos os pares).\n\nNa **Busca Binária**, mantemos dois limites (`esq = 0` e `dir = len(lista) - 1`), calculamos o índice do meio `meio = (esq + dir) // 2` e descartamos metade da lista a cada iteração!",
-      "codeExample": "# O(n²) - Dois loops aninhados\ndef tem_par(lista):\n    for i in range(len(lista)):\n        for j in range(i + 1, len(lista)):\n            if lista[i] == lista[j]:\n                return True\n    return False\n\n# O(log n) - Busca Binária (lista DEVE estar ordenada)\ndef busca_binaria(lista, alvo):\n    esq, dir = 0, len(lista) - 1\n    while esq <= dir:\n        meio = (esq + dir) // 2\n        if lista[meio] == alvo:\n            return meio\n        elif lista[meio] < alvo:\n            esq = meio + 1\n        else:\n            dir = meio - 1\n    return -1",
+      "title": "Cortando a busca pela metade em O(log n)",
+      "content": "A notação **Big O** mostra como o tempo cresce quando a entrada fica gigante: `O(1)` < `O(log n)` < `O(n)` < `O(n²)`.\nQuando a lista está **ordenada**, a **Busca Binária** olha sempre o meio (`(esq + dir) // 2`) e descarta metade da lista a cada passo — em 1 milhão de itens, acha o alvo em só ~20 passos!",
+      "codeExample": "def busca_binaria(lista, alvo):\n    esq, dir = 0, len(lista) - 1\n    while esq <= dir:\n        meio = (esq + dir) // 2\n        if lista[meio] == alvo: return meio\n        elif lista[meio] < alvo: esq = meio + 1\n        else: dir = meio - 1\n    return -1",
+      "expectedOutput": "busca_binaria([10, 20, 30, 40, 50], 40) -> 3",
       "keyTakeaways": [
-        "Hierarquia de eficiência: $O(1) < O(\\log n) < O(n) < O(n^2)$.",
-        "Dois loops aninhados sobre N elementos geralmente resultam em tempo quadrático $O(n^2)$.",
-        "A Busca Binária corta a busca pela metade a cada passo ($O(\\log n)$), mas só funciona em listas **ordenadas**."
+        "Busca Binária é O(log n), mas exige que a lista esteja **ordenada**.",
+        "Sempre atualize as bordas com `meio + 1` ou `meio - 1` para o intervalo encolher."
       ]
     },
     {
-      "type": "order_code",
-      "prompt": "Ordene as complexidades de tempo da MAIS RÁPIDA (melhor eficiência) no topo para a MAIS LENTA na base:",
-      "blocks": [
-        "O(n) — Tempo Linear (percorrer lista simples)",
-        "O(1) — Tempo Constante (acesso direto por índice/hash)",
-        "O(n²) — Tempo Quadrático (dois loops aninhados)",
-        "O(log n) — Tempo Logarítmico (busca binária)"
-      ],
-      "correctOrder": [1, 3, 0, 2],
-      "explanation": "A hierarquia de eficiência da mais rápida para a mais lenta é: O(1) < O(log n) < O(n) < O(n²)."
-    },
-    {
       "type": "multiple_choice",
-      "prompt": "Qual é o pré-requisito obrigatório para que a Busca Binária funcione corretamente e encontre o alvo em $O(\\log n)$?",
+      "kind": "predict_output",
+      "prompt": "Na primeira iteração de `busca_binaria([10, 20, 30, 40, 50], 40)`, qual índice `meio` é testado e o que acontece com `esq`?",
+      "codeSnippet": "lista = [10, 20, 30, 40, 50]\nesq, dir = 0, 4\nmeio = (esq + dir) // 2  # lista[2] == 30",
       "options": [
-        "A lista deve conter apenas números positivos",
-        "A lista deve estar previamente ordenada",
-        "A lista precisa ter tamanho múltiplo de 2",
-        "A lista não pode ter mais de 1.000 elementos"
+        "meio = 2 (valor 30 < 40), então esq vira 3",
+        "meio = 2 (valor 30 < 40), então dir vira 1",
+        "meio = 3 e já encontra 40 na primeira tentativa",
+        "meio = 0 porque começa pela esquerda"
       ],
-      "correctIndex": 1,
-      "explanation": "A Busca Binária decide se descarta a metade esquerda ou direita comparando o alvo com o elemento do meio — isso só é válido se a lista estiver ordenada."
+      "correctIndex": 0,
+      "hint": "`(0 + 4) // 2 = 2`. Como `30 < 40`, descartamos a metade esquerda avançando `esq = meio + 1`!",
+      "expectedOutput": "meio=2 (30 < 40) -> esq=3 -> próximo passo acha 40!",
+      "explanation": "Em 1 único teste, eliminamos `[10, 20, 30]` de uma vez e já caímos em `[40, 50]`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a lógica da Busca Binária para calcular o índice central e ajustar a borda esquerda quando o alvo é maior que o meio:",
+      "prompt": "Complete o cálculo do índice central (divisão inteira) e o avanço de `esq` quando `lista[meio] < alvo`:",
       "codeTemplate": "while esq <= dir:\n    meio = (esq + dir) {{blank}} 2\n    if lista[meio] == alvo:\n        return meio\n    elif lista[meio] < alvo:\n        esq = {{blank}}",
       "blanks": [
         { "answer": "//", "placeholder": "divisão inteira" },
         { "answer": "meio + 1", "placeholder": "nova esquerda" }
       ],
-      "options": ["//", "meio + 1", "/", "meio - 1", "meio"],
-      "explanation": "Em Python, `// 2` faz a divisão inteira para obter o índice `meio`, e `esq = meio + 1` descarta toda a metade esquerda inclusive o `meio` já testado."
+      "options": ["//", "meio + 1", "/", "meio - 1"],
+      "hint": "Em Python, `//` faz divisão inteira e `meio + 1` pula o elemento central já testado.",
+      "expectedOutput": "busca_binaria([10, 20, 30, 40], 40) -> 3",
+      "explanation": "Certinho! `// 2` garante índice inteiro e `meio + 1` descarta toda a metade esquerda."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Esta Busca Binária entra em loop infinito quando o elemento procurado não existe na lista! Clique na linha com o erro:",
+      "prompt": "Cuidado! O robô Bit entrou em loop infinito quando o tesouro não existe no mapa. Clique na linha com bug:",
       "lines": [
         "while esq <= dir:",
         "    meio = (esq + dir) // 2",
@@ -61,28 +56,19 @@
         "    else: dir = meio - 1"
       ],
       "buggyLineIndex": 3,
-      "explanation": "Na linha 4, usar `esq = meio` (sem `+ 1`) faz com que, quando `esq == dir` e `lista[meio] < alvo`, o intervalo nunca diminua e o loop fique preso para sempre."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Para buscar um CPF em uma lista ordenada de 1.000.000 de registros, aproximadamente quantas comparações a Busca Binária ($O(\\log n)$) faz no pior caso, comparada à Busca Linear ($O(n)$)?",
-      "options": [
-        "Cerca de 20 comparações (vs 1.000.000 na busca linear)",
-        "Cerca de 500.000 comparações",
-        "Exatamente 1 comparação",
-        "Cerca de 1.000.000.000.000 comparações (O(n²))"
-      ],
-      "correctIndex": 0,
-      "explanation": "Como $2^{20} \\approx 1.048.576$, dividir ao meio cerca de 20 vezes basta para localizar qualquer item entre 1 milhão de elementos!"
+      "hint": "Olhe para `esq = meio` quando sobra só 1 elemento (`esq == dir`): o intervalo encolhe?",
+      "expectedOutput": "busca_binaria([10, 20], 99) -> -1 (sem travar!)",
+      "explanation": "Faltou `+ 1` em `esq = meio + 1`! Sem ele, `esq` fica preso no mesmo índice para sempre."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Implemente a função `busca_binaria(lista, alvo)` em Python sobre uma lista ordenada, retornando o índice do elemento encontrado ou `-1` se não existir.",
-      "starterCode": "",
-      "requiredTokens": ["def", "busca_binaria", "while", "meio", "return", "-1"],
-      "sampleSolution": "def busca_binaria(lista, alvo):\n    esq = 0\n    dir = len(lista) - 1\n    while esq <= dir:\n        meio = (esq + dir) // 2\n        if lista[meio] == alvo:\n            return meio\n        elif lista[meio] < alvo:\n            esq = meio + 1\n        else:\n            dir = meio - 1\n    return -1",
-      "hint": "Inicialize dois ponteiros nas extremidades da lista, mantenha um laço enquanto a esquerda não ultrapassar a direita, calcule o índice do meio e ajuste as bordas com `+ 1` ou `- 1`.",
-      "explanation": "A Busca Binária reduz o intervalo pela metade a cada passo, garantindo complexidade $O(\\log n)$."
+      "prompt": "Complete o laço `while` da `busca_binaria(lista, alvo)` calculando `meio` e ajustando `esq` e `dir` até achar `alvo` (ou retornar `-1`).",
+      "starterCode": "def busca_binaria(lista, alvo):\n    esq, dir = 0, len(lista) - 1\n    # TODO: escreva o while esq <= dir com meio = (esq + dir) // 2\n    \n    return -1",
+      "requiredTokens": ["while", "meio", "//", "if", "return", "meio + 1", "meio - 1"],
+      "sampleSolution": "def busca_binaria(lista, alvo):\n    esq, dir = 0, len(lista) - 1\n    while esq <= dir:\n        meio = (esq + dir) // 2\n        if lista[meio] == alvo:\n            return meio\n        elif lista[meio] < alvo:\n            esq = meio + 1\n        else:\n            dir = meio - 1\n    return -1",
+      "hint": "Dentro de `while esq <= dir:`, calcule `meio = (esq + dir) // 2` e teste `==`, `<` (`esq = meio + 1`) e `else` (`dir = meio - 1`).",
+      "expectedOutput": "busca_binaria([2, 5, 8, 12], 8) -> 2",
+      "explanation": "Busca Binária dominada! O robô Bit agora cruza mapas gigantes em tempo logarítmico."
     }
   ]
 }

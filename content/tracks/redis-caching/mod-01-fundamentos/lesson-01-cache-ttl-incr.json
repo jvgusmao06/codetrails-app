@@ -1,87 +1,73 @@
 {
   "id": "redis-cache-01",
-  "title": "Redis na Prática: SET, GET, TTL (EX) e Rate Limiting com INCR",
-  "description": "Implemente o padrão Cache-Aside e contadores atômicos com expiração automática em microssegundos.",
+  "title": "Redis na Prática: SET, GET, TTL (EX) e INCR",
+  "description": "Acelere sua API com cache em memória, expiração automática (TTL) e contadores atômicos para Rate Limiting.",
+  "mission": "Missão 1: Turbinar o placar da Arena Turbo e frear spam de requisições com Redis.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Por que Usar Redis Junto com PostgreSQL?",
-      "content": "O **Redis** é um banco chave-valor em **memória RAM** com latência sub-milissegundo ($O(1)$). No padrão **Cache-Aside**, antes de fazer um `SELECT` pesado no PostgreSQL, a API consulta o Redis (`GET user:42`). Se não existir (*Cache Miss*), busca no SQL e salva no Redis com **TTL** (*Time To Live*): **`SET user:42 '{...}' EX 300`** (expira sozinho em 300s!). Além disso, **`INCR`** + **`EXPIRE`** criam **Rate Limiters** atômicos em 2 comandos.",
-      "codeExample": "# Salvar chave com expiração (TTL) de 60 segundos\nSET sessao:abc \"user_10\" EX 60\n\n# Ler valor em O(1)\nGET sessao:abc\n\n# Contador atômico (Rate Limiting)\nINCR rate:ip:127.0.0.1\nEXPIRE rate:ip:127.0.0.1 60",
+      "title": "Cache ultrarrápido na RAM com validade (TTL)",
+      "content": "O **Redis** guarda pares `chave -> valor` direto na memória RAM e responde em menos de 1 milissegundo.\nNo padrão **Cache-Aside**, você consulta o Redis (`GET`); se der vazio (*Cache Miss*), busca no SQL e salva no Redis com validade (`EX segundos`) para não lotar a RAM — e `INCR` + `EXPIRE` criam um limitador de acessos atômico em 2 linhas!",
+      "codeExample": "# Salva placar na RAM por 60 segundos\nSET placar:top1 \"Luna:9800\" EX 60\nGET placar:top1\n\n# Rate Limiting: conta acessos por minuto\nINCR rate:ip:10.0.0.1\nEXPIRE rate:ip:10.0.0.1 60",
+      "expectedOutput": "OK\n\"Luna:9800\"\n(integer) 1\n(integer) 1",
       "keyTakeaways": [
-        "Sempre defina um TTL (`EX segundos`) em chaves de cache para não lotar a RAM e evitar dados obsoletos.",
-        "`INCR` é atômico no Redis (single-threaded): duas requisições simultâneas nunca perdem uma contagem.",
-        "Prefixe chaves com dois-pontos por convenção: `app:entidade:id` (ex: `user:42:perfil`)."
+        "Sempre use `EX <segundos>` no `SET` para o cache expirar sozinho e não encher a RAM.",
+        "`INCR` é atômico no Redis: milhares de acessos ao mesmo tempo nunca perdem a conta."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "No padrão **Cache-Aside**, o que sua API deve fazer quando ocorre um *Cache Miss* (a chave não está no Redis)?",
+      "kind": "predict_output",
+      "prompt": "A chave `rate:ip:42` ainda não existe no Redis. O que o Redis responde após rodar estes dois comandos em sequência?",
+      "codeSnippet": "INCR rate:ip:42\nINCR rate:ip:42",
       "options": [
-        "Retornar erro 500 imediatamente",
-        "Consultar o banco principal (PostgreSQL), salvar o resultado no Redis com TTL (`EX`) e retornar ao cliente",
-        "Reiniciar o servidor Redis",
-        "Apagar todas as chaves do Redis"
+        "1 no primeiro e 2 no segundo",
+        "Erro porque a chave não foi criada com SET",
+        "0 no primeiro e 1 no segundo",
+        "(nil) nos dois comandos"
       ],
-      "correctIndex": 1,
-      "explanation": "No Cache-Aside, a aplicação lê do banco em caso de *miss* e popula o cache com TTL para as próximas requisições."
+      "correctIndex": 0,
+      "hint": "Se a chave não existe, o `INCR` começa de 0 automaticamente e já soma 1!",
+      "expectedOutput": "(integer) 1\n(integer) 2",
+      "explanation": "O `INCR` cria a chave começando em `0` e incrementa atomicamente: `1` na primeira chamada e `2` na segunda."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete os dois comandos Redis para implementar um Rate Limiter que incrementa o contador de requisições do IP e define expiração de 60 segundos:",
+      "prompt": "Complete o Rate Limiter da Arena Turbo para contar requisições do IP e zerar a janela em 60 segundos:",
       "codeTemplate": "{{blank}} rate:ip:10.0.0.1\n{{blank}} rate:ip:10.0.0.1 60",
       "blanks": [
-        { "answer": "INCR", "placeholder": "incrementar" },
+        { "answer": "INCR", "placeholder": "somar 1" },
         { "answer": "EXPIRE", "placeholder": "expiração" }
       ],
-      "options": ["INCR", "EXPIRE", "SET", "GET", "TTL"],
-      "explanation": "`INCR` soma 1 de forma atômica (criando a chave em 0 se não existir), e `EXPIRE` define em quantos segundos a janela do Rate Limiter zera."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Por que usar `INCR` no Redis para limitar requisições por minuto evita *race conditions* mesmo com milhares de acessos simultâneos?",
-      "options": [
-        "Porque o Redis executa comandos de forma atômica em um loop single-threaded",
-        "Porque o Redis salva os dados em disco antes de responder",
-        "Porque `INCR` bloqueia o navegador do usuário",
-        "Porque `EXPIRE` duplica o valor da chave"
-      ],
-      "correctIndex": 0,
-      "explanation": "Como o Redis processa comandos atomicamente em sua thread principal, dois `INCR` concorrentes nunca sobrescrevem a contagem um do outro."
+      "options": ["INCR", "EXPIRE", "SET", "GET"],
+      "hint": "Qual comando soma +1 atomicamente e qual define o prazo em segundos?",
+      "expectedOutput": "(integer) 1\n(integer) 1",
+      "explanation": "Em apenas dois comandos (`INCR` + `EXPIRE`), você protege a API contra sobrecarga!"
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este comando de cache funciona no início, mas com o tempo esgota toda a memória RAM do servidor Redis e mantém dados desatualizados para sempre! Clique na linha problemática:",
+      "prompt": "Este cache funciona no primeiro dia, mas depois lota a RAM e mostra preços velhos para sempre! Clique na linha com bug:",
       "lines": [
-        "GET produto:99",
-        "# Cache miss -> consulta no PostgreSQL",
-        "SET produto:99 \"Notebook\"",
-        "GET produto:99"
+        "GET oferta:99",
+        "# Cache Miss -> buscou no PostgreSQL",
+        "SET oferta:99 \"Pixel Quest 29.90\"",
+        "GET oferta:99"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Faltou definir um TTL com `EX <segundos>` no comando `SET` (ex: `SET produto:99 \"Notebook\" EX 300`). Sem expiração, a chave fica na RAM indefinidamente."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os passos do fluxo **Cache-Aside** quando um usuário acessa `perfil:42` pela primeira vez:",
-      "blocks": [
-        "GET perfil:42  # Retorna (nil) - Cache Miss",
-        "# API consulta SELECT * FROM users WHERE id = 42",
-        "SET perfil:42 \"{\\\"nome\\\":\\\"Ana\\\"}\" EX 300",
-        "GET perfil:42  # Próxima requisição: Cache Hit!"
-      ],
-      "correctOrder": [0, 1, 2, 3],
-      "explanation": "Primeiro tentamos ler do Redis (`GET`), no miss vamos ao banco relacional, gravamos no Redis com `EX` e nas próximas leituras ocorre Cache Hit."
+      "hint": "Olhe para o comando `SET`: quando essa chave vai expirar?",
+      "expectedOutput": "OK (com TTL de 300s)",
+      "explanation": "Faltou definir um TTL com `EX 300` no final do `SET`. Sem TTL, a chave nunca sai da memória."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva o comando Redis para armazenar na chave `config:tema` o valor `\"dark\"` com tempo de expiração automático de `300` segundos.",
-      "starterCode": "",
+      "prompt": "Escreva o comando Redis para salvar na chave `config:tema` o valor `\"dark\"` com expiração automática de `300` segundos.",
+      "starterCode": "# TODO: salve config:tema com valor \"dark\" e TTL de 300 segundos\n",
       "requiredTokens": ["SET", "config:tema", "\"dark\"", "EX", "300"],
       "sampleSolution": "SET config:tema \"dark\" EX 300",
-      "hint": "Use o comando de escrita passando a chave, o valor entre aspas e a opção de expiração em segundos.",
-      "explanation": "A flag `EX 300` garante que a chave será removida automaticamente da memória após 5 minutos."
+      "hint": "Use o formato `SET chave \"valor\" EX segundos`.",
+      "expectedOutput": "OK",
+      "explanation": "Placar turbinado! Com `SET ... EX 300`, sua chave fica na RAM por 5 minutos e expira sozinha."
     }
   ]
 }

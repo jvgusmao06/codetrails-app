@@ -1,57 +1,53 @@
 {
   "id": "git-reset-revert-04",
-  "title": "Histórico e Desfazendo Erros (git log, revert, reset e .gitignore)",
-  "description": "Inspecione o histórico com git log, proteja arquivos sensíveis com .gitignore e saiba a diferença vital entre git revert e git reset.",
+  "title": "Desfazendo Erros: git log, revert, reset e .gitignore",
+  "description": "Proteja segredos com .gitignore, inspecione o histórico com git log e escolha com segurança entre git revert e git reset.",
+  "mission": "Missão 6: Desfazer um bug que escapou para a main do Nave App sem quebrar o histórico do time.",
   "xp": 45,
   "steps": [
     {
       "type": "theory",
-      "title": "Inspecionando e Desfazendo Commits com Segurança",
-      "content": "Errar faz parte! O arquivo **`.gitignore`** impede que pastas pesadas (`node_modules/`) ou segredos (`.env`) sejam rastreados pelo Git. Para ver o histórico compacto, usamos `git log --oneline`. E se um commit com bug já foi enviado ao GitHub (branch compartilhada)? Usamos **`git revert <hash>`**, que cria um NOVO commit desfazendo as alterações sem apagar a história. Já **`git reset --soft HEAD~1`** volta o último commit mantendo os arquivos prontos na Staging Area (ideal apenas para commits locais que ainda não foram enviados com push)!",
-      "codeExample": "# Exemplo de arquivo .gitignore\nnode_modules/\n.env\ndist/\n\n# Ver histórico resumido em uma linha por commit\ngit log --oneline --graph\n\n# Desfazer um commit público com segurança (cria novo commit inverso)\ngit revert a1b2c3d\n\n# Desfazer último commit local mantendo alterações no Stage\ngit reset --soft HEAD~1",
+      "title": "Desfazendo commits sem medo (revert vs reset)",
+      "content": "Primeiro, liste arquivos sensíveis (`.env`) e pesados (`node_modules/`) no `.gitignore` para nunca entrarem no histórico.\nSe um bug já foi enviado para a `main`, use `git revert <hash>`: ele cria um **novo commit inverso** seguro para toda a equipe! Já `git reset --soft HEAD~1` desfaz apenas seu último commit local (mantendo o código pronto na Staging Area).",
+      "codeExample": "# Histórico compacto (1 linha por commit)\ngit log --oneline\n\n# Seguro em branch compartilhada (cria novo commit desfazendo)\ngit revert a1b2c3d\n\n# Apenas em commit local não enviado\ngit reset --soft HEAD~1",
+      "expectedOutput": "[main f9e8d7c] Revert \"feat: quebra layout\"\n 1 file changed",
       "keyTakeaways": [
-        "NUNCA commite arquivos `.env` com senhas ou chaves de API — adicione `.env` ao arquivo `.gitignore`!",
-        "`git revert <hash>` é seguro para branches compartilhadas (`main`) porque não reescreve o histórico.",
-        "`git reset --soft HEAD~1` desfaz o último commit local preservando o código no Stage; `--hard` apaga tudo permanentemente."
+        "`git revert <hash>` é seguro na `main` compartilhada porque não apaga o histórico.",
+        "`git reset --soft HEAD~1` volta 1 commit local preservando seus arquivos na Staging Area."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é a forma correta de garantir que o arquivo `.env` (contendo senhas e chaves de API) e a pasta `node_modules/` nunca sejam rastreados pelo Git?",
+      "kind": "predict_output",
+      "prompt": "Você acabou de fazer 1 commit local (`HEAD`) e roda `git reset --soft HEAD~1`. O que acontece com o arquivo que você editou?",
+      "codeSnippet": "git reset --soft HEAD~1\ngit status",
       "options": [
-        "Rodar `git revert .env` antes de cada commit",
-        "Listar `.env` e `node_modules/` dentro do arquivo `.gitignore` na raiz do projeto",
-        "Usar `git reset --hard` após o push",
-        "Colocar os arquivos em uma branch separada"
+        "O commit é desfeito, mas suas edições continuam prontinhas na Staging Area",
+        "Suas edições são apagadas do disco",
+        "Um novo commit chamado Revert é criado",
+        "O arquivo vai para o .gitignore"
       ],
-      "correctIndex": 1,
-      "explanation": "O `.gitignore` instrui o Git a ignorar arquivos e diretórios listados nele, evitando que segredos ou dependências pesadas entrem no histórico."
+      "correctIndex": 0,
+      "hint": "A flag `--soft` volta o ponteiro do commit sem descartar nada do seu código!",
+      "expectedOutput": "Changes to be committed:\n  modified: app.ts",
+      "explanation": "O `--soft` preserva todo o seu código na Staging Area — ótimo para refazer a mensagem ou ajustar algo antes do push."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete os comandos para desfazer o último commit LOCAL mantendo os arquivos preparados na Staging Area (`--soft`) e para desfazer um commit PÚBLICO criando um novo commit inverso:",
-      "codeTemplate": "# Desfazer último commit local mantendo alterações no Stage:\ngit {{blank}} --soft HEAD~1\n\n# Desfazer commit já publicado sem reescrever histórico:\ngit {{blank}} a1b2c3d",
+      "prompt": "Complete os comandos para voltar 1 commit local (`--soft`) e reverter com segurança um commit já publicado:",
+      "codeTemplate": "git {{blank}} --soft HEAD~1\ngit {{blank}} a1b2c3d",
       "blanks": [
         { "answer": "reset", "placeholder": "voltar local" },
         { "answer": "revert", "placeholder": "reverter público" }
       ],
-      "options": ["reset", "revert", "restore", "rebase", "log"],
-      "explanation": "`git reset --soft HEAD~1` move o ponteiro local de volta mantendo as alterações no Stage, enquanto `git revert` cria um novo commit seguro para branches compartilhadas."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os comandos para inspecionar o histórico compacto e reverter com segurança o commit `f4e5d6c` que já está em produção:",
-      "blocks": [
-        "git revert f4e5d6c",
-        "git log --oneline",
-        "git push origin main"
-      ],
-      "correctOrder": [1, 0, 2],
-      "explanation": "Primeiro consultamos o hash no `git log --oneline`, depois criamos o commit reverso com `git revert` e enviamos a correção com `git push`."
+      "options": ["reset", "revert", "restore", "log"],
+      "hint": "`reset` move o ponteiro local; `revert` cria um commit inverso seguro para a equipe.",
+      "expectedOutput": "HEAD resetado | Revert commit criado",
+      "explanation": "Decorou essa dupla (`reset` local vs `revert` público), nunca mais dá dor de cabeça!"
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Um desenvolvedor quer desfazer um commit já publicado na branch `main` compartilhada pela equipe, mas escolheu um comando perigoso que reescreve o histórico e apaga alterações! Clique na linha problemática:",
+      "prompt": "O commit com bug já está na `main` compartilhada, mas o dev usou um comando perigoso que reescreve o histórico! Clique na linha com bug:",
       "lines": [
         "git switch main",
         "git log --oneline",
@@ -59,16 +55,19 @@
         "git push origin main"
       ],
       "buggyLineIndex": 2,
-      "explanation": "Em branches compartilhadas (`main`), usar `git reset --hard` reescreve o histórico e causa conflitos para toda a equipe. O comando seguro é `git revert <hash>`."
+      "hint": "Qual comando na linha 3 apaga histórico público em vez de criar um commit reverso?",
+      "expectedOutput": "[main b3c4d5e] Revert \"bug\"",
+      "explanation": "Na `main` compartilhada, nunca use `git reset --hard` — use `git revert <hash>` para desfazer com segurança!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva os comandos Git para visualizar o histórico de commits em formato resumido (uma linha por commit) e, na linha seguinte, reverter com segurança o commit `abc1234` sem apagar o histórico.",
-      "starterCode": "",
+      "prompt": "Liste o histórico compacto (`--oneline`) e na linha seguinte reverta com segurança o commit `abc1234`.",
+      "starterCode": "# TODO: veja o log em 1 linha e reverta o commit abc1234\n",
       "requiredTokens": ["git log", "--oneline", "git revert", "abc1234"],
       "sampleSolution": "git log --oneline\ngit revert abc1234",
-      "hint": "Use o comando de histórico com a flag de uma linha e depois o comando que cria um commit inverso para o hash informado.",
-      "explanation": "A dupla `git log --oneline` e `git revert <hash>` permite auditar e reverter regressões em produção em segundos."
+      "hint": "Escreva `git log --oneline` e depois `git revert abc1234`.",
+      "expectedOutput": "abc1234 feat: teste\n[main 9d8c7b6] Revert \"feat: teste\"",
+      "explanation": "Produção salva em segundos e histórico 100% íntegro para o time!"
     }
   ]
 }

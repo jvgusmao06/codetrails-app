@@ -1,85 +1,72 @@
 {
   "id": "ts-nativas-02",
-  "title": "08. Objetos e Funções Nativas (Object, Set, Math, reduce)",
-  "description": "Use Object.keys/entries para inspecionar objetos, Set para eliminar duplicatas, Math para cálculos e .reduce() para agregar arrays.",
-  "xp": 40,
+  "title": "Set, Math, Object e .reduce()",
+  "description": "Limpe itens repetidos com Set, ache o maior valor com Math e some tudo com .reduce() usando ferramentas prontas do JS.",
+  "mission": "Missão 8: Remover tags duplicadas e somar a duração total das músicas na playlist do TaskBeat.",
+  "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Globais Nativas: Object, Set, Math e .reduce()",
-      "content": "O JavaScript/TypeScript traz APIs nativas poderosas sem precisar de bibliotecas externas:\n\n1. **`Object.keys()` e `Object.entries()`**: `Object.keys(obj)` retorna um array com os nomes das chaves; `Object.entries(obj)` retorna pares `[chave, valor]`.\n2. **`Set` (Conjuntos únicos)**: `new Set(array)` remove duplicatas automaticamente. Combinado com Spread (`[...new Set(lista)]`), gera um novo array apenas com itens únicos.\n3. **`Math`**: Fornece funções matemáticas como `Math.max(...nums)`, `Math.min(...nums)` e `Math.round(x)`.\n4. **`array.reduce()`**: Reduz um array a um único valor (como soma ou objeto agrupado): `nums.reduce((acc, atual) => acc + atual, 0)`.",
-      "codeExample": "const config = { tema: \"dark\", fonte: 14 };\nconst chaves = Object.keys(config); // [\"tema\", \"fonte\"]\n\nconst unicos = [...new Set([1, 2, 2, 3])]; // [1, 2, 3]\nconst maior = Math.max(...unicos);         // 3\nconst soma = unicos.reduce((acc, n) => acc + n, 0); // 6",
+      "title": "Canivete suíço nativo: Set, Math e .reduce()",
+      "content": "O próprio JavaScript já vem recheado de utilitários prontos! `[...new Set(lista)]` tira duplicatas num piscar de olhos, e `Math.max(...nums)` acha o maior número.\nE quando quiser resumir um array inteiro num único número (como o tempo total da playlist), use `.reduce((acc, atual) => acc + atual, 0)`!",
+      "codeExample": "const tags = [\"foco\", \"jazz\", \"foco\"];\nconst unicas = [...new Set(tags)];               // [\"foco\", \"jazz\"]\nconst minutos = [3, 5, 4];\nconst total = minutos.reduce((acc, m) => acc + m, 0);\nconsole.log(unicas.length, total, Math.max(...minutos));",
+      "expectedOutput": "2 12 5",
       "keyTakeaways": [
-        "Object.keys(obj) lista chaves; Object.entries(obj) lista pares [chave, valor].",
-        "[...new Set(lista)] remove duplicatas preservando a ordem de inserção.",
-        "Math.max(...nums) encontra o maior número e .reduce((acc, x) => ..., inicial) agrega o array."
+        "`[...new Set(lista)]` remove itens repetidos e devolve um novo array limpinho.",
+        "`.reduce((acc, n) => acc + n, 0)` acumula todos os itens começando do valor inicial `0`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual expressão nativa do JavaScript remove elementos duplicados de um array 'tags' retornando um novo array?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no console ao rodar este código?",
+      "codeSnippet": "const ids = [10, 20, 10, 30];\nconst unicos = [...new Set(ids)];\nconst soma = unicos.reduce((acc, n) => acc + n, 0);\nconsole.log(soma);",
       "options": [
-        "Object.keys(tags)",
-        "[...new Set(tags)]",
-        "Math.unique(tags)",
-        "tags.reduce()"
+        "60",
+        "70",
+        "[10, 20, 30]",
+        "30"
       ],
-      "correctIndex": 1,
-      "explanation": "new Set(tags) armazena apenas valores únicos e [... ] espalha os elementos de volta para um array."
+      "correctIndex": 0,
+      "hint": "O `Set` elimina o `10` repetido, deixando `[10, 20, 30]` antes do `.reduce()` somar.",
+      "expectedOutput": "60",
+      "explanation": "Sem o `10` duplicado, `10 + 20 + 30` dá exatamente `60`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para extrair as chaves de um objeto e encontrar o maior número de um array usando Math:",
-      "codeTemplate": "const chaves = {{blank}}.keys(usuario);\nconst maior = {{blank}}.max(...[10, 45, 22]);",
-      "blanks": [
-        { "answer": "Object", "placeholder": "global" },
-        { "answer": "Math", "placeholder": "matemática" }
-      ],
-      "options": ["Object", "Array", "Math", "Set"],
-      "explanation": "Object.keys() extrai as chaves próprias do objeto e Math.max() retorna o maior argumento numérico."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete a chamada de .reduce() para somar todos os números do array começando do zero:",
+      "prompt": "Complete para somar todos os números começando em `0` com `.reduce()`:",
       "codeTemplate": "const total = [10, 20, 30].{{blank}}((acc, n) => acc + n, {{blank}});",
       "blanks": [
         { "answer": "reduce", "placeholder": "método" },
-        { "answer": "0", "placeholder": "valor inicial" }
+        { "answer": "0", "placeholder": "inicial" }
       ],
       "options": ["reduce", "map", "0", "1"],
-      "explanation": "O método .reduce(callback, valorInicial) acumula o resultado começando em 0."
+      "hint": "Usamos `reduce` e passamos `0` como ponto de partida da soma.",
+      "expectedOutput": "60",
+      "explanation": "Certinho! O `0` garante que o acumulador `acc` comece zerado (até se a lista estiver vazia)."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O código tenta usar Math.max em um array diretamente, mas retorna NaN. Qual linha tem o bug?",
+      "prompt": "O código quer descobrir a maior nota, mas está imprimindo `NaN`! Clique na linha com o bug:",
       "lines": [
         "const notas = [7, 9, 8];",
         "const maior = Math.max(notas);",
         "console.log(maior);"
       ],
       "buggyLineIndex": 1,
-      "explanation": "Math.max espera argumentos numéricos separados, não um array. O correto é espalhar com Spread: Math.max(...notas)."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para remover duplicatas de uma lista de preços e somar os valores únicos com reduce:",
-      "blocks": [
-        "const unicos = [...new Set(precos)];",
-        "const soma = unicos.reduce((acc, p) => acc + p, 0);",
-        "const precos = [10, 20, 10, 30];",
-        "console.log(soma);"
-      ],
-      "correctOrder": [2, 0, 1, 3],
-      "explanation": "Definimos o array, removemos duplicatas com [...new Set(...)], somamos com .reduce() e imprimimos."
+      "hint": "`Math.max` espera números soltos (`7, 9, 8`), não um array inteiro — faltou um operador de 3 pontinhos!",
+      "expectedOutput": "9",
+      "explanation": "Com Spread (`Math.max(...notas)`), os itens do array entram como argumentos individuais e o retorno vira `9`."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma função 'somarUnicos' que receba um array de números, remova as duplicatas usando Set e retorne a soma dos valores únicos usando .reduce().",
-      "starterCode": "",
+      "prompt": "Complete `somarUnicos` removendo duplicatas com `Set` e somando tudo com `.reduce()`.",
+      "starterCode": "function somarUnicos(numeros: number[]): number {\n  // TODO: remova duplicatas usando [...new Set(numeros)]\n  const unicos = \n  // TODO: retorne a soma usando .reduce((acc, n) => acc + n, 0)\n  \n}\nconsole.log(somarUnicos([5, 10, 5]));",
       "requiredTokens": ["function", "somarUnicos", "Set", "reduce", "return"],
-      "sampleSolution": "function somarUnicos(numeros: number[]): number {\n  const unicos = [...new Set(numeros)];\n  return unicos.reduce((acc, n) => acc + n, 0);\n}",
-      "hint": "Crie um array único com [...new Set(numeros)] e aplique .reduce((acc, n) => acc + n, 0) no retorno.",
-      "explanation": "Combinamos Set com Spread para deduplicar e .reduce() para agregar a soma em uma função tipada."
+      "sampleSolution": "function somarUnicos(numeros: number[]): number {\n  const unicos = [...new Set(numeros)];\n  return unicos.reduce((acc, n) => acc + n, 0);\n}\nconsole.log(somarUnicos([5, 10, 5]));",
+      "hint": "Escreva `[...new Set(numeros)];` e depois `return unicos.reduce((acc, n) => acc + n, 0);`.",
+      "expectedOutput": "15",
+      "explanation": "Sensacional! Em duas linhas você deduplicou a lista e calculou o total sem biblioteca nenhuma."
     }
   ]
 }

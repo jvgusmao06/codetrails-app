@@ -1,90 +1,73 @@
 {
   "id": "csharp-null-switch-02",
-  "title": "Null-Safety (string?), Operadores ?./?? e Switch Expressions (=>)",
-  "description": "Previna NullReferenceException usando tipos anuláveis (?), coalescência nula (??) e switch moderno com seta.",
+  "title": "Sem Sustos com Null (?, ??) e Switch Moderno",
+  "description": "Evite travamentos por valor nulo com string?, ?. e ?? e devolva resultados limpos com switch expression.",
+  "mission": "Missão 2: Exibir o apelido do jogador e o desconto do cupom na PixelShop mesmo quando o campo vier vazio.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Segurança Contra Null e Switch Moderno em C#",
-      "content": "Para evitar a clássica `NullReferenceException`, o C# moderno usa **Nullable Reference Types**: `string` não aceita `null`, enquanto **`string?`** indica explicitamente que o valor pode ser nulo! Combinamos isso com **`?.`** (Null-conditional, que só acessa o membro se não for `null`) e **`??`** (Null-coalescing, que fornece um valor padrão). Para validar strings vazias ou com espaços, usamos **`string.IsNullOrWhiteSpace(...)`**. Além disso, a **Switch Expression** usa `=>` e `_` (discard) para retornar valores direto sem `break`!",
-      "codeExample": "string? apelido = null;\nstring exibicao = apelido?.ToUpper() ?? \"Visitante\";\n\nif (string.IsNullOrWhiteSpace(exibicao)) {\n    exibicao = \"Anônimo\";\n}\n\nint codigo = 200;\nstring status = codigo switch {\n    200 => \"OK\",\n    404 => \"Não encontrado\",\n    _   => \"Desconhecido\"\n};",
+      "title": "Null-safety (?., ??) e switch expression (=>)",
+      "content": "Quando um dado pode vir vazio, marcamos o tipo com `?` (como `string?`). Para ler sem risco de erro, usamos `?.` (só chama se não for nulo) junto com `??` (define um plano B).\nJá a `switch` expression devolve um valor direto usando `=>`, e o `_` cuida de qualquer outro caso!",
+      "codeExample": "string? apelido = null;\nvar nome = apelido?.ToUpper() ?? \"VISITANTE\";\n\nstring cupom = \"VIP\";\nint desconto = cupom switch { \"VIP\" => 20, _ => 0 };\nConsole.WriteLine($\"{nome}: {desconto}% OFF\");",
+      "expectedOutput": "VISITANTE: 20% OFF",
       "keyTakeaways": [
-        "`_` no `switch` expression funciona como o caso padrão (`default`).",
-        "`obj?.Prop ?? padrao` evita `NullReferenceException` retornando um fallback seguro.",
-        "`string.IsNullOrWhiteSpace(texto)` é a forma nativa idiomática para validar strings nulas, vazias ou só com espaços."
+        "`apelido?.ToUpper() ?? \"VISITANTE\"` evita `NullReferenceException` com um valor padrão elegante.",
+        "No `switch` moderno, `=>` retorna o valor direto e `_` funciona como o caso padrão."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Em C#, o que significa o caractere `_` dentro de uma Switch Expression (`codigo switch { 200 => \"OK\", _ => \"Erro\" }`)?",
+      "kind": "predict_output",
+      "prompt": "O que este código imprime quando `cupom` é `null`?",
+      "codeSnippet": "string? cupom = null;\nvar codigo = cupom?.Trim() ?? \"NENHUM\";\nint off = codigo switch { \"VIP\" => 15, _ => 0 };\nConsole.WriteLine($\"{codigo}: {off}%\");",
       "options": [
-        "Ignora o compilador",
-        "É o padrão de descarte (equivalente ao `default:`) que captura qualquer outro valor",
-        "Representa valor nulo apenas",
-        "Finaliza o programa"
+        "NENHUM: 0%",
+        "null: 0%",
+        "VIP: 15%",
+        "Lança NullReferenceException"
       ],
-      "correctIndex": 1,
-      "explanation": "O discard `_` atua como fallback padrão caso nenhum dos casos anteriores tenha correspondido."
+      "correctIndex": 0,
+      "hint": "Como `cupom` é `null`, `?.Trim()` não explode e `??` entra em ação devolvendo `\"NENHUM\"`.",
+      "expectedOutput": "NENHUM: 0%",
+      "explanation": "`cupom?.Trim()` retorna `null` com segurança, `?? \"NENHUM\"` assume o valor padrão, e o `_` do `switch` devolve `0`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código usando tipo de referência anulável, acesso condicional nulo e operador de coalescência nula:",
-      "codeTemplate": "{{blank}} nome = null;\nstring saida = nome{{blank}}Trim() {{blank}} \"Convidado\";",
+      "prompt": "Proteja a leitura do nome opcional com `?.` e defina `\"Visitante\"` como fallback com `??`:",
+      "codeTemplate": "string? apelido = null;\nvar exibicao = apelido{{blank}}Trim() {{blank}} \"Visitante\";\nConsole.WriteLine(exibicao);",
       "blanks": [
-        { "answer": "string?", "placeholder": "tipo anulável" },
         { "answer": "?.", "placeholder": "acesso seguro" },
         { "answer": "??", "placeholder": "valor padrão" }
       ],
-      "options": ["string?", "?.", "??", "string", ".", "||"],
-      "explanation": "`string?` permite `null`, `?.` evita chamar `.Trim()` em nulo e `??` define `\"Convidado\"` como fallback."
+      "options": ["?.", "??", ".", "||"],
+      "hint": "Use `?.` antes de `Trim()` e `??` antes do texto de fallback.",
+      "expectedOutput": "Visitante",
+      "explanation": "Simples e seguro! Se `apelido` for nulo, `?.` pula o `.Trim()` e `??` devolve `\"Visitante\"`."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este código pode lançar `NullReferenceException` em tempo de execução quando `entrada` for `null`. Clique na linha problemática:",
+      "prompt": "Ops! Quando `nome` for `null`, uma dessas linhas vai estourar `NullReferenceException`. Clique nela:",
       "lines": [
-        "string? entrada = null;",
-        "int tamanho = entrada.Length;",
-        "string resultado = tamanho switch { 0 => \"Vazio\", _ => \"Preenchido\" };",
-        "Console.WriteLine(resultado);"
+        "string? nome = null;",
+        "int tamanho = nome.Length;",
+        "var aviso = tamanho switch { 0 => \"Vazio\", _ => \"OK\" };",
+        "Console.WriteLine(aviso);"
       ],
       "buggyLineIndex": 1,
-      "explanation": "Na linha 2, `entrada.Length` acessa diretamente uma variável `string?` que vale `null`. O correto seria `entrada?.Length ?? 0`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para validar uma `string?` com `string.IsNullOrWhiteSpace` e mapear o resultado com uma `switch` expression:",
-      "blocks": [
-        "string? cupom = \"  \";",
-        "string limpo = string.IsNullOrWhiteSpace(cupom) ? \"NENHUM\" : cupom.Trim();",
-        "decimal desconto = limpo switch {",
-        "    \"VIP10\" => 10m,",
-        "    _ => 0m",
-        "};"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4, 5],
-      "explanation": "Primeiro tratamos a string potencialmente nula/em branco com `string.IsNullOrWhiteSpace`, e depois aplicamos a `switch` expression."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual será o valor de `msg` no código: `string? texto = null; var msg = (texto?.Length ?? 0) switch { 0 => \"Sem texto\", _ => \"Com texto\" };`?",
-      "options": [
-        "Lança NullReferenceException",
-        "\"Com texto\"",
-        "\"Sem texto\"",
-        "null"
-      ],
-      "correctIndex": 2,
-      "explanation": "`texto?.Length` resulta em `null`, o operador `?? 0` converte para `0`, e a `switch` expression casa `0 => \"Sem texto\"`."
+      "hint": "Olhe para o acesso `.Length` em uma variável `string?` que está `null`.",
+      "expectedOutput": "Vazio",
+      "explanation": "Na linha 2, `nome.Length` acessa `null` direto! Trocar por `nome?.Length ?? 0` deixa o código 100% seguro."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Declare uma variável anulável `entrada` iniciada com `null`, gere uma variável `texto` aplicando `.Trim()` de forma segura contra nulo com fallback `\"SEM_TEXTO\"`, e use uma `switch` expression sobre um `int codigo` retornando `\"Sucesso\"` para `200`, `\"Erro\"` para `500` e `\"Outro\"` no caso padrão.",
-      "starterCode": "",
-      "requiredTokens": ["string?", "?.", "??", "switch", "200 =>", "_ =>"],
-      "sampleSolution": "string? entrada = null;\nvar texto = entrada?.Trim() ?? \"SEM_TEXTO\";\nint codigo = 200;\nvar status = codigo switch {\n    200 => \"Sucesso\",\n    500 => \"Erro\",\n    _ => \"Outro\"\n};",
-      "hint": "Use `string?` com `?.Trim() ?? \"SEM_TEXTO\"` e uma `switch` expression com `=>` e `_ =>`.",
-      "explanation": "Combinar `string?`, `?.`, `??` e `switch` expression elimina verificações verbosas de `null` e `if/else` encadeados."
+      "prompt": "Use `??` para definir `\"Visitante\"` caso `apelido` seja `null` e complete o `switch` para retornar `\"OK\"` em `200` e `\"Outro\"` no caso padrão (`_`).",
+      "starterCode": "string? apelido = null;\n// TODO: crie `var nome = apelido?.Trim() ?? \"Visitante\";`\n\nint codigo = 200;\nvar status = codigo switch {\n    // TODO: adicione os casos 200 => \"OK\" e _ => \"Outro\"\n};\nConsole.WriteLine($\"{nome} - {status}\");",
+      "requiredTokens": ["?.", "??", "200 =>", "_ =>"],
+      "sampleSolution": "string? apelido = null;\nvar nome = apelido?.Trim() ?? \"Visitante\";\n\nint codigo = 200;\nvar status = codigo switch {\n    200 => \"OK\",\n    _ => \"Outro\"\n};\nConsole.WriteLine($\"{nome} - {status}\");",
+      "hint": "Na primeira parte use `apelido?.Trim() ?? \"Visitante\"`; dentro do `switch` coloque `200 => \"OK\",` e `_ => \"Outro\"`.",
+      "expectedOutput": "Visitante - OK",
+      "explanation": "Excelente! Null-safety com `?.`/`??` e `switch` expression deixam a lógica da loja super limpa e sem sustos."
     }
   ]
 }

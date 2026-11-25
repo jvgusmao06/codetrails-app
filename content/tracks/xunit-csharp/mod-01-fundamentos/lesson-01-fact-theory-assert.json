@@ -1,98 +1,74 @@
 {
   "id": "lesson-01-fact-theory-assert",
-  "title": "Fact, Theory e Assert",
-  "description": "Crie testes simples com [Fact] e testes parametrizados com [Theory] e [InlineData].",
+  "title": "xUnit: [Fact], [Theory] e Assert.Equal",
+  "description": "Teste regras de negócio sem medo usando [Fact] para um caso fixo e [Theory] + [InlineData] para testar vários valores.",
+  "mission": "Missão 1: Proteger o cálculo de descontos da PixelShop com testes automáticos no xUnit.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Testes idiomáticos em .NET com xUnit",
-      "content": "No **xUnit**, você não precisa decorar a classe com atributos: basta decorar os métodos de teste!\n\n- `[Fact]`: um teste sem parâmetros que verifica um cenário único.\n- `[Theory]` + `[InlineData(...)]`: um teste parametrizado que roda uma vez para cada conjunto de dados.\n- `Assert.Equal(esperado, atual)`: compara o valor esperado com o obtido (ordem: esperado primeiro!).\n\nAlém disso, o xUnit cria uma **nova instância da classe de teste para cada método**, garantindo isolamento total entre testes.",
-      "codeExample": "using Xunit;\n\npublic class CalculadoraTests\n{\n    [Fact]\n    public void Somar_DoisNumeros_RetornaSoma()\n    {\n        var calc = new Calculadora();\n        Assert.Equal(5, calc.Somar(2, 3));\n    }\n\n    [Theory]\n    [InlineData(2, true)]\n    [InlineData(3, false)]\n    public void EhPar_ValoresVariados_RetornaEsperado(int n, bool esperado)\n    {\n        Assert.Equal(esperado, n % 2 == 0);\n    }\n}",
+      "title": "Testando um cenário ([Fact]) ou vários ([Theory])",
+      "content": "No **xUnit**, você transforma qualquer método em teste com um atributo: use `[Fact]` para testar um cenário fixo (sem parâmetros) e `[Theory]` + `[InlineData(...)]` quando quiser rodar o mesmo teste com vários valores!\nPara conferir o resultado, lembre a ordem do `Assert.Equal(esperado, atual)`: o valor esperado sempre vem primeiro.",
+      "codeExample": "public class DescontoTests {\n    [Fact]\n    public void Cupom_Retorna10() => Assert.Equal(10, 5 + 5);\n    [Theory]\n    [InlineData(100, 90)]\n    [InlineData(50, 45)]\n    public void Off10(decimal p, decimal esp) => Assert.Equal(esp, p * 0.9m);\n}",
+      "expectedOutput": "Passed! - 3 testes passaram (1 Fact + 2 casos do Theory)",
       "keyTakeaways": [
-        "`[Fact]` marca testes unitários simples sem parâmetros.",
-        "`[Theory]` + `[InlineData(...)]` executa o mesmo teste para múltiplos casos de entrada.",
-        "Em `Assert.Equal(esperado, atual)`, o valor esperado é sempre o primeiro argumento."
+        "`[Fact]` é para 1 cenário sem parâmetros; `[Theory]` + `[InlineData(...)]` testa vários casos sem repetir código.",
+        "Em `Assert.Equal(esperado, atual)`, o valor esperado vem primeiro e o resultado calculado vem depois."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Quando você quer escrever um teste unitário simples em xUnit que verifica apenas um cenário fixo sem receber parâmetros, qual atributo deve usar?",
+      "kind": "predict_output",
+      "prompt": "Quantas execuções de teste o comando `dotnet test` vai rodar e qual será o resultado?",
+      "codeSnippet": "[Theory]\n[InlineData(2, 4)]\n[InlineData(5, 10)]\npublic void Dobro_CalculaCerto(int x, int esperado) {\n    Assert.Equal(esperado, x * 2);\n}",
       "options": [
-        "[Theory]",
-        "[Fact]",
-        "[InlineData]",
-        "[TestMethod]"
-      ],
-      "correctIndex": 1,
-      "explanation": "Em xUnit, `[Fact]` marca testes sem parâmetros de cenário único, enquanto `[Theory]` é usado para testes parametrizados."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual atributo do xUnit é usado para executar o mesmo método de teste várias vezes com diferentes argumentos fornecidos por `[InlineData]`?",
-      "options": [
-        "[Theory]",
-        "[Fact]",
-        "[TestCase]",
-        "[Parameterized]"
+        "2 testes executados — ambos passam (Passed!)",
+        "1 teste executado — passa",
+        "2 testes executados — o segundo falha",
+        "Erro porque falta [Fact] em cima de [Theory]"
       ],
       "correctIndex": 0,
-      "explanation": "`[Theory]` indica um teste parametrizado alimentado por `[InlineData]`, `[MemberData]` ou `[ClassData]`."
+      "hint": "Cada `[InlineData(...)]` vira uma execução independente: `2 * 2 == 4` e `5 * 2 == 10`!",
+      "expectedOutput": "Passed! Total: 2, Passed: 2, Failed: 0",
+      "explanation": "O xUnit cria um caso de teste para cada `[InlineData]`. Como os dois valores batem com `x * 2`, ambos ficam verdinhos!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o teste parametrizado em xUnit para validar múltiplos casos de soma:",
-      "codeTemplate": "[{{blank}}]\n[InlineData(1, 2, 3)]\n[{{blank}}(10, -5, 5)]\npublic void Somar_VariosCasos(int a, int b, int esperado)\n{\n    Assert.{{blank}}(esperado, a + b);\n}",
+      "prompt": "Complete o teste parametrizado usando `[Theory]` e `Assert.Equal`:",
+      "codeTemplate": "[{{blank}}]\n[InlineData(10, 20)]\npublic void Dobro_Ok(int n, int esperado) {\n    Assert.{{blank}}(esperado, n * 2);\n}",
       "blanks": [
-        { "answer": "Theory" },
-        { "answer": "InlineData" },
-        { "answer": "Equal" }
+        { "answer": "Theory", "placeholder": "parametrizado" },
+        { "answer": "Equal", "placeholder": "asserção" }
       ],
-      "options": ["Theory", "Fact", "InlineData", "Equal", "AreEqual"],
-      "explanation": "`[Theory]` declara o teste parametrizado, `[InlineData]` injeta cada linha de argumentos e `Assert.Equal(esperado, atual)` verifica o resultado."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para montar um teste parametrizado válido em xUnit:",
-      "blocks": [
-        "public void Dobro_RetornaValorEsperado(int x, int esperado)",
-        "[Theory]",
-        "{ Assert.Equal(esperado, x * 2); }",
-        "[InlineData(3, 6)]"
-      ],
-      "correctOrder": [1, 3, 0, 2],
-      "explanation": "Os atributos `[Theory]` e `[InlineData(3, 6)]` precedem a assinatura do método, seguida pelo corpo com `Assert.Equal(esperado, x * 2)`."
+      "options": ["Theory", "Equal", "Fact", "AreEqual"],
+      "hint": "Testes com `[InlineData]` usam `[Theory]`, e no xUnit a igualdade é `Assert.Equal`.",
+      "expectedOutput": "Passed! (1/1)",
+      "explanation": "Certinho! `[Theory]` alimenta os parâmetros e `Assert.Equal(esperado, atual)` valida o resultado."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Encontre a linha com problema de execução no teste xUnit abaixo:",
+      "prompt": "Ops! O xUnit reclama porque um teste com parâmetros recebeu o atributo errado. Clique na linha com o bug:",
       "lines": [
-        "public class DescontoTests",
-        "{",
+        "public class DescontoTests {",
         "    [Fact]",
         "    [InlineData(100, 90)]",
-        "    public void Aplicar_DezPorCento(decimal valor, decimal esperado)",
-        "    {",
-        "        Assert.Equal(esperado, valor * 0.9m);",
-        "    }",
+        "    public void Aplicar(decimal v, decimal esp) => Assert.Equal(esp, v * 0.9m);",
         "}"
       ],
-      "buggyLineIndex": 2,
-      "explanation": "`[Fact]` não aceita parâmetros nem `[InlineData]`. Métodos parametrizados devem usar `[Theory]` na linha 3."
+      "buggyLineIndex": 1,
+      "hint": "`[Fact]` não aceita parâmetros nem `[InlineData]`!",
+      "expectedOutput": "Passed! (com [Theory] na linha 2)",
+      "explanation": "Na linha 2, troque `[Fact]` por `[Theory]` para habilitar os parâmetros vindos do `[InlineData]`."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma classe de teste xUnit `IdadeTests` contendo um teste parametrizado com dois conjuntos de dados (um maior de idade `18` -> `true` e um menor `16` -> `false`) que valide a expressão `idade >= 18`.",
-      "starterCode": "",
-      "requiredTokens": [
-        "using Xunit;",
-        "[Theory]",
-        "[InlineData",
-        "Assert.Equal"
-      ],
-      "sampleSolution": "using Xunit;\n\npublic class IdadeTests\n{\n    [Theory]\n    [InlineData(18, true)]\n    [InlineData(16, false)]\n    public void EhMaiorDeIdade_VerificaCorretamente(int idade, bool esperado)\n    {\n        Assert.Equal(esperado, idade >= 18);\n    }\n}",
-      "hint": "Importe `Xunit`, use `[Theory]` acima de dois `[InlineData(...)]` e compare `esperado` com `idade >= 18` via `Assert.Equal`.",
-      "explanation": "Combinar `[Theory]` com `[InlineData]` evita duplicar métodos de teste para entradas diferentes."
+      "prompt": "Complete o teste parametrizado `EhMaiorDeIdade` adicionando `[Theory]`, dois `[InlineData]` (`18, true` e `16, false`) e `Assert.Equal(esperado, idade >= 18);`.",
+      "starterCode": "using Xunit;\n\npublic class IdadeTests {\n    // TODO: adicione [Theory] e dois [InlineData(18, true)] e [InlineData(16, false)]\n    public void EhMaiorDeIdade(int idade, bool esperado) {\n        // TODO: valide com Assert.Equal(esperado, idade >= 18);\n    }\n}",
+      "requiredTokens": ["[Theory]", "[InlineData", "Assert.Equal"],
+      "sampleSolution": "using Xunit;\n\npublic class IdadeTests {\n    [Theory]\n    [InlineData(18, true)]\n    [InlineData(16, false)]\n    public void EhMaiorDeIdade(int idade, bool esperado) {\n        Assert.Equal(esperado, idade >= 18);\n    }\n}",
+      "hint": "Coloque `[Theory]`, `[InlineData(18, true)]` e `[InlineData(16, false)]` acima do método, e `Assert.Equal(esperado, idade >= 18);` dentro dele.",
+      "expectedOutput": "Passed! Total: 2, Passed: 2, Failed: 0",
+      "explanation": "Testes verdinhos! Agora as regras da PixelShop ficam protegidas contra qualquer regressão."
     }
   ]
 }

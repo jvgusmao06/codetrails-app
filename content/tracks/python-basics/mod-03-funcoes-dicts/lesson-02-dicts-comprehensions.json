@@ -1,86 +1,72 @@
 {
   "id": "py-dicts-comp-02",
-  "title": "07. Dicionários e List Comprehensions",
-  "description": "Armazene pares chave-valor em dicionários, acesse chaves com segurança usando .get() e transforme listas com List Comprehensions.",
+  "title": "Inventário com Dicts e List Comprehensions",
+  "description": "Guarde dados por chave em dicionários, leia sem erro usando .get() e filtre listas em uma linha.",
+  "mission": "Missão 7: Consultar atributos da Py com .get() e filtrar tesouros com List Comprehensions.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Dicionários (dict), .get() e List Comprehensions",
-      "content": "Duas das ferramentas mais idiomáticas do Python para manipular dados são os dicionários e as list comprehensions:\n\n1. **Dicionários (`dict`)**: Armazenam pares `chave: valor` entre chaves `{ }`, permitindo busca instantânea em `O(1)`. Ex: `usuario = {\"nome\": \"Ana\", \"nivel\": 5}`.\n2. **Acesso seguro com `.get()`**: Acessar `usuario[\"email\"]` quando a chave não existe gera um erro `KeyError`. Usar `usuario.get(\"email\", \"não informado\")` evita o erro e devolve o valor padrão.\n3. **List Comprehensions**: Permitem criar e filtrar listas em uma única linha legível: `[expressao for item in iteravel if condicao]`. Por exemplo, `[n * 2 for n in nums if n > 0]` dobra apenas os números positivos.",
-      "codeExample": "perfil = {\"nome\": \"Bia\", \"xp\": 120}\ncargo = perfil.get(\"cargo\", \"Estudante\")\n\nnumeros = [3, 8, 12, 5, 20]\nmaiores = [n for n in numeros if n > 10]  # [12, 20]",
+      "title": "Dicionários seguros com .get() e List Comprehensions",
+      "content": "Um dicionário (`dict`) guarda pares `chave: valor` entre `{ }`. Para ler uma chave sem risco de `KeyError`, use `dados.get(\"chave\", padrao)`.\nJá a **List Comprehension** cria e filtra listas em uma única linha super limpa: `[item * 2 for item in lista if item > 5]`!",
+      "codeExample": "ficha = {\"nome\": \"Py\", \"nivel\": 5}\nclube = ficha.get(\"guilda\", \"Sem guilda\")\n\nmoedas = [4, 12, 7, 20]\ntesouros = [m for m in moedas if m >= 10]\nprint(clube, tesouros)",
+      "expectedOutput": "Sem guilda [12, 20]",
       "keyTakeaways": [
-        "Dicionários mapeiam chave: valor entre { }.",
-        "Use dict.get('chave', padrao) para evitar KeyError quando a chave pode faltar.",
-        "List Comprehensions seguem [expressao for item in lista if condicao]."
+        "Use `dict.get(\"chave\", padrao)` para evitar `KeyError` se a chave não existir.",
+        "List Comprehensions seguem o molde `[expressao for item in lista if condicao]`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é a vantagem de usar usuario.get(\"telefone\", \"sem número\") em vez de usuario[\"telefone\"]?",
+      "kind": "predict_output",
+      "prompt": "O que será impresso ao rodar este código?",
+      "codeSnippet": "perfil = {\"nome\": \"Py\"}\ntitulo = perfil.get(\"titulo\", \"Novata\")\ndobros = [n * 2 for n in [1, 3, 5] if n > 1]\nprint(titulo, dobros)",
       "options": [
-        "Apaga a chave telefone do dicionário",
-        "Evita KeyError caso a chave não exista, retornando o valor padrão",
-        "Converte o dicionário em uma lista",
-        "Ordena as chaves do dicionário"
+        "Novata [6, 10]",
+        "None [2, 6, 10]",
+        "KeyError: 'titulo'",
+        "Novata [3, 5]"
       ],
-      "correctIndex": 1,
-      "explanation": "O método .get(chave, padrao) retorna o valor padrão informado em vez de lançar KeyError quando a chave está ausente."
+      "correctIndex": 0,
+      "hint": "`\"titulo\"` não está em `perfil`, então `.get()` devolve `\"Novata\"`. No filtro `n > 1`, entram apenas `3` e `5`.",
+      "expectedOutput": "Novata [6, 10]",
+      "explanation": "`.get()` devolve o padrão `\"Novata\"` sem erro, e a List Comprehension dobra apenas `3` e `5`, gerando `[6, 10]`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para criar um dicionário e buscar a chave 'cidade' com um valor padrão seguro:",
-      "codeTemplate": "aluno = {{\"nome\": \"Léo\", \"nota\": 9}}\ncidade = aluno.{{blank}}(\"cidade\", \"Remoto\")",
-      "blanks": [
-        { "answer": "get", "placeholder": "método" }
-      ],
-      "options": ["get", "find", "fetch", "has"],
-      "explanation": "aluno.get(\"cidade\", \"Remoto\") retorna \"Remoto\" porque a chave \"cidade\" não existe no dicionário."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete a List Comprehension para criar uma lista com o dobro apenas dos números maiores que 10:",
+      "prompt": "Complete a List Comprehension para pegar o dobro apenas dos valores maiores que 10:",
       "codeTemplate": "nums = [4, 12, 7, 15]\ndobros = [n * 2 {{blank}} n in nums {{blank}} n > 10]",
       "blanks": [
-        { "answer": "for", "placeholder": "iteração" },
-        { "answer": "if", "placeholder": "filtro" }
+        { "answer": "for", "placeholder": "percorrer" },
+        { "answer": "if", "placeholder": "filtrar" }
       ],
       "options": ["for", "while", "if", "where"],
-      "explanation": "A sintaxe da List Comprehension usa 'for' para percorrer os elementos e 'if' ao final para filtrar."
+      "hint": "Primeiro percorremos os itens com `for` e depois filtramos com `if`.",
+      "expectedOutput": "[24, 30]",
+      "explanation": "Na List Comprehension, o `for` itera sobre `nums` e o `if` no final filtra só quem passa na condição!"
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O código tenta filtrar os números pares com List Comprehension, mas tem um erro de ordem na sintaxe. Qual linha está errada?",
+      "prompt": "A List Comprehension abaixo tentou filtrar só os números pares, mas trocou a ordem da sintaxe. Clique na linha com o bug:",
       "lines": [
         "valores = [1, 2, 3, 4, 5]",
         "pares = [if v % 2 == 0 for v in valores]",
         "print(pares)"
       ],
       "buggyLineIndex": 1,
-      "explanation": "Na List Comprehension de filtro, a cláusula 'if' deve vir depois do 'for v in valores', e a expressão ('v') antes do 'for'."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para definir uma função que recebe uma lista de dicionários e extrai os nomes dos ativos usando List Comprehension:",
-      "blocks": [
-        "def nomes_ativos(usuarios: list[dict]) -> list[str]:",
-        "    return [",
-        "        u.get(\"nome\", \"Anônimo\")",
-        "        for u in usuarios",
-        "        if u.get(\"ativo\", False)",
-        "    ]"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4, 5],
-      "explanation": "Combinamos def com Type Hints, List Comprehension e acesso seguro com .get()."
+      "hint": "Lembre da ordem: `[expressao for item in lista if condicao]`.",
+      "expectedOutput": "[2, 4]",
+      "explanation": "O `if` de filtro vem sempre depois do `for`: `[v for v in valores if v % 2 == 0]`."
     },
     {
       "type": "write_code",
-      "prompt": "Crie uma função 'filtrar_aprovados' que receba uma lista de dicionários (cada um com chaves \"nome\" e \"nota\") e retorne, usando List Comprehension e .get(), uma lista apenas com os nomes dos alunos cuja nota seja >= 7.",
-      "starterCode": "",
+      "prompt": "Complete `filtrar_aprovados` retornando, com List Comprehension e `.get()`, os nomes de quem tem `nota >= 7`.",
+      "starterCode": "def filtrar_aprovados(alunos: list[dict]) -> list[str]:\n    # TODO: retorne os nomes usando List Comprehension e .get()\n    return \n\nturma = [{\"nome\": \"Py\", \"nota\": 9}, {\"nome\": \"Bug\", \"nota\": 5}]\nprint(filtrar_aprovados(turma))\n",
       "requiredTokens": ["def", "filtrar_aprovados", "get", "for", "if", "return"],
-      "sampleSolution": "def filtrar_aprovados(alunos: list[dict]) -> list[str]:\n    return [a.get(\"nome\", \"\") for a in alunos if a.get(\"nota\", 0) >= 7]",
-      "hint": "Use [a.get(\"nome\", \"\") for a in alunos if a.get(\"nota\", 0) >= 7] dentro do return da função.",
-      "explanation": "A solução integra funções, dicionários, acesso seguro com .get() e filtragem/transformação via List Comprehension."
+      "sampleSolution": "def filtrar_aprovados(alunos: list[dict]) -> list[str]:\n    return [a.get(\"nome\", \"\") for a in alunos if a.get(\"nota\", 0) >= 7]\n\nturma = [{\"nome\": \"Py\", \"nota\": 9}, {\"nome\": \"Bug\", \"nota\": 5}]\nprint(filtrar_aprovados(turma))",
+      "hint": "Complete o `return` com `[a.get(\"nome\", \"\") for a in alunos if a.get(\"nota\", 0) >= 7]`.",
+      "expectedOutput": "['Py']",
+      "explanation": "Incrível! Você combinou dicionários, leitura segura com `.get()` e List Comprehension em uma linha elegante."
     }
   ]
 }

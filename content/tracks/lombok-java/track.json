@@ -1,7 +1,7 @@
 {
   "id": "lombok-java",
   "title": "Lombok (Produtividade Java)",
-  "description": "Elimine getters, setters, construtores e loggers repetitivos em Java com @Data, @Builder, @RequiredArgsConstructor e @Slf4j.",
+  "description": "Deixe suas classes Java super limpas na API de Entregas: gere construtores, Builders e loggers sem boilerplate com @RequiredArgsConstructor, @Builder e @Slf4j.",
   "category": "library",
   "languageId": "java-basics",
   "prerequisites": ["java-basics"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: @RequiredArgsConstructor, @Builder e @Slf4j",
-      "description": "Escreva classes Spring e DTOs limpos sem centenas de linhas de boilerplate.",
+      "title": "Módulo 1: Código Enxuto com @RequiredArgsConstructor, @Builder e @Slf4j",
+      "description": "Elimine getters, construtores e loggers repetitivos em tempo de compilação com Project Lombok.",
       "lessons": ["lesson-01-lombok-annotations"]
     }
   ]

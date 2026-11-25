@@ -1,35 +1,53 @@
 {
   "id": "django-orm-otimizacao-05",
-  "title": "ORM Avançado: get_object_or_404, Q Objects e select_related (N+1)",
-  "description": "Elimine queries N+1 lentas com select_related/prefetch_related, faça filtros OR com Q e trate 404 com get_object_or_404.",
+  "title": "ORM Veloz: 404, Q e select_related (N+1)",
+  "description": "Trate IDs ausentes com get_object_or_404, faça filtros OR com Q e elimine queries N+1 com select_related.",
+  "mission": "Missão 5: Deixar o catálogo da CodePage ultrarrápido sem queries N+1 e com tratamento limpo de 404.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Evitando o Problema N+1 e Tratando 404 no Django",
-      "content": "Em views reais, nunca deixe `.get(id=pk)` estourar um erro 500 se o ID não existir: use **`get_object_or_404(Produto, pk=pk)`**, que retorna HTTP 404 limpo! E atenção à performance: ao iterar sobre `pedidos` e acessar `pedido.cliente.nome`, o Django faz 1 query extra por pedido (**Problema N+1**). Use **`select_related('cliente')`** (para `ForeignKey`/`OneToOne`, faz SQL JOIN) ou **`prefetch_related('itens')`** (para `ManyToMany`/reverso)!\n\nPara consultas com condições `OR` ou negação no ORM, combine objetos **`Q(...) | Q(...)`** dentro de `.filter(...)`.",
-      "codeExample": "from django.shortcuts import get_object_or_404\nfrom django.db.models import Q\n\n# 404 seguro se não existir\nproduto = get_object_or_404(Produto, id=produto_id)\n\n# Resolve N+1 com JOIN SQL em uma única query e aplica filtro OR!\npedidos = Pedido.objects.select_related(\"cliente\").filter(\n    Q(status=\"PAGO\") | Q(urgente=True)\n)",
+      "title": "Evitando erro 500 e o temido N+1 no Django ORM",
+      "content": "Em vez de deixar `.get(pk=id)` explodir erro 500 quando um ID não existe, use `get_object_or_404(Livro, pk=id)`. Para condições `OR` no filtro, combine objetos `Q(a=1) | Q(b=2)`!\nE para performance: se você vai ler `livro.autor.nome` num loop, use `.select_related(\"autor\")` (faz 1 JOIN no SQL para ForeignKey) em vez de disparar 1 query extra por livro (**N+1**); para `ManyToMany`, use `.prefetch_related(...)`.",
+      "codeExample": "from django.shortcuts import get_object_or_404\nfrom django.db.models import Q\n\ncliente = get_object_or_404(Cliente, pk=cliente_id)\npedidos = Pedido.objects.select_related(\"usuario\").filter(\n    Q(status=\"PAGO\") | Q(urgente=True)\n)",
+      "expectedOutput": "1 query SQL com JOIN (zero N+1!)",
       "keyTakeaways": [
-        "`select_related('fk')` usa `INNER/LEFT JOIN` no SQL (1 query); `prefetch_related('m2m')` faz 2 queries e junta em Python.",
-        "`Q(a=1) | Q(b=2)` permite filtros `OR` e `~Q(...)` permite negação no Django ORM.",
-        "`get_object_or_404(Modelo, pk=id)` substitui `try / except Modelo.DoesNotExist` retornando HTTP 404 automático."
+        "`select_related('fk')` usa SQL JOIN (1 query); `prefetch_related('m2m')` otimiza relações ManyToMany.",
+        "`get_object_or_404` devolve HTTP 404 limpo e `Q(...) | Q(...)` cria filtros `OR` no ORM."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual método do Django ORM deve ser usado para otimizar um relacionamento `ManyToMany` (ou reverso) evitando queries N+1 com duas consultas combinadas em Python?",
+      "kind": "predict_output",
+      "prompt": "Quantas queries SQL rodam ao listar 100 livros com o nome do autor usando o código abaixo?",
+      "codeSnippet": "livros = Livro.objects.select_related(\"autor\")[:100]\nnomes = [l.autor.nome for l in livros]",
       "options": [
-        "select_related()",
-        "prefetch_related()",
-        "join_related()",
-        "get_object_or_404()"
+        "Apenas 1 query SQL (com JOIN trazendo livros e autores juntos)",
+        "101 queries SQL (1 para livros + 100 para cada autor)",
+        "100 queries SQL (uma por autor)",
+        "0 queries porque QuerySets nunca acessam o banco"
       ],
-      "correctIndex": 1,
-      "explanation": "`prefetch_related()` é indicado para relacionamentos `ManyToMany` e reversos (1-para-N), enquanto `select_related()` usa SQL JOIN para `ForeignKey` e `OneToOne`."
+      "correctIndex": 0,
+      "hint": "`select_related(\"autor\")` já carrega os dados da ForeignKey `autor` no mesmo SQL JOIN!",
+      "expectedOutput": "1 query SQL executada",
+      "explanation": "Com `select_related(\"autor\")`, os 100 livros e seus autores vêm em 1 única query SQL — problema N+1 eliminado!"
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete a busca segura que devolve 404 se o cliente não existir e o operador `OR` entre os objetos `Q`:",
+      "codeTemplate": "cliente = {{blank}}(Cliente, pk=cliente_id)\npedidos = Pedido.objects.filter(Q(status=\"PAGO\") {{blank}} Q(urgente=True))",
+      "blanks": [
+        { "answer": "get_object_or_404", "placeholder": "atalho 404" },
+        { "answer": "|", "placeholder": "operador OR" }
+      ],
+      "options": ["get_object_or_404", "|", "&", "or"],
+      "hint": "Usamos `get_object_or_404` para evitar erro 500 e o pipe `|` para representar `OR` entre objetos `Q`.",
+      "expectedOutput": "<QuerySet [<Pedido #1>, <Pedido #5>]>",
+      "explanation": "`get_object_or_404` cuida do 404 automaticamente e `Q(...) | Q(...)` traduz para `OR` no SQL!"
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Esta view causa o problema de **N+1 Queries** ao exibir 500 livros e o nome do autor de cada um. Clique na linha da consulta que deveria usar `.select_related(\"autor\")`:",
+      "prompt": "Esta view dispara **501 queries** (problema N+1!) ao ler `l.autor.nome` de 500 livros. Clique na linha da consulta que precisa de `.select_related(\"autor\")`:",
       "lines": [
         "def listar_livros(request):",
         "    livros = Livro.objects.all()[:500]",
@@ -37,25 +55,14 @@
         "    return JsonResponse(dados, safe=False)"
       ],
       "buggyLineIndex": 1,
-      "explanation": "Na linha 2, `Livro.objects.all()` não carrega `autor`; ao acessar `l.autor.nome` 500 vezes, dispara 500 queries extras! Use `Livro.objects.select_related(\"autor\")[:500]`."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete a busca segura por ID (retornando 404 se ausente) e o filtro ORM com condição OR usando `Q`:",
-      "codeTemplate": "cliente = {{blank}}(Cliente, pk=cliente_id)\npedidos = Pedido.objects.filter({{blank}}(status=\"PAGO\") {{blank}} {{blank}}(urgente=True))",
-      "blanks": [
-        { "answer": "get_object_or_404", "placeholder": "atalho 404" },
-        { "answer": "Q", "placeholder": "objeto Q" },
-        { "answer": "|", "placeholder": "operador OR" },
-        { "answer": "Q", "placeholder": "objeto Q" }
-      ],
-      "options": ["get_object_or_404", "Q", "|", "&", "or", "filter_or"],
-      "explanation": "`get_object_or_404` evita erro 500 quando o registro não existe, e `Q(...) | Q(...)` expressa condição OR no `.filter()`."
+      "hint": "Qual linha busca os livros no banco sem incluir a relação `\"autor\"`?",
+      "expectedOutput": "1 query SQL em vez de 501!",
+      "explanation": "Na linha 2, trocar `Livro.objects.all()[:500]` por `Livro.objects.select_related(\"autor\")[:500]` resolve o N+1 na hora!"
     },
     {
       "type": "write_code",
-      "prompt": "Busque um objeto `Cliente` pelo `cliente_id` retornando 404 caso não exista e armazene em `cliente`. Em seguida, consulte os registros de `Pedido` otimizando a relação `\"usuario\"` para evitar N+1 e filtrando aqueles que estejam com `status=\"PAGO\"` ou `urgente=True`, armazenando em `pedidos`.",
-      "starterCode": "",
+      "prompt": "Complete o código buscando `cliente` com `get_object_or_404` e consultando `pedidos` com `select_related(\"usuario\")` e filtro `Q(status=\"PAGO\") | Q(urgente=True)`.",
+      "starterCode": "from django.shortcuts import get_object_or_404\nfrom django.db.models import Q\n\n# TODO: busque cliente com get_object_or_404(Cliente, pk=cliente_id)\ncliente = \n\n# TODO: filtre Pedido com select_related(\"usuario\") e Q(status=\"PAGO\") | Q(urgente=True)\npedidos = \n",
       "requiredTokens": [
         "get_object_or_404(",
         "Pedido.objects.select_related(",
@@ -65,9 +72,10 @@
         "|",
         "Q(urgente=True)"
       ],
-      "sampleSolution": "cliente = get_object_or_404(Cliente, pk=cliente_id)\npedidos = Pedido.objects.select_related(\"usuario\").filter(Q(status=\"PAGO\") | Q(urgente=True))",
-      "hint": "Use `get_object_or_404(Cliente, pk=cliente_id)` e encadeie `Pedido.objects.select_related(\"usuario\").filter(...)` com objetos `Q` unidos por `|`.",
-      "explanation": "Combinar `get_object_or_404`, `select_related` e objetos `Q` garante endpoints seguros, rápidos (sem N+1) e com filtros flexíveis."
+      "sampleSolution": "from django.shortcuts import get_object_or_404\nfrom django.db.models import Q\n\ncliente = get_object_or_404(Cliente, pk=cliente_id)\npedidos = Pedido.objects.select_related(\"usuario\").filter(Q(status=\"PAGO\") | Q(urgente=True))",
+      "hint": "Use `get_object_or_404(Cliente, pk=cliente_id)` e `Pedido.objects.select_related(\"usuario\").filter(Q(status=\"PAGO\") | Q(urgente=True))`.",
+      "expectedOutput": "Cliente encontrado + Pedidos carregados em 1 query SQL!",
+      "explanation": "Parabéns! Você concluiu a trilha Django & DRF construindo uma aplicação segura, limpa e de alta performance."
     }
   ]
 }

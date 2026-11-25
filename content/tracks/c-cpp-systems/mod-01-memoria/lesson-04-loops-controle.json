@@ -1,83 +1,74 @@
 {
   "id": "cpp-loops-04",
-  "title": "Laços de Repetição: for, while, break e continue",
-  "description": "Controle repetições com for clássico, while, break, continue e range-based for em C++.",
+  "title": "Contagem Regressiva: for, while, break e continue",
+  "description": "Repita checagens da nave com for e while, pulando etapas com continue ou parando na hora com break.",
+  "mission": "Missão 4: Rodar o check-list dos propulsores antes da decolagem.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Estruturas de Repetição em C e C++",
-      "content": "Para repetir blocos de código, C e C++ oferecem o laço `for` clássico — com inicialização, condição e incremento: `for (int i = 0; i < 5; i++)` — e o laço `while`, que continua executando enquanto a condição for verdadeira. Dentro de qualquer laço, `continue` pula diretamente para a próxima iteração, enquanto `break` encerra o laço imediatamente. Em C++ moderno, também podemos usar o range-based `for` (`for (const auto& item : colecao)`) para percorrer coleções inteiras sem índices manuais.",
-      "codeExample": "#include <iostream>\n\nint main() {\n    for (int i = 0; i < 5; i++) {\n        if (i == 2) continue; // pula o 2\n        if (i == 4) break;    // para no 4\n        std::cout << i << \"\\n\";\n    }\n\n    int n = 3;\n    while (n > 0) {\n        std::cout << n << \"\\n\";\n        n--;\n    }\n    return 0;\n}",
+      "title": "Repetindo tarefas com controle total",
+      "content": "O laço `for` é ótimo quando você sabe quantas voltas quer dar, e o `while` repete enquanto uma condição for verdadeira.\nDentro do laço, `continue` pula só a volta atual e `break` encerra a repetição imediatamente.",
+      "codeExample": "for (int i = 1; i <= 4; i++) {\n    if (i == 2) continue; // pula o 2\n    if (i == 4) break;    // para antes do 4\n    std::cout << \"Motor \" << i << \" OK\\n\";\n}",
+      "expectedOutput": "Motor 1 OK\nMotor 3 OK",
       "keyTakeaways": [
-        "`for (init; cond; inc)` é ideal quando sabemos a contagem de iterações.",
-        "`while (cond)` repete enquanto a condição permanecer verdadeira.",
-        "`continue` avança para a próxima iteração e `break` interrompe o laço.",
-        "`for (const auto& x : colecao)` percorre elementos sem cópia em C++ moderno."
+        "`continue` salta apenas a iteração atual; `break` sai do laço inteiro na hora.",
+        "Em C++ moderno, `for (const auto& x : lista)` percorre coleções sem índices manuais."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual palavra-chave interrompe imediatamente a execução de um laço `for` ou `while`, saindo dele por completo?",
-      "options": ["continue", "return", "break", "exit"],
-      "correctIndex": 2,
-      "explanation": "`break` encerra o laço mais interno imediatamente, passando o controle para a instrução seguinte após o bloco do laço."
+      "kind": "predict_output",
+      "prompt": "O que será impresso durante esta contagem?",
+      "codeSnippet": "for (int i = 1; i <= 4; i++) {\n    if (i == 3) break;\n    std::cout << i << \" \";\n}",
+      "options": [
+        "1 2 ",
+        "1 2 4 ",
+        "1 2 3 ",
+        "3 4 "
+      ],
+      "correctIndex": 0,
+      "hint": "Quando `i` chega em `3`, o `break` interrompe o laço antes do `std::cout`.",
+      "expectedOutput": "1 2 ",
+      "explanation": "O laço imprime `1` e `2`. Ao chegar em `3`, `break` encerra tudo imediatamente!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o laço `while` e use `continue` para pular números pares:",
-      "codeTemplate": "int i = 0;\n{{blank}} (i < 5) {\n    i++;\n    if (i % 2 == 0) {{blank}};\n    std::cout << i << \"\\n\";\n}",
+      "prompt": "Complete o `while` e use `continue` para pular o motor número 2:",
+      "codeTemplate": "int m = 0;\n{{blank}} (m < 3) {\n    m++;\n    if (m == 2) {{blank}};\n    std::cout << m << \"\\n\";\n}",
       "blanks": [
         { "answer": "while", "placeholder": "laço" },
         { "answer": "continue", "placeholder": "pular" }
       ],
-      "options": ["while", "for", "continue", "break"],
-      "explanation": "`while` executa enquanto `i < 5` e `continue` pula o restante da iteração atual quando `i` é par."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete o range-based `for` em C++ moderno para percorrer um array sem copiar os elementos:",
-      "codeTemplate": "int nums[] = {10, 20, 30};\nfor (const {{blank}}& n : nums) {\n    std::cout << n << \"\\n\";\n}",
-      "blanks": [
-        { "answer": "auto", "placeholder": "tipo" }
-      ],
-      "options": ["auto", "var", "let", "int*"],
-      "explanation": "`for (const auto& n : nums)` deduz o tipo automaticamente e evita cópias desnecessárias."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "O laço `while` abaixo deveria contar de `1` até `3` e parar, mas entra em loop infinito. Clique na linha onde está o erro lógico:",
-      "lines": [
-        "int contador = 1;",
-        "while (contador <= 3) {",
-        "    std::cout << contador << \"\\n\";",
-        "    contador--;",
-        "}"
-      ],
-      "buggyLineIndex": 3,
-      "explanation": "Decrementar `contador--` faz o valor ir para 0, -1, -2..., mantendo `contador <= 3` sempre verdadeiro. O correto é `contador++`."
+      "options": ["while", "continue", "break", "for"],
+      "hint": "Queremos repetir enquanto `m < 3` e apenas pular o `2` sem parar o laço.",
+      "expectedOutput": "1\n3",
+      "explanation": "`while` mantém o loop rodando até `3`, e `continue` pula a impressão só quando `m == 2`."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os blocos para somar os números de 1 a 4 com um `for` clássico e imprimir o total:",
+      "prompt": "Ordene os blocos para somar a potência dos 4 propulsores (1+2+3+4) e exibir o total:",
       "blocks": [
-        "int soma = 0;",
-        "for (int i = 1; i <= 4; i++) {",
         "    soma += i;",
-        "}",
-        "std::cout << soma << std::endl;"
+        "int soma = 0;",
+        "std::cout << soma << \"\\n\";",
+        "for (int i = 1; i <= 4; i++) {",
+        "}"
       ],
-      "correctOrder": [0, 1, 2, 3, 4],
-      "explanation": "Inicializamos o acumulador `soma = 0`, percorremos `i` de 1 até 4 acumulando em `soma`, fechamos o bloco e imprimimos."
+      "correctOrder": [1, 3, 0, 4, 2],
+      "hint": "Comece zerando `soma`, abra o `for`, acumule `soma += i;`, feche `}` e mostre o resultado.",
+      "expectedOutput": "10",
+      "explanation": "O acumulador começa em `0`, soma `1 + 2 + 3 + 4` dentro do `for` e exibe `10` ao final."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva um programa em C++ (com `<iostream>` e `main`) que use um laço `for` clássico de `1` até `5`, pule o número `3` usando `continue`, acumule os demais valores em uma variável `soma` e imprima `soma` ao final com `std::cout`.",
-      "starterCode": "",
-      "requiredTokens": ["#include", "<iostream>", "for", "continue", "soma", "std::cout", "return 0"],
-      "sampleSolution": "#include <iostream>\n\nint main() {\n    int soma = 0;\n    for (int i = 1; i <= 5; i++) {\n        if (i == 3) continue;\n        soma += i;\n    }\n    std::cout << soma << std::endl;\n    return 0;\n}",
-      "hint": "Declare `int soma = 0;` antes do `for`, verifique `if (i == 3)` para chamar `continue;` e some `i` nos demais casos.",
-      "explanation": "O `continue` salta apenas a iteração em que `i == 3`, permitindo que `soma` acumule `1 + 2 + 4 + 5 = 12`."
+      "prompt": "Complete o `for` de `1` até `5` pulando o `3` com `continue` e somando os demais em `soma`.",
+      "starterCode": "#include <iostream>\n\nint main() {\n    int soma = 0;\n    // TODO: faça um for de 1 a 5, pule o 3 com continue e some em soma\n    \n    std::cout << soma << \"\\n\";\n    return 0;\n}",
+      "requiredTokens": ["for", "continue", "soma"],
+      "sampleSolution": "#include <iostream>\n\nint main() {\n    int soma = 0;\n    for (int i = 1; i <= 5; i++) {\n        if (i == 3) continue;\n        soma += i;\n    }\n    std::cout << soma << \"\\n\";\n    return 0;\n}",
+      "hint": "Use `for (int i = 1; i <= 5; i++)`, verifique `if (i == 3) continue;` e faça `soma += i;`.",
+      "expectedOutput": "12",
+      "explanation": "Check-list concluído! Pulando o 3, o total fica `1 + 2 + 4 + 5 = 12`."
     }
   ]
 }

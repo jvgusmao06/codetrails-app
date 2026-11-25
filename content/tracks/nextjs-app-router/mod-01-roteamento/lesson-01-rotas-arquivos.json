@@ -1,64 +1,53 @@
 {
   "id": "next-routes-01",
-  "title": "Roteamento Baseado em Pastas",
-  "description": "Criando páginas e segmentos dinâmicos no diretório app/.",
+  "title": "Rotas em Pastas e Params Assíncronos",
+  "description": "Crie páginas com page.tsx, capture segmentos dinâmicos com [slug] e resolva params com await no Next.js moderno.",
+  "mission": "Missão 1: Criar a página dinâmica `/produtos/[slug]` da loja PixelShop.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Roteamento por Pastas e Parâmetros Assíncronos",
-      "content": "No App Router do Next.js, cada pasta dentro de `src/app/` define um segmento da URL, e o arquivo `page.tsx` torna aquela rota acessível ao navegador. Pastas com nomes entre colchetes, como `[id]/page.tsx`, criam rotas dinâmicas que capturam valores da URL.\n\nNas versões modernas do Next.js, a propriedade `params` recebida pelo componente de página é uma **Promise**: por isso, declaramos o componente como `export default async function` e resolvemos os parâmetros com `await params`.",
-      "codeExample": "// src/app/tracks/[id]/page.tsx\nexport default async function TrackPage({ params }: { params: Promise<{ id: string }> }) {\n  const { id } = await params;\n  return <h1>Trilha: {id}</h1>;\n}",
+      "title": "Pastas viram URLs e `params` é assíncrono",
+      "content": "No Next.js App Router, cada pasta dentro de `src/app/` vira um trecho da URL, e o arquivo `page.tsx` publica a página. Pastas entre colchetes como `[slug]/page.tsx` capturam qualquer produto da loja!\nNo Next.js moderno, `params` chega como uma **Promise**: por isso marcamos a página como `async` e fazemos `const { slug } = await params;`.",
+      "codeExample": "// src/app/produtos/[slug]/page.tsx\nexport default async function ProdutoPage({\n  params,\n}: { params: Promise<{ slug: string }> }) {\n  const { slug } = await params;\n  return <h1>Produto: {slug}</h1>;\n}",
+      "expectedOutput": "Acessar /produtos/teclado renderiza: <h1>Produto: teclado</h1>",
       "keyTakeaways": [
-        "`page.tsx` expõe publicamente uma rota no App Router.",
-        "Pastas entre colchetes como `[id]` criam segmentos dinâmicos de URL.",
-        "Em páginas dinâmicas modernas, `params` é uma Promise e deve ser resolvido com `await params`."
+        "`page.tsx` cria a rota, e pastas `[slug]` capturam segmentos dinâmicos da URL.",
+        "Sempre resolva `params` com `await params` dentro de `export default async function`."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "No App Router do Next.js, qual nome de arquivo torna uma pasta publicamente acessível como uma rota de página?",
+      "kind": "predict_output",
+      "prompt": "Se o usuário abrir `/produtos/caneca-dev` no navegador, o que esta página em `src/app/produtos/[slug]/page.tsx` renderiza?",
+      "codeSnippet": "export default async function Page({ params }: { params: Promise<{ slug: string }> }) {\n  const { slug } = await params;\n  return <h1>Item: {slug}</h1>;\n}",
       "options": [
-        "index.tsx",
-        "route.config.ts",
-        "page.tsx",
-        "view.tsx"
+        "Item: caneca-dev",
+        "Item: [slug]",
+        "Item: Promise",
+        "Erro 404 porque o arquivo não se chama index.tsx"
       ],
-      "correctIndex": 2,
-      "explanation": "No App Router, o arquivo especial page.tsx define a interface principal de um segmento de rota."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual estrutura de pasta e arquivo você deve criar em `src/app/` para responder à URL dinâmica `/cursos/react-101`?",
-      "options": [
-        "src/app/cursos/:slug/page.tsx",
-        "src/app/cursos/[slug]/page.tsx",
-        "src/app/cursos/slug.tsx",
-        "src/app/cursos/{slug}/index.tsx"
-      ],
-      "correctIndex": 1,
-      "explanation": "Segmentos dinâmicos no App Router do Next.js são declarados com colchetes no nome da pasta, como `[slug]/page.tsx`."
+      "correctIndex": 0,
+      "hint": "O segmento dinâmico `[slug]` captura `caneca-dev`, e `await params` extrai esse valor.",
+      "expectedOutput": "<h1>Item: caneca-dev</h1>",
+      "explanation": "O App Router casa `[slug]` com `caneca-dev`, `await params` lê o objeto e o JSX renderiza `Item: caneca-dev`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Em versões modernas do Next.js, `params` em páginas dinâmicas é assíncrono. Complete a leitura do parâmetro:",
-      "codeTemplate": "export default {{blank}} function Page({ params }: { params: Promise<{ id: string }> }) {\n  const { id } = {{blank}} params;\n  return <div>Trilha {id}</div>;\n}",
+      "prompt": "Complete a página dinâmica para aguardar `params` corretamente:",
+      "codeTemplate": "export default {{blank}} function Page({ params }: { params: Promise<{ id: string }> }) {\n  const { id } = {{blank}} params;\n  return <h1>Pedido #{id}</h1>;\n}",
       "blanks": [
-        {
-          "answer": "async",
-          "placeholder": "modificador"
-        },
-        {
-          "answer": "await",
-          "placeholder": "assíncrono"
-        }
+        { "answer": "async", "placeholder": "assíncrona" },
+        { "answer": "await", "placeholder": "aguardar" }
       ],
-      "options": ["async", "await", "use", "sync"],
-      "explanation": "Server Components que aguardam `params` precisam ser declarados com `async function` e resolver `params` com `await`."
+      "options": ["async", "await", "sync", "defer"],
+      "hint": "Para usar `await params` dentro do componente, a função precisa ser `async`.",
+      "expectedOutput": "<h1>Pedido #42</h1>",
+      "explanation": "Certinho! `async function` + `await params` é o padrão oficial do App Router moderno."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Esta página dinâmica `[slug]/page.tsx` falha ao acessar o parâmetro de rota no Next.js moderno. Clique na linha com o problema:",
+      "prompt": "Esta página dinâmica falha ao ler `slug` porque esqueceu que `params` é uma Promise! Clique na linha com o bug:",
       "lines": [
         "export default async function CursoPage({ params }: { params: Promise<{ slug: string }> }) {",
         "  const slug = params.slug;",
@@ -66,28 +55,19 @@
         "}"
       ],
       "buggyLineIndex": 1,
-      "explanation": "Na linha 2, `params` é uma Promise e não foi resolvida com `await params` antes de acessar `slug`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para montar um componente de página dinâmica válido no Next.js App Router:",
-      "blocks": [
-        "export default async function UserPage({ params }: { params: Promise<{ id: string }> }) {",
-        "  const { id } = await params;",
-        "  return <main><h1>Usuário {id}</h1></main>;",
-        "}"
-      ],
-      "correctOrder": [0, 1, 2, 3],
-      "explanation": "Primeiro declaramos a função `export default async function` recebendo `params`, depois aguardamos `await params` e retornamos o JSX."
+      "hint": "Não dá para ler `.slug` direto de uma Promise — falta `await`!",
+      "expectedOutput": "<h1>Curso: nextjs</h1>",
+      "explanation": "Na linha 2, o certo é `const { slug } = await params;` para aguardar a Promise resolver."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva um componente de página dinâmica para o Next.js App Router que receba `params` contendo `slug` (como Promise), resolva o parâmetro de forma assíncrona e retorne um elemento JSX exibindo o valor de `slug` dentro de um `<h1>`.",
-      "starterCode": "",
+      "prompt": "Complete a página dinâmica `PostPage` aguardando `params` com `await` e exibindo `slug` dentro de `<h1>`.",
+      "starterCode": "// TODO: exporte async function PostPage resolvendo { slug } de await params\nexport default async function PostPage({\n  params,\n}: { params: Promise<{ slug: string }> }) {\n  // TODO: faça await params e retorne <h1>{slug}</h1>\n  \n}",
       "requiredTokens": ["export default", "async function", "params", "await", "slug", "<h1>"],
-      "sampleSolution": "export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {\n  const { slug } = await params;\n  return <h1>{slug}</h1>;\n}",
-      "hint": "Exporte uma função assíncrona padrão recebendo `{ params }`, faça `const { slug } = await params;` e retorne `<h1>{slug}</h1>`.",
-      "explanation": "Esse padrão combina exportação padrão de página no App Router, resolução assíncrona de `params` e renderização do segmento dinâmico em JSX."
+      "sampleSolution": "export default async function PostPage({\n  params,\n}: { params: Promise<{ slug: string }> }) {\n  const { slug } = await params;\n  return <h1>{slug}</h1>;\n}",
+      "hint": "Escreva `const { slug } = await params;` e `return <h1>{slug}</h1>;`.",
+      "expectedOutput": "<h1>teclado-mecanico</h1>",
+      "explanation": "Show! Sua página dinâmica já captura qualquer produto da PixelShop sem esforço."
     }
   ]
 }

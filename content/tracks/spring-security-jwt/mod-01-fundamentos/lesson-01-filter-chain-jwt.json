@@ -1,81 +1,78 @@
 {
   "id": "spring-sec-01",
-  "title": "Spring Security 6: SecurityFilterChain, Stateless e BCrypt",
-  "description": "Configure segurança moderna baseada em lambdas no Spring Boot 3+ sem WebSecurityConfigurerAdapter.",
+  "title": "SecurityFilterChain, Stateless e BCrypt",
+  "description": "Proteja sua API Spring Boot 3+ liberando login, ativando modo STATELESS para JWT e criptografando senhas com BCrypt.",
+  "mission": "Missão 1: Configurar o porteiro digital da API de Entregas liberando /auth/** e protegendo as demais rotas.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Protegendo APIs REST com SecurityFilterChain",
-      "content": "No Spring Boot 3+, configuramos a segurança declarando um `@Bean` de `SecurityFilterChain`. Para APIs REST com JWT, desabilitamos CSRF, definimos `SessionCreationPolicy.STATELESS`, liberamos rotas públicas (como `/auth/**`) com `requestMatchers(...).permitAll()` e exigimos autenticação no resto (`anyRequest().authenticated()`).\n\nSenhas no banco devem ser sempre salvas com `BCryptPasswordEncoder`, e métodos específicos podem ser restritos por perfil usando `@PreAuthorize(\"hasRole('ADMIN')\")`.",
-      "codeExample": "@Bean\npublic SecurityFilterChain filterChain(HttpSecurity http) throws Exception {\n    return http\n        .csrf(csrf -> csrf.disable())\n        .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))\n        .authorizeHttpRequests(auth -> auth\n            .requestMatchers(\"/auth/**\").permitAll()\n            .anyRequest().authenticated()\n        )\n        .build();\n}",
+      "title": "Configurando o porteiro digital com SecurityFilterChain",
+      "content": "No Spring Security 6, criamos um `@Bean` de `SecurityFilterChain` usando lambdas limpas.\nPara APIs com JWT, definimos `SessionCreationPolicy.STATELESS` (sem sessão em memória), liberamos `/auth/**` com `permitAll()` e exigimos token no resto com `anyRequest().authenticated()`.\nE nunca salve senhas em texto puro: registre um `@Bean` de `BCryptPasswordEncoder` para gerar hashes seguros!",
+      "codeExample": "@Bean\npublic SecurityFilterChain chain(HttpSecurity http) throws Exception {\n  return http.csrf(c -> c.disable())\n    .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))\n    .authorizeHttpRequests(a -> a\n      .requestMatchers(\"/auth/**\").permitAll()\n      .anyRequest().authenticated()).build();\n}",
+      "expectedOutput": "POST /auth/login -> 200 OK | GET /entregas -> 401 sem JWT",
       "keyTakeaways": [
-        "APIs REST com JWT no header `Authorization: Bearer <token>` usam `SessionCreationPolicy.STATELESS`.",
-        "`BCryptPasswordEncoder` aplica salt automático contra ataques de Rainbow Table.",
-        "`@PreAuthorize(\"hasRole('ADMIN')\")` protege métodos específicos por perfil."
+        "APIs REST com JWT usam `SessionCreationPolicy.STATELESS`, liberam `/auth/**` e protegem `anyRequest()` por último.",
+        "`BCryptPasswordEncoder` protege senhas no banco com hash e salt automáticos."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual política de sessão deve ser configurada no `SecurityFilterChain` para uma API REST autenticada via JWT?",
+      "kind": "predict_output",
+      "prompt": "Com o `SecurityFilterChain` abaixo, o que acontece quando um cliente chama `GET /entregas` sem enviar token JWT?",
+      "codeSnippet": ".authorizeHttpRequests(auth -> auth\n  .requestMatchers(\"/auth/**\").permitAll()\n  .anyRequest().authenticated()\n)",
       "options": [
-        "SessionCreationPolicy.ALWAYS",
-        "SessionCreationPolicy.STATELESS",
-        "SessionCreationPolicy.IF_REQUIRED",
-        "SessionCreationPolicy.COOKIE"
+        "Acesso bloqueado (401/403) porque só /auth/** é público",
+        "Retorna 200 OK com todas as entregas",
+        "Cria uma sessão de cookie automaticamente",
+        "Redireciona para /auth/entregas"
       ],
-      "correctIndex": 1,
-      "explanation": "Com JWT, cada requisição carrega seu próprio token; o servidor não guarda sessão em memória (`STATELESS`)."
+      "correctIndex": 0,
+      "hint": "A rota `/entregas` não casa com `/auth/**`, então cai na regra `anyRequest().authenticated()`.",
+      "expectedOutput": "HTTP 401 Unauthorized (token ausente)",
+      "explanation": "Apenas `/auth/**` está liberado com `permitAll()`; qualquer outra rota exige autenticação válida!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a configuração de `SecurityFilterChain` para liberar `/auth/**` e exigir autenticação nas demais rotas em modo stateless:",
-      "codeTemplate": "return http\n    .csrf(csrf -> csrf.disable())\n    .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.{{blank}}))\n    .authorizeHttpRequests(auth -> auth\n        .requestMatchers(\"/auth/**\").{{blank}}()\n        .anyRequest().{{blank}}()\n    )\n    .build();",
+      "prompt": "Ative o modo sem sessão para JWT e libere a rota de login no `SecurityFilterChain`:",
+      "codeTemplate": ".sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.{{blank}}))\n.authorizeHttpRequests(a -> a.requestMatchers(\"/auth/**\").{{blank}}())",
       "blanks": [
         { "answer": "STATELESS", "placeholder": "política" },
-        { "answer": "permitAll", "placeholder": "liberar" },
-        { "answer": "authenticated", "placeholder": "exigir auth" }
+        { "answer": "permitAll", "placeholder": "liberar" }
       ],
-      "options": ["STATELESS", "permitAll", "authenticated", "STATEFUL", "denyAll"],
-      "explanation": "`STATELESS` evita sessões em memória, `permitAll()` libera as rotas de login/registro e `authenticated()` protege todo o restante."
+      "options": ["STATELESS", "permitAll", "STATEFUL", "denyAll"],
+      "hint": "APIs com JWT usam `STATELESS`, e rotas abertas para login usam `permitAll()`.",
+      "expectedOutput": "API configurada em modo STATELESS com /auth/** público!",
+      "explanation": "`STATELESS` dispensa sessões no servidor e `permitAll()` deixa o usuário acessar o login para pegar o JWT."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Identifique a linha com erro na ordem das regras de autorização do `SecurityFilterChain`:",
+      "prompt": "O Spring Security recusou subir porque a ordem das regras de rota está invertida! Clique na linha com o bug:",
       "lines": [
         ".authorizeHttpRequests(auth -> auth",
-        "    .anyRequest().authenticated()",
-        "    .requestMatchers(\"/auth/**\").permitAll()",
+        "  .anyRequest().authenticated()",
+        "  .requestMatchers(\"/auth/**\").permitAll()",
         ")"
       ],
       "buggyLineIndex": 1,
-      "explanation": "`anyRequest().authenticated()` deve ser sempre a última regra; colocá-la antes de `requestMatchers(\"/auth/**\").permitAll()` gera erro de configuração no Spring Security."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual anotação protege um método de serviço ou controller para permitir acesso apenas a usuários com perfil `ADMIN`?",
-      "options": [
-        "@PermitAll(\"ADMIN\")",
-        "@PreAuthorize(\"hasRole('ADMIN')\")",
-        "@BCryptRole(\"ADMIN\")",
-        "@Stateless(\"ADMIN\")"
-      ],
-      "correctIndex": 1,
-      "explanation": "`@PreAuthorize(\"hasRole('ADMIN')\")` avalia a permissão antes da execução do método."
+      "hint": "A regra genérica `anyRequest()` deve vir antes ou depois das rotas específicas?",
+      "expectedOutput": "Regras de segurança carregadas sem erro!",
+      "explanation": "`anyRequest().authenticated()` precisa ficar sempre por último — nada pode ser declarado depois dela!"
     },
     {
       "type": "write_code",
-      "prompt": "Declare um bean Spring chamado `passwordEncoder` que retorne uma instância de `PasswordEncoder` usando o algoritmo BCrypt para hash seguro de senhas.",
-      "starterCode": "",
+      "prompt": "Complete o `@Bean` `passwordEncoder()` retornando uma nova instância de `BCryptPasswordEncoder`.",
+      "starterCode": "@Bean\npublic PasswordEncoder passwordEncoder() {\n  // TODO: retorne `new BCryptPasswordEncoder();`\n}",
       "requiredTokens": [
         "@Bean",
         "PasswordEncoder",
         "passwordEncoder()",
         "BCryptPasswordEncoder"
       ],
-      "sampleSolution": "@Bean\npublic PasswordEncoder passwordEncoder() {\n    return new BCryptPasswordEncoder();\n}",
-      "hint": "Anote o método com `@Bean` e retorne `new BCryptPasswordEncoder();`.",
-      "explanation": "Registrar `PasswordEncoder` como `@Bean` permite injetá-lo no seu serviço de cadastro e login."
+      "sampleSolution": "@Bean\npublic PasswordEncoder passwordEncoder() {\n  return new BCryptPasswordEncoder();\n}",
+      "hint": "Escreva `return new BCryptPasswordEncoder();` dentro do método.",
+      "expectedOutput": "Senha protegida: $2a$10$...",
+      "explanation": "Segurança em dia! Agora qualquer serviço pode injetar `PasswordEncoder` e criptografar senhas com BCrypt."
     }
   ]
 }

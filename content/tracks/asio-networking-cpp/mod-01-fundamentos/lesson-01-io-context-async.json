@@ -1,78 +1,74 @@
 {
   "id": "asio-io-01",
-  "title": "Asio: io_context, Event Loop Assíncrono e Timers",
-  "description": "Gerencie milhares de conexões simultâneas sem criar uma thread por cliente usando asio::io_context.",
+  "title": "Asio: io_context, Timers e Sockets Assíncronos",
+  "description": "Coordene tarefas de rede e timers sem travar o programa usando asio::io_context e io.run().",
+  "mission": "Missão 1: Acionar o timer de comunicação da torre espacial com asio::io_context.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Rede Assíncrona de Alta Performance com Asio",
-      "content": "**Asio** (disponível standalone ou via Boost.Asio) é a biblioteca de referência em C++ para redes e I/O assíncrono (base de servidores de jogos, exchanges financeiras e **Boost.Beast** para HTTP/WebSockets).\n\nO coração do Asio é o **`asio::io_context`** (o Event Loop). Todo objeto de I/O — como um timer (`asio::steady_timer`) ou um socket TCP (`asio::ip::tcp::socket`) — recebe uma referência ao `io_context` no construtor. Registramos operações não bloqueantes como `async_wait`, `async_connect` ou `async_read` e iniciamos o processamento com **`io.run()`**!",
-      "codeExample": "#include <asio.hpp>\n#include <iostream>\n\nint main() {\n    asio::io_context io;\n    asio::steady_timer timer(io, std::chrono::seconds(1));\n    asio::ip::tcp::socket sock(io);\n\n    timer.async_wait([](std::error_code ec) {\n        if (!ec) std::cout << \"1 segundo depois!\\n\";\n    });\n\n    io.run(); // Executa o loop de eventos até terminar\n}",
+      "title": "O coração do Asio: io_context",
+      "content": "O **Asio** permite atender milhares de conexões sem criar uma thread por cliente. Tudo gira em torno de um **`asio::io_context`** (o loop de eventos).\nTodo objeto de I/O — como `asio::steady_timer` ou `asio::ip::tcp::socket` — recebe `io` no construtor. Você agenda tarefas com `async_wait` e liga o motor chamando `io.run()`!",
+      "codeExample": "#include <asio.hpp>\n#include <iostream>\nasio::io_context io;\nasio::steady_timer timer(io, std::chrono::seconds(1));\ntimer.async_wait([](std::error_code ec) {\n    if (!ec) std::cout << \"Sinal recebido!\\n\";\n});\nio.run();",
+      "expectedOutput": "Sinal recebido!",
       "keyTakeaways": [
-        "Todo objeto de I/O no Asio (`steady_timer`, `ip::tcp::socket`) recebe o `io_context` no construtor.",
-        "Operações `async_*` não bloqueiam a thread; ao concluir no SO (`epoll`/`IOCP`/`kqueue`), o callback ou corrotina (`co_await`) executa.",
-        "`io.run()` retorna imediatamente se não houver nenhuma operação assíncrona pendente."
+        "Todo objeto de I/O no Asio (`steady_timer`, `ip::tcp::socket`) precisa receber o `io_context` no construtor.",
+        "`io.run()` processa as operações assíncronas pendentes e retorna assim que a fila esvazia."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "O que acontece quando chamamos `io.run()` em um `asio::io_context` que não possui nenhuma operação assíncrona pendente?",
+      "kind": "predict_output",
+      "prompt": "O que acontece ao executar este código sem nenhuma operação `async_*` agendada?",
+      "codeSnippet": "asio::io_context io;\nio.run();\nstd::cout << \"Torre livre!\\n\";",
       "options": [
-        "Ele bloqueia a thread para sempre esperando novos eventos",
-        "Ele retorna imediatamente porque não há trabalho pendente na fila",
-        "Ele lança uma exceção `std::runtime_error`",
-        "Ele cria automaticamente uma thread em background"
+        "Imprime `Torre livre!` imediatamente, pois não há tarefas pendentes",
+        "Fica travado para sempre dentro de `io.run()`",
+        "Lança um erro porque falta um socket",
+        "Espera 10 segundos antes de imprimir"
       ],
-      "correctIndex": 1,
-      "explanation": "`io.run()` só permanece executando enquanto houver operações assíncronas pendentes (ou um `executor_work_guard`). Sem trabalho pendente, ele retorna imediatamente."
+      "correctIndex": 0,
+      "hint": "`io.run()` só fica esperando enquanto existir alguma tarefa assíncrona registrada!",
+      "expectedOutput": "Torre livre!",
+      "explanation": "Sem trabalho pendente na fila, `io.run()` retorna na hora e a linha seguinte imprime `Torre livre!`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código Asio criando o Event Loop, agendando uma espera assíncrona no timer e iniciando o processamento:",
-      "codeTemplate": "asio::{{blank}} io;\nasio::steady_timer t(io, std::chrono::seconds(2));\nt.{{blank}}([](std::error_code){});\nio.{{blank}}();",
+      "prompt": "Agende a espera assíncrona no timer e inicie o loop de eventos do Asio:",
+      "codeTemplate": "asio::io_context io;\nasio::steady_timer t(io, std::chrono::seconds(2));\nt.{{blank}}([](std::error_code){ std::cout << \"OK\\n\"; });\nio.{{blank}}();",
       "blanks": [
-        { "answer": "io_context", "placeholder": "contexto" },
-        { "answer": "async_wait", "placeholder": "espera" },
-        { "answer": "run", "placeholder": "executar" }
+        { "answer": "async_wait", "placeholder": "esperar" },
+        { "answer": "run", "placeholder": "iniciar" }
       ],
-      "options": ["io_context", "async_wait", "run", "loop", "wait", "start"],
-      "explanation": "`asio::io_context` coordena o Event Loop, `async_wait` registra a tarefa sem bloquear e `io.run()` processa os eventos."
+      "options": ["async_wait", "run", "wait", "start"],
+      "hint": "Registramos a espera não bloqueante com `async_wait` e ligamos o loop com `run()`.",
+      "expectedOutput": "OK",
+      "explanation": "`t.async_wait(...)` agenda o callback sem travar a thread, e `io.run()` executa quando o timer dispara."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Identifique a linha com erro ao instanciar um socket TCP e iniciar uma operação assíncrona no Asio:",
+      "prompt": "Ops! O socket TCP recusou compilar porque faltou conectar ele ao `io_context`. Clique na linha com o bug:",
       "lines": [
         "asio::io_context io;",
         "asio::ip::tcp::socket sock;",
-        "asio::steady_timer timer(io, std::chrono::seconds(1));",
-        "timer.async_wait([](std::error_code ec) {});",
+        "asio::steady_timer t(io, std::chrono::seconds(1));",
+        "t.async_wait([](std::error_code) {});",
         "io.run();"
       ],
       "buggyLineIndex": 1,
-      "explanation": "`asio::ip::tcp::socket` não possui construtor padrão sem argumentos; todo objeto de I/O no Asio precisa receber o `io_context` (ex: `sock(io)`)."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para configurar um `io_context`, criar um socket TCP e um timer assíncrono, e rodar o loop de eventos:",
-      "blocks": [
-        "io.run();",
-        "asio::ip::tcp::socket sock(io);",
-        "asio::io_context io;",
-        "timer.async_wait([](std::error_code ec) { std::cout << \"Pronto!\\n\"; });",
-        "asio::steady_timer timer(io, std::chrono::seconds(1));"
-      ],
-      "correctOrder": [2, 1, 4, 3, 0],
-      "explanation": "Primeiro criamos `io`, depois associamos os objetos de I/O (`sock` e `timer`) a ele, registramos `async_wait` e por último executamos `io.run()`."
+      "hint": "Compare como o timer `t(io, ...)` foi criado e como `sock` foi declarado na linha 2.",
+      "expectedOutput": "Socket associado ao io_context com sucesso",
+      "explanation": "Na linha 2, `asio::ip::tcp::socket` precisa receber o contexto no construtor: `asio::ip::tcp::socket sock(io);`."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Em C++ com Asio, declare um contexto de I/O chamado `io`, instancie um socket TCP chamado `sock` associado a esse contexto e inicie a execução do loop de eventos.",
-      "starterCode": "",
-      "requiredTokens": ["asio::io_context", "asio::ip::tcp::socket", "sock(io)", "io.run()"],
-      "sampleSolution": "asio::io_context io;\nasio::ip::tcp::socket sock(io);\nio.run();",
-      "hint": "Crie o objeto `asio::io_context io;`, passe `io` ao construtor de `asio::ip::tcp::socket sock(io);` e chame o método `run()` em `io`.",
-      "explanation": "Todo objeto de I/O no Asio recebe uma referência ao `io_context` no construtor, e `io.run()` executa o loop de eventos."
+      "prompt": "Complete o código criando `asio::ip::tcp::socket sock(io);` e iniciando o loop com `io.run();`.",
+      "starterCode": "#include <asio.hpp>\n\nint main() {\n    asio::io_context io;\n    // TODO: declare asio::ip::tcp::socket sock(io) e chame io.run()\n    \n    return 0;\n}",
+      "requiredTokens": ["asio::ip::tcp::socket", "sock(io)", "io.run()"],
+      "sampleSolution": "#include <asio.hpp>\n\nint main() {\n    asio::io_context io;\n    asio::ip::tcp::socket sock(io);\n    io.run();\n    return 0;\n}",
+      "hint": "Escreva `asio::ip::tcp::socket sock(io);` e na linha seguinte `io.run();`.",
+      "expectedOutput": "Loop de eventos Asio iniciado e encerrado com limpeza",
+      "explanation": "Torre online! Você conectou o socket ao `io_context` e acionou o Event Loop do Asio."
     }
   ]
 }

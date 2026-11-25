@@ -1,91 +1,75 @@
 {
   "id": "testcontainers-01",
-  "title": "Testcontainers + Spring Boot: @Container e @ServiceConnection",
-  "description": "Suba um PostgreSQL real em Docker durante seus testes JUnit 5 com configuração zero no Spring Boot 3.1+.",
+  "title": "@Testcontainers, @Container e @ServiceConnection",
+  "description": "Suba um PostgreSQL real em Docker nos seus testes JUnit 5 com configuração zero no Spring Boot 3.1+.",
+  "mission": "Missão 1: Subir um PostgreSQL descartável em Docker para testar o repositório de entregas sem usar H2.",
   "xp": 45,
   "steps": [
     {
       "type": "theory",
-      "title": "Testando Contra o Banco Real (Adeus H2!)",
-      "content": "Testar queries PostgreSQL (como `JSONB`, `ILIKE` ou migrations Flyway) usando um banco em memória H2 costuma esconder bugs que só aparecem em produção! O **Testcontainers** sobe um container Docker real (ex: `PostgreSQLContainer<?>`) automaticamente antes dos testes e destrói ao final. Usamos **`@Testcontainers`** na classe, **`@Container`** no campo `static` (para reutilizar o mesmo container entre os `@Test`), e no Spring Boot 3.1+, basta adicionar **`@ServiceConnection`** para autoconfigurar URL, usuário e senha!",
-      "codeExample": "@SpringBootTest\n@Testcontainers\nclass UsuarioRepositoryIT {\n    @Container\n    @ServiceConnection\n    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(\"postgres:16-alpine\");\n\n    @Test\n    void salvaNoPostgresReal() { /* ... */ }\n}",
+      "title": "Testando no PostgreSQL real com 3 anotações",
+      "content": "Testar SQL do PostgreSQL em um banco H2 em memória costuma deixar bugs passarem para produção!\nCom Testcontainers, basta marcar a classe com `@Testcontainers` e o campo `static PostgreSQLContainer<?>` com `@Container` — assim o mesmo container é reaproveitado em todos os `@Test` e destruído ao final.\nNo Spring Boot 3.1+, adicionar `@ServiceConnection` configura URL, usuário e senha automaticamente!",
+      "codeExample": "@SpringBootTest\n@Testcontainers\nclass EntregaRepositoryIT {\n  @Container @ServiceConnection\n  static PostgreSQLContainer<?> pg = new PostgreSQLContainer<>(\"postgres:16-alpine\");\n\n  @Test void salvaNoPostgresReal() { /* assert */ }\n}",
+      "expectedOutput": "🐳 postgres:16-alpine started -> ✓ salvaNoPostgresReal() PASSED",
       "keyTakeaways": [
-        "Declare o container como `static` para reutilizá-lo entre todos os `@Test` da mesma classe (muito mais rápido!).",
-        "`@ServiceConnection` elimina o antigo `@DynamicPropertySource` no Spring Boot 3.1+.",
-        "Funciona também para `KafkaContainer`, `GenericContainer` (Redis) e LocalStack."
+        "Use `static` no campo `@Container` para subir o Docker uma única vez para toda a classe de teste.",
+        "`@ServiceConnection` conecta automaticamente o container ao Spring Boot 3.1+ sem configuração manual."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "No Spring Boot 3.1+ com Testcontainers, qual anotação configura automaticamente `spring.datasource.url`, usuário e senha do container para os testes?",
+      "kind": "predict_output",
+      "prompt": "A classe abaixo tem 5 métodos `@Test` e o container está marcado como `static`. Quantos containers PostgreSQL o Docker sobe ao rodar a classe?",
+      "codeSnippet": "@SpringBootTest\n@Testcontainers\nclass PedidoIT {\n  @Container @ServiceConnection\n  static PostgreSQLContainer<?> pg = new PostgreSQLContainer<>(\"postgres:16-alpine\");\n  // 5 métodos @Test aqui...\n}",
       "options": [
-        "@Autowired",
-        "@ServiceConnection",
-        "@Transactional",
-        "@EnableJpa"
+        "Apenas 1 container reutilizado nos 5 testes (muito mais rápido!)",
+        "5 containers separados, um para cada @Test",
+        "Nenhum container — o Spring usa H2 no lugar",
+        "Erro porque @Container não aceita static"
       ],
-      "correctIndex": 1,
-      "explanation": "`@ServiceConnection` detecta o tipo do container (`PostgreSQLContainer`, `KafkaContainer`, etc.) e injeta os detalhes de conexão automaticamente."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Por que recomendamos declarar o campo `PostgreSQLContainer<?>` como `static` dentro da classe de teste?",
-      "options": [
-        "Porque Java não permite campos de instância em classes `@SpringBootTest`",
-        "Para subir o container uma única vez por classe e reutilizá-lo em todos os métodos `@Test`, acelerando muito a suíte",
-        "Para impedir que o Docker remova o container após os testes",
-        "Para usar o banco H2 em paralelo"
-      ],
-      "correctIndex": 1,
-      "explanation": "Um container `static` inicia uma vez para toda a classe de teste; sem `static`, o JUnit 5 sobe e destrói um novo container Docker para cada `@Test`."
+      "correctIndex": 0,
+      "hint": "Campos `static` pertencem à classe inteira, então o JUnit 5 sobe o container uma só vez!",
+      "expectedOutput": "1 container PostgreSQL iniciado -> 5/5 testes PASSED",
+      "explanation": "Com `static`, o Testcontainers sobe o PostgreSQL 1 vez antes dos testes e limpa tudo automaticamente ao final!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete as anotações da classe de teste de integração com Spring Boot e Testcontainers:",
-      "codeTemplate": "@SpringBootTest\n@{{blank}}\nclass PedidoIT {\n    @{{blank}}\n    @{{blank}}\n    static PostgreSQLContainer<?> db = new PostgreSQLContainer<>(\"postgres:16-alpine\");\n}",
+      "prompt": "Complete as anotações que gerenciam o container e autoconfiguram a conexão no Spring Boot 3.1+:",
+      "codeTemplate": "@{{blank}}\n@{{blank}}\nstatic PostgreSQLContainer<?> db = new PostgreSQLContainer<>(\"postgres:16-alpine\");",
       "blanks": [
-        { "answer": "Testcontainers", "placeholder": "classe" },
-        { "answer": "Container", "placeholder": "campo" },
-        { "answer": "ServiceConnection", "placeholder": "conexão" }
+        { "answer": "Container", "placeholder": "ciclo de vida" },
+        { "answer": "ServiceConnection", "placeholder": "autoconexão" }
       ],
-      "options": ["Testcontainers", "Container", "ServiceConnection", "Mock", "Autowired"],
-      "explanation": "`@Testcontainers` habilita o ciclo de vida no JUnit 5, `@Container` marca o campo Docker e `@ServiceConnection` injeta a configuração no Spring Boot."
+      "options": ["Container", "ServiceConnection", "Autowired", "Mock"],
+      "hint": "`@Container` controla o Docker e `@ServiceConnection` injeta URL/usuário/senha no Spring Boot.",
+      "expectedOutput": "DataSource conectado automaticamente ao Postgres em Docker!",
+      "explanation": "`@Container` inicia/encerra o banco Docker e `@ServiceConnection` liga o Spring Boot direto nele!"
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este teste de integração sobe perfeitamente o Spring, mas tenta conectar no `localhost:5432` errado porque faltou a anotação que conecta o container ao Spring Boot! Clique na linha que precisa da anotação faltante:",
+      "prompt": "O container subiu direitinho, mas o Spring tentou conectar no `localhost:5432` errado porque faltou a anotação de conexão automática! Clique na linha que precisa da anotação faltante:",
       "lines": [
         "@SpringBootTest",
         "@Testcontainers",
         "class ClienteIT {",
-        "    @Container",
-        "    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(\"postgres:16-alpine\");",
+        "  @Container",
+        "  static PostgreSQLContainer<?> pg = new PostgreSQLContainer<>(\"postgres:16-alpine\");",
         "}"
       ],
       "buggyLineIndex": 3,
-      "explanation": "Sem `@ServiceConnection` junto de `@Container`, o Spring Boot não sabe que deve sobrescrever o `DataSource` com a porta dinâmica do container."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para montar um teste de integração completo com Testcontainers e Spring Boot:",
-      "blocks": [
-        "@SpringBootTest\n@Testcontainers",
-        "class ProdutoRepositoryIT {",
-        "    @Container @ServiceConnection\n    static PostgreSQLContainer<?> pg = new PostgreSQLContainer<>(\"postgres:16-alpine\");",
-        "    @Test void devePersistir() { /* assert */ }",
-        "}"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4],
-      "explanation": "Anotamos a classe, declaramos o container estático com `@Container` e `@ServiceConnection` e escrevemos os métodos `@Test`."
+      "hint": "Qual anotação do Spring Boot 3.1+ precisa acompanhar `@Container` na linha 4?",
+      "expectedOutput": "Conectado à porta dinâmica do container Postgres!",
+      "explanation": "Na linha 4, adicionar `@ServiceConnection` junto de `@Container` faz o Spring apontar para a porta real do container!"
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Declare um campo estático de container PostgreSQL chamado `postgres` usando a imagem `\"postgres:16-alpine\"`, devidamente anotado para que o Testcontainers gerencie seu ciclo de vida e o Spring Boot configure a conexão automaticamente.",
-      "starterCode": "",
+      "prompt": "Complete a declaração do container `postgres` com `@Container`, `@ServiceConnection` e a imagem `\"postgres:16-alpine\"`.",
+      "starterCode": "// TODO: adicione @Container e @ServiceConnection acima do campo static\nstatic PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(/* imagem aqui */);",
       "requiredTokens": ["@Container", "@ServiceConnection", "static", "PostgreSQLContainer", "\"postgres:16-alpine\""],
       "sampleSolution": "@Container\n@ServiceConnection\nstatic PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(\"postgres:16-alpine\");",
-      "hint": "Combine as duas anotações do Testcontainers e Spring Boot sobre a declaração `static PostgreSQLContainer<?> postgres = ...`.",
-      "explanation": "O JUnit 5 inicia o container antes da classe de teste e o remove via Ryuk ao final da suíte."
+      "hint": "Coloque `@Container` e `@ServiceConnection` acima da linha e passe `\"postgres:16-alpine\"` no construtor.",
+      "expectedOutput": "🐳 PostgreSQL 16 Alpine pronto para testes de integração!",
+      "explanation": "Sensacional! Com apenas 3 linhas, seus testes rodam contra um PostgreSQL real e descartável em Docker."
     }
   ]
 }

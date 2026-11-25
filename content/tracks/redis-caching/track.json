@@ -1,7 +1,7 @@
 {
   "id": "redis-caching",
   "title": "Redis & Caching",
-  "description": "Acelere APIs e bancos SQL com Redis: chaves com TTL, Cache-Aside, Rate Limiting e filas em memória.",
+  "description": "Turbinar o placar da Arena Turbo em microssegundos: cache em memória com TTL, padrão Cache-Aside e Rate Limiting atômico com INCR.",
   "category": "tool",
   "languageId": "sql-databases",
   "prerequisites": ["sql-databases"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: Cache-Aside, SET/GET com TTL e INCR",
-      "description": "Reduza a carga no PostgreSQL usando cache em memória com expiração automática.",
+      "title": "Módulo 1: Placar Turbo com SET/GET, TTL e INCR",
+      "description": "Alivie a carga do PostgreSQL guardando respostas quentes na RAM com expiração automática.",
       "lessons": ["lesson-01-cache-ttl-incr"]
     }
   ]

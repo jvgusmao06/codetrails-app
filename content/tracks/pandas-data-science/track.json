@@ -1,7 +1,7 @@
 {
   "id": "pandas-data-science",
   "title": "Pandas & Data Science",
-  "description": "Analise, filtre e agregue grandes volumes de dados tabulares em Python com DataFrames, filtros booleanos e groupby.",
+  "description": "Analise vendas, cardápio e clientes da cafeteria Café & Dados passo a passo: lições leves com filtros, limpeza, JOINs e rankings em Pandas.",
   "category": "library",
   "languageId": "python-basics",
   "prerequisites": ["python-basics"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-dataframes",
-      "title": "Módulo 1: DataFrames, Filtros e GroupBy",
-      "description": "Manipule tabelas de dados vetorizadas sem loops lentos.",
+      "title": "Módulo 1: Análise da Cafeteria (Café & Dados)",
+      "description": "Transforme tabelas brutas em respostas rápidas com DataFrames, filtros booleanos, limpeza e agrupamentos.",
       "lessons": [
         "lesson-01-df-groupby",
         "lesson-02-leitura-inspecao-csv",

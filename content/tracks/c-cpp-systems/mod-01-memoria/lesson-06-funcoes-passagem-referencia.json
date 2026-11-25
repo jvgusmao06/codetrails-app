@@ -1,76 +1,73 @@
 {
   "id": "cpp-funcoes-referencia-06",
-  "title": "Funções: Passagem por Valor, Ponteiro (*) e Referência (const T&)",
-  "description": "Defina funções com retorno e domine passagem por valor, ponteiro (*) e referência (T& e const T&).",
+  "title": "Funções: Valor, Ponteiro e Referência (const T&)",
+  "description": "Passe dados leves por valor, modifique variáveis originais com T& e leia textos grandes sem cópia usando const T&.",
+  "mission": "Missão 6: Recarregar o escudo da nave diretamente sem desperdiçar memória.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Funções: Valor vs Ponteiro (*) vs Referência (&) em C++",
-      "content": "Funções em C e C++ declaram o tipo de retorno antes do nome (ou `void` quando não retornam valor) e usam `return` para devolver o resultado. Por padrão, os argumentos são passados **por valor** (uma cópia na Stack): alterar o parâmetro dentro da função não afeta a variável original. Para modificar o original ou evitar copiar objetos grandes como `std::string`:\n1. **Ponteiro (`int* p`)**: recebe um endereço (`&x`), exige `*p` para alterar e pode ser `nullptr`.\n2. **Referência (`int& r`)**: cria um apelido direto para a variável original (nunca é nulo e dispensa `*`).\n3. **Referência Constante (`const std::string& s`)**: evita cópias pesadas (zero overhead) e impede modificações acidentais.",
-      "codeExample": "int quadrado(int n) {\n    return n * n;\n}\n\nvoid dobrar(int& n) {\n    n *= 2; // altera a variável original!\n}\n\nvoid imprimir(const std::string& texto) {\n    std::cout << texto << \"\\n\";\n}",
+      "title": "Quando copiar, modificar (T&) ou só ler (const T&)",
+      "content": "Por padrão, funções em C++ recebem uma **cópia** do valor — mexer nela não muda a variável original.\nPara alterar o original sem precisar de `*`, use uma **referência** (`int&`). E para apenas ler objetos grandes como `std::string` sem copiar nada, use `const std::string&`!",
+      "codeExample": "void recarregar(int& escudo) {\n    escudo += 20; // altera o original!\n}\n\nvoid anunciar(const std::string& msg) {\n    std::cout << msg << \"\\n\";\n}",
+      "expectedOutput": "Escudo: 100",
       "keyTakeaways": [
-        "Funções retornam valores com `return` ou usam `void` quando não há retorno.",
-        "Passagem por valor copia tipos pequenos (`int`, `double`); use `T&` para modificar o argumento original.",
-        "Use `const T&` para ler objetos grandes (`std::string`, `std::vector`) sem cópia e com segurança."
+        "`T&` cria um apelido direto para a variável original, permitindo modificá-la.",
+        "`const T&` evita cópias pesadas e impede alterações acidentais."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual forma de passagem de parâmetro em C++ evita copiar uma `std::string` grande e garante que a função NÃO possa modificá-la?",
+      "kind": "predict_output",
+      "prompt": "Qual valor aparece na tela após chamar `bonus(energia)`?",
+      "codeSnippet": "void bonus(int& x) {\n    x *= 2;\n}\nint energia = 15;\nbonus(energia);\nstd::cout << energia << \"\\n\";",
       "options": [
-        "std::string texto",
-        "std::string* texto",
-        "std::string& texto",
-        "const std::string& texto"
+        "30",
+        "15",
+        "2",
+        "Erro porque faltou usar & na chamada"
       ],
-      "correctIndex": 3,
-      "explanation": "`const std::string&` passa apenas a referência (sem cópia) e o qualificador `const` bloqueia qualquer alteração."
+      "correctIndex": 0,
+      "hint": "Repare no `&` em `int& x`: a função mexe direto na variável `energia`!",
+      "expectedOutput": "30",
+      "explanation": "Como `x` é uma referência (`int&`), multiplicar `x` por 2 atualiza `energia` diretamente para `30`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a assinatura da função C++ para ler uma `std::string` sem copiá-la e sem permitir modificações:",
-      "codeTemplate": "void logar({{blank}} std::string{{blank}} msg) {\n    std::cout << msg;\n}",
+      "prompt": "Complete a função para ler a mensagem do rádio sem copiar a string e sem permitir alterações:",
+      "codeTemplate": "void logar({{blank}} std::string{{blank}} msg) {\n    std::cout << msg << \"\\n\";\n}",
       "blanks": [
         { "answer": "const", "placeholder": "imutável" },
         { "answer": "&", "placeholder": "referência" }
       ],
-      "options": ["const", "&", "*", "mut", "var"],
-      "explanation": "`const std::string&` é o padrão idiomático de C++ para passagem eficiente somente-leitura."
+      "options": ["const", "&", "*", "auto"],
+      "hint": "Combine o qualificador que impede edição com o símbolo de referência.",
+      "expectedOutput": "Sinal recebido",
+      "explanation": "`const std::string&` é o padrão de ouro do C++: rápido (zero cópia) e seguro (somente leitura)."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "A função abaixo deveria dobrar o valor da variável original `saldo`, mas quando `main` imprime `saldo`, o valor continua `10`. Clique na linha com bug:",
+      "prompt": "A função `dobrar` deveria dobrar `saldo`, mas no fim `saldo` continua `10`! Clique na linha com o bug:",
       "lines": [
         "void dobrar(int x) {",
         "    x = x * 2;",
         "}",
-        "int main() { int saldo = 10; dobrar(saldo); return 0; }"
+        "int main() { int saldo = 10; dobrar(saldo); }"
       ],
       "buggyLineIndex": 0,
-      "explanation": "O parâmetro `int x` recebe uma cópia por valor. Para alterar `saldo`, a assinatura deve usar referência: `void dobrar(int& x)`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para definir uma função que soma 10 via ponteiro (verificando `nullptr`) e chamá-la:",
-      "blocks": [
-        "void somarDez(int* p) {",
-        "    if (p != nullptr) *p += 10;",
-        "}",
-        "int valor = 5;",
-        "somarDez(&valor);"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4],
-      "explanation": "Definimos `somarDez(int* p)` protegida contra `nullptr`, criamos `valor` e passamos seu endereço `&valor`."
+      "hint": "Sem o símbolo `&` no parâmetro, `x` é apenas uma cópia descartável de `saldo`.",
+      "expectedOutput": "20",
+      "explanation": "Faltou `&` na assinatura! Mudando para `void dobrar(int& x)`, a função altera `saldo` de verdade."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma função `incrementar` em C++ que não retorne valor, receba um inteiro por referência e some `1` diretamente na variável recebida, e outra função `quadrado` que receba um inteiro por valor e retorne seu quadrado.",
-      "starterCode": "",
-      "requiredTokens": ["void", "incrementar", "int&", "+= 1", "int quadrado", "return"],
+      "prompt": "Complete `incrementar` para somar `1` direto na referência `int& x` e `quadrado` para retornar `n * n`.",
+      "starterCode": "void incrementar(/* TODO: receba int& x */) {\n    // TODO: some 1 em x\n}\n\nint quadrado(int n) {\n    // TODO: retorne o quadrado de n\n}",
+      "requiredTokens": ["void", "incrementar", "int&", "quadrado", "return"],
       "sampleSolution": "void incrementar(int& x) {\n    x += 1;\n}\n\nint quadrado(int n) {\n    return n * n;\n}",
-      "hint": "Use `int&` no parâmetro de `incrementar` para alterar o original e `return n * n;` em `quadrado`.",
-      "explanation": "A passagem por referência (`int&`) altera o argumento original sem retorno, enquanto a passagem por valor com `return` devolve um novo resultado."
+      "hint": "Escreva `void incrementar(int& x) { x += 1; }` e `return n * n;` dentro de `quadrado`.",
+      "expectedOutput": "incrementar(5) -> 6 | quadrado(4) -> 16",
+      "explanation": "Excelente! Agora você domina quando passar por referência (`int&`) e quando devolver um valor com `return`."
     }
   ]
 }

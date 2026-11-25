@@ -1,46 +1,53 @@
 {
   "id": "go-sqlc-01",
-  "title": "Banco de Dados em Go: sqlc (SQL Type-Safe) vs GORM",
-  "description": "Entenda por que a comunidade Go ama o sqlc para gerar funções Go tipadas direto de arquivos .sql.",
+  "title": "Banco de Dados em Go: sqlc e GORM",
+  "description": "Gere funções Go tipadas direto de arquivos .sql com sqlc e evite erros comuns de ponteiro no GORM.",
+  "mission": "Missão 1: Consultar os entregadores ativos da Central do Gopher no PostgreSQL sem erros em produção.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "sqlc: Escreva SQL Puro e Ganhe Código Go Tipado",
-      "content": "No ecossistema Go, existem duas abordagens principais para PostgreSQL:\n1. **GORM**: ORM clássico (`db.Where(\"ativo = ?\", true).Find(&users)`), ótimo para CRUDs rápidos.\n2. **sqlc**: você escreve **SQL puro** anotado com `-- name: GetUser :one` em um arquivo `.sql`, e o `sqlc generate` cria funções Go **100% tipadas em tempo de compilação** usando `pgx` — sem reflection e com performance máxima!",
-      "codeExample": "-- query.sql (lido pelo sqlc generate)\n-- name: BuscarUsuario :one\nSELECT id, nome, email FROM usuarios WHERE id = $1;\n\n// Código Go gerado automaticamente:\nuser, err := queries.BuscarUsuario(ctx, 42)",
+      "title": "Escreva SQL puro, ganhe funções Go tipadas",
+      "content": "No Go você pode usar **GORM** (`db.Find(&lista)`) para agilidade ou **sqlc** para máxima segurança e velocidade.\nCom o **sqlc**, você coloca um comentário como `-- name: BuscarUsuario :one` acima do seu SQL e ele gera automaticamente a função Go tipada recebendo `ctx`!",
+      "codeExample": "-- name: BuscarUsuario :one\nSELECT id, nome FROM usuarios WHERE id = $1;\n\n// Função Go gerada pelo sqlc:\nuser, err := queries.BuscarUsuario(ctx, 42)\nfmt.Println(user.Nome)",
+      "expectedOutput": "Gopher Ana",
       "keyTakeaways": [
-        "`sqlc` valida suas queries SQL contra o `schema.sql` antes mesmo de compilar o Go.",
-        "Anotações `:one` retornam 1 struct, `:many` retornam um slice `[]T`, e `:exec` retornam apenas `error`.",
-        "Em Go, sempre passe `ctx` para queries de banco para respeitar timeouts HTTP."
+        "No `sqlc`: `:one` retorna 1 item, `:many` retorna uma lista (`[]T`) e `:exec` retorna apenas `error`.",
+        "Tanto `sqlc` (com `ctx`) quanto `GORM` (com `&lista`) seguem o jeito seguro e explícito do Go."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Em um arquivo `query.sql` do `sqlc`, qual anotação indica que a consulta retorna uma lista (slice) de vários registros?",
+      "kind": "predict_output",
+      "prompt": "Qual assinatura Go o `sqlc` gera para esta consulta anotada com `:many`?",
+      "codeSnippet": "-- name: ListarEntregadores :many\nSELECT id, nome FROM entregadores;",
       "options": [
-        ":one",
-        ":many",
-        ":exec",
-        ":slice"
+        "ListarEntregadores(ctx context.Context) ([]Entregador, error)",
+        "ListarEntregadores() Entregador",
+        "ListarEntregadores(ctx context.Context) error",
+        "ListarEntregadores(id int) (Entregador, error)"
       ],
-      "correctIndex": 1,
-      "explanation": "`:many` instrui o `sqlc` a gerar uma função Go retornando `([]Modelo, error)`."
+      "correctIndex": 0,
+      "hint": "`:many` indica múltiplos registros (um slice `[]T`) e o `sqlc` sempre coloca `ctx` como primeiro parâmetro.",
+      "expectedOutput": "[]Entregador{...}, nil",
+      "explanation": "Anotações `:many` geram funções que recebem `ctx` e devolvem uma lista (`[]Entregador`) junto do `error`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete a query `sqlc` que busca um único usuário por ID e a chamada Go gerada usando `context.Context`:",
-      "codeTemplate": "-- name: BuscarUsuario :{{blank}}\nSELECT id, nome FROM usuarios WHERE id = $1;\n\n// Em Go:\nuser, err := queries.BuscarUsuario({{blank}}, 42)",
+      "prompt": "Complete a anotação para retornar apenas 1 registro e passe o contexto na chamada Go:",
+      "codeTemplate": "-- name: BuscarUsuario :{{blank}}\nSELECT id, nome FROM usuarios WHERE id = $1;\n\nuser, err := queries.BuscarUsuario({{blank}}, 42)",
       "blanks": [
-        { "answer": "one", "placeholder": "retorno" },
+        { "answer": "one", "placeholder": "1 item" },
         { "answer": "ctx", "placeholder": "contexto" }
       ],
-      "options": ["one", "many", "exec", "ctx", "nil"],
-      "explanation": "`:one` gera uma função que retorna uma única struct, e o primeiro argumento das funções geradas pelo `sqlc` é sempre o `ctx`."
+      "options": ["one", "ctx", "many", "nil"],
+      "hint": "Um único registro usa `:one`, e as chamadas de banco em Go sempre recebem `ctx` primeiro.",
+      "expectedOutput": "{ID: 42, Nome: \"Gopher\"} <nil>",
+      "explanation": "`:one` retorna um único struct e `ctx` garante que a query respeite o timeout da requisição."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Identifique a linha com erro ao usar o GORM para preencher o slice `users`:",
+      "prompt": "A consulta GORM abaixo não consegue preencher o slice `users` porque faltou passar o endereço! Qual linha tem o bug?",
       "lines": [
         "var users []Usuario",
         "result := db.Where(\"ativo = ?\", true).Find(users)",
@@ -49,27 +56,19 @@
         "}"
       ],
       "buggyLineIndex": 1,
-      "explanation": "No GORM, `.Find(&users)` exige o ponteiro `&users` para conseguir popular o slice com os registros retornados do banco."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para definir uma query `:exec` no `sqlc` e executá-la em Go:",
-      "blocks": [
-        "err := queries.DesativarUsuario(ctx, 42)",
-        "-- name: DesativarUsuario :exec",
-        "UPDATE usuarios SET ativo = false WHERE id = $1;"
-      ],
-      "correctOrder": [1, 2, 0],
-      "explanation": "Primeiro anotamos a query com `-- name: ... :exec`, escrevemos o SQL correspondente e depois chamamos a função gerada passando `ctx` e o parâmetro."
+      "hint": "Olhe o argumento dentro de `.Find(...)`: o GORM precisa de um ponteiro `&` para preencher a lista!",
+      "expectedOutput": "[{ID:1 Nome:\"Ana\"}]",
+      "explanation": "Na linha 2, troque `Find(users)` por `Find(&users)` para o GORM preencher o slice original."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Escreva um bloco SQL anotado para o `sqlc` definindo a consulta `ListarAtivos` (retornando múltiplos registros) que seleciona `id` e `nome` da tabela `usuarios` onde `ativo = true`.",
-      "starterCode": "",
+      "prompt": "Complete a query `sqlc` chamada `ListarAtivos` (retornando vários registros) buscando `id, nome` da tabela `usuarios` onde `ativo = true`.",
+      "starterCode": "// TODO: adicione o cabeçalho sqlc para ListarAtivos retornando vários registros\n// TODO: escreva o SELECT id, nome FROM usuarios WHERE ativo = true;\n",
       "requiredTokens": ["-- name:", "ListarAtivos", ":many", "SELECT", "FROM usuarios"],
       "sampleSolution": "-- name: ListarAtivos :many\nSELECT id, nome FROM usuarios WHERE ativo = true;",
-      "hint": "Use o comentário especial `-- name: ListarAtivos :many` acima da instrução `SELECT id, nome FROM usuarios WHERE ativo = true;`.",
-      "explanation": "O comentário `-- name: NomeFuncao :many` é tudo o que o `sqlc` precisa para gerar a função Go tipada."
+      "hint": "Coloque `-- name: ListarAtivos :many` na primeira linha e `SELECT id, nome FROM usuarios WHERE ativo = true;` na segunda.",
+      "expectedOutput": "func (q *Queries) ListarAtivos(ctx) ([]Usuario, error)",
+      "explanation": "Pronto! Com esse arquivo `.sql`, o `sqlc generate` já entrega sua função Go 100% tipada."
     }
   ]
 }

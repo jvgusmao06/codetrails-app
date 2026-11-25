@@ -1,7 +1,7 @@
 {
   "id": "unity-csharp",
   "title": "Unity (Game Dev C#)",
-  "description": "Programe jogos 2D e 3D na Unity com MonoBehaviour, Start/Update/FixedUpdate, Time.deltaTime, GetComponent e Física.",
+  "description": "Dê vida ao protótipo indie StarRunner na Unity: MonoBehaviour, Awake, Update com Time.deltaTime, FixedUpdate e [SerializeField].",
   "category": "framework",
   "languageId": "csharp-dotnet",
   "prerequisites": ["csharp-dotnet"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: MonoBehaviour, Ciclo de Vida e Time.deltaTime",
-      "description": "Entenda Start vs Update vs FixedUpdate e boas práticas de performance na Unity.",
+      "title": "Módulo 1: Pilote a Nave StarRunner (MonoBehaviour)",
+      "description": "Entenda o ciclo de vida na Unity e movimente objetos com FPS sempre liso.",
       "lessons": ["lesson-01-monobehaviour-update"]
     }
   ]

@@ -1,7 +1,7 @@
 {
   "id": "pytorch-ml-python",
   "title": "PyTorch & Machine Learning",
-  "description": "Construa e treine redes neurais em Python com PyTorch: Tensores, Autograd, nn.Module, Training Loop, DataLoader e boas práticas de ML.",
+  "description": "Construa passo a passo a rede neural do oráculo de filmes CineIA: tensores na GPU, Autograd, nn.Module, loop de treino e inferência leve.",
   "category": "framework",
   "languageId": "python-basics",
   "prerequisites": ["python-basics"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-tensores-redes",
-      "title": "Módulo 1: Tensores, Autograd, nn.Module e Loop de Treino",
-      "description": "Entenda como redes neurais aprendem do zero com PyTorch.",
+      "title": "Módulo 1: Construindo a Rede Neural CineIA",
+      "description": "Entenda na prática como redes neurais aprendem do zero com PyTorch, sem teoria pesada.",
       "lessons": [
         "lesson-01-tensors-gpu-autograd",
         "lesson-02-nn-module-linear-relu",

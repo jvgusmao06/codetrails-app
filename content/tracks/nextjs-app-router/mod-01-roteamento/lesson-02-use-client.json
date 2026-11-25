@@ -1,48 +1,52 @@
 {
   "id": "next-client-02",
   "title": "Server vs Client Components",
-  "description": "Quando usar a diretiva 'use client' no Next.js.",
+  "description": "Entenda por que Server Components são o padrão e quando colocar \"use client\" no topo para liberar cliques e hooks.",
+  "mission": "Missão 2: Criar o botão interativo de adicionar ao carrinho na vitrine da PixelShop.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Arquitetura Híbrida: Server vs Client Components",
-      "content": "Por padrão, todo componente no Next.js App Router roda no servidor (**Server Component**), permitindo ler arquivos ou bancos de dados diretamente sem enviar JavaScript desnecessário ao navegador.\n\nQuando um componente precisa de interatividade no browser — como hooks (`useState`, `useEffect`), manipuladores de eventos (`onClick`, `onChange`) ou APIs do navegador (`localStorage`, `window`) — colocamos a diretiva `\"use client\";` na **primeira linha** do arquivo.",
-      "codeExample": "\"use client\";\n\nimport { useState } from \"react\";\n\nexport function BotaoInterativo() {\n  const [ativo, setAtivo] = useState(false);\n  return <button onClick={() => setAtivo(!ativo)}>Alternar</button>;\n}",
+      "title": "Servidor por padrão, \"use client\" quando tiver clique",
+      "content": "No App Router, todo componente nasce como **Server Component** — ele roda no servidor e manda quase zero JavaScript para o navegador.\nPrecisou de `useState`, `onClick` ou APIs do browser? Só colocar `\"use client\";` na **primeira linha** do arquivo, antes de qualquer `import`!",
+      "codeExample": "\"use client\";\n\nimport { useState } from \"react\";\n\nexport function BotaoCarrinho() {\n  const [itens, setItens] = useState(0);\n  return <button onClick={() => setItens(itens + 1)}>Carrinho ({itens})</button>;\n}",
+      "expectedOutput": "Renderiza \"Carrinho (0)\" e sobe para \"Carrinho (1)\" ao clicar",
       "keyTakeaways": [
-        "Server Components são o padrão e reduzem o JavaScript enviado ao cliente.",
-        "Adicione `\"use client\";` na primeira linha do arquivo para habilitar hooks React e eventos do navegador.",
-        "Eventos como `onClick` e hooks como `useState` só funcionam em Client Components."
+        "Server Components são o padrão (mais leves e podem ler dados direto no servidor).",
+        "Coloque `\"use client\";` na linha 1 apenas nos componentes que usam hooks ou eventos de clique."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual é a principal vantagem dos React Server Components (padrão no Next.js)?",
+      "kind": "predict_output",
+      "prompt": "O que acontece ao tentar rodar este arquivo no Next.js App Router?",
+      "codeSnippet": "import { useState } from \"react\";\n\nexport function Filtro() {\n  const [aberto, setAberto] = useState(false);\n  return <button onClick={() => setAberto(!aberto)}>Filtro</button>;\n}",
       "options": [
-        "Eles rodam no servidor, podem ler arquivos/bancos diretamente e não enviam JavaScript desnecessário para o navegador",
-        "Eles permitem usar window.localStorage diretamente no servidor",
-        "Eles substituem o CSS pelo HTML puro",
-        "Eles só funcionam em computadores desktop"
+        "Erro de build avisando que useState exige \"use client\" no topo do arquivo",
+        "Funciona normalmente como Server Component",
+        "Renderiza apenas no modo escuro",
+        "Converte automaticamente para HTML estático sem erro"
       ],
       "correctIndex": 0,
-      "explanation": "Server Components reduzem o pacote JS enviado ao cliente e permitem buscar dados diretamente no servidor."
+      "hint": "Olhe para a primeira linha do arquivo — falta uma diretiva essencial para usar `useState`!",
+      "expectedOutput": "Error: You're importing a component that needs `useState`. Mark the file with \"use client\".",
+      "explanation": "Sem `\"use client\";` na linha 1, o Next.js trata o arquivo como Server Component e barra o uso de `useState`."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Adicione a diretiva no topo do arquivo para permitir o uso de `useState` e eventos `onClick`:",
+      "prompt": "Adicione a diretiva no topo do arquivo para liberar `useState` e `onClick`:",
       "codeTemplate": "\"{{blank}}\";\n\nimport { useState } from \"react\";",
       "blanks": [
-        {
-          "answer": "use client",
-          "placeholder": "diretiva"
-        }
+        { "answer": "use client", "placeholder": "diretiva" }
       ],
       "options": ["use client", "use server", "use browser", "client only"],
-      "explanation": "Por padrão, componentes no App Router são Server Components. Para usar hooks de estado ou APIs do browser, declaramos `\"use client\"`."
+      "hint": "A diretiva oficial do React/Next.js para componentes de navegador é `use client`.",
+      "expectedOutput": "Componente habilitado para rodar hooks no navegador",
+      "explanation": "Na mosca! `\"use client\";` marca a fronteira do que precisa de interatividade no browser."
     },
     {
       "type": "spot_the_bug",
-      "prompt": "Este componente tenta usar estado e clique no Next.js App Router, mas gera erro de compilação. Clique na linha responsável pelo problema:",
+      "prompt": "Ops! O componente até tem `\"use client\";`, mas ainda dá erro de compilação no Next.js! Clique na linha com o bug:",
       "lines": [
         "import { useState } from \"react\";",
         "\"use client\";",
@@ -52,30 +56,19 @@
         "}"
       ],
       "buggyLineIndex": 1,
-      "explanation": "A diretiva `\"use client\";` precisa estar na **primeira linha** do arquivo, antes de qualquer `import`."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene as linhas para construir corretamente um Client Component com estado e evento de clique:",
-      "blocks": [
-        "\"use client\";",
-        "import { useState } from \"react\";",
-        "export function Contador() {",
-        "  const [n, setN] = useState(0);",
-        "  return <button onClick={() => setN(n + 1)}>{n}</button>;",
-        "}"
-      ],
-      "correctOrder": [0, 1, 2, 3, 4, 5],
-      "explanation": "Primeiro declaramos `\"use client\";`, depois os imports, seguido pelo componente com `useState` e o botão com `onClick`."
+      "hint": "Onde exatamente a diretiva `\"use client\";` precisa ficar no arquivo?",
+      "expectedOutput": "Botão interativo compilando sem erro",
+      "explanation": "`\"use client\";` precisa ser sempre a **primeira linha** do arquivo, antes de qualquer `import`!"
     },
     {
       "type": "write_code",
-      "prompt": "Crie um Client Component exportado em Next.js que mantenha um estado numérico inicializado em `0` usando `useState` e renderize um `<button>` que incremente esse valor ao ser clicado.",
-      "starterCode": "",
+      "prompt": "Complete o Client Component `Contador` adicionando `\"use client\";` no topo, o estado com `useState(0)` e o `<button>` com `onClick`.",
+      "starterCode": "// TODO: adicione a diretiva \"use client\"; na primeira linha\n\nimport { useState } from \"react\";\n\nexport function Contador() {\n  // TODO: crie o estado count com useState(0) e retorne <button onClick={...}>{count}</button>\n  \n}",
       "requiredTokens": ["\"use client\"", "useState", "export function", "<button", "onClick"],
       "sampleSolution": "\"use client\";\n\nimport { useState } from \"react\";\n\nexport function Contador() {\n  const [count, setCount] = useState(0);\n  return <button onClick={() => setCount(count + 1)}>{count}</button>;\n}",
-      "hint": "Comece com `\"use client\";` no topo, importe `useState` do React e retorne um `<button onClick={...}>`.",
-      "explanation": "O desafio une a diretiva `\"use client\"` na primeira linha, gerenciamento de estado local com `useState` e tratamento de evento `onClick`."
+      "hint": "Coloque `\"use client\";` no topo, declare `const [count, setCount] = useState(0);` e retorne `<button onClick={() => setCount(count + 1)}>{count}</button>`.",
+      "expectedOutput": "Botão renderizado e clicável no navegador (0 -> 1)",
+      "explanation": "Arrasou! Você sabe exatamente quando manter tudo leve no servidor e quando ativar `\"use client\"`."
     }
   ]
 }

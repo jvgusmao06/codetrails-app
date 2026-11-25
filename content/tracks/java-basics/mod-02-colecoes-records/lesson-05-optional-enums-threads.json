@@ -1,88 +1,73 @@
 {
   "id": "java-optional-enums-threads-05",
   "title": "Optional<T>, Enums, var e Threads",
-  "description": "Elimine NullPointerException com Optional<T>, modele estados fixos com enum, use var e execute tarefas concorrentes com Threads.",
+  "description": "Diga adeus ao NullPointerException com Optional, modele estados com enum, encurte tipos locais com var e rode tarefas em paralelo com Thread.",
+  "mission": "Missão 11: Controlar status do pedido com enum, evitar null com Optional e preparar cafés em paralelo com Thread.",
   "xp": 40,
   "steps": [
     {
       "type": "theory",
-      "title": "Optional<T>, Enum, var e Concorrência com Threads",
-      "content": "Para evitar `NullPointerException`, métodos de busca em Java retornam **`Optional<T>`** em vez de `null` — permitindo encadear `.orElse(...)` ou `.orElseThrow()`. Já o **`enum`** define um conjunto fechado e seguro de constantes (ex: `StatusPedido.PAGO`). Desde o Java 10, **`var`** infere o tipo de variáveis locais inicializadas mantendo a tipagem estática. Por fim, para executar código em paralelo em uma nova linha de execução, criamos uma **`Thread`** passando um `Runnable` (facilmente escrito com lambda `() -> ...`) e chamamos **`.start()`**.",
-      "codeExample": "import java.util.Optional;\n\nenum StatusPedido { PAGO, PENDENTE, CANCELADO }\n\nOptional<String> email = Optional.ofNullable(buscarEmail());\nString destino = email.orElse(\"sem-email@dominio.com\");\n\nvar status = StatusPedido.PAGO; // Tipo inferido: StatusPedido\n\nThread worker = new Thread(() -> {\n    System.out.println(\"Executando em paralelo!\");\n});\nworker.start(); // Inicia a nova Thread",
+      "title": "Estados com enum, segurança com Optional e paralelo com Thread",
+      "content": "Um `enum` trava os estados válidos do pedido (como `PENDENTE` ou `PRONTO`) para ninguém digitar texto errado.\nCom `Optional.ofNullable(valor).orElse(\"Visitante\")`, você trata valores ausentes em 1 linha sem `if (x != null)`, e `var` infere tipos de variáveis locais já inicializadas.\nPara rodar uma tarefa em paralelo, crie `new Thread(() -> ...)` e sempre chame `.start()`!",
+      "codeExample": "enum Status { PENDENTE, PRONTO }\nvar status = Status.PRONTO;\nString cliente = Optional.ofNullable((String) null).orElse(\"Visitante\");\nThread barista = new Thread(() -> System.out.println(cliente + \": \" + status));\nbarista.start();",
+      "expectedOutput": "Visitante: PRONTO",
       "keyTakeaways": [
-        "Use `Optional.ofNullable(valor).orElse(padrao)` para lidar com ausências sem `if (x != null)`.",
-        "`enum` garante em tempo de compilação que apenas valores válidos existam; `var` só funciona em variáveis locais inicializadas.",
-        "Para iniciar uma `Thread` concorrente, passe um `Runnable` (lambda `() -> ...`) e chame `.start()` (nunca `.run()` diretamente)."
+        "`Optional.ofNullable(x).orElse(padrao)` substitui checagens de `null` com segurança.",
+        "Para iniciar uma `Thread` em paralelo de verdade, chame `.start()` (nunca `.run()`)."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Qual método de `Optional<String>` retorna o valor presente ou um valor padrão alternativo caso esteja vazio, sem lançar exceção?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no painel da cafeteria ao rodar este `Optional`?",
+      "codeSnippet": "String apelido = null;\nvar exibicao = Optional.ofNullable(apelido).orElse(\"Cliente VIP\");\nSystem.out.println(\"Olá, \" + exibicao);",
       "options": [
-        ".get()",
-        ".orElse(\"padrao\")",
-        ".isNull()",
-        ".unwrap()"
+        "Olá, Cliente VIP",
+        "Olá, null",
+        "NullPointerException",
+        "Olá, Optional.empty"
       ],
-      "correctIndex": 1,
-      "explanation": "`.get()` lança `NoSuchElementException` se estiver vazio; já `.orElse(\"padrao\")` devolve com segurança o valor alternativo."
+      "correctIndex": 0,
+      "hint": "Como `apelido` é `null`, `Optional.ofNullable` cria um Optional vazio e `.orElse(...)` entra em ação!",
+      "expectedOutput": "Olá, Cliente VIP",
+      "explanation": "`.orElse(\"Cliente VIP\")` devolve o valor reserva sem lançar nenhuma exceção!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o código para criar uma `Thread` usando uma expressão lambda `Runnable` e iniciá-la em paralelo:",
-      "codeTemplate": "{{blank}} tarefa = new Thread(() {{blank}} {\n    System.out.println(\"Rodando\");\n});\ntarefa.{{blank}}();",
+      "prompt": "Complete a criação da `Thread` com lambda e o método que inicia a execução paralela:",
+      "codeTemplate": "Thread preparo = new Thread(() {{blank}} System.out.println(\"Café pronto!\"));\npreparo.{{blank}}();",
       "blanks": [
-        { "answer": "Thread", "placeholder": "classe" },
         { "answer": "->", "placeholder": "lambda" },
         { "answer": "start", "placeholder": "iniciar" }
       ],
-      "options": ["Thread", "->", "start", "run", "=>", "Async"],
-      "explanation": "Instanciamos `new Thread(() -> ...)` e chamamos `.start()` para a JVM criar e agendar a nova thread de execução."
+      "options": ["->", "start", "run", "=>"],
+      "hint": "O `Runnable` usa lambda `() -> ...` e a JVM só abre uma nova thread quando chamamos `.start()`.",
+      "expectedOutput": "Café pronto!",
+      "explanation": "`.start()` cria uma nova linha de execução na JVM e executa a lambda em paralelo!"
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O código abaixo pretende executar a tarefa em uma nova thread separada, mas acaba rodando de forma síncrona na thread atual. Clique na linha com o bug:",
+      "prompt": "O barista queria preparar o pedido em paralelo, mas acabou rodando tudo na mesma thread atual! Clique na linha com o bug:",
       "lines": [
         "Thread worker = new Thread(() -> {",
-        "    System.out.println(\"Processando...\");",
+        "  System.out.println(\"Moendo grãos...\");",
         "});",
         "worker.run();"
       ],
       "buggyLineIndex": 3,
-      "explanation": "Chamar `worker.run()` executa o método normalmente na thread atual; é obrigatório chamar `worker.start()` para iniciar uma nova thread."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para definir um `enum`, inferir o tipo com `var` e usar `Optional` com valor padrão:",
-      "blocks": [
-        "enum Papel { ADMIN, USER }",
-        "var papelPadrao = Papel.USER;",
-        "Optional<Papel> opt = Optional.ofNullable(null);",
-        "Papel atual = opt.orElse(papelPadrao);"
-      ],
-      "correctOrder": [0, 1, 2, 3],
-      "explanation": "Definimos o `enum Papel`, inferimos `Papel.USER` com `var` e usamos `Optional.ofNullable(...).orElse(...)` como fallback seguro."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Sobre o uso da palavra-chave `var` em Java, qual afirmação está correta?",
-      "options": [
-        "Torna Java dinamicamente tipado, permitindo mudar o tipo da variável depois",
-        "Só pode ser usada em variáveis locais que já são inicializadas na mesma linha",
-        "Pode ser usada em parâmetros de métodos e atributos de classe",
-        "Substitui a necessidade de `Optional<T>`"
-      ],
-      "correctIndex": 1,
-      "explanation": "Em Java, `var` faz inferência de tipo em tempo de compilação apenas para variáveis locais inicializadas (ex: `var x = 10;`)."
+      "hint": "Qual método devemos chamar na `Thread` para realmente iniciar uma execução paralela?",
+      "expectedOutput": "Moendo grãos...",
+      "explanation": "Chamar `worker.run()` executa o código de forma síncrona na thread atual; troque por `worker.start()`!"
     },
     {
       "type": "write_code",
-      "prompt": "Defina um `enum` chamado `Nivel` com os valores `INICIANTE`, `INTERMEDIARIO` e `AVANCADO`. Em seguida, declare uma variável local `exibicao` usando inferência de tipo (`var`) que envolva `nome` em um `Optional.ofNullable` com fallback `\"Visitante\"`.",
-      "starterCode": "",
+      "prompt": "Complete o `enum Nivel` e use `var` com `Optional.ofNullable(nome).orElse(\"Visitante\")` para exibir um nome seguro.",
+      "starterCode": "enum Nivel { INICIANTE, INTERMEDIARIO, AVANCADO }\nString nome = null;\n// TODO: crie `var exibicao = Optional.ofNullable(nome).orElse(\"Visitante\");`\n",
       "requiredTokens": ["enum", "Nivel", "var", "Optional.ofNullable", ".orElse("],
-      "sampleSolution": "enum Nivel { INICIANTE, INTERMEDIARIO, AVANCADO }\nvar exibicao = Optional.ofNullable(nome).orElse(\"Visitante\");",
-      "hint": "Declare `enum Nivel { ... }` e atribua `Optional.ofNullable(nome).orElse(\"Visitante\")` a `var exibicao`.",
-      "explanation": "`enum` e `Optional` tornam suas regras de negócio explícitas e à prova de valores nulos, enquanto `var` reduz a verbosidade local."
+      "sampleSolution": "enum Nivel { INICIANTE, INTERMEDIARIO, AVANCADO }\nString nome = null;\nvar exibicao = Optional.ofNullable(nome).orElse(\"Visitante\");",
+      "hint": "Escreva `var exibicao = Optional.ofNullable(nome).orElse(\"Visitante\");`.",
+      "expectedOutput": "Visitante",
+      "explanation": "Parabéns! Você fechou a trilha Java dominando `enum`, `var`, `Optional` e `Thread` na Cafeteria do Duke!"
     }
   ]
 }

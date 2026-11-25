@@ -1,80 +1,74 @@
 {
   "id": "go-interfaces-01",
   "title": "Structs, Interfaces Implícitas e Erros",
-  "description": "Aprenda composição com structs, métodos receptores, interfaces sem 'implements' e o padrão if err != nil.",
+  "description": "Modele dados com structs, adicione métodos com receivers e satisfaça interfaces automaticamente sem precisar de implements.",
+  "mission": "Missão 8: Criar avisos de entrega (Email e SMS) seguindo o mesmo contrato de notificação.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Structs, Receivers e Interfaces Implícitas",
-      "content": "Go não possui classes nem herança (extends). Em vez disso, definimos dados com 'struct' e associamos métodos usando um receptor (receiver). As interfaces em Go são satisfeitas implicitamente: se o seu struct implementa os métodos exigidos por uma interface, ele já a implementa automaticamente — sem precisar declarar 'implements'. Além disso, métodos e funções que podem falhar retornam 'error' e são verificados com 'if err != nil'.",
-      "codeExample": "type Notificador interface {\n    Enviar(msg string) error\n}\n\ntype Email struct { Destino string }\n\n// Método associado ao struct Email\nfunc (e Email) Enviar(msg string) error {\n    if e.Destino == \"\" {\n        return fmt.Errorf(\"destino vazio\")\n    }\n    return nil\n}",
+      "title": "Sem classes, sem implements: só structs e contratos",
+      "content": "Em Go você modela dados com `struct` e liga métodos a eles com um receptor (ex: `func (e Email) Enviar(...)`).\nO melhor: **interfaces são implícitas**! Se o seu struct tem os métodos que a interface pede, ele já a implementa automaticamente — sem escrever `implements`.",
+      "codeExample": "type Enviador interface {\n    Enviar(msg string) error\n}\ntype Email struct { Destino string }\nfunc (e Email) Enviar(msg string) error {\n    fmt.Println(\"Email para\", e.Destino, \":\", msg)\n    return nil\n}",
+      "expectedOutput": "Email para ana@go.dev : Saiu para entrega!",
       "keyTakeaways": [
-        "Métodos em Go declaram o receptor entre 'func' e o nome do método: func (u *Usuario) Salvar().",
-        "Use receptor ponteiro (*T) quando o método precisar modificar os campos do struct.",
-        "Interfaces são implícitas: basta implementar os métodos exigidos.",
-        "Funções que podem falhar retornam (Resultado, error) e devem ter o erro checado com 'if err != nil'."
+        "Se um struct possui os métodos de uma interface, ele já satisfaz essa interface automaticamente.",
+        "Use receptor ponteiro `(c *Conta)` quando o método precisar modificar os campos do struct."
       ]
     },
     {
+      "type": "multiple_choice",
+      "kind": "predict_output",
+      "prompt": "Qual será o saldo impresso se `Depositar` usar receptor por valor `(c Conta)`?",
+      "codeSnippet": "type Conta struct { Saldo int }\nfunc (c Conta) Depositar(v int) { c.Saldo += v }\n\nminha := Conta{Saldo: 0}\nminha.Depositar(100)\nfmt.Println(minha.Saldo)",
+      "options": [
+        "0",
+        "100",
+        "Erro de compilação",
+        "nil"
+      ],
+      "correctIndex": 0,
+      "hint": "Sem o `*` no receptor `(c Conta)`, o método altera apenas uma cópia temporária!",
+      "expectedOutput": "0",
+      "explanation": "Como `(c Conta)` recebe uma cópia, `minha.Saldo` continua `0`! Trocar para `(c *Conta)` altera o original."
+    },
+    {
+      "type": "fill_in_blank",
+      "prompt": "Complete o contrato da interface `Enviador` e o retorno de erro no método:",
+      "codeTemplate": "type Enviador {{blank}} {\n    Enviar(msg string) error\n}\ntype SMS struct {}\nfunc (s SMS) Enviar(msg string) {{blank}} {\n    return nil\n}",
+      "blanks": [
+        { "answer": "interface", "placeholder": "contrato" },
+        { "answer": "error", "placeholder": "retorno" }
+      ],
+      "options": ["interface", "error", "class", "implements"],
+      "hint": "Contratos usam `interface` e a assinatura do método precisa devolver o mesmo tipo `error`.",
+      "expectedOutput": "<nil>",
+      "explanation": "Com o mesmo método `Enviar(msg string) error`, `SMS` já funciona em qualquer lugar que espere um `Enviador`!"
+    },
+    {
       "type": "spot_the_bug",
-      "prompt": "O método Depositar deveria somar o valor ao Saldo da Conta, mas o saldo continua 0 após a chamada. Clique na linha com o bug:",
+      "prompt": "O método `Depositar` deveria somar no saldo da conta, mas o saldo nunca muda! Qual linha tem o bug?",
       "lines": [
         "type Conta struct { Saldo int }",
         "func (c Conta) Depositar(valor int) {",
         "    c.Saldo += valor",
         "}",
-        "func main() {",
-        "    minha := Conta{Saldo: 0}",
-        "    minha.Depositar(100)",
-        "}"
+        "minha.Depositar(100)"
       ],
       "buggyLineIndex": 1,
-      "explanation": "Na linha 2, o receptor '(c Conta)' recebe uma cópia por valor do struct. Para alterar o struct original, o receptor deve ser um ponteiro: 'func (c *Conta) Depositar(valor int)'."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Como fazemos um struct 'PostgresRepo' implementar a interface 'Repositorio' em Go?",
-      "options": [
-        "Usando 'type PostgresRepo struct implements Repositorio'",
-        "Apenas implementando em PostgresRepo todos os métodos com a mesma assinatura da interface Repositorio",
-        "Herdando a classe base Repositorio com 'extends'",
-        "Registrando o struct no arquivo go.mod"
-      ],
-      "correctIndex": 1,
-      "explanation": "Em Go, interfaces são implícitas (structural typing): basta implementar os métodos exigidos pela interface e o compilador reconhece a compatibilidade."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete a definição da interface 'Armazenador' e do método no struct 'Memoria':",
-      "codeTemplate": "type Armazenador {{blank}} {\n    Salvar(dado string) error\n}\ntype Memoria {{blank}} {}\nfunc (m Memoria) Salvar(dado string) {{blank}} {\n    return nil\n}",
-      "blanks": [
-        { "answer": "interface", "placeholder": "contrato" },
-        { "answer": "struct", "placeholder": "estrutura" },
-        { "answer": "error", "placeholder": "retorno" }
-      ],
-      "options": ["interface", "struct", "error", "class", "implements", "void"],
-      "explanation": "Interfaces declaram assinaturas com 'interface', dados são modelados com 'struct' e métodos que podem falhar retornam 'error'."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para instanciar o struct Email, chamar o método Enviar e tratar o erro retornado:",
-      "blocks": [
-        "if err != nil {\n    fmt.Println(\"Falha:\", err)\n}",
-        "e := Email{Destino: \"dev@go.dev\"}",
-        "err := e.Enviar(\"Olá\")"
-      ],
-      "correctOrder": [1, 2, 0],
-      "explanation": "Primeiro criamos a instância de `Email`, chamamos o método `Enviar` capturando `err` e checamos `if err != nil`."
+      "hint": "Olhe o receptor na declaração do método: falta um `*` para mexer no struct original.",
+      "expectedOutput": "Saldo: 100",
+      "explanation": "Na linha 2, troque `(c Conta)` por `(c *Conta)` para modificar a conta real em vez de uma cópia."
     },
     {
       "type": "write_code",
-      "prompt": "Desafio de Código: Defina uma interface 'Enviador' com o método 'Enviar(msg string) error', um struct 'SMS' com o campo 'Numero string' e implemente o método 'Enviar' para 'SMS': se 's.Numero' for igual a \"\", retorne um erro com 'fmt.Errorf'; caso contrário retorne 'nil'.",
-      "starterCode": "",
-      "requiredTokens": ["type", "Enviador", "interface", "SMS", "struct", "func", "Enviar", "error", "fmt.Errorf", "nil"],
-      "sampleSolution": "type Enviador interface {\n    Enviar(msg string) error\n}\n\ntype SMS struct {\n    Numero string\n}\n\nfunc (s SMS) Enviar(msg string) error {\n    if s.Numero == \"\" {\n        return fmt.Errorf(\"numero vazio\")\n    }\n    return nil\n}",
-      "hint": "Declare `type Enviador interface`, `type SMS struct` e o método `func (s SMS) Enviar(msg string) error` checando `s.Numero == \"\"`.",
-      "explanation": "Como `SMS` possui o método `Enviar(msg string) error`, ele satisfaz implicitamente a interface `Enviador`."
+      "prompt": "Implemente o método `Enviar(msg string) error` no struct `SMS`: se `s.Numero == \"\"` retorne `fmt.Errorf(...)`, senão retorne `nil`.",
+      "starterCode": "type Enviador interface {\n    Enviar(msg string) error\n}\ntype SMS struct { Numero string }\n\n// TODO: implemente func (s SMS) Enviar(msg string) error\n",
+      "requiredTokens": ["func", "(s SMS)", "Enviar", "error", "fmt.Errorf", "nil"],
+      "sampleSolution": "type Enviador interface {\n    Enviar(msg string) error\n}\ntype SMS struct { Numero string }\n\nfunc (s SMS) Enviar(msg string) error {\n    if s.Numero == \"\" {\n        return fmt.Errorf(\"numero vazio\")\n    }\n    return nil\n}",
+      "hint": "Declare `func (s SMS) Enviar(msg string) error`, cheque `if s.Numero == \"\"` retornando `fmt.Errorf(...)` e no final `return nil`.",
+      "expectedOutput": "<nil>",
+      "explanation": "Excelente! Sem escrever `implements`, `SMS` já cumpre automaticamente o contrato `Enviador`."
     }
   ]
 }

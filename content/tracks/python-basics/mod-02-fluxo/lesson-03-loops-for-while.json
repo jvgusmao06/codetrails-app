@@ -1,87 +1,73 @@
 {
   "id": "py-loops-03",
-  "title": "05. Loops (for, range e while)",
-  "description": "Repita tarefas com for, gere sequências com range(), controle repetições condicionais com while e use break/continue.",
+  "title": "Loops com for, range() e while",
+  "description": "Repita ações com for e range(), controle laços com while e domine os atalhos break e continue.",
+  "mission": "Missão 5: Simular os turnos de treino da Py usando for, while, break e continue.",
   "xp": 30,
   "steps": [
     {
       "type": "theory",
-      "title": "Laços for, range(), while, break e continue",
-      "content": "Em Python temos duas formas principais de repetição:\n\n1. **Loop `for` e `range()`**: O `for item in sequencia:` percorre diretamente listas ou strings. Quando precisamos contar números, usamos `range(n)` (gera de `0` até `n - 1`) ou `range(inicio, fim)` (de `inicio` até `fim - 1`).\n2. **Loop `while`**: Repete um bloco **enquanto** uma condição booleana for verdadeira (`while contador < 3:`). Lembre-se de atualizar a variável de controle dentro do laço para evitar loops infinitos.\n3. **`break` e `continue`**: `break` interrompe o loop imediatamente e sai dele; `continue` pula o restante da iteração atual e vai direto para a próxima volta.",
-      "codeExample": "for i in range(1, 5):\n    if i == 2:\n        continue  # pula o 2\n    if i == 4:\n        break     # encerra no 4\n    print(i)      # imprime 1 e 3\n\ntentativas = 0\nwhile tentativas < 2:\n    print(\"Tentativa\", tentativas)\n    tentativas += 1",
+      "title": "Repetindo turnos com for, while, break e continue",
+      "content": "Use `for n in range(n):` quando souber quantas voltas quer dar (lembrando que `range(3)` gera `0, 1, 2`), e `while condicao:` para repetir enquanto algo for verdadeiro.\nDentro de qualquer loop, `continue` pula só a volta atual e `break` encerra o laço na hora.",
+      "codeExample": "for turno in range(1, 5):\n    if turno == 2:\n        continue  # pula o turno 2\n    if turno == 4:\n        break     # para no turno 4\n    print(\"Turno\", turno)",
+      "expectedOutput": "Turno 1\nTurno 3",
       "keyTakeaways": [
-        "for x in lista percorre itens diretamente; range(n) gera 0 até n - 1.",
-        "while condicao: repete enquanto a condição for True.",
-        "break encerra o laço; continue pula apenas a iteração atual."
+        "`range(n)` gera de `0` até `n - 1`; `while` repete enquanto a condição for `True`.",
+        "`continue` pula apenas a volta atual; `break` sai do loop imediatamente."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Quais números são gerados por range(3) em Python?",
+      "kind": "predict_output",
+      "prompt": "Quais números aparecem na tela ao rodar este loop?",
+      "codeSnippet": "for n in range(4):\n    if n == 2:\n        continue\n    print(n)",
       "options": [
-        "1, 2, 3",
         "0, 1, 2, 3",
-        "0, 1, 2",
+        "0, 1, 3",
+        "1, 3, 4",
         "0, 1"
       ],
-      "correctIndex": 2,
-      "explanation": "range(n) começa em 0 por padrão e para antes de n (n - 1), portanto range(3) produz 0, 1 e 2."
+      "correctIndex": 1,
+      "hint": "`range(4)` gera `0, 1, 2, 3`, e o `continue` faz o loop pular o `print` quando `n` é `2`.",
+      "expectedOutput": "0\n1\n3",
+      "explanation": "O loop percorre `0, 1, 2, 3`. No `2`, `continue` pula direto para o `3` — por isso imprime `0, 1, 3`!"
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o loop while para contar de 0 até 2 sem entrar em loop infinito:",
-      "codeTemplate": "contador = 0\n{{blank}} contador < 3:\n    print(contador)\n    contador {{blank}} 1",
+      "prompt": "Complete o `while` para contar 3 ataques sem cair em loop infinito:",
+      "codeTemplate": "ataques = 0\n{{blank}} ataques < 3:\n    print(\"Ataque\", ataques)\n    ataques {{blank}} 1",
       "blanks": [
         { "answer": "while", "placeholder": "laço" },
-        { "answer": "+=", "placeholder": "incremento" }
+        { "answer": "+=", "placeholder": "somar" }
       ],
       "options": ["while", "for", "+=", "=="],
-      "explanation": "Usamos 'while' para repetir enquanto contador < 3 e 'contador += 1' para avançar a cada volta."
-    },
-    {
-      "type": "fill_in_blank",
-      "prompt": "Complete o loop para pular valores negativos e interromper o laço se encontrar 99:",
-      "codeTemplate": "for n in [5, -1, 10, 99, 20]:\n    if n < 0:\n        {{blank}}\n    if n == 99:\n        {{blank}}\n    print(n)",
-      "blanks": [
-        { "answer": "continue", "placeholder": "pular" },
-        { "answer": "break", "placeholder": "parar" }
-      ],
-      "options": ["continue", "break", "pass", "return"],
-      "explanation": "'continue' pula para a próxima iteração quando n < 0, e 'break' encerra o loop ao encontrar 99."
+      "hint": "Use `while` para repetir enquanto a condição for verdadeira e `+=` para somar 1 a cada volta.",
+      "expectedOutput": "Ataque 0\nAtaque 1\nAtaque 2",
+      "explanation": "Sem `ataques += 1`, o contador nunca chegaria em 3. Assim o loop roda certinho 3 vezes!"
     },
     {
       "type": "spot_the_bug",
-      "prompt": "O loop while abaixo deveria imprimir 0, 1, 2, mas entra em loop infinito. Qual linha precisa ser corrigida ou está faltando?",
+      "prompt": "Este treino com `while` entrou em loop infinito porque o contador nunca avança! Clique na linha com o bug:",
       "lines": [
         "i = 0",
         "while i < 3:",
-        "    print(i)",
+        "    print(\"Treino\", i)",
         "    i = 0"
       ],
       "buggyLineIndex": 3,
-      "explanation": "Na linha 4, 'i = 0' reinicia o contador em toda volta em vez de incrementá-lo (i += 1), mantendo i < 3 para sempre."
-    },
-    {
-      "type": "order_code",
-      "prompt": "Ordene os blocos para percorrer os números de 0 a 4 e imprimir apenas os pares maiores que zero:",
-      "blocks": [
-        "    if num == 0:",
-        "        continue",
-        "for num in range(5):",
-        "    if num % 2 == 0:",
-        "        print(num)"
-      ],
-      "correctOrder": [2, 0, 1, 3, 4],
-      "explanation": "Primeiro abrimos o for com range(5), pulamos o 0 com continue e só então imprimimos os números pares."
+      "hint": "Olhe o que a linha 4 está fazendo com `i` em toda volta.",
+      "expectedOutput": "Treino 0\nTreino 1\nTreino 2",
+      "explanation": "Na linha 4, `i = 0` zera o contador sempre! Trocar para `i += 1` faz o loop avançar e encerrar."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva um loop que percorra os números de 0 a 5 usando range(), pule o número 2 com continue e imprima os demais valores.",
-      "starterCode": "",
-      "requiredTokens": ["for", "range", "continue", "print"],
-      "sampleSolution": "for n in range(6):\n    if n == 2:\n        continue\n    print(n)",
-      "hint": "Lembre-se que range(6) gera de 0 a 5. Use if dentro do for para chamar continue quando o valor for 2.",
-      "explanation": "Combinamos for, range(6), condicional if e continue para filtrar a iteração indesejada."
+      "prompt": "Complete o loop para percorrer `range(5)`, pular o número `2` com `continue` e imprimir os demais.",
+      "starterCode": "for n in range(5):\n    # TODO: se n == 2, pule esta volta com continue\n    \n    print(n)\n",
+      "requiredTokens": ["for", "range(5)", "if", "continue", "print"],
+      "sampleSolution": "for n in range(5):\n    if n == 2:\n        continue\n    print(n)",
+      "hint": "Escreva `if n == 2:` e na linha de baixo (indentada) `continue`.",
+      "expectedOutput": "0\n1\n3\n4",
+      "explanation": "Treino concluído! Você controlou um loop `for` com `range()` e filtrou a volta indesejada com `continue`."
     }
   ]
 }

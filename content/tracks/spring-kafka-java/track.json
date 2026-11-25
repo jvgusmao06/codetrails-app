@@ -1,7 +1,7 @@
 {
   "id": "spring-kafka-java",
   "title": "Apache Kafka (Spring Kafka)",
-  "description": "Construa arquiteturas orientadas a eventos em Java com KafkaTemplate, @KafkaListener, tópicos, partições e Consumer Groups.",
+  "description": "Conecte microsserviços da API de Entregas com eventos assíncronos: publique com KafkaTemplate e escute com @KafkaListener sem stress.",
   "category": "framework",
   "languageId": "java-basics",
   "prerequisites": ["java-basics", "spring-boot-java"],
@@ -11,8 +11,8 @@
   "modules": [
     {
       "id": "mod-01-fundamentos",
-      "title": "Módulo 1: Producers (KafkaTemplate) e Consumers (@KafkaListener)",
-      "description": "Publique e consuma eventos assíncronos em escala com Spring Kafka.",
+      "title": "Módulo 1: Correio de Eventos com KafkaTemplate e @KafkaListener",
+      "description": "Envie eventos ordenados por chave e escale consumidores em paralelo usando Consumer Groups.",
       "lessons": ["lesson-01-producer-consumer"]
     }
   ]

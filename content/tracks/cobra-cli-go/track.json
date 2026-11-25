@@ -1,7 +1,7 @@
 {
   "id": "cobra-cli-go",
   "title": "Cobra (CLI Apps)",
-  "description": "Crie ferramentas de linha de comando profissionais em Go como kubectl, gh e docker usando cobra.Command, subcomandos e flags.",
+  "description": "Crie a ferramenta de terminal dos entregadores da Central do Gopher com Cobra: comandos, subcomandos e flags tipadas.",
   "category": "library",
   "languageId": "golang-cloud",
   "prerequisites": [
@@ -14,7 +14,7 @@
     {
       "id": "mod-01-fundamentos",
       "title": "Módulo 1: cobra.Command, Flags e Execute",
-      "description": "Estruture comandos raiz, subcomandos, flags tipadas e geração automática de --help.",
+      "description": "Monte comandos, aninhe subcomandos com AddCommand e leia flags com Flags().StringVarP.",
       "lessons": [
         "lesson-01-cobra-commands-flags"
       ]

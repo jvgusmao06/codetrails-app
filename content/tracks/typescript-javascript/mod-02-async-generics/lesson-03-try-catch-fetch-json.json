@@ -1,92 +1,74 @@
 {
   "id": "ts-try-fetch-json-03",
-  "title": "09. Erros (try/catch/throw), fetch() e JSON",
-  "description": "Capture exceções com try/catch/finally, dispare erros com throw, faça requisições HTTP com fetch() e serialize dados com JSON.",
+  "title": "Erros (try/catch), fetch() e JSON",
+  "description": "Busque dados de APIs com fetch(), valide res.ok, converta JSON com segurança e proteja o app com try/catch.",
+  "mission": "Missão 9: Buscar as tarefas da API no TaskBeat e proteger o app se o JSON vier quebrado ou a rede falhar.",
   "xp": 35,
   "steps": [
     {
       "type": "theory",
-      "title": "Consumindo APIs com fetch(), JSON e try/catch/throw",
-      "content": "Ao integrar aplicações web ou Node.js com APIs externas, quatro recursos trabalham juntos:\n\n1. **`try / catch / finally`**: `try` envolve código que pode falhar (síncrono ou `await`); `catch (err)` trata o erro sem quebrar a aplicação; `finally` roda sempre ao final.\n2. **`throw new Error(...)`**: Lança uma exceção manualmente quando uma validação ou resposta falha.\n3. **`fetch(url)` e `res.ok`**: `await fetch(url)` faz uma requisição HTTP e retorna uma `Response`. **Importante**: `fetch` NÃO lança erro para status 404 ou 500! Por isso, checamos `if (!res.ok) throw new Error(\"Falha HTTP\")` antes de ler `await res.json()`.\n4. **`JSON.parse()` e `JSON.stringify()`**: `JSON.stringify(obj)` converte um objeto em string JSON; `JSON.parse(str)` converte uma string JSON de volta em objeto (e lança erro se o texto for inválido).",
-      "codeExample": "async function buscarDados(url: string) {\n  try {\n    const res = await fetch(url);\n    if (!res.ok) {\n      throw new Error(`Erro HTTP: ${res.status}`);\n    }\n    return await res.json();\n  } catch (err) {\n    console.error(err);\n  } finally {\n    console.log(\"Requisição encerrada\");\n  }\n}\n\nconst texto = JSON.stringify({ id: 1 });\nconst obj = JSON.parse(texto);",
+      "title": "Blindando chamadas com try/catch, fetch e JSON",
+      "content": "Quando falamos com APIs, `await fetch(url)` busca os dados — mas atenção: respostas 404 ou 500 não jogam erro sozinhas, então sempre checamos `if (!res.ok) throw new Error(...)`.\nE para evitar que um `JSON.parse()` inválido derrube seu app, envolva o código arriscado em `try { ... } catch (err) { ... }`!",
+      "codeExample": "async function buscarTarefas(url: string) {\n  try {\n    const res = await fetch(url);\n    if (!res.ok) throw new Error(`HTTP ${res.status}`);\n    return await res.json();\n  } catch { return []; }\n}",
+      "expectedOutput": "Retorna a lista de tarefas (ou [] se der erro, sem travar o app)",
       "keyTakeaways": [
-        "await fetch(url) só rejeita em falha de rede; sempre valide res.ok para erros 4xx/5xx.",
-        "throw new Error('msg') dispara uma exceção capturável por try/catch.",
-        "JSON.stringify() serializa objeto -> string; JSON.parse() converte string -> objeto."
+        "`fetch()` só rejeita em queda de rede: sempre cheque `if (!res.ok) throw new Error(...)`.",
+        "`JSON.stringify(obj)` vira texto; `JSON.parse(str)` volta a ser objeto (use dentro de `try/catch`)."
       ]
     },
     {
       "type": "multiple_choice",
-      "prompt": "Ao usar const res = await fetch(url), o que acontece se o servidor responder com status 404 Not Found?",
+      "kind": "predict_output",
+      "prompt": "O que aparece no console quando `JSON.parse` recebe um texto quebrado dentro deste `try/catch`?",
+      "codeSnippet": "try {\n  const dados = JSON.parse(\"{invalido}\");\n  console.log(\"OK:\", dados);\n} catch {\n  console.log(\"Fallback seguro\");\n}",
       "options": [
-        "fetch() entra automaticamente no bloco catch",
-        "fetch() resolve normalmente, mas res.ok será false",
-        "res.json() retorna null automaticamente",
-        "O navegador reinicia a requisição"
+        "Fallback seguro",
+        "OK: {invalido}",
+        "O programa trava sem imprimir nada",
+        "undefined"
       ],
-      "correctIndex": 1,
-      "explanation": "fetch() só rejeita a Promise em falhas de rede/DNS; respostas HTTP 404 ou 500 resolvem com res.ok === false."
-    },
-    {
-      "type": "multiple_choice",
-      "prompt": "Qual método nativo converte uma string JSON recebida de um arquivo ou API em um objeto JavaScript manipulável?",
-      "options": [
-        "JSON.stringify()",
-        "JSON.parse()",
-        "JSON.toObject()",
-        "Object.fromJSON()"
-      ],
-      "correctIndex": 1,
-      "explanation": "JSON.parse(texto) analisa a string JSON e retorna o objeto correspondente (ou lança SyntaxError se inválida)."
+      "correctIndex": 0,
+      "hint": "`JSON.parse` lança um erro na linha 2, pulando direto para o bloco `catch`!",
+      "expectedOutput": "Fallback seguro",
+      "explanation": "O `catch` segura o erro na hora e executa o plano B (`Fallback seguro`) sem quebrar o aplicativo."
     },
     {
       "type": "fill_in_blank",
-      "prompt": "Complete o bloco de tratamento de erro para validar um valor com throw e garantir a execução do finally:",
-      "codeTemplate": "{{blank}} {\n  if (valor < 0) {{blank}} new Error(\"Inválido\");\n} {{blank}} (err) {\n  console.error(err);\n} {{blank}} {\n  console.log(\"Fim\");\n}",
+      "prompt": "Complete o `try/catch` para lançar um erro quando `res.ok` for falso e capturá-lo:",
+      "codeTemplate": "try {\n  if (!res.ok) {{blank}} new Error(\"Falha HTTP\");\n} {{blank}} (err) {\n  console.error(err);\n}",
       "blanks": [
-        { "answer": "try", "placeholder": "tentar" },
         { "answer": "throw", "placeholder": "lançar" },
-        { "answer": "catch", "placeholder": "capturar" },
-        { "answer": "finally", "placeholder": "sempre" }
+        { "answer": "catch", "placeholder": "capturar" }
       ],
-      "options": ["try", "throw", "raise", "catch", "finally"],
-      "explanation": "Usamos try, throw new Error(...) para lançar, catch (err) para capturar e finally para o bloco final."
-    },
-    {
-      "type": "spot_the_bug",
-      "prompt": "A função assíncrona abaixo tenta buscar dados com fetch, mas ignora respostas HTTP de erro (como 500). Qual linha deveria validar res.ok antes de ler o JSON?",
-      "lines": [
-        "async function carregar(url: string) {",
-        "  const res = await fetch(url);",
-        "  return await res.json();",
-        "}"
-      ],
-      "buggyLineIndex": 2,
-      "explanation": "Antes de chamar res.json(), devemos verificar 'if (!res.ok) throw new Error(...)' para não tentar parsear uma página de erro."
+      "options": ["throw", "catch", "raise", "except"],
+      "hint": "Em JS/TS lançamos erros com `throw` e capturamos com `catch`.",
+      "expectedOutput": "Error: Falha HTTP",
+      "explanation": "Isso aí! `throw new Error(...)` dispara a exceção e `catch (err)` trata com elegância."
     },
     {
       "type": "order_code",
-      "prompt": "Ordene os blocos para fazer um fetch seguro verificando res.ok e tratando falhas com try/catch:",
+      "prompt": "Ordene os blocos para fazer um `fetch` seguro verificando `res.ok` antes de ler o JSON:",
       "blocks": [
         "  if (!res.ok) throw new Error(\"Erro HTTP\");",
-        "try {",
-        "  const res = await fetch(\"/api/perfil\");",
-        "} catch (err) {",
         "  return await res.json();",
-        "  console.error(err);",
+        "async function carregar() {",
+        "  const res = await fetch(\"/api/perfil\");",
         "}"
       ],
-      "correctOrder": [1, 2, 0, 4, 3, 5, 6],
-      "explanation": "Dentro do try fazemos o fetch, validamos !res.ok com throw e só então lemos res.json(); o catch captura qualquer falha."
+      "correctOrder": [2, 3, 0, 1, 4],
+      "hint": "Primeiro abra a função `async`, faça o `fetch`, cheque `if (!res.ok)` e só depois leia `res.json()`.",
+      "expectedOutput": "{ nome: \"Ana\" }",
+      "explanation": "Fluxo perfeito: checar `res.ok` antes de chamar `res.json()` evita tentar parsear páginas de erro HTML."
     },
     {
       "type": "write_code",
-      "prompt": "Escreva uma função 'lerJsonSeguro' que receba uma string 'texto', tente convertê-la em objeto dentro de um bloco try/catch e, caso ocorra erro na conversão, registre a falha com console.error e retorne null.",
-      "starterCode": "",
+      "prompt": "Complete `lerJsonSeguro` usando `try/catch` com `JSON.parse(texto)` e retornando `null` em caso de erro.",
+      "starterCode": "function lerJsonSeguro(texto: string) {\n  // TODO: tente retornar JSON.parse(texto) dentro de try\n  // e no catch registre com console.error(err) e retorne null\n  \n}\nconsole.log(lerJsonSeguro('{\"ok\":true}'));",
       "requiredTokens": ["function", "lerJsonSeguro", "try", "JSON.parse", "catch", "console.error", "return", "null"],
-      "sampleSolution": "function lerJsonSeguro(texto: string) {\n  try {\n    return JSON.parse(texto);\n  } catch (err) {\n    console.error(err);\n    return null;\n  }\n}",
-      "hint": "Use try { return JSON.parse(texto); } seguido de catch (err) { console.error(err); return null; }.",
-      "explanation": "Combinamos função tipada, JSON.parse() dentro de try/catch e tratamento seguro de fallback com console.error e null."
+      "sampleSolution": "function lerJsonSeguro(texto: string) {\n  try {\n    return JSON.parse(texto);\n  } catch (err) {\n    console.error(err);\n    return null;\n  }\n}\nconsole.log(lerJsonSeguro('{\"ok\":true}'));",
+      "hint": "Use `try { return JSON.parse(texto); } catch (err) { console.error(err); return null; }`.",
+      "expectedOutput": "{ ok: true }",
+      "explanation": "Excelente! Agora seu app lê qualquer JSON externo sem medo de travar."
     }
   ]
 }

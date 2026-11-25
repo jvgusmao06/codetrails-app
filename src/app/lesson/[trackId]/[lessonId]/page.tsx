@@ -30,6 +30,15 @@ export default async function LessonPage({
     notFound();
   }
 
+  const orderedLessonIds = data.track.modules.flatMap((m) =>
+    m.lessons.map((l) => l.id)
+  );
+  const currentLessonIndex = orderedLessonIds.indexOf(data.lesson.id);
+  const nextLessonId =
+    currentLessonIndex !== -1 && currentLessonIndex + 1 < orderedLessonIds.length
+      ? orderedLessonIds[currentLessonIndex + 1]
+      : undefined;
+
   return (
     <Suspense
       fallback={
@@ -44,6 +53,7 @@ export default async function LessonPage({
         languageId={data.track.languageId ?? data.track.id}
         moduleTitle={data.moduleTitle}
         lesson={data.lesson}
+        nextLessonId={nextLessonId}
       />
     </Suspense>
   );
